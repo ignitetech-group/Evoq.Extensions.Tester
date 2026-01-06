@@ -1,0 +1,178 @@
+{
+  "extension": {
+    "name": "Evoq.Social.TwitterConnector",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Social",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "Twitter Connector Registration",
+      "description": "Twitter connector registers itself as a social connector with defined name, display name, and icon.",
+      "files": [
+        "DesktopModules/DNNCorp/TwitterConnector/Components/TwitterConnector.cs",
+        "DesktopModules/DNNCorp/TwitterConnector/TwitterConnector.dnn"
+      ],
+      "ui_location": "Admin > Settings > Connections",
+      "test_scenarios": [
+        "Verify Twitter connector appears in available connections list",
+        "Verify connector displays correct name 'Twitter'",
+        "Verify connector icon displays properly",
+        "Verify connector is marked as an Engage Connector"
+      ],
+      "dependencies": [
+        "Evoq.Library",
+        "Evoq.Components.Connections"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Twitter API Configuration",
+      "description": "Configure and save Twitter API credentials (API key and API secret) for social integration.",
+      "files": [
+        "DesktopModules/DNNCorp/TwitterConnector/Components/TwitterConnector.cs",
+        "DesktopModules/DNNCorp/SocialLibrary/Services/cmx/ConnectionsController.cs",
+        "DesktopModules/DNNCorp/SocialIntegrationTests/WebApiTests/PersonaBar/ConnectionsHelper.cs"
+      ],
+      "ui_location": "Admin > Settings > Connections > Twitter",
+      "test_scenarios": [
+        "Enter valid API key and API secret",
+        "Save connection settings successfully",
+        "Edit existing connection settings",
+        "Clear connection settings",
+        "Verify settings are encrypted in database",
+        "Test with invalid API credentials",
+        "Verify error message for wrong credentials"
+      ],
+      "dependencies": [
+        "PersonaBar",
+        "Connections API"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Twitter Social Sharing",
+      "description": "Share content items to Twitter with automatic URL shortening and activity tracking.",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.controls.Twitter.js",
+        "DesktopModules/DNNCorp/SocialShare/Services/ShareController.cs",
+        "DesktopModules/DNNCorp/SocialShare/Components/Controllers/TwitterServiceController.cs"
+      ],
+      "ui_location": "Content pages with social share widgets",
+      "test_scenarios": [
+        "Click Twitter share button on content",
+        "Verify Twitter intent window opens with correct URL",
+        "Share content to Twitter successfully",
+        "Verify share completion is tracked",
+        "Verify user scoring points are awarded for Twitter share",
+        "Test URL transformation for shared links",
+        "Verify analytics tracking for shared content",
+        "Test sharing without being logged in",
+        "Test sharing while logged in"
+      ],
+      "dependencies": [
+        "SocialShare module",
+        "Analytics module",
+        "Mechanics scoring"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Twitter Connector Settings Upgrade",
+      "description": "Upgrade Twitter connector configuration from older versions, migrating 'AppId' to 'API key' and 'AppSecret' to 'API secret'.",
+      "files": [
+        "DesktopModules/DNNCorp/TwitterConnector/Components/Controllers/UpgradeController.cs"
+      ],
+      "ui_location": "Automatic during module upgrade",
+      "test_scenarios": [
+        "Upgrade from version 8.00.00 to 8.01.00",
+        "Verify old 'AppId' setting migrates to 'API key'",
+        "Verify old 'AppSecret' setting migrates to 'API secret'",
+        "Test upgrade with missing configuration",
+        "Test upgrade with corrupted configuration",
+        "Verify upgrade across multiple portals",
+        "Verify upgrade logging on success",
+        "Verify error logging on failure"
+      ],
+      "dependencies": [
+        "DNN upgrade framework",
+        "Portal settings"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Twitter Connection Validation",
+      "description": "Validate Twitter API credentials before saving connection settings.",
+      "files": [
+        "DesktopModules/DNNCorp/SocialIntegrationTests/WebApiTests/Connectors/ConnectorsTests.cs",
+        "DesktopModules/DNNCorp/SocialIntegrationTests/WebApiTests/PersonaBar/ConnectionsHelper.cs"
+      ],
+      "ui_location": "Admin > Settings > Connections > Twitter > Save",
+      "test_scenarios": [
+        "Validate correct API key and secret combination",
+        "Show error for invalid API key",
+        "Show error for invalid API secret",
+        "Show specific error message for wrong credentials",
+        "Test validation timeout handling",
+        "Test validation with network errors",
+        "Verify validation before saving to database"
+      ],
+      "dependencies": [
+        "Twitter API",
+        "Connections validation framework"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Twitter Connector Installation",
+      "description": "Install Twitter connector module package with all required components and resources.",
+      "files": [
+        "DesktopModules/DNNCorp/TwitterConnector/TwitterConnector.dnn",
+        "DesktopModules/DNNCorp/TwitterConnector/packages/Social_TwitterConnector__Install.zip"
+      ],
+      "ui_location": "Host > Extensions > Install Extension Wizard",
+      "test_scenarios": [
+        "Install Twitter connector package",
+        "Verify assembly is deployed correctly",
+        "Verify resources are extracted properly",
+        "Verify icon files are in correct location",
+        "Test Azure compatible installation",
+        "Verify dependency check for Evoq.Library 8.01.00",
+        "Test installation rollback on error",
+        "Verify uninstallation removes all components"
+      ],
+      "dependencies": [
+        "Evoq.Library 8.01.00+",
+        "DNN installation framework"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Twitter Share UI Component",
+      "description": "Client-side JavaScript component for Twitter sharing functionality with popup window.",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.controls.Twitter.js",
+        "DesktopModules/DNNCorp/TwitterConnector/Images/twitter.png"
+      ],
+      "ui_location": "Any page with social sharing enabled",
+      "test_scenarios": [
+        "Verify Twitter share button displays with icon",
+        "Click Twitter share button opens popup window",
+        "Verify popup window dimensions (600x400)",
+        "Test popup blocker handling",
+        "Verify URL encoding in share intent",
+        "Test share tracking after completion",
+        "Verify MyStatus points refresh after share",
+        "Test JavaScript error handling"
+      ],
+      "dependencies": [
+        "jQuery",
+        "Knockout.js",
+        "dnn.share framework"
+      ],
+      "priority": "Medium"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T18:00:15.526214",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

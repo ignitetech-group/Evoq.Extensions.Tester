@@ -1,0 +1,326 @@
+{
+  "extension": {
+    "name": "Evoq.GoogleAnalyticsConnector",
+    "priority": "High",
+    "repo": "Dnn.Evoq.Basic",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "Google Analytics Connector Configuration",
+      "description": "Main connector interface for configuring Google Analytics tracking settings including tracking ID, domain, and admin tracking preferences.",
+      "files": [
+        "Evoq Content/Connectors/GoogleAnalytics/Components/GoogleAnalyticsConnector.cs",
+        "Evoq Content/Connectors/GoogleAnalytics/connector.htm",
+        "Evoq Content/Connectors/GoogleAnalytics/Scripts/connector.js"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Google Analytics",
+      "test_scenarios": [
+        "Configure new GA tracking ID (UA-XXXXX format)",
+        "Configure GA4 tracking ID (G-XXXXX format)",
+        "Validate tracking ID format",
+        "Save configuration successfully",
+        "Clear/remove existing configuration",
+        "Verify connector status (HasConfig check)",
+        "Test invalid tracking ID rejection"
+      ],
+      "dependencies": [
+        "DNN Connectors Framework",
+        "Analytics Configuration"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Advanced Analytics Settings",
+      "description": "Advanced configuration options including domain name settings and admin tracking preferences with toggle functionality.",
+      "files": [
+        "Evoq Content/Connectors/GoogleAnalytics/advanced.htm",
+        "Evoq Content/Connectors/GoogleAnalytics/Scripts/connector.js",
+        "Evoq Content/Connectors/GoogleAnalytics/Components/GoogleAnalyticsConnector.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Google Analytics > Advanced Settings",
+      "test_scenarios": [
+        "Configure custom domain name",
+        "Enable/disable tracking for administrators",
+        "Toggle admin tracking switch on/off",
+        "Save advanced settings",
+        "Verify domain name validation",
+        "Test empty domain configuration (uses 'none')"
+      ],
+      "dependencies": [
+        "Google Analytics Connector Configuration"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Segmentation Rules Management",
+      "description": "Create and manage custom tracking rules based on specific pages and user roles for targeted analytics.",
+      "files": [
+        "Evoq Content/Connectors/GoogleAnalytics/advanced.htm",
+        "Evoq Content/Connectors/GoogleAnalytics/Scripts/connector.js",
+        "Evoq Content/Connectors/GoogleAnalytics/Components/GoogleAnalyticsConnector.cs",
+        "Evoq Content/Connectors/GoogleAnalytics/Services/ServicesController.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Google Analytics > Advanced Settings > Segmentation Rules",
+      "test_scenarios": [
+        "Add new segmentation rule (up to 5 rules)",
+        "Edit existing rule",
+        "Delete rule",
+        "Configure rule with specific page selection",
+        "Configure rule with specific role selection",
+        "Configure rule with 'Any Page' option",
+        "Configure rule with 'All Users' role",
+        "Test rule reordering (move up/down)",
+        "Validate maximum 5 rules limit",
+        "Test rule label and value field validation (50 char max)"
+      ],
+      "dependencies": [
+        "Advanced Analytics Settings",
+        "Page Picker",
+        "Role Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Page View Tracking",
+      "description": "Tracks page views with detailed metrics including visitor ID, session ID, referrer information, and time on page.",
+      "files": [
+        "Evoq Content/Library/Services/AnalyticsServiceController.cs",
+        "Evoq Content/Library/Components/Analytics/AnalyticsController.cs",
+        "Evoq Content/Library/Components/Analytics/AnalyticsProvider.cs"
+      ],
+      "ui_location": "Automatic tracking on all pages (when configured)",
+      "test_scenarios": [
+        "Track standard page view",
+        "Track page with content item ID",
+        "Track personalized page variant",
+        "Capture referrer information",
+        "Calculate time on page",
+        "Handle session timeout (max 300 seconds default)",
+        "Track page language/culture",
+        "Capture user agent information",
+        "Track anonymous vs authenticated users",
+        "Verify excluded tabs are not tracked"
+      ],
+      "dependencies": [
+        "Analytics Provider",
+        "Cookie Management"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Event Tracking API",
+      "description": "API endpoints for tracking custom events like link clicks with category, action, and value parameters.",
+      "files": [
+        "Evoq Content/Library/Services/AnalyticsServiceController.cs",
+        "Evoq Content/Library/Components/Analytics/AnalyticsController.cs"
+      ],
+      "ui_location": "API Endpoint: /DesktopModules/Evoq/API/Analytics/LogEventData",
+      "test_scenarios": [
+        "Log link click event",
+        "Log custom event with all parameters",
+        "Validate event category and action",
+        "Test event value field",
+        "Handle missing visitor ID",
+        "Test anti-forgery token validation",
+        "Log events for anonymous users",
+        "Log events for authenticated users",
+        "Test event with personalized tab ID"
+      ],
+      "dependencies": [
+        "Analytics Provider",
+        "Anti-Forgery Token"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Cookie Management for Analytics",
+      "description": "Manages visitor ID and session cookies for tracking unique visitors and sessions across the site.",
+      "files": [
+        "Evoq Content/Library/Components/Analytics/AnalyticsCookieHelper.cs",
+        "Evoq Content/Library/Components/Analytics/AnalyticsController.cs"
+      ],
+      "ui_location": "Browser cookies (Analytics_VisitorId, Analytics, SessionId)",
+      "test_scenarios": [
+        "Create new visitor ID cookie",
+        "Create new session cookie",
+        "Update existing session cookie",
+        "Handle cookie expiration (30 days for visitor, configurable for session)",
+        "Test legacy analytics cookies enabled/disabled",
+        "Verify cookie paths are set correctly",
+        "Test cookie removal when analytics disabled",
+        "Validate session timeout configuration"
+      ],
+      "dependencies": [
+        "Portal Settings"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Universal Analytics & GA4 Support",
+      "description": "Support for both Universal Analytics (UA-) and Google Analytics 4 (G-) tracking codes with appropriate configuration.",
+      "files": [
+        "Evoq Content/Connectors/GoogleAnalytics/Components/GoogleAnalyticsConnector.cs",
+        "Evoq Content/Connectors/GoogleAnalytics/SiteAnalytics.config",
+        "Evoq Content/Connectors/GoogleAnalytics/SiteAnalytics.GA4.config",
+        "Evoq Platform/Library/Services/Analytics/GoogleAnalyticsProEngine.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Google Analytics",
+      "test_scenarios": [
+        "Configure UA tracking code (UA-XXXXX)",
+        "Configure GA4 tracking code (G-XXXXX)",
+        "Display warning for UA deprecation",
+        "Auto-detect analytics version from tracking ID",
+        "Load correct config file based on version",
+        "Test analytics.js vs gtag.js script injection"
+      ],
+      "dependencies": [
+        "SiteAnalytics Config"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Google Analytics Script Injection",
+      "description": "Injects appropriate Google Analytics tracking scripts into page headers based on configuration.",
+      "files": [
+        "Evoq Platform/Library/Services/Analytics/GoogleAnalyticsProEngine.cs",
+        "Evoq Content/Connectors/GoogleAnalytics/SiteAnalytics.config"
+      ],
+      "ui_location": "Page HTML header (automatic injection)",
+      "test_scenarios": [
+        "Inject tracking script when enabled",
+        "Skip injection when disabled",
+        "Skip injection for super users when configured",
+        "Skip injection for administrators when configured",
+        "Handle Google Tag Manager override",
+        "Inject custom dimensions for Universal Analytics",
+        "Inject custom variables for classic GA",
+        "Test page personalization tracking",
+        "Verify domain configuration in script"
+      ],
+      "dependencies": [
+        "Portal Settings",
+        "User Roles"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Custom Dimensions and Variables",
+      "description": "Configure custom tracking dimensions and variables based on segmentation rules for enhanced analytics.",
+      "files": [
+        "Evoq Platform/Library/Services/Analytics/GoogleAnalyticsProEngine.cs",
+        "Evoq Content/Connectors/GoogleAnalytics/Components/GoogleAnalyticsConnector.cs"
+      ],
+      "ui_location": "Rendered in tracking script based on rules",
+      "test_scenarios": [
+        "Add custom variable for specific role",
+        "Add custom variable for specific page",
+        "Test maximum 5 custom variables limit",
+        "Verify page-level scope (scope=3)",
+        "Test custom dimension for page variants",
+        "Validate localStorage for dimension names",
+        "Test rule matching for current page",
+        "Test role-based rule matching"
+      ],
+      "dependencies": [
+        "Segmentation Rules",
+        "User Authentication"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "SiteAnalytics Configuration Management",
+      "description": "Manages SiteAnalytics.config file updates, backups, and version-specific configurations.",
+      "files": [
+        "Evoq Content/Connectors/GoogleAnalytics/Services/UpgradeSiteAnalytics.cs",
+        "Evoq Content/Connectors/GoogleAnalytics/Components/BusinessController.cs",
+        "Evoq Content/Connectors/GoogleAnalytics/Components/GoogleAnalyticsConnector.cs"
+      ],
+      "ui_location": "Automatic during module upgrade",
+      "test_scenarios": [
+        "Upgrade from v9 to v10",
+        "Create backup of existing config",
+        "Copy new template config",
+        "Verify config hash comparison",
+        "Handle missing config files",
+        "Test GA4 config selection",
+        "Test Universal Analytics config selection",
+        "Verify backup folder creation",
+        "Test config file permissions"
+      ],
+      "dependencies": [
+        "Module Upgrade Framework"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Page and Role Picker Integration",
+      "description": "Integration with DNN page picker and role selector for configuring tracking rules.",
+      "files": [
+        "Evoq Content/Connectors/GoogleAnalytics/Services/ServicesController.cs",
+        "Evoq Content/Connectors/GoogleAnalytics/Scripts/connector.js"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Google Analytics > Advanced Settings > Rules",
+      "test_scenarios": [
+        "Load page picker dropdown",
+        "Search for specific pages",
+        "Select 'Any Page' option",
+        "Load all available roles",
+        "Select specific role",
+        "Select 'All Users' role",
+        "Test page tree navigation",
+        "Verify role sorting (alphabetical)"
+      ],
+      "dependencies": [
+        "ItemListService",
+        "Role Controller"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Plugin Architecture Support",
+      "description": "Extensible plugin system allowing additional JavaScript modules to enhance connector functionality.",
+      "files": [
+        "Evoq Content/Connectors/GoogleAnalytics/Services/ServicesController.cs",
+        "Evoq Content/Connectors/GoogleAnalytics/Scripts/connector.js"
+      ],
+      "ui_location": "Scripts folder in connector module",
+      "test_scenarios": [
+        "Load available plugins from Scripts folder",
+        "Initialize plugins with connector context",
+        "Test plugin exclusion (connector.js excluded)",
+        "Verify plugin loading order",
+        "Test plugin error handling",
+        "Validate plugin init function call"
+      ],
+      "dependencies": [
+        "RequireJS",
+        "Module Framework"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Analytics Service Routes",
+      "description": "Web API service routes for connector functionality including configuration and data retrieval.",
+      "files": [
+        "Evoq Content/Connectors/GoogleAnalytics/Services/ServiceRouteMapper.cs",
+        "Evoq Content/Connectors/GoogleAnalytics/Services/ServicesController.cs"
+      ],
+      "ui_location": "API Routes: /DesktopModules/DNNCorp/GoogleAnalyticsConnector/API/",
+      "test_scenarios": [
+        "Test GetPagePickerOptions endpoint",
+        "Test GetRoles endpoint",
+        "Test GetPlugins endpoint",
+        "Verify route mapping registration",
+        "Test API authentication requirements",
+        "Validate JSON response format"
+      ],
+      "dependencies": [
+        "DNN Web API Framework"
+      ],
+      "priority": "Medium"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:24:42.246219",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

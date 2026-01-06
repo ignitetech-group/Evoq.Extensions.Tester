@@ -1,0 +1,591 @@
+{
+  "extension": {
+    "name": "Evoq.Social.Wiki",
+    "priority": "High",
+    "repo": "Dnn.Evoq.Social",
+    "extension_type": "Module"
+  },
+  "features": [
+    {
+      "name": "Article Creation and Publishing",
+      "description": "Create new wiki articles with title, content, and metadata, supporting both draft and published states",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/ArticleController.cs",
+        "DesktopModules/DNNCorp/Wiki/Controls/ContentEditor.ascx",
+        "DesktopModules/DNNCorp/Wiki/ClientScripts/dnn.wiki.ContentEditor.js"
+      ],
+      "ui_location": "Wiki Module > Add New Article button or Edit existing article",
+      "test_scenarios": [
+        "Create new article as draft",
+        "Create article and publish immediately",
+        "Create primary/home article for module",
+        "Validate required fields (title, content)",
+        "Test profanity filter on content",
+        "Test duplicate article title prevention",
+        "Create article with special characters in title",
+        "Test maximum title length validation"
+      ],
+      "dependencies": [
+        "DNN Platform",
+        "Evoq.Revisions"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Article Editing and Updates",
+      "description": "Edit existing wiki articles with version tracking and approval workflow",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/ArticleController.cs",
+        "DesktopModules/DNNCorp/Wiki/Controls/ContentEditor.ascx",
+        "DesktopModules/DNNCorp/Wiki/ClientScripts/dnn.wiki.ArticleContent.js"
+      ],
+      "ui_location": "Wiki Module > Click Edit on existing article",
+      "test_scenarios": [
+        "Edit article content",
+        "Edit article title",
+        "Edit article metadata",
+        "Save as draft vs publish",
+        "Test concurrent editing scenarios",
+        "Edit primary article",
+        "Test edit permissions for different user roles"
+      ],
+      "dependencies": [
+        "Article Creation",
+        "Revision Management"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Revision Management",
+      "description": "Track and manage article revisions with approval workflow and version history",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/RevisionsServiceController.cs",
+        "DesktopModules/DNNCorp/Wiki/Controls/Revisions.ascx",
+        "DesktopModules/DNNCorp/Wiki/ClientScripts/dnn.wiki.Revisions.js",
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/ArticleController.cs"
+      ],
+      "ui_location": "Wiki Module > Article > Revisions tab or History link",
+      "test_scenarios": [
+        "View revision history",
+        "Compare different revisions",
+        "Approve pending revision",
+        "Reject pending revision",
+        "Restore previous revision",
+        "Test revision state transitions (Draft->Pending->Published)",
+        "Delete revision",
+        "Test multiple pending revisions"
+      ],
+      "dependencies": [
+        "Evoq.Revisions",
+        "Permissions"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Article Search and Listing",
+      "description": "Search wiki articles and display filtered lists with pagination",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/ListController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/ArticleController.cs",
+        "DesktopModules/DNNCorp/Wiki/Controls/ListContainer.ascx",
+        "DesktopModules/DNNCorp/Wiki/ClientScripts/dnn.wiki.ListController.js"
+      ],
+      "ui_location": "Wiki Module > Main page list view or Search box",
+      "test_scenarios": [
+        "Search by keyword",
+        "Filter by tags",
+        "Filter by article type",
+        "View My Articles",
+        "View Draft articles (moderator)",
+        "Test pagination",
+        "Sort by date/title/views",
+        "Search with special characters",
+        "Test empty search results"
+      ],
+      "dependencies": [
+        "Article Creation"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Metadata and Article Types",
+      "description": "Manage article metadata, custom fields, and article type categorization",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/MetaDataController.cs",
+        "DesktopModules/DNNCorp/Wiki/Controls/MetaDataEditor.ascx",
+        "DesktopModules/DNNCorp/Wiki/ClientScripts/dnn.wiki.MetaData.js",
+        "DesktopModules/DNNCorp/Wiki/Components/Entities/MetaData.cs"
+      ],
+      "ui_location": "Wiki Module > Article Edit > Metadata section",
+      "test_scenarios": [
+        "Set article type",
+        "Add custom metadata fields",
+        "Edit metadata values",
+        "Test metadata validation",
+        "Test localized metadata",
+        "Delete metadata",
+        "Test metadata inheritance",
+        "Test metadata display in article view"
+      ],
+      "dependencies": [
+        "Article Creation"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Tagging System",
+      "description": "Add, remove and manage tags for articles with tag-based filtering",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/ArticleController.cs",
+        "DesktopModules/DNNCorp/Wiki/Controls/ContentEditor.ascx"
+      ],
+      "ui_location": "Wiki Module > Article Edit > Tags field",
+      "test_scenarios": [
+        "Add single tag",
+        "Add multiple tags",
+        "Remove tags",
+        "Search by tag",
+        "Test tag auto-complete",
+        "Test special characters in tags",
+        "Test tag case sensitivity",
+        "View tag cloud"
+      ],
+      "dependencies": [
+        "DNN Taxonomy",
+        "Article Creation"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Social - Likes",
+      "description": "Like and unlike wiki articles with like count display",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/SocialController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Integration/Mechanics.cs",
+        "DesktopModules/DNNCorp/Wiki/ClientScripts/dnn.wiki.Article.js"
+      ],
+      "ui_location": "Wiki Module > Article View > Like button",
+      "test_scenarios": [
+        "Like an article",
+        "Unlike an article",
+        "View like count",
+        "Test multiple users liking",
+        "Test like permissions",
+        "Test like scoring points",
+        "Test like state persistence"
+      ],
+      "dependencies": [
+        "DNN Social Library",
+        "Article Creation"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Social - Bookmarks",
+      "description": "Bookmark and unbookmark articles for later reference",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/SocialController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Integration/Mechanics.cs",
+        "DesktopModules/DNNCorp/Wiki/ClientScripts/dnn.wiki.Article.js"
+      ],
+      "ui_location": "Wiki Module > Article View > Bookmark button",
+      "test_scenarios": [
+        "Bookmark an article",
+        "Remove bookmark",
+        "View bookmarked articles list",
+        "Test bookmark scoring points",
+        "Test bookmark persistence",
+        "Test bookmark permissions"
+      ],
+      "dependencies": [
+        "DNN Social Library",
+        "Article Creation"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Social - Comments",
+      "description": "Add, edit, delete and moderate comments on wiki articles",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/SocialController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Integration/Notifications.cs",
+        "DesktopModules/DNNCorp/Wiki/ClientScripts/dnn.wiki.Article.js"
+      ],
+      "ui_location": "Wiki Module > Article View > Comments section",
+      "test_scenarios": [
+        "Post new comment",
+        "Edit own comment",
+        "Delete own comment",
+        "Moderate comments (approve/reject)",
+        "Reply to comment",
+        "Test comment notifications",
+        "Test profanity filter in comments",
+        "Test comment with user mentions",
+        "Test comment permissions"
+      ],
+      "dependencies": [
+        "DNN Social Library",
+        "Article Creation",
+        "Notifications"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Subscription Management",
+      "description": "Subscribe to articles and wiki module for update notifications",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/ListController.cs",
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/ClientScripts/dnn.wiki.Subscribe.js",
+        "DesktopModules/DNNCorp/Wiki/Components/Integration/Notifications.cs"
+      ],
+      "ui_location": "Wiki Module > Article View > Subscribe button or Module level subscribe",
+      "test_scenarios": [
+        "Subscribe to individual article",
+        "Subscribe to all new articles in module",
+        "Unsubscribe from article",
+        "Unsubscribe from module",
+        "Test subscription notifications on article update",
+        "Test subscription notifications on new article",
+        "Test subscription in group context"
+      ],
+      "dependencies": [
+        "DNN Social Library",
+        "Notifications"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Notifications System",
+      "description": "Send and manage notifications for article updates, approvals, and comments",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/NotificationServiceController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Integration/Notifications.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Events/WikiEvents.cs"
+      ],
+      "ui_location": "DNN Notification Center > Wiki notifications",
+      "test_scenarios": [
+        "New article notification",
+        "Article updated notification",
+        "Article pending approval notification",
+        "Comment notification",
+        "User mention notification",
+        "Approve article from notification",
+        "Delete article from notification",
+        "Test notification permissions",
+        "Test notification delivery"
+      ],
+      "dependencies": [
+        "DNN Notifications",
+        "Article Creation"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Content Reporting",
+      "description": "Report inappropriate wiki articles or comments to moderators",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/ReportController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Integration/Notifications.cs",
+        "DesktopModules/DNNCorp/Wiki/ClientScripts/dnn.wiki.Article.js"
+      ],
+      "ui_location": "Wiki Module > Article View > Report button",
+      "test_scenarios": [
+        "Report article",
+        "Report comment",
+        "Submit report with reason",
+        "Test report notification to moderators",
+        "Test report scoring points",
+        "Test multiple reports on same content",
+        "Test report permissions"
+      ],
+      "dependencies": [
+        "Notifications",
+        "Permissions"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Table of Contents",
+      "description": "Automatically generate and display table of contents for articles",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/TableOfContentsController.cs",
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Controls/Contents.ascx"
+      ],
+      "ui_location": "Wiki Module > Article View > Table of Contents section (if enabled)",
+      "test_scenarios": [
+        "Enable TOC for article",
+        "Generate TOC from headings",
+        "Test TOC navigation links",
+        "Test nested headings in TOC",
+        "Disable TOC",
+        "Test TOC with no headings",
+        "Test TOC formatting"
+      ],
+      "dependencies": [
+        "Article Creation"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Markdown Support",
+      "description": "Process and render Markdown content in wiki articles",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Components/MarkdownProcessor.cs",
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Controls/ContentEditor.ascx"
+      ],
+      "ui_location": "Wiki Module > Article Edit > Content editor (Markdown mode)",
+      "test_scenarios": [
+        "Create article with Markdown",
+        "Test Markdown headers",
+        "Test Markdown lists",
+        "Test Markdown links",
+        "Test Markdown images",
+        "Test Markdown code blocks",
+        "Test Markdown tables",
+        "Mix HTML and Markdown"
+      ],
+      "dependencies": [
+        "Article Creation"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "User Mentions",
+      "description": "Mention users in articles and comments with @ notation and notifications",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Services/SocialController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Integration/UserMentionNotificationsController.cs"
+      ],
+      "ui_location": "Wiki Module > Article/Comment editor > Type @ to mention user",
+      "test_scenarios": [
+        "Mention user in article",
+        "Mention user in comment",
+        "Test mention auto-complete",
+        "Test mention notification delivery",
+        "Test multiple mentions",
+        "Test invalid user mentions",
+        "Test mention permissions"
+      ],
+      "dependencies": [
+        "DNN Social Library",
+        "Notifications"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Activity Journal Integration",
+      "description": "Post wiki activities to user and group activity journals",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Components/Integration/Journal.cs",
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Services/RevisionsServiceController.cs"
+      ],
+      "ui_location": "User Profile > Activity Feed or Group > Activity Feed",
+      "test_scenarios": [
+        "Create article journal entry",
+        "Update article journal entry",
+        "Test journal entry visibility",
+        "Test group journal entries",
+        "Test journal entry permissions",
+        "Delete article removes journal entry"
+      ],
+      "dependencies": [
+        "DNN Journal",
+        "Article Creation"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Scoring and Gamification",
+      "description": "Award points for wiki activities like creating articles, commenting, and interactions",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Components/Integration/Mechanics.cs",
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Services/SocialController.cs"
+      ],
+      "ui_location": "User Profile > Reputation/Points display",
+      "test_scenarios": [
+        "Points for creating article",
+        "Points for article approval",
+        "Points for commenting",
+        "Points for liking",
+        "Points for bookmarking",
+        "Points for article being flagged",
+        "Test point calculations",
+        "Test leaderboard updates"
+      ],
+      "dependencies": [
+        "DNN Social Mechanics",
+        "Article Creation"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Permissions and Security",
+      "description": "Control access to wiki features based on user roles and permissions",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Components/Common/ModuleSecurity.cs",
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/ArticleController.cs"
+      ],
+      "ui_location": "Module Settings > Permissions tab",
+      "test_scenarios": [
+        "Test view permissions",
+        "Test create permissions",
+        "Test edit permissions",
+        "Test moderate permissions",
+        "Test group mode permissions",
+        "Test anonymous user access",
+        "Test permission inheritance",
+        "Test anti-forgery validation"
+      ],
+      "dependencies": [
+        "DNN Security"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Group Mode Integration",
+      "description": "Wiki functionality within DNN social groups with group-specific content",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Services/ListController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/ArticleController.cs"
+      ],
+      "ui_location": "Social Group > Wiki tab",
+      "test_scenarios": [
+        "Create article in group",
+        "View group-only articles",
+        "Test group permissions",
+        "Test group notifications",
+        "Test group activity journal",
+        "Move article between groups",
+        "Test private group wikis"
+      ],
+      "dependencies": [
+        "DNN Social Groups"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Import/Export Content",
+      "description": "Import and export wiki articles for backup or migration",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Components/ContentExchangeController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/BusinessController.cs"
+      ],
+      "ui_location": "Module Actions > Import/Export Content",
+      "test_scenarios": [
+        "Export single article",
+        "Export all articles",
+        "Import article",
+        "Import multiple articles",
+        "Test import validation",
+        "Test duplicate handling on import",
+        "Test metadata preservation"
+      ],
+      "dependencies": [
+        "DNN Import/Export"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Article Deletion",
+      "description": "Delete wiki articles with proper cleanup of related data",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Services/NotificationServiceController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/ArticleController.cs"
+      ],
+      "ui_location": "Wiki Module > Article View > Delete button (for authorized users)",
+      "test_scenarios": [
+        "Delete draft article",
+        "Delete published article",
+        "Test delete permissions",
+        "Test cascading deletes (comments, likes, etc)",
+        "Delete from notification",
+        "Restore deleted article",
+        "Test delete confirmation"
+      ],
+      "dependencies": [
+        "Article Creation",
+        "Permissions"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Primary Article Management",
+      "description": "Manage the primary/home article for the wiki module",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/ListController.cs",
+        "DesktopModules/DNNCorp/Wiki/Controls/ContentEditor.ascx"
+      ],
+      "ui_location": "Wiki Module > Module Settings or Edit Primary Article",
+      "test_scenarios": [
+        "Set primary article",
+        "Edit primary article",
+        "Change primary article",
+        "Test primary article display",
+        "Test primary article without title",
+        "Test primary article permissions"
+      ],
+      "dependencies": [
+        "Article Creation"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "View Tracking",
+      "description": "Track and display article view counts",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/ArticleController.cs",
+        "DesktopModules/DNNCorp/Wiki/Controls/Article.ascx"
+      ],
+      "ui_location": "Wiki Module > Article View > View count display",
+      "test_scenarios": [
+        "Increment view count on article view",
+        "Test unique view tracking",
+        "Test view count display",
+        "Sort by view count",
+        "Test view count for drafts"
+      ],
+      "dependencies": [
+        "Article Creation"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Content Sanitization",
+      "description": "Filter and sanitize user-generated content to prevent XSS and malicious content",
+      "files": [
+        "DesktopModules/DNNCorp/Wiki/Services/ContentController.cs",
+        "DesktopModules/DNNCorp/Wiki/Components/Controllers/ArticleController.cs"
+      ],
+      "ui_location": "Wiki Module > Article creation/editing",
+      "test_scenarios": [
+        "Test XSS prevention",
+        "Test script tag filtering",
+        "Test iframe filtering",
+        "Test malicious HTML removal",
+        "Test allowed HTML preservation",
+        "Test profanity filtering",
+        "Test SQL injection prevention"
+      ],
+      "dependencies": [
+        "Article Creation",
+        "DNN Security"
+      ],
+      "priority": "Top"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:48:27.395742",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

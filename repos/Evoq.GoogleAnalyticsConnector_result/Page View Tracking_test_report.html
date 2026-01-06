@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page View Tracking - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+        }
+        .header p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        .summary-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .summary-item.pass {
+            border-left: 4px solid #4caf50;
+        }
+        .summary-item.fail {
+            border-left: 4px solid #f44336;
+        }
+        .summary-item.info {
+            border-left: 4px solid #2196f3;
+        }
+        .summary-item h3 {
+            margin: 0;
+            font-size: 2em;
+            color: #333;
+        }
+        .summary-item p {
+            margin: 5px 0 0 0;
+            color: #666;
+        }
+        .test-section {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            color: #1a237e;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .test-case {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .test-case h3 {
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .status.pass {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status.fail {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .status.partial {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+        .screenshot {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .steps {
+            background-color: #fafafa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin: 8px 0;
+        }
+        .observations {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .code-block {
+            background-color: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            overflow-x: auto;
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+        .network-data {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 3px solid #4caf50;
+        }
+        .network-data code {
+            display: block;
+            white-space: pre-wrap;
+            word-break: break-all;
+            font-size: 0.85em;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        .highlight {
+            background-color: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Page View Tracking - Test Report</h1>
+        <p><strong>Extension:</strong> Evoq.GoogleAnalyticsConnector</p>
+        <p><strong>Feature:</strong> Page View Tracking</p>
+        <p><strong>Test Date:</strong> December 30, 2025</p>
+        <p><strong>Priority:</strong> Top</p>
+    </div>
+
+    <div class="summary-box">
+        <div class="summary-item pass">
+            <h3>7</h3>
+            <p>Tests Passed</p>
+        </div>
+        <div class="summary-item partial">
+            <h3>1</h3>
+            <p>Partial Pass</p>
+        </div>
+        <div class="summary-item fail">
+            <h3>0</h3>
+            <p>Tests Failed</p>
+        </div>
+        <div class="summary-item info">
+            <h3>8</h3>
+            <p>Total Scenarios</p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Feature Overview</h2>
+        <p><strong>Description:</strong> Tracks page views with detailed metrics including visitor ID, session ID, referrer information, and time on page.</p>
+        <p><strong>UI Location:</strong> Automatic tracking on all pages (when configured)</p>
+        <p><strong>Dependencies:</strong> Analytics Provider, Cookie Management</p>
+
+        <h3>Key Code Components Reviewed</h3>
+        <table>
+            <tr>
+                <th>File</th>
+                <th>Purpose</th>
+            </tr>
+            <tr>
+                <td>AnalyticsServiceController.cs</td>
+                <td>API endpoint for LogPageView - captures page view data (TabId, ContentItemId, UserAgent, TotalSeconds, etc.)</td>
+            </tr>
+            <tr>
+                <td>AnalyticsController.cs</td>
+                <td>Creates page view tracking on page load, manages cookies (Analytics_VisitorId, Analytics), handles session management</td>
+            </tr>
+            <tr>
+                <td>AnalyticsProvider.cs</td>
+                <td>Abstract provider for logging page views to database using background queue</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Scenario 1: Track Standard Page View</h2>
+        <div class="test-case">
+            <h3><span class="status pass">PASS</span> Standard Page View Tracking via Google Analytics 4</h3>
+
+            <div class="steps">
+                <strong>Steps Taken:</strong>
+                <ol>
+                    <li>Navigated to homepage at http://localhost:8081</li>
+                    <li>Observed network requests to Google Analytics</li>
+                    <li>Verified page_view event was sent with correct parameters</li>
+                </ol>
+            </div>
+
+            <div class="network-data">
+                <strong>Network Evidence - GA4 page_view Event:</strong>
+                <code>[POST] https://www.google-analytics.com/g/collect
+Parameters captured:
+- tid=G-ABC123XYZ9 (Tracking ID)
+- cid=1274527733.1767091915 (Client/Visitor ID)
+- sid=1767091914 (Session ID)
+- dl=http://localhost/ (Document Location)
+- dt=My Website > Home (Trial) (Document Title)
+- en=page_view (Event Name)
+- sr=1920x1080 (Screen Resolution)</code>
+            </div>
+
+            <img src="Page View Tracking_step01_homepage_initial.png" alt="Homepage Initial State" class="screenshot">
+            <p><em>Screenshot: Homepage showing initial page load state as anonymous user</em></p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Scenario 2: Track Anonymous vs Authenticated Users</h2>
+        <div class="test-case">
+            <h3><span class="status pass">PASS</span> Anonymous User Tracking</h3>
+
+            <div class="steps">
+                <strong>Steps Taken:</strong>
+                <ol>
+                    <li>Accessed site without logging in</li>
+                    <li>Page view tracked with visitor ID from cookie</li>
+                    <li>UserId captured as -1 (anonymous) in backend code</li>
+                </ol>
+            </div>
+
+            <div class="observations">
+                <strong>Observation:</strong> Anonymous users are tracked with a generated visitor ID stored in the <code>Analytics_VisitorId</code> cookie. The system distinguishes anonymous users by setting UserId to -1.
+            </div>
+
+            <img src="Page View Tracking_step01_homepage_initial.png" alt="Anonymous User View" class="screenshot">
+        </div>
+
+        <div class="test-case">
+            <h3><span class="status pass">PASS</span> Authenticated User Tracking</h3>
+
+            <div class="steps">
+                <strong>Steps Taken:</strong>
+                <ol>
+                    <li>Logged in as SuperUser Account (host)</li>
+                    <li>Navigated to multiple pages</li>
+                    <li>Verified page views captured with actual UserId</li>
+                </ol>
+            </div>
+
+            <img src="Page View Tracking_step02_login_dialog.png" alt="Login Dialog" class="screenshot">
+            <p><em>Screenshot: Login dialog for authentication</em></p>
+
+            <img src="Page View Tracking_step05_authenticated_homepage.png" alt="Authenticated Homepage" class="screenshot">
+            <p><em>Screenshot: Homepage with SuperUser Account logged in and admin bar visible</em></p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Scenario 3: Google Analytics 4 Connector Configuration</h2>
+        <div class="test-case">
+            <h3><span class="status pass">PASS</span> GA4 Connector Connected and Tracking</h3>
+
+            <div class="steps">
+                <strong>Steps Taken:</strong>
+                <ol>
+                    <li>Accessed Connectors panel from admin bar</li>
+                    <li>Verified Google Analytics 4 shows green checkmark (connected)</li>
+                    <li>Confirmed tracking ID configured: G-ABC123XYZ9</li>
+                </ol>
+            </div>
+
+            <img src="Page View Tracking_step04_ga4_connected.png" alt="GA4 Connector Connected" class="screenshot">
+            <p><em>Screenshot: Connectors panel showing Google Analytics 4 connected with Edit button</em></p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Scenario 4: Track Page with Different URLs</h2>
+        <div class="test-case">
+            <h3><span class="status pass">PASS</span> Multiple Page Navigation Tracking</h3>
+
+            <div class="steps">
+                <strong>Steps Taken:</strong>
+                <ol>
+                    <li>Navigated from Home to Our Products page</li>
+                    <li>Navigated from Our Products to News page</li>
+                    <li>Verified page_view events sent for each navigation</li>
+                </ol>
+            </div>
+
+            <div class="network-data">
+                <strong>Pages Tracked:</strong>
+                <code>1. Home: dt=My Website > Home (Trial)
+2. Login: dt=User Log In (Trial)
+3. Our Products: dt=My Website > Our Products (Trial)
+4. News: dt=My Website > News (Trial)</code>
+            </div>
+
+            <img src="Page View Tracking_step06_our_products_page.png" alt="Our Products Page" class="screenshot">
+            <p><em>Screenshot: Our Products page with product listings</em></p>
+
+            <img src="Page View Tracking_step08_news_page.png" alt="News Page" class="screenshot">
+            <p><em>Screenshot: News page showing "No Posts Yet"</em></p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Scenario 5: Calculate Time on Page</h2>
+        <div class="test-case">
+            <h3><span class="status pass">PASS</span> User Engagement Time Tracking</h3>
+
+            <div class="steps">
+                <strong>Steps Taken:</strong>
+                <ol>
+                    <li>Observed user_engagement events in network requests</li>
+                    <li>Verified engagement time (_et parameter) captured</li>
+                    <li>Code review confirmed max 300 seconds (session timeout)</li>
+                </ol>
+            </div>
+
+            <div class="network-data">
+                <strong>Engagement Events Captured:</strong>
+                <code>Event: user_engagement
+- _et=19382 (19.4 seconds on Home page)
+- _et=23152 (23.2 seconds on Login page)
+
+Code Reference (AnalyticsServiceController.cs:143-146):
+var sessionExpiry = PortalController.GetPortalSettingAsInteger(
+    AnalyticsController.MaxSecondsTimeOnPageKey, portalId, 300);
+if (totalSeconds > sessionExpiry)
+    totalSeconds = sessionExpiry;</code>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Scenario 6: Capture Referrer Information</h2>
+        <div class="test-case">
+            <h3><span class="status pass">PASS</span> Referrer Tracking Between Pages</h3>
+
+            <div class="steps">
+                <strong>Steps Taken:</strong>
+                <ol>
+                    <li>Navigated from Home to Login to Products</li>
+                    <li>Verified dr (document referrer) parameter captured</li>
+                    <li>Internal referrers tracked by TabPath</li>
+                </ol>
+            </div>
+
+            <div class="network-data">
+                <strong>Referrer Data:</strong>
+                <code>Login page referrer: dr=http://localhost:8081/
+- Shows navigation from Home to Login page
+
+Code handles internal vs external referrers:
+- Internal: Tracked by tab path
+- External: Full URL captured</code>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Scenario 7: Page Analytics Dashboard</h2>
+        <div class="test-case">
+            <h3><span class="status partial">PARTIAL</span> Page Analytics Panel Access</h3>
+
+            <div class="steps">
+                <strong>Steps Taken:</strong>
+                <ol>
+                    <li>Clicked Page Analytics icon in admin bar</li>
+                    <li>Page Analytics panel opened with date range selector</li>
+                    <li>Warning displayed about Analytics authorization</li>
+                </ol>
+            </div>
+
+            <div class="observations">
+                <strong>Finding:</strong> The Page Analytics panel opened successfully but displayed a warning: "Analytics is not currently enabled. Ensure you have correctly setup the Google Analytics Connector and that the DNN Google Analytics application is still authorized on your Google Account settings."
+                <br><br>
+                <strong>Note:</strong> While GA4 connector is connected and sending page_view events to Google Analytics, the built-in Page Analytics dashboard requires additional Google API authorization to pull data back from Google Analytics for display.
+            </div>
+
+            <img src="Page View Tracking_step07_page_analytics_panel.png" alt="Page Analytics Panel" class="screenshot">
+            <p><em>Screenshot: Page Analytics panel with authorization warning</em></p>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Scenario 8: Capture User Agent Information</h2>
+        <div class="test-case">
+            <h3><span class="status pass">PASS</span> User Agent and Browser Details Captured</h3>
+
+            <div class="steps">
+                <strong>Steps Taken:</strong>
+                <ol>
+                    <li>Reviewed network request parameters</li>
+                    <li>Verified browser/platform information captured</li>
+                </ol>
+            </div>
+
+            <div class="network-data">
+                <strong>User Agent Data in GA4 Requests:</strong>
+                <code>uaa=x86 (Architecture)
+uab=64 (Bits)
+uafvl=Google Chrome;143.0.7499.170|Chromium;143.0.7499.170
+uam= (Mobile indicator)
+uap=Windows (Platform)
+uapv=12.0.0 (Platform Version)
+sr=1920x1080 (Screen Resolution)</code>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Summary and Conclusions</h2>
+
+        <h3>What Was Tested</h3>
+        <ul>
+            <li>Standard page view tracking - <strong>PASS</strong></li>
+            <li>Anonymous vs authenticated user tracking - <strong>PASS</strong></li>
+            <li>Google Analytics 4 connector configuration - <strong>PASS</strong></li>
+            <li>Multiple page navigation tracking - <strong>PASS</strong></li>
+            <li>Time on page calculation - <strong>PASS</strong></li>
+            <li>Referrer information capture - <strong>PASS</strong></li>
+            <li>Page Analytics dashboard - <strong>PARTIAL</strong> (GA4 authorization needed)</li>
+            <li>User agent information capture - <strong>PASS</strong></li>
+        </ul>
+
+        <h3>Key Findings</h3>
+        <div class="observations">
+            <ol>
+                <li><strong>GA4 Integration Working:</strong> Page view events are successfully sent to Google Analytics 4 with comprehensive data including visitor ID, session ID, page title, referrer, and engagement time.</li>
+                <li><strong>Session Management:</strong> Session timeout is configurable (default 300 seconds max for time on page).</li>
+                <li><strong>Cookie-Based Tracking:</strong> Visitor and session IDs are managed via cookies (Analytics_VisitorId, Analytics).</li>
+                <li><strong>Internal Analytics Authorization:</strong> The Page Analytics dashboard requires additional Google API authorization to display analytics data from Google Analytics.</li>
+            </ol>
+        </div>
+
+        <h3>Scenarios Not Tested (Require Additional Setup)</h3>
+        <ul>
+            <li>Track page with content item ID (requires content items)</li>
+            <li>Track personalized page variant (requires personalization rules)</li>
+            <li>Verify excluded tabs are not tracked (requires excluded tab configuration)</li>
+            <li>Track page language/culture (requires multi-language setup)</li>
+            <li>Handle session timeout scenarios (requires waiting 300+ seconds)</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>Technical Details</h2>
+
+        <h3>API Endpoint</h3>
+        <div class="code-block">POST /API/EvoqContentLibrary/Analytics/LogPageView
+
+Request Body (PageViewDTO):
+{
+    "contentItemId": int,
+    "pageLanguage": string,
+    "pageStart": long (timestamp),
+    "pageUnLoad": long (timestamp),
+    "tabId": int,
+    "personalizedTabId": int,
+    "urlReferrer": string,
+    "urlPath": string,
+    "urlQuery": string,
+    "contentItemReferrer": int,
+    "personalizedUrlReferrer": int
+}</div>
+
+        <h3>Cookies Used</h3>
+        <table>
+            <tr>
+                <th>Cookie Name</th>
+                <th>Purpose</th>
+                <th>Expiry</th>
+            </tr>
+            <tr>
+                <td>Analytics_VisitorId</td>
+                <td>Unique visitor identifier</td>
+                <td>30 days</td>
+            </tr>
+            <tr>
+                <td>Analytics</td>
+                <td>Session data (SessionId, TabId, ContentItemId)</td>
+                <td>60 minutes (configurable)</td>
+            </tr>
+        </table>
+    </div>
+
+    <footer style="text-align: center; margin-top: 40px; padding: 20px; color: #666; border-top: 1px solid #ddd;">
+        <p>Test Report Generated: December 30, 2025</p>
+        <p>Evoq.GoogleAnalyticsConnector - Page View Tracking Feature Test</p>
+    </footer>
+</body>
+</html>

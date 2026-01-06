@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Sanitization Test Report - Evoq.Social.Wiki</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 30px;
+        }
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .header .meta {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+        .critical-banner {
+            background: linear-gradient(135deg, #c62828 0%, #d32f2f 100%);
+            color: white;
+            padding: 20px 30px;
+            font-size: 1.1em;
+        }
+        .critical-banner h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .critical-banner .icon {
+            font-size: 1.5em;
+        }
+        .content {
+            padding: 30px;
+        }
+        .summary-box {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 4px 4px 0;
+        }
+        .summary-box h3 {
+            color: #e65100;
+            margin-bottom: 15px;
+        }
+        .summary-box ul {
+            list-style: none;
+            padding: 0;
+        }
+        .summary-box li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ffe0b2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .summary-box li:last-child {
+            border-bottom: none;
+        }
+        .status-pass {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        .status-fail {
+            color: #c62828;
+            font-weight: bold;
+        }
+        .status-critical {
+            background: #c62828;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .test-scenario {
+            margin-bottom: 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .test-scenario-header {
+            background: #f5f5f5;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .test-scenario-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .test-scenario-header.pass {
+            border-left: 4px solid #4caf50;
+        }
+        .test-scenario-header.fail {
+            border-left: 4px solid #c62828;
+        }
+        .test-scenario-body {
+            padding: 20px;
+        }
+        .test-scenario-body h4 {
+            color: #1a237e;
+            margin: 15px 0 10px 0;
+        }
+        .test-scenario-body p {
+            margin-bottom: 10px;
+        }
+        .steps-list {
+            background: #fafafa;
+            padding: 15px 15px 15px 35px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        .steps-list li {
+            padding: 5px 0;
+        }
+        .screenshot {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        .code-block {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .code-block .comment {
+            color: #78909c;
+        }
+        .code-block .danger {
+            color: #ef5350;
+        }
+        .vulnerability-details {
+            background: #ffebee;
+            border: 1px solid #ef9a9a;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .vulnerability-details h4 {
+            color: #c62828;
+            margin-bottom: 15px;
+        }
+        .recommendation {
+            background: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .recommendation h4 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #fafafa;
+        }
+        .footer {
+            background: #f5f5f5;
+            padding: 20px 30px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            border-top: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Content Sanitization Test Report</h1>
+            <div class="meta">
+                <p><strong>Extension:</strong> Evoq.Social.Wiki (Module)</p>
+                <p><strong>Feature:</strong> Content Sanitization - Filter and sanitize user-generated content to prevent XSS and malicious content</p>
+                <p><strong>Feature Priority:</strong> Top</p>
+                <p><strong>Test Date:</strong> December 30, 2025</p>
+                <p><strong>Tester:</strong> Automated Test Suite</p>
+            </div>
+        </div>
+
+        <div class="critical-banner">
+            <h2><span class="icon">&#9888;</span> CRITICAL SECURITY VULNERABILITY FOUND</h2>
+            <p>XSS attack via <code>onerror</code> event handler on &lt;img&gt; tags is NOT being sanitized. Stored XSS vulnerability confirmed.</p>
+        </div>
+
+        <div class="content">
+            <div class="summary-box">
+                <h3>Test Summary</h3>
+                <ul>
+                    <li><span class="status-pass">&#10004;</span> Script tag filtering - PASS</li>
+                    <li><span class="status-critical">&#10008; CRITICAL</span> Event handler XSS (onerror) - FAIL - JavaScript executed!</li>
+                    <li><span class="status-pass">&#10004;</span> iframe filtering - PASS</li>
+                    <li><span class="status-pass">&#10004;</span> JavaScript URL filtering - PASS</li>
+                    <li><span class="status-pass">&#10004;</span> body onload filtering - PASS</li>
+                    <li><span class="status-pass">&#10004;</span> onclick event filtering - PASS</li>
+                    <li><span class="status-pass">&#10004;</span> SVG onload filtering - PASS</li>
+                    <li><span class="status-pass">&#10004;</span> Allowed HTML preservation - PASS</li>
+                    <li><span class="status-pass">&#10004;</span> SQL injection prevention - PASS</li>
+                </ul>
+            </div>
+
+            <h2>Code Analysis</h2>
+            <p>The content sanitization feature is implemented in the following files:</p>
+            <ul>
+                <li><strong>ContentController.cs</strong> - Main sanitization logic using <code>Utilities.FilterMaliciousTags()</code></li>
+                <li><strong>ArticleController.cs</strong> - Data persistence layer with parameterized queries</li>
+            </ul>
+
+            <p>Key sanitization methods identified:</p>
+            <div class="code-block">
+<span class="comment">// In ContentController.cs - Publish method (lines 174-178)</span>
+document.Content = Utilities.FilterMaliciousTags(document.Content, GetEditorConfiguration());
+document.Title = Utilities.SanitizeInput(document.Title);
+document.Summary = Utilities.FilterMaliciousTags(document.Summary, GetEditorConfiguration());
+            </div>
+
+            <!-- Test Scenario 1: XSS Prevention -->
+            <div class="test-scenario">
+                <div class="test-scenario-header fail">
+                    <h3><span class="status-critical">&#10008; CRITICAL FAIL</span> Test 1: XSS Prevention (Event Handlers)</h3>
+                </div>
+                <div class="test-scenario-body">
+                    <h4>Test Description</h4>
+                    <p>Test whether malicious JavaScript in event handlers is properly sanitized.</p>
+
+                    <h4>Test Payload</h4>
+                    <div class="code-block">
+<span class="danger">&lt;img src="x" onerror="alert('XSS Attack 2')"&gt;</span>
+                    </div>
+
+                    <h4>Steps Taken</h4>
+                    <ol class="steps-list">
+                        <li>Navigated to Wiki module at /Community/Wiki</li>
+                        <li>Created new article "XSS Sanitization Test Article"</li>
+                        <li>Entered XSS payload in article content</li>
+                        <li>Published the article</li>
+                        <li>Observed JavaScript alert dialog appeared</li>
+                    </ol>
+
+                    <h4>Result</h4>
+                    <div class="vulnerability-details">
+                        <h4>VULNERABILITY CONFIRMED</h4>
+                        <p><strong>Issue:</strong> When the article was published, an alert dialog appeared with "XSS Attack 2", proving the <code>onerror</code> event handler was NOT sanitized.</p>
+                        <p><strong>Attack Vector:</strong> <code>&lt;img src="x" onerror="..."&gt;</code></p>
+                        <p><strong>Impact:</strong> Stored XSS - Any user viewing the article will have malicious JavaScript executed in their browser context.</p>
+                        <p><strong>Severity:</strong> CRITICAL - Allows session hijacking, credential theft, malware distribution, and defacement.</p>
+                    </div>
+
+                    <div class="screenshot">
+                        <img src="Content_Sanitization_step07_xss_payload_entered.png" alt="XSS Payload Entered">
+                        <p class="screenshot-caption">Figure 1: XSS payload entered in article editor</p>
+                    </div>
+
+                    <div class="screenshot">
+                        <img src="Content_Sanitization_step09_article_created.png" alt="Article Created - After XSS Alert">
+                        <p class="screenshot-caption">Figure 2: Article after XSS alert was dismissed (JavaScript executed!)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Scenario 2: Script Tag Filtering -->
+            <div class="test-scenario">
+                <div class="test-scenario-header pass">
+                    <h3><span class="status-pass">&#10004; PASS</span> Test 2: Script Tag Filtering</h3>
+                </div>
+                <div class="test-scenario-body">
+                    <h4>Test Description</h4>
+                    <p>Test whether &lt;script&gt; tags are properly removed from content.</p>
+
+                    <h4>Test Payload</h4>
+                    <div class="code-block">
+&lt;script&gt;alert('XSS Attack 1')&lt;/script&gt;
+                    </div>
+
+                    <h4>Result</h4>
+                    <p class="status-pass">PASS - Script tags were completely removed from the content. No JavaScript execution occurred from script tags.</p>
+                </div>
+            </div>
+
+            <!-- Test Scenario 3: iframe Filtering -->
+            <div class="test-scenario">
+                <div class="test-scenario-header pass">
+                    <h3><span class="status-pass">&#10004; PASS</span> Test 3: iframe Filtering</h3>
+                </div>
+                <div class="test-scenario-body">
+                    <h4>Test Description</h4>
+                    <p>Test whether &lt;iframe&gt; tags are properly removed based on editor configuration.</p>
+
+                    <h4>Test Payload</h4>
+                    <div class="code-block">
+&lt;iframe src="http://evil.com"&gt;&lt;/iframe&gt;
+                    </div>
+
+                    <h4>Result</h4>
+                    <p class="status-pass">PASS - iframe tags were removed from the content. The EditorConfiguration.AllowIframe setting is properly enforced.</p>
+                </div>
+            </div>
+
+            <!-- Test Scenario 4: JavaScript URL Filtering -->
+            <div class="test-scenario">
+                <div class="test-scenario-header pass">
+                    <h3><span class="status-pass">&#10004; PASS</span> Test 4: JavaScript URL Filtering</h3>
+                </div>
+                <div class="test-scenario-body">
+                    <h4>Test Description</h4>
+                    <p>Test whether javascript: protocol URLs are sanitized.</p>
+
+                    <h4>Test Payload</h4>
+                    <div class="code-block">
+&lt;a href="javascript:alert('XSS Attack 4')"&gt;Click me&lt;/a&gt;
+                    </div>
+
+                    <h4>Result</h4>
+                    <p class="status-pass">PASS - JavaScript URLs were sanitized to href="#". The link text was preserved but the malicious href was neutralized.</p>
+                </div>
+            </div>
+
+            <!-- Test Scenario 5: body onload Filtering -->
+            <div class="test-scenario">
+                <div class="test-scenario-header pass">
+                    <h3><span class="status-pass">&#10004; PASS</span> Test 5: body onload Filtering</h3>
+                </div>
+                <div class="test-scenario-body">
+                    <h4>Test Description</h4>
+                    <p>Test whether body tags with onload events are filtered.</p>
+
+                    <h4>Test Payload</h4>
+                    <div class="code-block">
+&lt;body onload="alert('XSS Attack 5')"&gt;
+                    </div>
+
+                    <h4>Result</h4>
+                    <p class="status-pass">PASS - The body tag with onload event was removed. No JavaScript executed from this vector.</p>
+                </div>
+            </div>
+
+            <!-- Test Scenario 6: onclick Event Filtering -->
+            <div class="test-scenario">
+                <div class="test-scenario-header pass">
+                    <h3><span class="status-pass">&#10004; PASS</span> Test 6: onclick Event Filtering</h3>
+                </div>
+                <div class="test-scenario-body">
+                    <h4>Test Description</h4>
+                    <p>Test whether onclick event handlers are filtered.</p>
+
+                    <h4>Test Payload</h4>
+                    <div class="code-block">
+&lt;div onclick="alert('XSS Attack 6')"&gt;Click me&lt;/div&gt;
+                    </div>
+
+                    <h4>Result</h4>
+                    <p class="status-pass">PASS - The onclick event handler was removed. The div content was preserved but the event was stripped.</p>
+                </div>
+            </div>
+
+            <!-- Test Scenario 7: SVG onload Filtering -->
+            <div class="test-scenario">
+                <div class="test-scenario-header pass">
+                    <h3><span class="status-pass">&#10004; PASS</span> Test 7: SVG onload Filtering</h3>
+                </div>
+                <div class="test-scenario-body">
+                    <h4>Test Description</h4>
+                    <p>Test whether SVG elements with onload events are handled.</p>
+
+                    <h4>Test Payload</h4>
+                    <div class="code-block">
+&lt;svg onload="alert('XSS Attack 7')"&gt;&lt;/svg&gt;
+                    </div>
+
+                    <h4>Result</h4>
+                    <p class="status-pass">PASS - SVG element was converted to an img tag, neutralizing the onload event.</p>
+                </div>
+            </div>
+
+            <!-- Test Scenario 8: Allowed HTML Preservation -->
+            <div class="test-scenario">
+                <div class="test-scenario-header pass">
+                    <h3><span class="status-pass">&#10004; PASS</span> Test 8: Allowed HTML Preservation</h3>
+                </div>
+                <div class="test-scenario-body">
+                    <h4>Test Description</h4>
+                    <p>Test whether safe HTML elements are preserved in content.</p>
+
+                    <h4>Test Content</h4>
+                    <div class="code-block">
+&lt;p&gt;&lt;strong&gt;Bold text&lt;/strong&gt;, &lt;em&gt;italic text&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;&lt;li&gt;List item 1&lt;/li&gt;&lt;li&gt;List item 2&lt;/li&gt;&lt;/ul&gt;
+                    </div>
+
+                    <h4>Result</h4>
+                    <p class="status-pass">PASS - Safe HTML elements (p, strong, em, ul, li) were preserved in the content.</p>
+
+                    <div class="screenshot">
+                        <img src="Content_Sanitization_step10_wiki_with_test_article.png" alt="Wiki with Test Article">
+                        <p class="screenshot-caption">Figure 3: Wiki page showing the test article with preserved formatting</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Scenario 9: SQL Injection Prevention -->
+            <div class="test-scenario">
+                <div class="test-scenario-header pass">
+                    <h3><span class="status-pass">&#10004; PASS</span> Test 9: SQL Injection Prevention</h3>
+                </div>
+                <div class="test-scenario-body">
+                    <h4>Test Description</h4>
+                    <p>Test whether SQL injection attacks are prevented in search functionality.</p>
+
+                    <h4>Test Payload</h4>
+                    <div class="code-block">
+'; DROP TABLE Articles; --
+                    </div>
+
+                    <h4>Steps Taken</h4>
+                    <ol class="steps-list">
+                        <li>Entered SQL injection payload in the Wiki search field</li>
+                        <li>Clicked "Search articles" button</li>
+                        <li>Observed normal search results were returned</li>
+                        <li>Verified database tables were not affected</li>
+                    </ol>
+
+                    <h4>Result</h4>
+                    <p class="status-pass">PASS - The SQL injection payload was treated as literal search text. The DataService layer uses parameterized queries, preventing SQL injection attacks.</p>
+
+                    <div class="screenshot">
+                        <img src="Content_Sanitization_step11_sql_injection_test.png" alt="SQL Injection Test">
+                        <p class="screenshot-caption">Figure 4: SQL injection payload treated as normal search text - 13 results returned</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <h2>Recommendations</h2>
+            <div class="recommendation">
+                <h4>Critical Fix Required</h4>
+                <p>The <code>Utilities.FilterMaliciousTags()</code> method must be updated to sanitize ALL event handlers, including:</p>
+                <ul style="margin: 15px 0 15px 20px;">
+                    <li><code>onerror</code></li>
+                    <li><code>onload</code> (on img, body, iframe, etc.)</li>
+                    <li><code>onmouseover</code>, <code>onmouseout</code></li>
+                    <li><code>onfocus</code>, <code>onblur</code></li>
+                    <li><code>oninput</code>, <code>onchange</code></li>
+                    <li>All other JavaScript event handlers</li>
+                </ul>
+                <p><strong>Suggested approach:</strong> Use a whitelist approach where only explicitly allowed attributes are preserved, rather than a blacklist approach that tries to remove known dangerous attributes.</p>
+                <div class="code-block">
+<span class="comment">// Recommended: Strip ALL on* attributes from all elements</span>
+foreach (var element in doc.DocumentNode.Descendants())
+{
+    var attributesToRemove = element.Attributes
+        .Where(a => a.Name.StartsWith("on", StringComparison.OrdinalIgnoreCase))
+        .ToList();
+
+    foreach (var attr in attributesToRemove)
+    {
+        attr.Remove();
+    }
+}
+                </div>
+            </div>
+
+            <!-- Test Environment Details -->
+            <h2>Test Environment</h2>
+            <table>
+                <tr>
+                    <th>Component</th>
+                    <th>Details</th>
+                </tr>
+                <tr>
+                    <td>Website URL</td>
+                    <td>http://localhost:8081</td>
+                </tr>
+                <tr>
+                    <td>Test Account</td>
+                    <td>host (SuperUser)</td>
+                </tr>
+                <tr>
+                    <td>Module Location</td>
+                    <td>/Community/Wiki</td>
+                </tr>
+                <tr>
+                    <td>Browser Viewport</td>
+                    <td>1920x1080</td>
+                </tr>
+                <tr>
+                    <td>Relevant Files</td>
+                    <td>
+                        DesktopModules/DNNCorp/Wiki/Services/ContentController.cs<br>
+                        DesktopModules/DNNCorp/Wiki/Components/Controllers/ArticleController.cs
+                    </td>
+                </tr>
+            </table>
+
+            <!-- All Screenshots -->
+            <h2>Test Evidence (All Screenshots)</h2>
+
+            <div class="screenshot">
+                <img src="Content_Sanitization_step01_homepage.png" alt="Homepage">
+                <p class="screenshot-caption">Step 1: Initial navigation to DNN homepage</p>
+            </div>
+
+            <div class="screenshot">
+                <img src="Content_Sanitization_step02_login_page.png" alt="Login Page">
+                <p class="screenshot-caption">Step 2: Login page</p>
+            </div>
+
+            <div class="screenshot">
+                <img src="Content_Sanitization_step03_logged_in.png" alt="Logged In">
+                <p class="screenshot-caption">Step 3: Successfully logged in as SuperUser</p>
+            </div>
+
+            <div class="screenshot">
+                <img src="Content_Sanitization_step04_wiki_page.png" alt="Wiki Page">
+                <p class="screenshot-caption">Step 4: Wiki module page</p>
+            </div>
+
+            <div class="screenshot">
+                <img src="Content_Sanitization_step05_wiki_clean.png" alt="Wiki Clean">
+                <p class="screenshot-caption">Step 5: Wiki page ready for testing</p>
+            </div>
+
+            <div class="screenshot">
+                <img src="Content_Sanitization_step06_create_article_dialog.png" alt="Create Article Dialog">
+                <p class="screenshot-caption">Step 6: Create article dialog</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Generated by Automated Test Suite | Evoq.Social.Wiki Content Sanitization Test</p>
+            <p>Feature 24 of 24 | Priority: Top | Extension Priority: High</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,451 @@
+{
+  "extension": {
+    "name": "Evoq.Social.Answers",
+    "priority": "Medium",
+    "repo": "Dnn.Evoq.Social",
+    "extension_type": "Module"
+  },
+  "features": [
+    {
+      "name": "Question Creation and Management",
+      "description": "Create, edit, delete, and view questions with title, body, and tags",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Services/EditController.cs",
+        "DesktopModules/DNNCorp/Answers/Controls/AskQuestion.ascx",
+        "DesktopModules/DNNCorp/Answers/Components/Controllers/AnswersController.cs",
+        "DesktopModules/DNNCorp/Answers/EditPost.ascx"
+      ],
+      "ui_location": "Module View > Ask Question button",
+      "test_scenarios": [
+        "Create new question with title and body",
+        "Edit existing question",
+        "Delete own question",
+        "Delete question as moderator",
+        "Add tags to question",
+        "Close/Lock question",
+        "Validate required fields",
+        "Test HTML content filtering",
+        "Test profanity filter"
+      ],
+      "dependencies": [
+        "User Authentication",
+        "Content Moderation"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Answer Submission",
+      "description": "Submit answers to questions and manage answer content",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Services/EditController.cs",
+        "DesktopModules/DNNCorp/Answers/DetailView.ascx",
+        "DesktopModules/DNNCorp/Answers/Components/Controllers/AnswersController.cs"
+      ],
+      "ui_location": "Question Detail View > Answer section",
+      "test_scenarios": [
+        "Submit answer to question",
+        "Edit own answer",
+        "Delete own answer",
+        "Submit multiple answers",
+        "Answer closed question (should fail)",
+        "Test answer length limits",
+        "Test HTML content in answers"
+      ],
+      "dependencies": [
+        "Question Creation"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Best Answer Selection",
+      "description": "Mark an answer as the accepted/best answer for a question",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Services/DetailController.cs",
+        "DesktopModules/DNNCorp/Answers/DetailView.ascx",
+        "DesktopModules/DNNCorp/Answers/Components/Controllers/AnswersController.cs"
+      ],
+      "ui_location": "Question Detail View > Answer > Accept Answer button",
+      "test_scenarios": [
+        "Accept answer as question author",
+        "Change accepted answer",
+        "Remove accepted answer",
+        "Non-author cannot accept answer",
+        "Visual indication of accepted answer"
+      ],
+      "dependencies": [
+        "Answer Submission"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Voting System",
+      "description": "Upvote and downvote questions and answers to indicate quality",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Services/DetailController.cs",
+        "DesktopModules/DNNCorp/Answers/Components/Controllers/AnswersController.cs",
+        "DesktopModules/DNNCorp/Answers/Components/Entities/VoteInfo.cs"
+      ],
+      "ui_location": "Question/Answer View > Vote arrows",
+      "test_scenarios": [
+        "Upvote question",
+        "Downvote question",
+        "Upvote answer",
+        "Downvote answer",
+        "Change vote",
+        "Remove vote",
+        "Cannot vote on own content",
+        "Vote count updates",
+        "Vote details for moderators"
+      ],
+      "dependencies": [
+        "User Authentication"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Comment System",
+      "description": "Add comments to questions and answers for clarification",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Components/Events/AnswerCommentEventsManager.cs",
+        "DesktopModules/DNNCorp/Answers/Components/Events/QuestionCommentEventsManager.cs",
+        "DesktopModules/DNNCorp/Answers/DetailView.ascx"
+      ],
+      "ui_location": "Question/Answer View > Add Comment link",
+      "test_scenarios": [
+        "Add comment to question",
+        "Add comment to answer",
+        "Edit own comment",
+        "Delete own comment",
+        "Comment character limit",
+        "Comment notification",
+        "Moderator delete any comment"
+      ],
+      "dependencies": [
+        "Question Creation",
+        "Answer Submission"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Search and Filtering",
+      "description": "Search questions and filter by various criteria including tags and categories",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Services/ListController.cs",
+        "DesktopModules/DNNCorp/Answers/ListView.ascx",
+        "DesktopModules/DNNCorp/Answers/Search.ascx",
+        "DesktopModules/DNNCorp/Answers/Components/Controllers/AnswersController.cs"
+      ],
+      "ui_location": "Module View > Search box and filter controls",
+      "test_scenarios": [
+        "Search by keyword",
+        "Filter by tags",
+        "Filter by answered/unanswered",
+        "Filter by date range",
+        "Sort by date/votes/activity",
+        "Pagination of results",
+        "Search within specific category",
+        "No results message"
+      ],
+      "dependencies": [
+        "Question Creation"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Tag Management",
+      "description": "Add, edit, and remove tags from questions for categorization",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Services/EditController.cs",
+        "DesktopModules/DNNCorp/Answers/Components/Controllers/AnswersController.cs",
+        "DesktopModules/DNNCorp/Answers/ListView.ascx"
+      ],
+      "ui_location": "Question Create/Edit > Tags field",
+      "test_scenarios": [
+        "Add tags to new question",
+        "Edit tags on existing question",
+        "Tag autocomplete",
+        "Tag validation",
+        "Maximum tags per question",
+        "Filter questions by tag",
+        "Popular tags display"
+      ],
+      "dependencies": [
+        "DNN Taxonomy System"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Content Moderation",
+      "description": "Approve, reject, or moderate user-submitted content before publication",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Services/NotificationServiceController.cs",
+        "DesktopModules/DNNCorp/Answers/Components/Controllers/AnswersController.cs",
+        "DesktopModules/DNNCorp/Answers/Services/EditController.cs"
+      ],
+      "ui_location": "Admin > Moderation Queue",
+      "test_scenarios": [
+        "Approve pending question",
+        "Reject pending question",
+        "Approve pending answer",
+        "Edit and approve content",
+        "Bulk moderation actions",
+        "Moderation notifications",
+        "Auto-approve for privileged users"
+      ],
+      "dependencies": [
+        "User Permissions",
+        "Notification System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "User Activity Tracking",
+      "description": "View user's questions and answers in dedicated sections",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/ListView.ascx",
+        "DesktopModules/DNNCorp/Answers/Components/Controllers/AnswersController.cs",
+        "DesktopModules/DNNCorp/Answers/Services/ListController.cs"
+      ],
+      "ui_location": "Module View > My Questions/My Answers tabs",
+      "test_scenarios": [
+        "View own questions",
+        "View own answers",
+        "Filter own content",
+        "Sort own content",
+        "View other user's profile",
+        "Activity count accuracy",
+        "Private content visibility"
+      ],
+      "dependencies": [
+        "User Authentication"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Subscription and Notifications",
+      "description": "Subscribe to questions and receive notifications for updates",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Services/SocialController.cs",
+        "DesktopModules/DNNCorp/Answers/Subscribe.ascx",
+        "DesktopModules/DNNCorp/Answers/Components/Integration/Notifications.cs"
+      ],
+      "ui_location": "Question Detail > Subscribe button",
+      "test_scenarios": [
+        "Subscribe to question",
+        "Unsubscribe from question",
+        "Receive answer notification",
+        "Receive comment notification",
+        "Email notifications",
+        "In-app notifications",
+        "Notification preferences",
+        "Bulk unsubscribe"
+      ],
+      "dependencies": [
+        "DNN Notification System",
+        "Email Service"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Content Exchange",
+      "description": "Move or copy questions and answers between different modules or convert to different content types",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Services/ContentExchangeController.cs",
+        "DesktopModules/DNNCorp/Answers/Components/Controllers/ContentExchangeController.cs"
+      ],
+      "ui_location": "Admin > Content Management > Move/Copy",
+      "test_scenarios": [
+        "Move question to another module",
+        "Copy question to another module",
+        "Convert answer to comment",
+        "Convert comment to answer",
+        "Move with comments preserved",
+        "Move with votes preserved",
+        "Cross-portal operations",
+        "Permissions after move"
+      ],
+      "dependencies": [
+        "Admin Permissions",
+        "Multiple Modules"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Journal Integration",
+      "description": "Post questions and answers to the activity journal/feed",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Components/Integration/Journal.cs",
+        "DesktopModules/DNNCorp/Answers/Services/EditController.cs"
+      ],
+      "ui_location": "Automatic - Activity Stream",
+      "test_scenarios": [
+        "Question appears in journal",
+        "Answer appears in journal",
+        "Journal entry links to content",
+        "Privacy settings respected",
+        "Delete journal on content delete",
+        "Group-specific journal entries"
+      ],
+      "dependencies": [
+        "DNN Journal/Activity Stream"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Revision Tracking",
+      "description": "Track edit history and revisions of questions and answers",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Components/Controllers/AnswersController.cs",
+        "DesktopModules/DNNCorp/Answers/Services/EditController.cs"
+      ],
+      "ui_location": "Question/Answer Detail > Edit History",
+      "test_scenarios": [
+        "View revision history",
+        "Compare revisions",
+        "Restore previous revision",
+        "Track editor information",
+        "Revision timestamps",
+        "Revision count limits"
+      ],
+      "dependencies": [
+        "Evoq Revisions Module"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Report Inappropriate Content",
+      "description": "Allow users to report questions, answers, or comments as inappropriate",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Services/ReportController.cs",
+        "DesktopModules/DNNCorp/Answers/DetailView.ascx"
+      ],
+      "ui_location": "Question/Answer View > Report link",
+      "test_scenarios": [
+        "Report question",
+        "Report answer",
+        "Report comment",
+        "Provide reason for report",
+        "Moderator review reports",
+        "Auto-hide after threshold",
+        "Report notifications to moderators"
+      ],
+      "dependencies": [
+        "Moderation System"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Module Settings",
+      "description": "Configure module-specific settings for the Answers module",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Settings.ascx",
+        "DesktopModules/DNNCorp/Answers/Settings.ascx.cs",
+        "DesktopModules/DNNCorp/Answers/Components/Entities/SettingInfo.cs"
+      ],
+      "ui_location": "Module Actions > Settings",
+      "test_scenarios": [
+        "Change filter mode",
+        "Configure moderation settings",
+        "Set display options",
+        "Configure permissions",
+        "Save settings",
+        "Settings persistence",
+        "Default settings"
+      ],
+      "dependencies": [
+        "Module Administration"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Sitemap Integration",
+      "description": "Include questions in the site's XML sitemap for search engine indexing",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Providers/Sitemap/Question.cs",
+        "DesktopModules/DNNCorp/Answers/Components/Controllers/AnswersController.cs"
+      ],
+      "ui_location": "Automatic - /sitemap.xml",
+      "test_scenarios": [
+        "Questions appear in sitemap",
+        "Only approved questions included",
+        "Correct URLs in sitemap",
+        "Update frequency accuracy",
+        "Private questions excluded"
+      ],
+      "dependencies": [
+        "DNN Sitemap Provider"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "User Mentions",
+      "description": "Mention other users in questions, answers, and comments using @username",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Services/EditController.cs",
+        "DesktopModules/DNNCorp/Answers/Components/Controllers/AnswersController.cs"
+      ],
+      "ui_location": "Content editor > @mention",
+      "test_scenarios": [
+        "Mention user in question",
+        "Mention user in answer",
+        "Mention autocomplete",
+        "Mention notification sent",
+        "Invalid mention handling",
+        "Multiple mentions",
+        "Mention link to profile"
+      ],
+      "dependencies": [
+        "User System",
+        "Notification System"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Scoring and Reputation",
+      "description": "Track user reputation points based on Q&A activity",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Services/EditController.cs",
+        "DesktopModules/DNNCorp/Answers/Services/DetailController.cs"
+      ],
+      "ui_location": "User Profile > Reputation Score",
+      "test_scenarios": [
+        "Points for asking question",
+        "Points for answering",
+        "Points for accepted answer",
+        "Points for upvotes received",
+        "Points deducted for downvotes",
+        "Reputation display",
+        "Leaderboard functionality"
+      ],
+      "dependencies": [
+        "DNN Social Mechanics",
+        "User Profiles"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Zendesk Integration",
+      "description": "Create support tickets in Zendesk from unanswered questions",
+      "files": [
+        "DesktopModules/DNNCorp/Answers/Components/Integration/ZendeskTicketCreationController.cs",
+        "DesktopModules/DNNCorp/Answers/Components/Integration/AnswersZendeskTicketCreationEntity.cs"
+      ],
+      "ui_location": "Admin > Zendesk Integration",
+      "test_scenarios": [
+        "Create ticket from question",
+        "Sync status updates",
+        "Map fields correctly",
+        "Handle API errors",
+        "Authentication test",
+        "Bulk ticket creation"
+      ],
+      "dependencies": [
+        "Zendesk API",
+        "Admin Permissions"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:42:02.132470",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

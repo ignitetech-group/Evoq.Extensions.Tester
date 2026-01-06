@@ -1,0 +1,487 @@
+{
+  "extension": {
+    "name": "Evoq.Social.ActivityStream",
+    "priority": "High",
+    "repo": "Dnn.Evoq.Social",
+    "extension_type": "Module"
+  },
+  "features": [
+    {
+      "name": "Post Creation and Management",
+      "description": "Create, edit, and manage activity stream posts with various content types and privacy settings",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx",
+        "DesktopModules/DNNCorp/ActivityStream/Components/Controllers/ActivityStreamController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/Components/Entities/ActivityStreamItem.cs"
+      ],
+      "ui_location": "User Profile > Activity Stream > Create Post",
+      "test_scenarios": [
+        "Create text-only post",
+        "Create post with emoji",
+        "Create post with different privacy levels (Everyone, Community, Friends, Private)",
+        "Create post with maximum character limit",
+        "Verify post appears in correct feed",
+        "Edit existing post",
+        "Verify HTML sanitization",
+        "Create post with special characters"
+      ],
+      "dependencies": [
+        "Social Library",
+        "User Profile"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Commenting System",
+      "description": "Add, edit, and delete comments on activity stream posts with support for attachments and mentions",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx",
+        "DesktopModules/DNNCorp/ActivityStream/Components/Controllers/ActivityStreamController.cs"
+      ],
+      "ui_location": "Activity Stream > Post > Comments Section",
+      "test_scenarios": [
+        "Add comment to post",
+        "Add comment with emoji",
+        "Add comment with file attachment",
+        "Add comment with image attachment",
+        "Delete own comment",
+        "Delete comment as moderator",
+        "Add comment with user mention",
+        "Verify comment notification",
+        "Test comment maximum length",
+        "Add multiple comments rapidly"
+      ],
+      "dependencies": [
+        "Post Creation",
+        "User Mentions",
+        "Notification System"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Like/Unlike Functionality",
+      "description": "Like and unlike posts and comments in the activity stream",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx"
+      ],
+      "ui_location": "Activity Stream > Post > Like Button",
+      "test_scenarios": [
+        "Like a post",
+        "Unlike a previously liked post",
+        "Verify like count updates",
+        "Like own post",
+        "Like comment",
+        "Multiple users liking same post",
+        "Verify like notification"
+      ],
+      "dependencies": [
+        "Post Creation",
+        "Notification System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "File and Image Attachments",
+      "description": "Upload and manage file and image attachments in posts and comments",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx",
+        "DesktopModules/DNNCorp/ActivityStream/Settings.ascx"
+      ],
+      "ui_location": "Activity Stream > Create Post > Attachment Button",
+      "test_scenarios": [
+        "Upload single image",
+        "Upload multiple images",
+        "Upload document file",
+        "Upload file exceeding size limit",
+        "Upload unsupported file type",
+        "Delete attachment before posting",
+        "View attachment in post",
+        "Download attachment from post",
+        "Upload attachment in comment"
+      ],
+      "dependencies": [
+        "Post Creation",
+        "File Manager",
+        "Commenting System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "URL Preview",
+      "description": "Automatically generate rich previews for URLs shared in posts",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx"
+      ],
+      "ui_location": "Activity Stream > Create Post > URL Input",
+      "test_scenarios": [
+        "Preview valid URL",
+        "Preview multiple URLs in single post",
+        "Preview invalid URL",
+        "Preview URL with no metadata",
+        "Preview URL with images",
+        "Remove URL preview before posting",
+        "Preview URL from different domains"
+      ],
+      "dependencies": [
+        "Post Creation"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Post Subscription",
+      "description": "Subscribe to posts or walls to receive notifications of new activity",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx"
+      ],
+      "ui_location": "Activity Stream > Post > Subscribe Button",
+      "test_scenarios": [
+        "Subscribe to a post",
+        "Unsubscribe from a post",
+        "Subscribe to user's wall",
+        "Unsubscribe from user's wall",
+        "Receive notification on subscribed post activity",
+        "Verify subscription status persistence"
+      ],
+      "dependencies": [
+        "Post Creation",
+        "Notification System"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Post Pinning",
+      "description": "Pin important posts to the top of the activity stream (moderator feature)",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx"
+      ],
+      "ui_location": "Activity Stream > Post > Pin Button (Moderator Only)",
+      "test_scenarios": [
+        "Pin a post as moderator",
+        "Unpin a previously pinned post",
+        "Verify pinned post appears at top",
+        "Pin multiple posts",
+        "Attempt to pin as non-moderator",
+        "Verify pin status across page refresh"
+      ],
+      "dependencies": [
+        "Post Creation",
+        "User Permissions"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Post Deletion",
+      "description": "Soft delete and permanently delete posts from the activity stream",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx"
+      ],
+      "ui_location": "Activity Stream > Post > Delete Button",
+      "test_scenarios": [
+        "Soft delete own post",
+        "Permanently delete own post",
+        "Delete post as moderator",
+        "Attempt to delete other user's post",
+        "Verify deleted post is removed from feed",
+        "Delete post with comments",
+        "Delete post with attachments"
+      ],
+      "dependencies": [
+        "Post Creation",
+        "User Permissions"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Activity Stream Filtering",
+      "description": "Filter activity stream by various criteria and activity types",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityFilter.ascx",
+        "DesktopModules/DNNCorp/ActivityStream/ActivityFilterSettings.ascx",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx"
+      ],
+      "ui_location": "Activity Stream > Filter Options",
+      "test_scenarios": [
+        "Filter by activity type",
+        "Filter by date range",
+        "Filter by user",
+        "Filter by group",
+        "Apply multiple filters",
+        "Clear all filters",
+        "Save filter preferences",
+        "Filter persistence across sessions"
+      ],
+      "dependencies": [
+        "Post Creation"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "User Mentions",
+      "description": "Mention users in posts and comments using @ symbol",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx"
+      ],
+      "ui_location": "Activity Stream > Create Post > @ Mention",
+      "test_scenarios": [
+        "Mention single user in post",
+        "Mention multiple users in post",
+        "Mention user in comment",
+        "Auto-complete user mention",
+        "Mention non-existent user",
+        "Verify mention notification",
+        "Click on user mention link"
+      ],
+      "dependencies": [
+        "Post Creation",
+        "Commenting System",
+        "Notification System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Emoji Support",
+      "description": "Insert emojis in posts and comments using emoji panel",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx",
+        "DesktopModules/DNNCorp/ActivityStream/Settings.ascx"
+      ],
+      "ui_location": "Activity Stream > Create Post > Emoji Button",
+      "test_scenarios": [
+        "Insert emoji in post",
+        "Insert multiple emojis",
+        "Insert emoji in comment",
+        "Search for emoji",
+        "Switch emoji categories",
+        "Disable emoji panel in settings",
+        "Verify emoji display across browsers"
+      ],
+      "dependencies": [
+        "Post Creation",
+        "Commenting System"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Privacy Settings",
+      "description": "Control post visibility with different privacy levels",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx"
+      ],
+      "ui_location": "Activity Stream > Create Post > Privacy Dropdown",
+      "test_scenarios": [
+        "Create post with 'Everyone' privacy",
+        "Create post with 'Community' privacy",
+        "Create post with 'Friends' privacy",
+        "Create post with 'Private' privacy",
+        "Create post with 'Group Members' privacy",
+        "Verify post visibility for different user types",
+        "Change privacy after posting",
+        "Test privacy inheritance in comments"
+      ],
+      "dependencies": [
+        "Post Creation",
+        "User Relationships",
+        "Group Membership"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Profanity Filtering",
+      "description": "Automatically filter and moderate profane content in posts and comments",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/Settings.ascx",
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs"
+      ],
+      "ui_location": "Admin > Activity Stream Settings > Profanity Filter",
+      "test_scenarios": [
+        "Enable profanity filter",
+        "Post with profane content",
+        "Comment with profane content",
+        "Configure profanity word list",
+        "Test different profanity filter levels",
+        "Verify filter applies to user mentions",
+        "Test profanity in different languages"
+      ],
+      "dependencies": [
+        "Post Creation",
+        "Commenting System",
+        "Module Settings"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "RSS Feed",
+      "description": "Generate RSS feed for activity stream content",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx",
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs"
+      ],
+      "ui_location": "Activity Stream > RSS Feed Icon",
+      "test_scenarios": [
+        "Generate RSS feed for user profile",
+        "Generate RSS feed for group",
+        "Verify RSS feed format",
+        "Test RSS feed with filtered content",
+        "Verify feed updates with new posts",
+        "Test RSS feed permissions"
+      ],
+      "dependencies": [
+        "Post Creation",
+        "Activity Stream Filtering"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Pagination",
+      "description": "Load activity stream content in pages with 'Get More' and 'Show All' options",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx",
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs"
+      ],
+      "ui_location": "Activity Stream > Bottom > Get More Button",
+      "test_scenarios": [
+        "Load initial page of posts",
+        "Click 'Get More' to load next page",
+        "Click 'Show All' to load all posts",
+        "Verify correct number of posts per page",
+        "Test pagination with filters applied",
+        "Test pagination performance with large datasets",
+        "Verify scroll position after loading more"
+      ],
+      "dependencies": [
+        "Post Creation"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Notification System",
+      "description": "Receive notifications for various activity stream events",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/Components/Controllers/ActivityStreamController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs"
+      ],
+      "ui_location": "User Profile > Notifications",
+      "test_scenarios": [
+        "Receive notification for post comment",
+        "Receive notification for post like",
+        "Receive notification for user mention",
+        "Receive notification for subscribed post activity",
+        "Mark notification as read",
+        "Clear all notifications",
+        "Configure notification preferences",
+        "Test notification delivery methods"
+      ],
+      "dependencies": [
+        "Post Creation",
+        "Commenting System",
+        "Like Functionality",
+        "User Mentions"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Group Activity Stream",
+      "description": "View and manage activity stream specific to groups",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx"
+      ],
+      "ui_location": "Groups > Group Page > Activity Tab",
+      "test_scenarios": [
+        "View group-specific activity",
+        "Post to group activity stream",
+        "Verify group member-only visibility",
+        "Filter group activities",
+        "Moderate group posts as group admin",
+        "Test group activity with different group types",
+        "Leave group and verify access removal"
+      ],
+      "dependencies": [
+        "Group Management",
+        "Post Creation",
+        "Privacy Settings"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Profile Activity Stream",
+      "description": "View and manage activity stream on user profiles",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/ActivityStreamServicesController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx"
+      ],
+      "ui_location": "User Profile > Activity Tab",
+      "test_scenarios": [
+        "View own profile activity",
+        "View other user's profile activity",
+        "Post to own profile wall",
+        "Post to friend's profile wall",
+        "Verify profile privacy settings",
+        "Filter profile activities",
+        "Subscribe to user's profile wall"
+      ],
+      "dependencies": [
+        "User Profile",
+        "Post Creation",
+        "Privacy Settings"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Module Settings",
+      "description": "Configure activity stream module settings and behavior",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/Settings.ascx",
+        "DesktopModules/DNNCorp/ActivityStream/ActivityFilterSettings.ascx"
+      ],
+      "ui_location": "Admin > Activity Stream Module > Settings",
+      "test_scenarios": [
+        "Enable/disable file uploads",
+        "Enable/disable photo uploads",
+        "Enable/disable emoji panel",
+        "Configure maximum comment length",
+        "Configure activity stream filters",
+        "Save and apply settings",
+        "Verify settings persistence",
+        "Test settings inheritance"
+      ],
+      "dependencies": [
+        "Module Administration"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Activity Stream Grouping",
+      "description": "Group similar activities together in the stream",
+      "files": [
+        "DesktopModules/DNNCorp/ActivityStream/Components/Controllers/ActivityStreamController.cs",
+        "DesktopModules/DNNCorp/ActivityStream/View.ascx"
+      ],
+      "ui_location": "Activity Stream > Display Options",
+      "test_scenarios": [
+        "Group similar activities",
+        "Ungroup activities",
+        "Verify grouping logic",
+        "Test grouping with different activity types",
+        "Verify grouped activity count",
+        "Expand grouped activities"
+      ],
+      "dependencies": [
+        "Post Creation"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:42:48.075764",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

@@ -1,0 +1,168 @@
+{
+  "extension": {
+    "name": "Evoq.KayakoMessengerConnector",
+    "priority": "Medium",
+    "repo": "Dnn.Evoq.Basic",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "Kayako Brand Configuration",
+      "description": "Configure and validate the Kayako brand name for messenger integration through the Connectors settings interface.",
+      "files": [
+        "Evoq Content/Connectors/KayakoMessenger/Components/KayakoMessengerConnector.cs",
+        "Evoq Content/Connectors/KayakoMessenger/Components/Constants.cs",
+        "Evoq Content/Connectors/KayakoMessenger/Scripts/connector.js"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Kayako",
+      "test_scenarios": [
+        "Add valid Kayako brand name and verify it saves successfully",
+        "Add invalid brand name and verify validation error message appears",
+        "Clear existing brand name configuration and verify it saves as empty",
+        "Verify brand name is validated against Kayako API (https://{brandname}.kayako.com/api/v1/brands.json)",
+        "Test with special characters in brand name",
+        "Test with very long brand name",
+        "Test network timeout during validation (10 second timeout)"
+      ],
+      "dependencies": [
+        "Connectors Framework",
+        "Portal Settings"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Messenger Script Injection",
+      "description": "Automatically inject Kayako Messenger JavaScript widget on all public pages when configured.",
+      "files": [
+        "Evoq Content/Connectors/KayakoMessenger/HttpModules/KayakoMessengerModule.cs",
+        "Evoq Content/Connectors/KayakoMessenger/Components/Constants.cs"
+      ],
+      "ui_location": "Any public page (non-admin, non-host)",
+      "test_scenarios": [
+        "Verify script is injected on public pages when brand name is configured",
+        "Verify script is NOT injected on admin pages",
+        "Verify script is NOT injected on host pages",
+        "Verify script is NOT injected in Edit mode",
+        "Verify script is NOT injected in popup windows",
+        "Verify script is NOT injected when brand name is empty",
+        "Verify correct brand name is used in injected script URLs",
+        "Verify script includes correct Kayako API URL (https://{brandname}.kayako.com/api/v1)",
+        "Verify script includes correct messenger URL (https://{brandname}.kayakocdn.com/messenger)",
+        "Verify script includes correct realtime URL (wss://kre.kayako.net/socket)"
+      ],
+      "dependencies": [
+        "HTTP Module Registration",
+        "Portal Settings"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "HTTP Module Registration",
+      "description": "Register and unregister the Kayako HTTP module in web.config for script injection functionality.",
+      "files": [
+        "Evoq Content/Connectors/KayakoMessenger/KayakoMessenger.dnn",
+        "Evoq Content/Connectors/KayakoMessenger/HttpModules/KayakoMessengerModule.cs"
+      ],
+      "ui_location": "Extensions > Manage > Kayako Messenger Connector",
+      "test_scenarios": [
+        "Verify HTTP module is registered in web.config during installation",
+        "Verify HTTP module is registered in both system.web/httpModules and system.webServer/modules",
+        "Verify HTTP module is removed from web.config during uninstallation",
+        "Test module installation and verify it doesn't break other modules",
+        "Verify module handles errors gracefully without breaking page load"
+      ],
+      "dependencies": [
+        "DNN Module Installation Framework"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Connector Interface Implementation",
+      "description": "Implementation of IConnector interface for integration with Evoq Connectors framework.",
+      "files": [
+        "Evoq Content/Connectors/KayakoMessenger/Components/KayakoMessengerConnector.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors",
+      "test_scenarios": [
+        "Verify connector appears in Connectors list with correct name 'Kayako'",
+        "Verify connector icon displays correctly (Kayako.png)",
+        "Verify connector type is 'Marketing' category",
+        "Verify SupportsMultiple returns false (single instance only)",
+        "Verify HasConfig returns true when brand name is configured",
+        "Verify HasConfig returns false when brand name is empty",
+        "Test GetConfig returns correct brand name from portal settings",
+        "Test SaveConfig persists brand name to portal settings"
+      ],
+      "dependencies": [
+        "DotNetNuke.Services.Connections"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Localization Support",
+      "description": "Support for localized error messages and UI labels.",
+      "files": [
+        "Evoq Content/Connectors/KayakoMessenger/App_LocalResources/SharedResources.resx",
+        "Evoq Content/Connectors/KayakoMessenger/Components/KayakoMessengerConnector.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Kayako",
+      "test_scenarios": [
+        "Verify 'Brand Name' label displays correctly in UI",
+        "Verify 'The brand name is invalid.' error message displays for invalid brand",
+        "Test with different language settings if available",
+        "Verify resource file is properly deployed during installation"
+      ],
+      "dependencies": [
+        "DNN Localization Framework"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Module Package Installation",
+      "description": "DNN module package installation and deployment of connector files.",
+      "files": [
+        "Evoq Content/Connectors/KayakoMessenger/KayakoMessenger.dnn",
+        "Evoq Content/Connectors/KayakoMessenger/Module.build"
+      ],
+      "ui_location": "Host > Extensions > Install Extension",
+      "test_scenarios": [
+        "Install module package and verify all files are deployed",
+        "Verify Evoq.KayakoMessengerConnector.dll is deployed to bin folder",
+        "Verify RestSharp.dll dependency is deployed to bin folder",
+        "Verify Resources.zip contents are extracted correctly",
+        "Verify module requires CoreVersion 09.02.00 or higher",
+        "Verify module requires Evoq.Library 01.00.00 or higher",
+        "Test module upgrade from previous version",
+        "Test module uninstallation removes all files and settings"
+      ],
+      "dependencies": [
+        "Evoq.Library",
+        "RestSharp"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Messenger Widget Functionality",
+      "description": "The actual Kayako Messenger chat widget that appears on pages after configuration.",
+      "files": [
+        "Evoq Content/Connectors/KayakoMessenger/Components/Constants.cs"
+      ],
+      "ui_location": "Bottom-right corner of public pages (typical messenger position)",
+      "test_scenarios": [
+        "Verify messenger widget loads and displays on page",
+        "Test messenger widget can be opened and closed",
+        "Verify widget connects to correct Kayako brand instance",
+        "Test widget behavior with invalid brand name",
+        "Verify widget doesn't interfere with page functionality",
+        "Test widget appearance on mobile devices",
+        "Verify widget loads asynchronously without blocking page"
+      ],
+      "dependencies": [
+        "External Kayako Service"
+      ],
+      "priority": "High"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:19:49.511263",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

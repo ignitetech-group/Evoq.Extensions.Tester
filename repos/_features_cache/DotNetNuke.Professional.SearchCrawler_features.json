@@ -1,0 +1,479 @@
+{
+  "extension": {
+    "name": "DotNetNuke.Professional.SearchCrawler",
+    "priority": "High",
+    "repo": "Dnn.Evoq.Basic",
+    "extension_type": "Module"
+  },
+  "features": [
+    {
+      "name": "URL Crawling and Indexing",
+      "description": "Crawls and indexes web pages and URLs across portal sites for search functionality.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/SearchSpider.cs",
+        "Evoq Platform/Modules/SearchSpider/Spider.cs",
+        "Evoq Platform/Modules/SearchSpider/Indexers/UrlIndexer.cs",
+        "Evoq Platform/Modules/SearchSpider/WebRequestProvider.cs"
+      ],
+      "ui_location": "Admin > Schedule > SearchCrawler URL Spider",
+      "test_scenarios": [
+        "Start URL crawling scheduler task",
+        "Crawl single portal URLs",
+        "Crawl multi-portal URLs",
+        "Verify URL indexing with authentication",
+        "Test multi-threaded crawling performance",
+        "Verify duplicate URL detection",
+        "Test crawling with friendly URLs enabled",
+        "Verify sitemap-based crawling",
+        "Test crawling with excluded file extensions",
+        "Verify reindexing of changed pages"
+      ],
+      "dependencies": [
+        "DNN Scheduler",
+        "Search Index Service"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "File Crawling and Indexing",
+      "description": "Indexes files and documents in portal directories for search functionality with shallow and deep content extraction.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/FileCrawling/FileCrawler.cs",
+        "Evoq Platform/Modules/SearchSpider/FileCrawling/FileCrawlerController.cs",
+        "Evoq Platform/Modules/SearchSpider/FileCrawling/FileCrawlerHelper.cs",
+        "Evoq Platform/Modules/SearchSpider/FileCrawling/WebBasedFile.cs"
+      ],
+      "ui_location": "Admin > Schedule > SearchCrawler File Spider",
+      "test_scenarios": [
+        "Start file crawling scheduler task",
+        "Shallow index file metadata",
+        "Deep index document content with Full Trust",
+        "Test incremental indexing of changed files",
+        "Verify file extension filtering",
+        "Test directory inclusion/exclusion",
+        "Index PDF documents",
+        "Index Microsoft Office documents",
+        "Verify batch commit performance",
+        "Clean up deleted file indexes",
+        "Test image file indexing separately from documents"
+      ],
+      "dependencies": [
+        "DNN Scheduler",
+        "Search Index Service",
+        "File Manager"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "IFilter Document Content Extraction",
+      "description": "Extracts searchable content from documents using IFilter providers for PDF and Office files.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/IFilter/FilterReader.cs",
+        "Evoq Platform/Modules/SearchSpider/IFilter/DocxToText.cs",
+        "Evoq Platform/Modules/SearchSpider/Indexers/IFilterDocumentIndexer.cs",
+        "Evoq Platform/Modules/SearchSpider/Interfaces/IDocumentIndexer.cs"
+      ],
+      "ui_location": "Admin > Site Settings > Search > Document Indexing",
+      "test_scenarios": [
+        "Extract content from PDF files",
+        "Extract content from Word documents (.doc, .docx)",
+        "Extract content from Excel files (.xls, .xlsx)",
+        "Extract content from PowerPoint files (.ppt, .pptx)",
+        "Test IFilter provider configuration",
+        "Verify content extraction with special characters",
+        "Test extraction failure handling",
+        "Verify metadata extraction (author, title, keywords)"
+      ],
+      "dependencies": [
+        "Windows IFilter Components",
+        "Full Trust Environment"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Extension Management Administration",
+      "description": "Manages included and excluded file extensions for crawling and indexing operations.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/Services/SearchAdminServiceController.cs",
+        "Evoq Platform/Modules/SearchSpider/Services/SearchAdminExcludedExtensionsController.cs",
+        "Evoq Platform/Modules/SearchSpider/SearchSpiderHelper.cs"
+      ],
+      "ui_location": "Admin > Site Settings > Search > File Extensions",
+      "test_scenarios": [
+        "Add included file extension",
+        "Remove included file extension",
+        "Add excluded file extension",
+        "Remove excluded file extension",
+        "Verify host whitelist enforcement",
+        "Test duplicate extension prevention",
+        "Get list of IFilter-supported extensions",
+        "Test extension validation against whitelist",
+        "Verify portal-specific extension settings",
+        "Test extension case normalization"
+      ],
+      "dependencies": [
+        "Search Index Service"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Directory Management Administration",
+      "description": "Configures which directories to include or exclude from file crawling operations.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/Services/SearchAdminServiceController.cs",
+        "Evoq Platform/Modules/SearchSpider/SearchSpiderHelper.cs",
+        "Evoq Platform/Modules/SearchSpider/Exceptions/DirectoryIncludedException.cs",
+        "Evoq Platform/Modules/SearchSpider/Exceptions/DirectoryExcludedException.cs"
+      ],
+      "ui_location": "Admin > Site Settings > Search > Directories",
+      "test_scenarios": [
+        "Add included directory",
+        "Remove included directory",
+        "Add excluded directory",
+        "Remove excluded directory",
+        "Verify parent/child folder conflict prevention",
+        "Test duplicate directory prevention",
+        "Get list of included directories",
+        "Get list of excluded directories",
+        "Verify folder path resolution",
+        "Test automatic exclusion of Containers and Skins folders"
+      ],
+      "dependencies": [
+        "File Manager",
+        "Folder Permissions"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Search Result Display - Files",
+      "description": "Displays file search results with proper permission checking and URL generation.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/Results/FileResultController.cs",
+        "Evoq Platform/Modules/SearchSpider/Results/FileResultFilter.cs",
+        "Evoq Platform/Modules/SearchSpider/Results/BaseResultController.cs"
+      ],
+      "ui_location": "Site Search Results Page",
+      "test_scenarios": [
+        "Display file search results",
+        "Verify folder browse permissions",
+        "Verify folder view permissions",
+        "Test file URL generation",
+        "Handle missing file gracefully",
+        "Apply file result filters",
+        "Test localized result type names",
+        "Verify FileId-based result retrieval"
+      ],
+      "dependencies": [
+        "Search Results Module",
+        "File Manager",
+        "Folder Permissions"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Search Result Display - URLs",
+      "description": "Displays URL/page search results with proper tab permission checking.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/Results/UrlResultController.cs",
+        "Evoq Platform/Modules/SearchSpider/Results/BaseResultController.cs"
+      ],
+      "ui_location": "Site Search Results Page",
+      "test_scenarios": [
+        "Display URL search results",
+        "Verify tab view permissions",
+        "Filter deleted tabs from results",
+        "Test URL fallback to UniqueKey",
+        "Handle external links (TabId = 0)",
+        "Test localized result type names",
+        "Verify tab-based permission checking"
+      ],
+      "dependencies": [
+        "Search Results Module",
+        "Tab Permissions"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Image Search Results",
+      "description": "Specialized handling for image file search results with thumbnail generation.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/Results/ImageResultController.cs",
+        "Evoq Platform/Modules/SearchSpider/FileCrawling/FileCrawlerController.cs"
+      ],
+      "ui_location": "Site Search Results Page",
+      "test_scenarios": [
+        "Display image search results",
+        "Generate image thumbnails",
+        "Test image file type detection",
+        "Verify image permissions",
+        "Handle missing images gracefully",
+        "Test image URL generation"
+      ],
+      "dependencies": [
+        "Search Results Module",
+        "Image Processing"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Portal URL Configuration",
+      "description": "Manages portal-specific URLs and aliases for crawling operations.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/SearchSpiderHelper.cs",
+        "Evoq Platform/Modules/SearchSpider/SearchCrawlerPortalContext.cs"
+      ],
+      "ui_location": "Admin > Site Settings > Search > Portal URLs",
+      "test_scenarios": [
+        "Add portal URL for crawling",
+        "Remove portal URL",
+        "Auto-initialize primary portal alias",
+        "Test SSL detection for URLs",
+        "Get list of portal crawl URLs",
+        "Verify multi-portal URL management",
+        "Test portal ID resolution from URL"
+      ],
+      "dependencies": [
+        "Portal Aliases",
+        "Site Settings"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Windows Authentication for Crawling",
+      "description": "Configures Windows domain authentication for crawling protected resources.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/Spider.cs",
+        "Evoq Platform/Modules/SearchSpider/Indexers/UrlIndexer.cs",
+        "Evoq Platform/Modules/SearchSpider/SearchSpiderHelper.cs"
+      ],
+      "ui_location": "Admin > Schedule > SearchCrawler Settings",
+      "test_scenarios": [
+        "Configure Windows domain credentials",
+        "Test encrypted password storage",
+        "Verify password decryption",
+        "Crawl with Windows authentication",
+        "Test authentication failure handling",
+        "Verify credential passing to spider"
+      ],
+      "dependencies": [
+        "Windows Authentication",
+        "Credential Storage"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Sitemap Processing",
+      "description": "Processes XML sitemaps to seed URL crawling operations.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/Components/SitemapHelper.cs",
+        "Evoq Platform/Modules/SearchSpider/Spider.cs"
+      ],
+      "ui_location": "Admin > Site Settings > Search > Sitemap",
+      "test_scenarios": [
+        "Parse XML sitemap",
+        "Extract URLs from sitemap",
+        "Handle sitemap errors",
+        "Process sitemap index files",
+        "Test large sitemap handling",
+        "Verify URL extraction accuracy"
+      ],
+      "dependencies": [
+        "Sitemap Generation Module"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Duplicate URL Detection",
+      "description": "Prevents indexing duplicate content using regex patterns and URL normalization.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/Spider.cs",
+        "DesktopModules/DNNCorp/SearchCrawler/SearchSpiderDuplicatePatterns.xml"
+      ],
+      "ui_location": "Admin > Site Settings > Search > Duplicate Patterns",
+      "test_scenarios": [
+        "Test duplicate URL detection",
+        "Apply regex duplicate patterns",
+        "Handle linkclick.aspx URLs",
+        "Test URL normalization",
+        "Remove consecutive slashes",
+        "Verify pattern configuration loading",
+        "Test custom duplicate patterns"
+      ],
+      "dependencies": [
+        "URL Rewriting"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Scheduler Integration",
+      "description": "Integrates with DNN scheduler for automated crawling tasks.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/SearchSpider.cs",
+        "Evoq Platform/Modules/SearchSpider/FileCrawling/FileCrawler.cs",
+        "Evoq Platform/Modules/SearchSpider/SearchSpiderSettingsController.cs"
+      ],
+      "ui_location": "Admin > Schedule",
+      "test_scenarios": [
+        "Create URL spider schedule",
+        "Create file spider schedule",
+        "Configure schedule frequency",
+        "Test schedule execution",
+        "Verify schedule history logging",
+        "Handle schedule errors",
+        "Test schedule enable/disable",
+        "Verify progress reporting"
+      ],
+      "dependencies": [
+        "DNN Scheduler"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Search Index Batch Processing",
+      "description": "Optimizes indexing performance through batch commits and queuing.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/FileCrawling/FileCrawlerController.cs",
+        "Evoq Platform/Modules/SearchSpider/Indexers/UrlIndexer.cs"
+      ],
+      "ui_location": "Admin > Host Settings > Search",
+      "test_scenarios": [
+        "Configure batch commit size",
+        "Test batch queue processing",
+        "Verify commit performance",
+        "Handle batch overflow",
+        "Test partial batch commits",
+        "Verify index consistency after batch"
+      ],
+      "dependencies": [
+        "Search Index Service"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Multi-Threading Configuration",
+      "description": "Configures multi-threaded crawling for improved performance.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/Spider.cs",
+        "Evoq Platform/Modules/SearchSpider/SpiderFactory.cs"
+      ],
+      "ui_location": "Admin > Schedule > SearchCrawler Settings",
+      "test_scenarios": [
+        "Configure thread count",
+        "Test single-threaded crawling",
+        "Test multi-threaded crawling",
+        "Verify thread safety",
+        "Monitor thread performance",
+        "Handle thread exceptions"
+      ],
+      "dependencies": [
+        "Thread Pool"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "URL Rewriting Support",
+      "description": "Handles friendly URLs and URL rewriting during crawling operations.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/Components/UrlRewriter.cs",
+        "Evoq Platform/Modules/SearchSpider/Spider.cs"
+      ],
+      "ui_location": "Admin > Site Settings > SEO",
+      "test_scenarios": [
+        "Crawl with friendly URLs enabled",
+        "Test URL rewriting rules",
+        "Verify rewritten URL indexing",
+        "Handle URL parameters",
+        "Test custom rewrite patterns"
+      ],
+      "dependencies": [
+        "URL Rewriting Module"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Incremental Indexing",
+      "description": "Indexes only changed content since last crawl to improve performance.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/FileCrawling/FileCrawlerController.cs",
+        "Evoq Platform/Modules/SearchSpider/SearchCrawlerContext.cs"
+      ],
+      "ui_location": "Admin > Schedule > SearchCrawler File Spider",
+      "test_scenarios": [
+        "Track last crawl date",
+        "Identify changed files",
+        "Skip unchanged files",
+        "Verify SHA1 hash comparison",
+        "Test modification date detection",
+        "Handle clock skew issues"
+      ],
+      "dependencies": [
+        "File System Monitoring"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Full Trust Verification",
+      "description": "Verifies application has Full Trust for deep content indexing operations.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/SearchSpiderHelper.cs",
+        "Evoq Platform/Modules/SearchSpider/FileCrawling/FileCrawler.cs"
+      ],
+      "ui_location": "Admin > Host Settings > Security",
+      "test_scenarios": [
+        "Check Full Trust permission",
+        "Handle Medium Trust gracefully",
+        "Fallback to shallow indexing",
+        "Display trust level warnings",
+        "Test unmanaged code permission"
+      ],
+      "dependencies": [
+        ".NET Security Policy"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Localization Support",
+      "description": "Provides multi-language support for search crawler administration.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/LocalizationHelper.cs",
+        "DesktopModules/DNNCorp/SearchCrawler/App_LocalResources/SharedResources.resx"
+      ],
+      "ui_location": "Admin > Site Settings > Search",
+      "test_scenarios": [
+        "Display localized UI text",
+        "Test resource file loading",
+        "Verify fallback to default language",
+        "Test multiple language support",
+        "Verify localized log messages"
+      ],
+      "dependencies": [
+        "DNN Localization"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Search Crawler Exception Handling",
+      "description": "Handles and reports crawler-specific exceptions and errors.",
+      "files": [
+        "Evoq Platform/Modules/SearchSpider/Exceptions/SearchCrawlerException.cs",
+        "Evoq Platform/Modules/SearchSpider/Exceptions/DirectoryIncludedException.cs",
+        "Evoq Platform/Modules/SearchSpider/Exceptions/DirectoryExcludedException.cs"
+      ],
+      "ui_location": "Admin > Event Viewer",
+      "test_scenarios": [
+        "Handle crawler exceptions",
+        "Log directory inclusion errors",
+        "Log directory exclusion errors",
+        "Test exception serialization",
+        "Verify error reporting",
+        "Test exception recovery"
+      ],
+      "dependencies": [
+        "DNN Event Log"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:26:43.987298",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

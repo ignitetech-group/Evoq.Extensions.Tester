@@ -1,0 +1,256 @@
+{
+  "extension": {
+    "name": "Evoq.Social.FacebookConnector",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Social",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "Facebook Connector Registration",
+      "description": "Core connector that registers Facebook as a social connector in Evoq, providing App ID and App Secret configuration keys.",
+      "files": [
+        "DesktopModules/DNNCorp/FacebookConnector/Components/FacebookConnector.cs",
+        "DesktopModules/DNNCorp/FacebookConnector/FacebookConnector.dnn"
+      ],
+      "ui_location": "Admin > Social > Connections > Facebook",
+      "test_scenarios": [
+        "Verify connector appears in available connections list",
+        "Verify connector name displays as 'Facebook'",
+        "Verify icon path is correctly resolved",
+        "Verify IsEngageConnector property returns true",
+        "Test custom display name configuration"
+      ],
+      "dependencies": [
+        "Evoq.Library",
+        "Evoq.Components.Connections"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Facebook App Configuration",
+      "description": "Configure Facebook application credentials (App ID and App Secret) for authenticating with Facebook API.",
+      "files": [
+        "DesktopModules/DNNCorp/FacebookConnector/Components/FacebookConnector.cs"
+      ],
+      "ui_location": "Admin > Social > Connections > Facebook > Settings",
+      "test_scenarios": [
+        "Configure valid App ID and App Secret",
+        "Test saving configuration to portal settings",
+        "Verify configuration persists after save",
+        "Test with invalid credentials",
+        "Test with empty credentials",
+        "Verify configuration is portal-specific"
+      ],
+      "dependencies": [
+        "Facebook Connector Registration"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Configuration Parameter Upgrade",
+      "description": "Upgrades connector configuration parameter names from 'AppId/AppSecret' to 'App ID/App Secret' for version 08.01.00.",
+      "files": [
+        "DesktopModules/DNNCorp/FacebookConnector/Components/Controllers/UpgradeController.cs"
+      ],
+      "ui_location": "Automatic during module upgrade",
+      "test_scenarios": [
+        "Upgrade from pre-08.01.00 with old parameter names",
+        "Verify parameter names are updated correctly",
+        "Verify upgrade handles multiple portals",
+        "Test upgrade with missing configuration",
+        "Verify upgrade logs are created",
+        "Test upgrade error handling"
+      ],
+      "dependencies": [
+        "Evoq.Library"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Facebook Like Box Widget",
+      "description": "Displays Facebook Like box allowing users to like pages directly from the Evoq site.",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/FacebookLike.ascx",
+        "DesktopModules/DNNCorp/SocialShare/FacebookLikeSettings.ascx",
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.Facebook.js"
+      ],
+      "ui_location": "Page Content > Social Share Modules > Facebook Like",
+      "test_scenarios": [
+        "Add Facebook Like widget to page",
+        "Configure widget width",
+        "Toggle 'Show Faces' option",
+        "Toggle 'Stream' option",
+        "Toggle 'Header' option",
+        "Verify widget renders with Facebook SDK",
+        "Test widget with valid Facebook App ID",
+        "Test widget without App ID configuration"
+      ],
+      "dependencies": [
+        "Facebook App Configuration",
+        "Facebook SDK"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Facebook Comments Integration",
+      "description": "Enables Facebook comments on Evoq pages, allowing users to comment using their Facebook accounts.",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/FacebookComments.ascx",
+        "DesktopModules/DNNCorp/SocialShare/FacebookCommentsSettings.ascx",
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.Facebook.js"
+      ],
+      "ui_location": "Page Content > Social Share Modules > Facebook Comments",
+      "test_scenarios": [
+        "Add Facebook Comments widget to page",
+        "Configure widget width",
+        "Configure maximum number of posts",
+        "Configure color scheme (light/dark)",
+        "Post a comment using Facebook account",
+        "Verify comments persist across page reloads",
+        "Test moderation capabilities",
+        "Test widget without App ID configuration"
+      ],
+      "dependencies": [
+        "Facebook App Configuration",
+        "Facebook SDK"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Facebook Facepile Widget",
+      "description": "Displays profile photos of Facebook users who have liked the page or performed other social actions.",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/FacebookFacepile.ascx",
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.Facebook.js"
+      ],
+      "ui_location": "Page Content > Social Share Modules > Facebook Facepile",
+      "test_scenarios": [
+        "Add Facebook Facepile widget to page",
+        "Verify profile photos display correctly",
+        "Test with pages having multiple likes",
+        "Test with pages having no likes",
+        "Verify widget respects size settings",
+        "Test maximum rows configuration",
+        "Test widget width configuration"
+      ],
+      "dependencies": [
+        "Facebook App Configuration",
+        "Facebook SDK"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Facebook Recommendations Widget",
+      "description": "Displays personalized recommendations for pages on the site based on Facebook's algorithm.",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/FacebookRecommendations.ascx",
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.Facebook.js"
+      ],
+      "ui_location": "Page Content > Social Share Modules > Facebook Recommendations",
+      "test_scenarios": [
+        "Add Facebook Recommendations widget to page",
+        "Verify recommendations display",
+        "Test with different page contexts",
+        "Verify widget renders with Facebook SDK",
+        "Test personalization based on user's Facebook activity"
+      ],
+      "dependencies": [
+        "Facebook App Configuration",
+        "Facebook SDK"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Facebook Send Button",
+      "description": "Provides a button for users to privately send content to Facebook friends via Facebook Messenger.",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/FacebookSendButton.ascx",
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.Facebook.js"
+      ],
+      "ui_location": "Page Content > Social Share Modules > Facebook Send Button",
+      "test_scenarios": [
+        "Add Facebook Send Button to page",
+        "Click send button and verify Facebook dialog opens",
+        "Send content to Facebook friends",
+        "Test with different page URLs",
+        "Verify button styling and placement",
+        "Test without Facebook login"
+      ],
+      "dependencies": [
+        "Facebook App Configuration",
+        "Facebook SDK"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Facebook Shared Activity Feed",
+      "description": "Displays a feed of recent activity and interactions from Facebook users on the site.",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/FacebookSharedActivity.ascx",
+        "DesktopModules/DNNCorp/SocialShare/FacebookSharedActivitySettings.ascx",
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.Facebook.js"
+      ],
+      "ui_location": "Page Content > Social Share Modules > Facebook Shared Activity",
+      "test_scenarios": [
+        "Add Facebook Shared Activity widget to page",
+        "Configure widget settings",
+        "Verify activity feed displays",
+        "Test real-time updates of activities",
+        "Test filtering of activity types",
+        "Verify privacy settings are respected"
+      ],
+      "dependencies": [
+        "Facebook App Configuration",
+        "Facebook SDK"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Facebook SDK Initialization",
+      "description": "JavaScript SDK initialization that enables all Facebook widgets and social features on the site.",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.Facebook.js",
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.controls.Facebook.js"
+      ],
+      "ui_location": "Automatic on pages with Facebook widgets",
+      "test_scenarios": [
+        "Verify SDK loads only once per page",
+        "Test SDK initialization with valid App ID",
+        "Test SDK initialization with invalid App ID",
+        "Verify SDK status and cookie settings",
+        "Test OAuth authentication flow",
+        "Verify XFBML parsing for Facebook tags",
+        "Test error handling in SDK initialization"
+      ],
+      "dependencies": [
+        "Facebook App Configuration"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Module Installation and Packaging",
+      "description": "Installation package deployment and resource file extraction for the Facebook Connector module.",
+      "files": [
+        "DesktopModules/DNNCorp/FacebookConnector/FacebookConnector.dnn",
+        "DesktopModules/DNNCorp/FacebookConnector/packages/Social_FacebookConnector__Install.zip"
+      ],
+      "ui_location": "Host > Extensions > Install Extension",
+      "test_scenarios": [
+        "Install module from package",
+        "Verify assembly deployment",
+        "Verify resource files extraction",
+        "Test Azure compatibility",
+        "Verify dependencies are met",
+        "Test upgrade from previous version",
+        "Verify uninstall removes all components"
+      ],
+      "dependencies": [
+        "Evoq.Library v08.01.00"
+      ],
+      "priority": "Medium"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:58:57.473768",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

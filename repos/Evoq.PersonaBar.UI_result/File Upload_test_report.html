@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload - Test Report</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 30px;
+            border-left: 4px solid #007bff;
+            padding-left: 10px;
+        }
+        .feature-info {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-scenario {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .pass {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .fail {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .status-pass {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .steps {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f8f9fa;
+        }
+        .summary-table {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .observations {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>File Upload - Test Report</h1>
+
+    <div class="feature-info">
+        <h2>Feature Information</h2>
+        <table>
+            <tr><th>Extension</th><td>Evoq.PersonaBar.UI (PersonaBar Module)</td></tr>
+            <tr><th>Feature Name</th><td>File Upload</td></tr>
+            <tr><th>Description</th><td>Enables uploading of images, documents, and generic files with multipart support and automatic path generation.</td></tr>
+            <tr><th>Feature Priority</th><td>Top</td></tr>
+            <tr><th>UI Location</th><td>Admin > PersonaBar > Content > Assets > Upload</td></tr>
+            <tr><th>Relevant Files</th><td>FileUploadController.cs, Upload.ascx</td></tr>
+            <tr><th>Test Date</th><td>December 30, 2025</td></tr>
+        </table>
+    </div>
+
+    <div class="summary-table">
+        <h2>Test Summary</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Test Scenario</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Single image file upload</td>
+                    <td><span class="status-badge status-pass">PASS</span></td>
+                    <td>PNG image uploaded successfully</td>
+                </tr>
+                <tr>
+                    <td>Multiple images upload</td>
+                    <td><span class="status-badge status-pass">PASS</span></td>
+                    <td>Two images uploaded simultaneously</td>
+                </tr>
+                <tr>
+                    <td>Document upload (PDF, Word, Excel)</td>
+                    <td><span class="status-badge status-pass">PASS</span></td>
+                    <td>PDF, DOCX, XLSX files uploaded successfully</td>
+                </tr>
+                <tr>
+                    <td>File with special characters in name</td>
+                    <td><span class="status-badge status-pass">PASS</span></td>
+                    <td>File with spaces, parentheses, and # uploaded</td>
+                </tr>
+                <tr>
+                    <td>Large file upload (15MB)</td>
+                    <td><span class="status-badge status-pass">PASS</span></td>
+                    <td>15MB file uploaded without issues</td>
+                </tr>
+                <tr>
+                    <td>Unsupported file type (.exe)</td>
+                    <td><span class="status-badge status-pass">PASS</span></td>
+                    <td>Correctly blocked with "File extension not allowed"</td>
+                </tr>
+                <tr>
+                    <td>Duplicate filename handling</td>
+                    <td><span class="status-badge status-pass">PASS</span></td>
+                    <td>Shows "Keep" and "Replace" options</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Test Scenarios</h2>
+
+    <!-- Test 1: Single Image Upload -->
+    <div class="test-scenario">
+        <h3>1. Single Image File Upload</h3>
+        <p><strong>Status:</strong> <span class="pass">PASS</span></p>
+        <p><strong>Description:</strong> Test uploading a single PNG image file.</p>
+        <div class="steps">
+            <strong>Steps:</strong>
+            <ol>
+                <li>Navigate to Content > Assets</li>
+                <li>Click "Add Asset" button</li>
+                <li>Select test_upload_image.png</li>
+                <li>Verify file uploads successfully</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> Image uploaded successfully with green checkmark confirmation.</p>
+        <img src="File Upload_step07_single_image_uploaded.png" alt="Single image upload success">
+    </div>
+
+    <!-- Test 2: Multiple Images Upload -->
+    <div class="test-scenario">
+        <h3>2. Multiple Images Upload</h3>
+        <p><strong>Status:</strong> <span class="pass">PASS</span></p>
+        <p><strong>Description:</strong> Test uploading multiple image files simultaneously.</p>
+        <div class="steps">
+            <strong>Steps:</strong>
+            <ol>
+                <li>Click "Add Asset" button</li>
+                <li>Select multi_image_1.png and multi_image_2.png</li>
+                <li>Verify both files upload successfully</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> Both images uploaded successfully with progress indicators showing 100% completion.</p>
+        <img src="File Upload_step08_multiple_images_uploaded.png" alt="Multiple images upload success">
+    </div>
+
+    <!-- Test 3: Document Upload -->
+    <div class="test-scenario">
+        <h3>3. Document Upload (PDF, Word, Excel)</h3>
+        <p><strong>Status:</strong> <span class="pass">PASS</span></p>
+        <p><strong>Description:</strong> Test uploading various document types.</p>
+        <div class="steps">
+            <strong>Steps:</strong>
+            <ol>
+                <li>Click "Add Asset" button</li>
+                <li>Select test_upload_doc.pdf, test_upload_doc.docx, test_upload_sheet.xlsx</li>
+                <li>Verify all documents upload successfully</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> All three document types uploaded successfully with appropriate file type icons displayed.</p>
+        <img src="File Upload_step09_documents_uploaded.png" alt="Documents upload success">
+    </div>
+
+    <!-- Test 4: Special Characters -->
+    <div class="test-scenario">
+        <h3>4. File with Special Characters in Name</h3>
+        <p><strong>Status:</strong> <span class="pass">PASS</span></p>
+        <p><strong>Description:</strong> Test uploading a file with spaces, parentheses, and special characters.</p>
+        <div class="steps">
+            <strong>Steps:</strong>
+            <ol>
+                <li>Click "Add Asset" button</li>
+                <li>Select "test file (special) #1.txt"</li>
+                <li>Verify file uploads with special characters preserved</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> File with special characters (spaces, parentheses, hash) uploaded successfully.</p>
+        <img src="File Upload_step10_special_chars_uploaded.png" alt="Special characters upload success">
+    </div>
+
+    <!-- Test 5: Large File -->
+    <div class="test-scenario">
+        <h3>5. Large File Upload (15MB)</h3>
+        <p><strong>Status:</strong> <span class="pass">PASS</span></p>
+        <p><strong>Description:</strong> Test uploading a large file to verify size limit handling.</p>
+        <div class="steps">
+            <strong>Steps:</strong>
+            <ol>
+                <li>Create a 15MB test file</li>
+                <li>Click "Add Asset" button</li>
+                <li>Select large_test_file_15mb.txt</li>
+                <li>Verify upload completes or size limit is enforced</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> 15MB file uploaded successfully. Server configuration allows large files.</p>
+        <img src="File Upload_step11_large_file_uploaded.png" alt="Large file upload success">
+        <div class="observations">
+            <strong>Observation:</strong> The server is configured to accept files of at least 15MB without triggering size limits.
+        </div>
+    </div>
+
+    <!-- Test 6: Unsupported File Type -->
+    <div class="test-scenario">
+        <h3>6. Unsupported File Type (.exe)</h3>
+        <p><strong>Status:</strong> <span class="pass">PASS</span></p>
+        <p><strong>Description:</strong> Test that dangerous file types are blocked.</p>
+        <div class="steps">
+            <strong>Steps:</strong>
+            <ol>
+                <li>Click "Add Asset" button</li>
+                <li>Select test_executable.exe</li>
+                <li>Verify file is rejected with appropriate error message</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> Executable file correctly blocked with "File extension not allowed" error message.</p>
+        <img src="File Upload_step12_unsupported_type_blocked.png" alt="Unsupported file type blocked">
+        <div class="observations">
+            <strong>Security Note:</strong> The system properly validates file extensions and blocks potentially dangerous file types like .exe executables.
+        </div>
+    </div>
+
+    <!-- Test 7: Duplicate Filename -->
+    <div class="test-scenario">
+        <h3>7. Duplicate Filename Handling</h3>
+        <p><strong>Status:</strong> <span class="pass">PASS</span></p>
+        <p><strong>Description:</strong> Test handling of duplicate filename uploads.</p>
+        <div class="steps">
+            <strong>Steps:</strong>
+            <ol>
+                <li>Upload a file (test_upload_image.png)</li>
+                <li>Attempt to upload the same file again</li>
+                <li>Verify duplicate handling options appear</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> System correctly detects duplicate and provides "Replace" and "Keep" options.</p>
+        <img src="File Upload_step13_duplicate_filename.png" alt="Duplicate filename handling">
+    </div>
+
+    <h2>Additional Screenshots</h2>
+
+    <div class="test-scenario">
+        <h3>Navigation to Assets</h3>
+        <p>Homepage before login:</p>
+        <img src="File Upload_step01_homepage.png" alt="Homepage">
+
+        <p>Login page:</p>
+        <img src="File Upload_step02_login_page.png" alt="Login page">
+
+        <p>Logged in with PersonaBar:</p>
+        <img src="File Upload_step03_logged_in.png" alt="Logged in">
+
+        <p>Assets panel:</p>
+        <img src="File Upload_step04_assets_panel.png" alt="Assets panel">
+
+        <p>Assets folder view:</p>
+        <img src="File Upload_step05_assets_folder.png" alt="Assets folder">
+
+        <p>Upload dialog:</p>
+        <img src="File Upload_step06_upload_dialog.png" alt="Upload dialog">
+    </div>
+
+    <h2>Code Analysis</h2>
+    <div class="feature-info">
+        <h3>FileUploadController.cs</h3>
+        <p>The controller provides three main upload endpoints:</p>
+        <ul>
+            <li><strong>UploadImage()</strong> - For uploading image files</li>
+            <li><strong>UploadDocument()</strong> - For uploading document files</li>
+            <li><strong>UploadFile()</strong> - For uploading general files</li>
+        </ul>
+        <p>All endpoints use <code>[IFrameSupportedValidateAntiForgeryToken]</code> attribute for security and require <code>multipart/form-data</code> content type.</p>
+
+        <h3>Upload.ascx</h3>
+        <p>The UI control provides:</p>
+        <ul>
+            <li>Drag and drop file upload area</li>
+            <li>Multiple file selection support</li>
+            <li>File type filtering (acceptedFilesAttribute)</li>
+            <li>Max file size validation</li>
+            <li>Progress bar during upload</li>
+            <li>Three tabs: Upload File, Stored Location, From URL</li>
+        </ul>
+    </div>
+
+    <h2>Conclusion</h2>
+    <div class="feature-info">
+        <p><strong>Overall Result:</strong> <span class="pass">ALL TESTS PASSED (7/7)</span></p>
+        <p>The File Upload feature in Evoq.PersonaBar.UI is functioning correctly. Key findings:</p>
+        <ul>
+            <li>Single and multiple file uploads work as expected</li>
+            <li>Various file types (images, documents) are properly handled</li>
+            <li>Special characters in filenames are correctly preserved</li>
+            <li>Security validation blocks dangerous file types (.exe)</li>
+            <li>Duplicate file handling provides user-friendly options</li>
+            <li>Anti-forgery token validation is properly implemented</li>
+        </ul>
+    </div>
+
+    <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 14px;">
+        <p>Test Report Generated: December 30, 2025</p>
+        <p>Extension: Evoq.PersonaBar.UI | Feature: File Upload | Repository: Dnn.AdminExperience.Evoq.Basic</p>
+    </footer>
+</body>
+</html>

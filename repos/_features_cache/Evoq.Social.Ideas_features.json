@@ -1,0 +1,387 @@
+{
+  "extension": {
+    "name": "Evoq.Social.Ideas",
+    "priority": "Medium",
+    "repo": "Dnn.Evoq.Social",
+    "extension_type": "Module"
+  },
+  "features": [
+    {
+      "name": "Idea Creation and Submission",
+      "description": "Allows users to submit new ideas with title, description, and initial votes",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Services/EditController.cs",
+        "DesktopModules/DNNCorp/Ideas/Components/Controllers/IdeasController.cs",
+        "DesktopModules/DNNCorp/Ideas/Views/IdeaList.ascx",
+        "DesktopModules/DNNCorp/Ideas/Scripts/dnn.ideas.EditView.js"
+      ],
+      "ui_location": "Ideas Module > New Idea Button",
+      "test_scenarios": [
+        "Create new idea with valid data",
+        "Create idea with initial votes",
+        "Validate required fields (title, description)",
+        "Test profanity filter on content",
+        "Test HTML tag filtering/sanitization",
+        "Create idea with categories/tags",
+        "Test user mentions in idea content",
+        "Verify idea requires moderation when configured",
+        "Test idea creation when new ideas are disabled"
+      ],
+      "dependencies": [
+        "User Authentication",
+        "Content Moderation"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Voting System",
+      "description": "Users can vote on ideas with configurable vote limits per user and per idea",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Services/DetailController.cs",
+        "DesktopModules/DNNCorp/Ideas/Components/Controllers/IdeasController.cs",
+        "DesktopModules/DNNCorp/Ideas/Scripts/dnn.ideas.VoteController.js",
+        "DesktopModules/DNNCorp/Ideas/Scripts/dnn.ideas.VoteButtons.js",
+        "DesktopModules/DNNCorp/Ideas/Data/DataService.cs"
+      ],
+      "ui_location": "Ideas Module > Idea Details > Vote Buttons",
+      "test_scenarios": [
+        "Vote on an idea",
+        "Change existing vote value",
+        "Remove votes from an idea",
+        "Verify max votes per item limit",
+        "Verify max votes per user limit",
+        "Test voting on closed/locked ideas (should fail)",
+        "Test voting when voting is disabled",
+        "Verify remaining votes calculation",
+        "Test concurrent voting scenarios",
+        "Auto-subscribe voter to idea notifications"
+      ],
+      "dependencies": [
+        "User Authentication"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Company Response Management",
+      "description": "Moderators can provide official responses to ideas and change their status",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Services/ResponseController.cs",
+        "DesktopModules/DNNCorp/Ideas/Controls/CompanyResponse.ascx",
+        "DesktopModules/DNNCorp/Ideas/Scripts/dnn.ideas.ResponseView.js",
+        "DesktopModules/DNNCorp/Ideas/Components/Entities/ResponseHistoryInfo.cs"
+      ],
+      "ui_location": "Ideas Module > Idea Details > Company Response Section",
+      "test_scenarios": [
+        "Add company response to idea",
+        "Update existing company response",
+        "Change idea status with response",
+        "View response history",
+        "Test response notifications to subscribers",
+        "Verify only moderators can add responses",
+        "Test response with status change to Delivered",
+        "Test response with status change to Accepted"
+      ],
+      "dependencies": [
+        "Moderator Permissions",
+        "Notification System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Idea List and Filtering",
+      "description": "Browse, search, and filter ideas by various criteria",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Services/ListController.cs",
+        "DesktopModules/DNNCorp/Ideas/Views/IdeaList.ascx",
+        "DesktopModules/DNNCorp/Ideas/Scripts/dnn.ideas.ListView.js",
+        "DesktopModules/DNNCorp/Ideas/Scripts/dnn.ideas.ListController.js",
+        "DesktopModules/DNNCorp/Ideas/Components/Entities/SearchOptions.cs"
+      ],
+      "ui_location": "Ideas Module > Main List View",
+      "test_scenarios": [
+        "View all ideas",
+        "Filter by status (Open, In Progress, Delivered, etc.)",
+        "Filter by category",
+        "Search ideas by keyword",
+        "Sort by most recent",
+        "Sort by most votes",
+        "Sort by most viewed",
+        "Filter 'My Ideas'",
+        "Filter 'My Voted Ideas'",
+        "Pagination of results",
+        "Test caching of common queries"
+      ],
+      "dependencies": [],
+      "priority": "High"
+    },
+    {
+      "name": "Comments and Discussion",
+      "description": "Users can comment on ideas and engage in discussions",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Components/Events/CommentEventsManager.cs",
+        "DesktopModules/DNNCorp/Ideas/Components/Events/CommentEventArgs.cs",
+        "DesktopModules/DNNCorp/Ideas/Views/IdeaDetails.ascx"
+      ],
+      "ui_location": "Ideas Module > Idea Details > Comments Section",
+      "test_scenarios": [
+        "Add comment to idea",
+        "Edit own comment",
+        "Delete own comment",
+        "Reply to comment",
+        "Test comment moderation",
+        "Report inappropriate comment",
+        "Test user mentions in comments",
+        "View comment history/revisions",
+        "Test comment notifications"
+      ],
+      "dependencies": [
+        "User Authentication",
+        "Content Moderation"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Subscription and Notifications",
+      "description": "Subscribe to ideas and receive notifications on updates",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Components/Integration/Notifications.cs",
+        "DesktopModules/DNNCorp/Ideas/Services/NotificationServiceController.cs",
+        "DesktopModules/DNNCorp/Ideas/Subscribe.ascx",
+        "DesktopModules/DNNCorp/Ideas/Scripts/dnn.ideas.Subscribe.js"
+      ],
+      "ui_location": "Ideas Module > Idea Details > Subscribe Button",
+      "test_scenarios": [
+        "Subscribe to specific idea",
+        "Subscribe to all new ideas in module",
+        "Unsubscribe from idea",
+        "Receive notification on new comment",
+        "Receive notification on company response",
+        "Receive notification on status change",
+        "Test notification preferences",
+        "Auto-subscribe when voting",
+        "Bulk unsubscribe functionality"
+      ],
+      "dependencies": [
+        "Notification System",
+        "User Authentication"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Idea Moderation",
+      "description": "Moderators can approve, reject, lock, or protect ideas",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Components/Common/ModuleSecurity.cs",
+        "DesktopModules/DNNCorp/Ideas/Components/Controllers/IdeasController.cs",
+        "DesktopModules/DNNCorp/Ideas/Services/EditController.cs"
+      ],
+      "ui_location": "Ideas Module > Idea Details > Moderation Controls",
+      "test_scenarios": [
+        "Approve pending idea",
+        "Reject idea with reason",
+        "Lock idea to prevent voting",
+        "Protect idea from editing",
+        "Delete inappropriate idea",
+        "Move idea to different module",
+        "Bulk moderation actions",
+        "View moderation queue",
+        "Test moderation notifications"
+      ],
+      "dependencies": [
+        "Moderator Permissions"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Category Management",
+      "description": "Organize ideas using hierarchical categories/taxonomies",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Services/EditController.cs",
+        "DesktopModules/DNNCorp/Ideas/Settings.ascx.cs"
+      ],
+      "ui_location": "Ideas Module > New/Edit Idea > Category Selection",
+      "test_scenarios": [
+        "Assign category to idea",
+        "Change idea category",
+        "Filter by category",
+        "Test hierarchical category structure",
+        "Configure vocabulary for categories",
+        "Enable/disable category feature",
+        "Test category validation rules"
+      ],
+      "dependencies": [
+        "DNN Taxonomy System"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Module Settings Configuration",
+      "description": "Configure module behavior including voting limits, permissions, and display options",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Settings.ascx",
+        "DesktopModules/DNNCorp/Ideas/Settings.ascx.cs",
+        "DesktopModules/DNNCorp/Ideas/Components/Common/Constants.cs"
+      ],
+      "ui_location": "Ideas Module > Settings (Module Actions Menu)",
+      "test_scenarios": [
+        "Set max votes per item",
+        "Set max votes per user",
+        "Enable/disable new idea creation",
+        "Enable/disable voting",
+        "Configure filter mode (All/Groups)",
+        "Set search result count",
+        "Enable/disable categories",
+        "Select root category vocabulary",
+        "Test settings persistence",
+        "Verify settings affect module behavior"
+      ],
+      "dependencies": [
+        "Module Permissions"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Idea Status Management",
+      "description": "Track and update idea lifecycle status",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Components/Common/IdeaStatus.cs",
+        "DesktopModules/DNNCorp/Ideas/Components/Controllers/IdeasController.cs",
+        "DesktopModules/DNNCorp/Ideas/Services/ResponseController.cs"
+      ],
+      "ui_location": "Ideas Module > Idea Details > Status Display",
+      "test_scenarios": [
+        "View current idea status",
+        "Change status from Open to In Progress",
+        "Change status to Delivered",
+        "Change status to Accepted",
+        "Test status change permissions",
+        "Track accepted date when status changes",
+        "Filter ideas by status",
+        "Test status history tracking"
+      ],
+      "dependencies": [
+        "Company Response Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "User Activity and Scoring",
+      "description": "Track user participation and award points for idea-related activities",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Components/Controllers/IdeasController.cs",
+        "DesktopModules/DNNCorp/Ideas/Services/DetailController.cs",
+        "DesktopModules/DNNCorp/Ideas/Services/EditController.cs"
+      ],
+      "ui_location": "Backend tracking - visible in user profiles/leaderboards",
+      "test_scenarios": [
+        "Award points for creating idea",
+        "Award points for voting on idea",
+        "Award points for commenting",
+        "Award points for idea being voted on",
+        "Track idea views",
+        "Test scoring action logging",
+        "Verify user activity in journal"
+      ],
+      "dependencies": [
+        "Social Mechanics System",
+        "Journal System"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Vote Summary Display",
+      "description": "Display voting statistics and user vote information",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/VoteSummary.ascx",
+        "DesktopModules/DNNCorp/Ideas/Scripts/dnn.ideas.VoteSummaryView.js",
+        "DesktopModules/DNNCorp/Ideas/Components/Entities/VoteInfo.cs",
+        "DesktopModules/DNNCorp/Ideas/Components/Entities/VoteInfoDetail.cs"
+      ],
+      "ui_location": "Ideas Module > Idea Details > Vote Summary Section",
+      "test_scenarios": [
+        "View total votes on idea",
+        "View list of voters",
+        "View vote distribution",
+        "View remaining votes for current user",
+        "View votes used by current user",
+        "Paginate voter list",
+        "Test vote count accuracy"
+      ],
+      "dependencies": [
+        "Voting System"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Group Ideas Support",
+      "description": "Support for ideas specific to social groups",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Components/Controllers/IdeasController.cs",
+        "DesktopModules/DNNCorp/Ideas/Services/ListController.cs",
+        "DesktopModules/DNNCorp/Ideas/Components/Common/Utils.cs"
+      ],
+      "ui_location": "Ideas Module within Group Context",
+      "test_scenarios": [
+        "Create idea within group",
+        "View group-specific ideas only",
+        "Test group permissions",
+        "Filter ideas by group",
+        "Test group mode vs all mode",
+        "Subscribe to group ideas",
+        "Test private group idea visibility"
+      ],
+      "dependencies": [
+        "Social Groups"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Import/Export Ideas",
+      "description": "Export and import ideas for content migration",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Components/Controllers/ContentExchangeController.cs",
+        "DesktopModules/DNNCorp/Ideas/Services/ContentExchangeController.cs"
+      ],
+      "ui_location": "Ideas Module > Admin Tools > Import/Export",
+      "test_scenarios": [
+        "Export all ideas to XML/JSON",
+        "Export filtered ideas",
+        "Import ideas from file",
+        "Validate import data format",
+        "Handle duplicate ideas on import",
+        "Preserve votes during migration",
+        "Preserve comments during migration",
+        "Test large dataset import/export"
+      ],
+      "dependencies": [
+        "Content Exchange Framework"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Search Integration",
+      "description": "Integration with DNN search to index and find ideas",
+      "files": [
+        "DesktopModules/DNNCorp/Ideas/Components/Controllers/BusinessController.cs",
+        "DesktopModules/DNNCorp/Ideas/Search.ascx",
+        "DesktopModules/DNNCorp/Ideas/Components/Integration/Content.cs"
+      ],
+      "ui_location": "Site Search Results",
+      "test_scenarios": [
+        "Index new ideas in search",
+        "Update search index on idea edit",
+        "Remove from index on idea deletion",
+        "Search ideas by keyword",
+        "Test search permissions",
+        "Exclude private/unapproved ideas from search",
+        "Test search result relevance"
+      ],
+      "dependencies": [
+        "DNN Search System"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:45:28.679777",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

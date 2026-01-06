@@ -1,0 +1,305 @@
+{
+  "extension": {
+    "name": "Evoq.BoxConnector",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Content",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "Box OAuth Authentication",
+      "description": "Handles OAuth2 authentication flow with Box.com, including authorization code exchange and token refresh.",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Authorize.aspx.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxAuth.cs",
+        "Evoq Enterprise/Connectors/Box/Components/BoxConnector.cs"
+      ],
+      "ui_location": "Admin > Connectors > Box > Connect/Configure",
+      "test_scenarios": [
+        "Authorize new Box account connection",
+        "Exchange authorization code for access token",
+        "Refresh expired access token",
+        "Validate client ID and client secret",
+        "Handle OAuth callback with error",
+        "Test with HTTPS and HTTP connections",
+        "Handle missing or invalid credentials"
+      ],
+      "dependencies": [
+        "Box API",
+        "SSL/HTTPS for production"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Multiple Box Account Mappings",
+      "description": "Supports connecting multiple Box accounts to a single portal with different folder mappings.",
+      "files": [
+        "Evoq Enterprise/Connectors/Box/Components/BoxConnector.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs"
+      ],
+      "ui_location": "Admin > Connectors > Box > Manage Connections",
+      "test_scenarios": [
+        "Create new Box folder mapping",
+        "List all Box connections for portal",
+        "Edit existing Box connection settings",
+        "Delete Box connection and cleanup folders",
+        "Validate unique mapping names",
+        "Switch between multiple Box accounts",
+        "Test folder mapping with custom parent folder"
+      ],
+      "dependencies": [
+        "DNN Folder Mapping System"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Box Connector Configuration",
+      "description": "Manages Box connector settings including client credentials, parent folder selection, and connection status.",
+      "files": [
+        "Evoq Enterprise/Connectors/Box/Components/BoxConnector.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Constants.cs"
+      ],
+      "ui_location": "Admin > Connectors > Box > Settings",
+      "test_scenarios": [
+        "Save Box client ID and secret (encrypted)",
+        "Select parent folder from Box",
+        "Validate configuration before saving",
+        "Update existing configuration",
+        "Handle configuration with missing values",
+        "Test configuration caching",
+        "Verify encrypted credential storage"
+      ],
+      "dependencies": [
+        "DNN Portal Settings"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "File Upload to Box",
+      "description": "Uploads files from DNN to Box cloud storage with automatic sharing link creation.",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxApi.cs"
+      ],
+      "ui_location": "Admin > File Management > Upload to Box Folder",
+      "test_scenarios": [
+        "Upload single file to Box root folder",
+        "Upload file to specific Box subfolder",
+        "Upload large file (test size limits)",
+        "Upload file with special characters in name",
+        "Replace existing file (update operation)",
+        "Handle upload failures and retry",
+        "Verify automatic share link creation",
+        "Test concurrent file uploads"
+      ],
+      "dependencies": [
+        "Box API",
+        "DNN File System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "File Download from Box",
+      "description": "Downloads and streams files from Box storage to DNN users.",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxApi.cs"
+      ],
+      "ui_location": "Admin > File Management > Box Files",
+      "test_scenarios": [
+        "Download file from Box",
+        "Stream file content directly",
+        "Handle missing file gracefully",
+        "Test download of large files",
+        "Verify file content integrity",
+        "Test concurrent downloads",
+        "Handle expired access tokens during download"
+      ],
+      "dependencies": [
+        "Box API"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "File Operations Management",
+      "description": "Manages file operations including copy, move, rename, and delete for Box files.",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxApi.cs"
+      ],
+      "ui_location": "Admin > File Management > Box Files > Context Menu",
+      "test_scenarios": [
+        "Copy file within Box folders",
+        "Move file between Box folders",
+        "Rename file in Box",
+        "Delete file from Box",
+        "Copy file to folder with existing file of same name",
+        "Move file to parent folder",
+        "Rename with invalid characters",
+        "Delete non-existent file"
+      ],
+      "dependencies": [
+        "Box API"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Folder Operations Management",
+      "description": "Manages folder operations including create, move, rename, and delete for Box folders.",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxApi.cs"
+      ],
+      "ui_location": "Admin > File Management > Box Folders > Context Menu",
+      "test_scenarios": [
+        "Create new folder in Box",
+        "Create nested folder structure",
+        "Move folder to different parent",
+        "Rename folder",
+        "Delete empty folder",
+        "Delete folder with contents (recursive)",
+        "Create folder with duplicate name",
+        "Move folder into itself (circular reference)"
+      ],
+      "dependencies": [
+        "Box API"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Box Folder Browsing API",
+      "description": "Provides API endpoints to browse and list Box folders for configuration and file management.",
+      "files": [
+        "Evoq Enterprise/Connectors/Box/Services/ServicesController.cs",
+        "Evoq Enterprise/Connectors/Box/Services/ServiceRouteMapper.cs"
+      ],
+      "ui_location": "API: /DesktopModules/DnnCorp/Connectors/Box/API/Services/GetAllFolders",
+      "test_scenarios": [
+        "Get all folders from Box account",
+        "Get folders with temporary mapping ID",
+        "Filter folders by type",
+        "Handle API authentication failures",
+        "Test folder listing with large folder structures",
+        "Verify folder path construction",
+        "Get folder mapping ID for portal"
+      ],
+      "dependencies": [
+        "DNN Web API",
+        "Box API"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Direct File Linking",
+      "description": "Generates and manages direct download links for Box files with configurable sharing permissions.",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxApi.cs"
+      ],
+      "ui_location": "Admin > File Management > Box Files > Get Link",
+      "test_scenarios": [
+        "Generate direct download link for file",
+        "Create share link with open access",
+        "Use existing share link if available",
+        "Handle indirect linking through DNN",
+        "Test link expiration handling",
+        "Verify link permissions",
+        "Generate links for multiple files"
+      ],
+      "dependencies": [
+        "Box API",
+        "DNN File Link Click Controller"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Box Object Caching",
+      "description": "Caches Box file and folder metadata to improve performance and reduce API calls.",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxRemoteStorageItem.cs"
+      ],
+      "ui_location": "Backend Process - No UI",
+      "test_scenarios": [
+        "Cache folder listing on first access",
+        "Retrieve cached items within timeout",
+        "Clear cache after file operations",
+        "Handle cache expiration",
+        "Test cache with multiple folder mappings",
+        "Verify cache key uniqueness",
+        "Test cache performance with large datasets"
+      ],
+      "dependencies": [
+        "DNN Caching System"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "File Hash/Checksum Verification",
+      "description": "Retrieves and verifies file checksums (SHA1) from Box for integrity verification.",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxApi.cs"
+      ],
+      "ui_location": "Backend Process - File Integrity Check",
+      "test_scenarios": [
+        "Get SHA1 hash for Box file",
+        "Compare local and remote file hashes",
+        "Handle missing hash values",
+        "Verify hash after file upload",
+        "Test with different file types",
+        "Handle hash retrieval failures"
+      ],
+      "dependencies": [
+        "Box API"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Token Refresh Management",
+      "description": "Automatically refreshes expired Box access tokens using refresh tokens.",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxAuth.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxApi.cs"
+      ],
+      "ui_location": "Backend Process - Automatic",
+      "test_scenarios": [
+        "Refresh token when API returns 401",
+        "Store new access and refresh tokens",
+        "Handle concurrent token refresh requests",
+        "Test with invalid refresh token",
+        "Verify token persistence in database",
+        "Test token refresh with multiple mappings"
+      ],
+      "dependencies": [
+        "Box OAuth API"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Folder Synchronization",
+      "description": "Synchronizes folder structure between DNN and Box, including cleanup of orphaned folders.",
+      "files": [
+        "Evoq Enterprise/Connectors/Box/Components/BoxConnector.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs"
+      ],
+      "ui_location": "Admin > File Management > Synchronize Box Folders",
+      "test_scenarios": [
+        "Initial folder structure sync from Box",
+        "Update local folders when Box changes",
+        "Delete local folders when Box mapping removed",
+        "Handle folder conflicts",
+        "Preserve non-Box folders during cleanup",
+        "Test recursive folder deletion",
+        "Verify database cleanup after sync"
+      ],
+      "dependencies": [
+        "DNN Folder Manager",
+        "Box API"
+      ],
+      "priority": "Medium"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:35:17.345985",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

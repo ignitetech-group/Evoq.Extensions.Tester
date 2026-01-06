@@ -1,0 +1,265 @@
+{
+  "extension": {
+    "name": "Evoq.PersonaBar.Templates",
+    "priority": "High",
+    "repo": "Dnn.AdminExperience.Evoq.Basic",
+    "extension_type": "PersonaBar Module"
+  },
+  "features": [
+    {
+      "name": "Template List Display",
+      "description": "Displays all page templates in a hierarchical list view with thumbnails, status indicators, and action buttons",
+      "files": [
+        "Services/TemplatesController.cs",
+        "admin/personaBar/Templates.html",
+        "admin/personaBar/scripts/Templates.js",
+        "admin/personaBar/scripts/templatesHierarchy.js"
+      ],
+      "ui_location": "Admin > Manage > Templates",
+      "test_scenarios": [
+        "View all templates in list",
+        "Verify template thumbnails display correctly",
+        "Check template status indicators (Hidden/Disabled)",
+        "Verify template publish date displays",
+        "Verify child count displays for templates with children",
+        "Test empty state when no templates exist"
+      ],
+      "dependencies": [
+        "Evoq.PersonaBar.Pages",
+        "Thumbnail Service"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Create New Template",
+      "description": "Allows administrators to create new page templates with name, description, and layout selection",
+      "files": [
+        "Services/TemplatesController.cs",
+        "admin/personaBar/scripts/templatesCreateManager.js",
+        "admin/personaBar/Templates.html"
+      ],
+      "ui_location": "Admin > Manage > Templates > Add Template button",
+      "test_scenarios": [
+        "Create template with valid name and description",
+        "Select different layout templates",
+        "Validate empty template name shows error",
+        "Validate script injection prevention in template name",
+        "Cancel template creation",
+        "Create template when no existing templates",
+        "Verify new template appears in list after creation"
+      ],
+      "dependencies": [
+        "Page Settings Service",
+        "Workflow Service"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Template Search",
+      "description": "Search templates by name or localized name using keyword search",
+      "files": [
+        "Services/TemplatesController.cs",
+        "admin/personaBar/Templates.html",
+        "admin/personaBar/scripts/templatesHierarchy.js"
+      ],
+      "ui_location": "Admin > Manage > Templates > Search box",
+      "test_scenarios": [
+        "Search by template name",
+        "Search by partial name",
+        "Search with no results",
+        "Clear search to show all templates",
+        "Search is case-insensitive",
+        "Real-time search as user types"
+      ],
+      "dependencies": [],
+      "priority": "High"
+    },
+    {
+      "name": "Template Permissions Management",
+      "description": "Configure role-based and user-specific permissions for templates including view and edit rights",
+      "files": [
+        "Services/TemplatesController.cs",
+        "admin/personaBar/scripts/templatesCreateManager.js"
+      ],
+      "ui_location": "Admin > Manage > Templates > Create Template > Permissions",
+      "test_scenarios": [
+        "Set role-based permissions",
+        "Set user-specific permissions",
+        "Verify administrator role has default permissions",
+        "Copy permissions to descendant pages",
+        "Remove all permissions and verify admin still has access",
+        "Test permission inheritance"
+      ],
+      "dependencies": [
+        "Permission Grid Manager",
+        "Role Service"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Template Thumbnail Generation",
+      "description": "Automatically generates and updates thumbnail previews of template pages using html2canvas",
+      "files": [
+        "admin/personaBar/scripts/TemplateThumbnail.js",
+        "admin/personaBar/scripts/templates.thumbnails.js",
+        "Events/SkinEvents.cs"
+      ],
+      "ui_location": "Admin > Manage > Templates (thumbnails in list)",
+      "test_scenarios": [
+        "Generate thumbnail for new template",
+        "Update thumbnail when template changes",
+        "Handle external URL templates",
+        "Handle failed thumbnail generation",
+        "Verify medium and large thumbnail sizes",
+        "Test thumbnail loading indicators"
+      ],
+      "dependencies": [
+        "Thumbnails Service",
+        "html2canvas"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Delete Template",
+      "description": "Delete templates from the system with confirmation dialog, except default templates",
+      "files": [
+        "Services/TemplatesController.cs",
+        "admin/personaBar/scripts/templatesHierarchy.js"
+      ],
+      "ui_location": "Admin > Manage > Templates > Template Item > Delete button",
+      "test_scenarios": [
+        "Delete non-default template",
+        "Confirm deletion dialog appears",
+        "Cancel deletion",
+        "Verify default template cannot be deleted",
+        "Verify template with default skin cannot be deleted",
+        "Update list after successful deletion"
+      ],
+      "dependencies": [
+        "Tab Controller"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Edit Template in Page Editor",
+      "description": "Switch to edit mode to modify template content and layout in the page editor",
+      "files": [
+        "Services/TemplatesController.cs",
+        "admin/personaBar/scripts/templatesHierarchy.js"
+      ],
+      "ui_location": "Admin > Manage > Templates > Template Item > Edit button",
+      "test_scenarios": [
+        "Click edit to enter edit mode",
+        "Verify redirect to template page in edit mode",
+        "Set last page cookie",
+        "Update user personalization for edit mode",
+        "Handle edit for templates with special characters in URL"
+      ],
+      "dependencies": [
+        "Personalization Controller",
+        "Page Editor"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Template Drag and Drop",
+      "description": "Reorder templates in hierarchy by dragging and dropping them to new positions",
+      "files": [
+        "admin/personaBar/scripts/templatesHierarchy.js",
+        "admin/personaBar/Templates.html"
+      ],
+      "ui_location": "Admin > Manage > Templates > Drag handle on template items",
+      "test_scenarios": [
+        "Drag template to new position",
+        "Drop template on another template",
+        "Cancel drag operation",
+        "Verify drag disabled during search",
+        "Test drag visual feedback",
+        "Verify hierarchy updates after drop"
+      ],
+      "dependencies": [],
+      "priority": "Low"
+    },
+    {
+      "name": "Default Template Management",
+      "description": "Manage which template is set as the default template for new pages",
+      "files": [
+        "Services/TemplatesController.cs",
+        "admin/personaBar/scripts/templatesCreateManager.js"
+      ],
+      "ui_location": "Admin > Manage > Templates",
+      "test_scenarios": [
+        "Identify default template by useDefaultSkin property",
+        "Default template auto-selected when creating new template",
+        "Prevent deletion of default template",
+        "Change default template"
+      ],
+      "dependencies": [
+        "Portal Settings"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Template Workflow Integration",
+      "description": "Applies content workflow settings to templates for approval processes",
+      "files": [
+        "Services/TemplatesController.cs",
+        "admin/personaBar/scripts/templatesCreateManager.js"
+      ],
+      "ui_location": "Admin > Manage > Templates > Create Template",
+      "test_scenarios": [
+        "Apply default workflow to new template",
+        "Retrieve available workflows",
+        "Set workflow for template",
+        "Verify workflow completion status"
+      ],
+      "dependencies": [
+        "Workflow Manager",
+        "Tab Workflow Settings"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Template Page Settings",
+      "description": "Configure template-specific settings like name, description, keywords, and URL",
+      "files": [
+        "Services/TemplatesController.cs",
+        "admin/personaBar/scripts/templatesCreateManager.js"
+      ],
+      "ui_location": "Admin > Manage > Templates > Settings",
+      "test_scenarios": [
+        "Edit template name",
+        "Edit template description",
+        "Set template keywords for SEO",
+        "Validate duplicate template names",
+        "Save template settings",
+        "Handle validation errors"
+      ],
+      "dependencies": [
+        "Page Management Controller"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Template Status Display",
+      "description": "Shows template status indicators like Hidden, Disabled, or Published",
+      "files": [
+        "Services/TemplatesController.cs",
+        "admin/personaBar/Templates.html"
+      ],
+      "ui_location": "Admin > Manage > Templates > Template list items",
+      "test_scenarios": [
+        "Display Hidden status",
+        "Display Disabled status",
+        "Display Published status",
+        "Verify status CSS classes applied correctly"
+      ],
+      "dependencies": [
+        "Page Management Controller"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T18:11:08.938724",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

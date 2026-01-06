@@ -1,0 +1,185 @@
+{
+  "extension": {
+    "name": "Evoq.GoogleTagManagerConnector",
+    "priority": "High",
+    "repo": "Dnn.Evoq.Content",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "GTM Container Configuration",
+      "description": "Configure Google Tag Manager container ID and settings for a portal including validation against Google servers",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleTagManager/Components/GoogleTagManagerConnector.cs",
+        "Evoq Enterprise/Connectors/GoogleTagManager/Scripts/connector.js",
+        "Evoq Enterprise/Connectors/GoogleTagManager/connector.css"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Google Tag Manager",
+      "test_scenarios": [
+        "Save valid GTM container ID (format GTM-XXXXXX)",
+        "Save empty container ID to disable GTM",
+        "Attempt to save invalid container ID format",
+        "Attempt to save non-existent container ID",
+        "Verify container ID validation against Google servers",
+        "Verify settings persist after save",
+        "Verify portal-specific configuration isolation"
+      ],
+      "dependencies": [
+        "DNN Connectors Framework",
+        "Portal Settings"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Container ID Validation",
+      "description": "Validates GTM container IDs by checking if they exist and are published on Google's servers",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleTagManager/Components/GoogleTagManagerConnector.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Google Tag Manager",
+      "test_scenarios": [
+        "Validate published GTM container returns success",
+        "Validate unpublished container shows error",
+        "Validate non-existent container shows error",
+        "Validate malformed container ID shows error",
+        "Test validation with network timeout",
+        "Test validation with Google servers unreachable"
+      ],
+      "dependencies": [
+        "RestSharp",
+        "Google Tag Manager API"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "GTM Script Injection",
+      "description": "Injects Google Tag Manager JavaScript code into page headers for tracking and analytics",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleTagManager/TagManagerModule.cs",
+        "Evoq Enterprise/Connectors/GoogleTagManager/GoogleTagManager.config"
+      ],
+      "ui_location": "Public site pages (automated injection)",
+      "test_scenarios": [
+        "Verify GTM script appears in page head when container configured",
+        "Verify no script injection when container ID is empty",
+        "Verify container ID is correctly substituted in script",
+        "Verify script only injects on CDefault pages",
+        "Test script injection on multiple portal instances",
+        "Verify script template caching works correctly",
+        "Test script injection after configuration changes"
+      ],
+      "dependencies": [
+        "HttpModule",
+        "Page PreRender Event"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Google Analytics Integration",
+      "description": "Option to use Google Tag Manager for Google Analytics tracking instead of native GA implementation",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleTagManager/Components/GoogleTagManagerConnector.cs",
+        "Evoq Enterprise/Connectors/GoogleTagManager/TagManagerModule.cs",
+        "Evoq Enterprise/Connectors/GoogleTagManager/Scripts/connector.js"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Google Tag Manager",
+      "test_scenarios": [
+        "Enable GA through GTM checkbox",
+        "Disable GA through GTM checkbox",
+        "Verify eaSendGaEvents flag in dataLayer when enabled",
+        "Verify flag is false when disabled",
+        "Test automatic disable when container ID is cleared",
+        "Verify checkbox state persists after save"
+      ],
+      "dependencies": [
+        "Google Analytics",
+        "GTM Container Configuration"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Page Variant Tracking",
+      "description": "Tracks personalized page variants in GTM dataLayer for A/B testing and personalization analytics",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleTagManager/TagManagerModule.cs",
+        "Evoq Enterprise/Connectors/GoogleTagManager/Components/Constants.cs"
+      ],
+      "ui_location": "Public site pages (automated tracking)",
+      "test_scenarios": [
+        "Verify default page variant 'Default' in dataLayer",
+        "Test custom page variant name in dataLayer",
+        "Verify pageVariant appears in GTM dataLayer initialization",
+        "Test variant tracking with content personalization enabled",
+        "Test variant tracking without personalization"
+      ],
+      "dependencies": [
+        "Content Personalization",
+        "GTM Script Injection"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "HttpModule Registration",
+      "description": "Registers and manages the GTM HttpModule that intercepts page rendering to inject tracking scripts",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleTagManager/TagManagerModule.cs",
+        "Evoq Enterprise/Connectors/GoogleTagManager/DNNXE_GoogleTagManagerConnector.dnn"
+      ],
+      "ui_location": "System configuration (web.config)",
+      "test_scenarios": [
+        "Verify module registration in web.config on install",
+        "Verify module removal from web.config on uninstall",
+        "Test PreRequestHandlerExecute event handling",
+        "Verify module only processes valid DNN requests",
+        "Test module with non-page handlers",
+        "Verify module doesn't interfere with admin pages"
+      ],
+      "dependencies": [
+        "IIS/ASP.NET Pipeline",
+        "Web.config"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Connector Display Properties",
+      "description": "Provides connector metadata including name, icon, category for display in the connectors management UI",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleTagManager/Components/GoogleTagManagerConnector.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors",
+      "test_scenarios": [
+        "Verify connector appears in Marketing category",
+        "Verify connector icon displays correctly",
+        "Verify 'Google Tag Manager' display name",
+        "Test connector doesn't support multiple instances",
+        "Verify connector is not an Engage connector"
+      ],
+      "dependencies": [
+        "DNN Connectors Framework"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Configuration Caching",
+      "description": "Caches GTM script template from configuration file to improve performance",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleTagManager/TagManagerModule.cs",
+        "Evoq Enterprise/Connectors/GoogleTagManager/GoogleTagManager.config"
+      ],
+      "ui_location": "System level (automatic)",
+      "test_scenarios": [
+        "Verify script template is cached on first access",
+        "Test cache invalidation on config file change",
+        "Verify cache dependency on GoogleTagManager.config",
+        "Test performance with cached vs uncached template",
+        "Verify cache works across multiple requests"
+      ],
+      "dependencies": [
+        "DNN Cache Service"
+      ],
+      "priority": "Medium"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:33:25.036603",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

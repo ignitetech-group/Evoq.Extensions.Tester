@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal-Specific Analytics - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+        }
+        .header p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        .summary-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .summary-item.pass { border-left: 4px solid #4caf50; }
+        .summary-item.fail { border-left: 4px solid #f44336; }
+        .summary-item.blocked { border-left: 4px solid #ff9800; }
+        .summary-item.info { border-left: 4px solid #2196f3; }
+        .summary-item h3 {
+            margin: 0;
+            font-size: 2em;
+        }
+        .summary-item p {
+            margin: 5px 0 0 0;
+            color: #666;
+        }
+        .test-scenario {
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .scenario-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .scenario-header.pass { background: #e8f5e9; }
+        .scenario-header.fail { background: #ffebee; }
+        .scenario-header.blocked { background: #fff3e0; }
+        .scenario-header h3 { margin: 0; }
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .status-badge.pass { background: #4caf50; color: white; }
+        .status-badge.fail { background: #f44336; color: white; }
+        .status-badge.blocked { background: #ff9800; color: white; }
+        .scenario-content {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+        .scenario-content h4 {
+            margin-top: 0;
+            color: #333;
+        }
+        .steps {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin-bottom: 8px;
+        }
+        .screenshot {
+            margin: 15px 0;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .screenshot figcaption {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+        .code-block {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+            margin: 15px 0;
+        }
+        .error-box {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .code-analysis {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .code-analysis h4 {
+            margin-top: 0;
+            color: #1a237e;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Portal-Specific Analytics - Test Report</h1>
+        <p><strong>Extension:</strong> Evoq.PersonaBar.CommunityAnalytics (PersonaBar Module)</p>
+        <p><strong>Feature:</strong> Portal-Specific Analytics - Isolation of analytics data per portal in multi-portal installations</p>
+        <p><strong>Priority:</strong> High</p>
+        <p><strong>Test Date:</strong> December 30, 2025</p>
+        <p><strong>UI Location:</strong> PersonaBar > Dashboard > Community Analytics</p>
+    </div>
+
+    <div class="summary-box">
+        <div class="summary-item pass">
+            <h3>2</h3>
+            <p>Tests Passed</p>
+        </div>
+        <div class="summary-item blocked">
+            <h3>4</h3>
+            <p>Tests Blocked</p>
+        </div>
+        <div class="summary-item fail">
+            <h3>1</h3>
+            <p>Bug Found</p>
+        </div>
+        <div class="summary-item info">
+            <h3>2</h3>
+            <p>Portals Available</p>
+        </div>
+    </div>
+
+    <!-- Critical Bug Section -->
+    <div class="test-scenario">
+        <div class="scenario-header fail">
+            <h3>CRITICAL BUG: Community Analytics Dashboard Fails to Load</h3>
+            <span class="status-badge fail">BUG</span>
+        </div>
+        <div class="scenario-content">
+            <div class="error-box">
+                <strong>Error:</strong> TypeError: utility.serializeCustomDate is not a function<br>
+                <strong>Location:</strong> social-dashboard-combined-instance.js:1025:39<br>
+                <strong>Impact:</strong> Community Analytics dashboard cannot be used - all UI testing blocked
+            </div>
+
+            <h4>Error Details</h4>
+            <div class="code-block">
+TypeError: utility.serializeCustomDate is not a function
+    at dashboardClass.init (social-dashboard-combined-instance.js:1025:39)
+    at Object.init (social-dashboard-combined.js:16:23)
+    at extension.js:104:32
+            </div>
+
+            <h4>Steps to Reproduce</h4>
+            <div class="steps">
+                <ol>
+                    <li>Login as host user (SuperUser Account)</li>
+                    <li>Navigate to PersonaBar > Dashboard</li>
+                    <li>Hover over Dashboard to reveal submenu</li>
+                    <li>Click on "Community Analytics"</li>
+                    <li>Observe: Panel opens but content is blank/empty</li>
+                </ol>
+            </div>
+
+            <figure class="screenshot">
+                <img src="Portal-Specific_Analytics_step04_community_analytics_js_error.png" alt="Community Analytics JavaScript Error">
+                <figcaption>Figure: Community Analytics panel opens but fails to render due to JavaScript error</figcaption>
+            </figure>
+        </div>
+    </div>
+
+    <!-- Test Scenario 1 -->
+    <div class="test-scenario">
+        <div class="scenario-header pass">
+            <h3>Scenario 1: Verify Host User Access to Community Analytics</h3>
+            <span class="status-badge pass">PASS</span>
+        </div>
+        <div class="scenario-content">
+            <h4>Objective</h4>
+            <p>Verify that host/superuser can access the Community Analytics menu option.</p>
+
+            <h4>Steps Taken</h4>
+            <div class="steps">
+                <ol>
+                    <li>Navigated to http://localhost:8081/Login</li>
+                    <li>Logged in with host credentials (host / Pass123456)</li>
+                    <li>Verified PersonaBar is visible</li>
+                    <li>Hovered over Dashboard menu</li>
+                    <li>Verified "Community Analytics" option is visible in submenu</li>
+                </ol>
+            </div>
+
+            <h4>Result</h4>
+            <p>Host user (SuperUser Account) can successfully see and access the Community Analytics menu item in the Dashboard submenu.</p>
+
+            <figure class="screenshot">
+                <img src="Portal-Specific_Analytics_step05_host_access_verified.png" alt="Host User Access Verified">
+                <figcaption>Figure: SuperUser Account logged in with access to Community Analytics menu</figcaption>
+            </figure>
+        </div>
+    </div>
+
+    <!-- Test Scenario 2 -->
+    <div class="test-scenario">
+        <div class="scenario-header pass">
+            <h3>Scenario 2: Verify Multi-Portal Installation</h3>
+            <span class="status-badge pass">PASS</span>
+        </div>
+        <div class="scenario-content">
+            <h4>Objective</h4>
+            <p>Verify that multiple portals exist for testing portal-specific analytics isolation.</p>
+
+            <h4>Steps Taken</h4>
+            <div class="steps">
+                <ol>
+                    <li>Navigated to PersonaBar > Manage > Sites</li>
+                    <li>Identified available portals in the installation</li>
+                </ol>
+            </div>
+
+            <h4>Result</h4>
+            <p>Found 2 portals configured in the installation:</p>
+            <table>
+                <tr>
+                    <th>Portal Name</th>
+                    <th>Users</th>
+                    <th>Pages</th>
+                    <th>Last Updated</th>
+                </tr>
+                <tr>
+                    <td>My Website</td>
+                    <td>3</td>
+                    <td>49</td>
+                    <td>3 days ago</td>
+                </tr>
+                <tr>
+                    <td>Test Portal</td>
+                    <td>1</td>
+                    <td>28</td>
+                    <td>an hour ago</td>
+                </tr>
+            </table>
+
+            <figure class="screenshot">
+                <img src="Portal-Specific_Analytics_step07_multiple_portals.png" alt="Multiple Portals Found">
+                <figcaption>Figure: Sites management panel showing 2 configured portals</figcaption>
+            </figure>
+        </div>
+    </div>
+
+    <!-- Blocked Test Scenarios -->
+    <div class="test-scenario">
+        <div class="scenario-header blocked">
+            <h3>Scenario 3: Verify Portal Data Isolation</h3>
+            <span class="status-badge blocked">BLOCKED</span>
+        </div>
+        <div class="scenario-content">
+            <h4>Objective</h4>
+            <p>Verify that analytics data is isolated per portal - each portal should only see its own analytics data.</p>
+
+            <div class="info-box">
+                <strong>Status:</strong> BLOCKED - Cannot test due to JavaScript error preventing Community Analytics dashboard from loading.
+            </div>
+
+            <h4>Planned Test Steps (Could Not Execute)</h4>
+            <div class="steps">
+                <ol>
+                    <li>Open Community Analytics on Portal 1 (My Website)</li>
+                    <li>Note the analytics data displayed</li>
+                    <li>Switch to Portal 2 (Test Portal)</li>
+                    <li>Open Community Analytics</li>
+                    <li>Verify analytics data is different and portal-specific</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div class="test-scenario">
+        <div class="scenario-header blocked">
+            <h3>Scenario 4: Test Cross-Portal Data Prevention</h3>
+            <span class="status-badge blocked">BLOCKED</span>
+        </div>
+        <div class="scenario-content">
+            <h4>Objective</h4>
+            <p>Verify that one portal cannot access analytics data from another portal.</p>
+
+            <div class="info-box">
+                <strong>Status:</strong> BLOCKED - Cannot test due to JavaScript error preventing Community Analytics dashboard from loading.
+            </div>
+        </div>
+    </div>
+
+    <div class="test-scenario">
+        <div class="scenario-header blocked">
+            <h3>Scenario 5: Validate Portal ID Handling</h3>
+            <span class="status-badge blocked">BLOCKED</span>
+        </div>
+        <div class="scenario-content">
+            <h4>Objective</h4>
+            <p>Verify that API calls correctly include and use the portal ID parameter.</p>
+
+            <div class="info-box">
+                <strong>Status:</strong> BLOCKED - Cannot verify API calls as the JavaScript error prevents initialization. No API calls to analytics endpoints were made.
+            </div>
+
+            <h4>Network Analysis</h4>
+            <p>Observed that while Community Analytics HTML files were loaded successfully, no API calls to the analytics endpoints (GetDashboardInfo, GetTagStats, etc.) were made due to the initialization failure.</p>
+        </div>
+    </div>
+
+    <div class="test-scenario">
+        <div class="scenario-header blocked">
+            <h3>Scenario 6: Test Portal Switching</h3>
+            <span class="status-badge blocked">BLOCKED</span>
+        </div>
+        <div class="scenario-content">
+            <h4>Objective</h4>
+            <p>Verify that when switching between portals, the analytics dashboard correctly updates to show data for the current portal.</p>
+
+            <div class="info-box">
+                <strong>Status:</strong> BLOCKED - Cannot test due to JavaScript error preventing Community Analytics dashboard from loading.
+            </div>
+        </div>
+    </div>
+
+    <!-- Site Analytics Comparison -->
+    <div class="test-scenario">
+        <div class="scenario-header pass">
+            <h3>Comparison: Site Analytics (Working)</h3>
+            <span class="status-badge pass">WORKING</span>
+        </div>
+        <div class="scenario-content">
+            <h4>Observation</h4>
+            <p>Site Analytics (under Dashboard > Site Analytics) loads successfully, demonstrating that the issue is specific to Community Analytics.</p>
+
+            <figure class="screenshot">
+                <img src="Portal-Specific_Analytics_step06_site_analytics_working.png" alt="Site Analytics Working">
+                <figcaption>Figure: Site Analytics loads successfully with Insights and Top Fives sections</figcaption>
+            </figure>
+        </div>
+    </div>
+
+    <!-- Code Analysis Section -->
+    <div class="code-analysis">
+        <h4>Code-Level Portal Isolation Analysis</h4>
+        <p>Review of the source code reveals that portal-specific analytics IS properly implemented at the code level:</p>
+
+        <h5>File: Services/CommunityAnalyticsController.cs</h5>
+        <p>The API controller implements portal isolation through the <code>EffectivePortalId</code> property:</p>
+
+        <div class="code-block">
+protected int EffectivePortalId
+{
+    get
+    {
+        if (_effectivePortalId == Null.NullInteger)
+        {
+            _effectivePortalId = ActiveModule != null
+                ? ActiveModule.OwnerPortalID
+                : PortalController.GetEffectivePortalId(PortalSettings.PortalId);
+        }
+        return _effectivePortalId;
+    }
+}
+        </div>
+
+        <h5>Portal Isolation in API Methods</h5>
+        <p>All analytics API endpoints pass <code>EffectivePortalId</code> as the first parameter to ensure data isolation:</p>
+        <table>
+            <tr>
+                <th>API Method</th>
+                <th>Uses EffectivePortalId</th>
+            </tr>
+            <tr><td>GetDashboardInfo</td><td>Yes (line 52)</td></tr>
+            <tr><td>GetTagStats</td><td>Yes (line 59)</td></tr>
+            <tr><td>GetPopularContent</td><td>Yes (line 66)</td></tr>
+            <tr><td>GetModuleDashboardInfo</td><td>Yes (line 73)</td></tr>
+            <tr><td>GetModuleContextData</td><td>Yes (line 80)</td></tr>
+            <tr><td>GetModuleTagStats</td><td>Yes (line 87)</td></tr>
+            <tr><td>GetModulePopularContent</td><td>Yes (line 94)</td></tr>
+        </table>
+
+        <h5>Security Attributes</h5>
+        <ul>
+            <li><code>[MenuPermission(MenuName = "Evoq.CommunityAnalytics")]</code> - Restricts access based on menu permissions</li>
+            <li><code>[LicenseCheck]</code> - Ensures license validation</li>
+        </ul>
+
+        <h5>Role-Based Access (Components/CommunityAnalyticsController.cs)</h5>
+        <p>The extension controller implements role-based dashboard selection:</p>
+        <ul>
+            <li>Host users - Full access</li>
+            <li>Admin users - Full access</li>
+            <li>Community Manager + Content Manager - Combined dashboard</li>
+            <li>Community Manager + Content Editor - Combined dashboard</li>
+        </ul>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="test-scenario">
+        <div class="scenario-header info">
+            <h3>Recommendations</h3>
+            <span class="status-badge" style="background: #2196f3; color: white;">INFO</span>
+        </div>
+        <div class="scenario-content">
+            <h4>Critical Issue to Fix</h4>
+            <ol>
+                <li><strong>Fix JavaScript Error:</strong> Investigate and fix the missing <code>utility.serializeCustomDate</code> function in <code>social-dashboard-combined-instance.js</code>. This is blocking all Community Analytics functionality.</li>
+            </ol>
+
+            <h4>After Bug Fix - Recommended Tests</h4>
+            <ol>
+                <li>Re-run all blocked test scenarios</li>
+                <li>Verify portal data isolation with actual analytics data</li>
+                <li>Test cross-portal data prevention</li>
+                <li>Validate portal ID in API requests via network inspection</li>
+                <li>Test with portal groups (if configured)</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Additional Screenshots -->
+    <div class="test-scenario">
+        <div class="scenario-header info">
+            <h3>Additional Evidence</h3>
+            <span class="status-badge" style="background: #2196f3; color: white;">SCREENSHOTS</span>
+        </div>
+        <div class="scenario-content">
+            <figure class="screenshot">
+                <img src="Portal-Specific_Analytics_step01_login_page.png" alt="Login Page">
+                <figcaption>Figure: DNN Login Page</figcaption>
+            </figure>
+
+            <figure class="screenshot">
+                <img src="Portal-Specific_Analytics_step02_logged_in.png" alt="Logged In">
+                <figcaption>Figure: Logged in as SuperUser with PersonaBar visible</figcaption>
+            </figure>
+
+            <figure class="screenshot">
+                <img src="Portal-Specific_Analytics_step03_community_analytics_error.png" alt="Community Analytics Error">
+                <figcaption>Figure: Community Analytics panel fails to load</figcaption>
+            </figure>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Test Report Generated: December 30, 2025</p>
+        <p>Extension: Evoq.PersonaBar.CommunityAnalytics | Feature: Portal-Specific Analytics</p>
+    </div>
+</body>
+</html>

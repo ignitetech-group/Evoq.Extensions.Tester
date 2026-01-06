@@ -1,0 +1,275 @@
+{
+  "extension": {
+    "name": "DotNetNuke.Enterprise.MarketoForms",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Content",
+    "extension_type": "Module"
+  },
+  "features": [
+    {
+      "name": "Marketo Form Embedding",
+      "description": "Embeds Marketo forms on pages using JavaScript with dynamic form loading and rendering capabilities",
+      "files": [
+        "Evoq Enterprise/Modules/MarketoForms/View.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/View.ascx.cs",
+        "Evoq Enterprise/Modules/MarketoForms/MarketoForms2ModuleBase.cs"
+      ],
+      "ui_location": "Content > Add Module > Marketo Forms > View",
+      "test_scenarios": [
+        "Verify form loads when valid Marketo credentials are configured",
+        "Verify form displays correctly with header and footer markup",
+        "Test form submission with default success behavior",
+        "Verify form does not render when MarketoId is empty",
+        "Test JavaScript loading from Marketo CDN",
+        "Verify form placeholder div is created with unique ID"
+      ],
+      "dependencies": [
+        "Marketo Account",
+        "jQuery"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Marketo Script Parser",
+      "description": "Parses Marketo embed scripts to extract URL, code, and form ID automatically",
+      "files": [
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx.cs"
+      ],
+      "ui_location": "Module Settings > Marketo Forms Settings > Process Script Button",
+      "test_scenarios": [
+        "Parse valid Marketo embed script",
+        "Handle malformed script gracefully",
+        "Extract URL, code, and ID correctly",
+        "Validate extracted values",
+        "Display error for invalid scripts",
+        "Test script validation via AJAX"
+      ],
+      "dependencies": [
+        "Module Settings Access"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Form Success Override - Redirect",
+      "description": "Overrides default form success behavior to redirect to a custom URL or page",
+      "files": [
+        "Evoq Enterprise/Modules/MarketoForms/View.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx.cs"
+      ],
+      "ui_location": "Module Settings > Override On Success > Redirect to URL",
+      "test_scenarios": [
+        "Configure redirect to external URL",
+        "Configure redirect to internal page by ID",
+        "Test form submission redirects to configured URL",
+        "Verify redirect URL field shows/hides based on selection",
+        "Test saving and loading redirect settings",
+        "Validate URL format"
+      ],
+      "dependencies": [
+        "Form Embedding"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Form Success Override - Custom Message",
+      "description": "Displays a custom message after successful form submission instead of default behavior",
+      "files": [
+        "Evoq Enterprise/Modules/MarketoForms/View.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx.cs"
+      ],
+      "ui_location": "Module Settings > Override On Success > Custom Message",
+      "test_scenarios": [
+        "Configure custom success message",
+        "Test form submission displays custom message",
+        "Verify message field shows/hides based on selection",
+        "Test HTML content in custom message",
+        "Verify form is cleared after submission",
+        "Test saving and loading message settings"
+      ],
+      "dependencies": [
+        "Form Embedding"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Module Settings Configuration",
+      "description": "Manages all Marketo Forms module settings including credentials, markup, and behavior options",
+      "files": [
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx.cs",
+        "Evoq Enterprise/Modules/MarketoForms/MarketoForms2ModuleSettingsBase.cs"
+      ],
+      "ui_location": "Module Actions > Settings",
+      "test_scenarios": [
+        "Save and load all settings fields",
+        "Validate Marketo URL format",
+        "Test header/footer markup HTML",
+        "Verify settings persistence across page reloads",
+        "Test dropdown selection changes trigger postback",
+        "Validate form fields enable/disable correctly"
+      ],
+      "dependencies": [
+        "DNN Module Settings Framework"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Marketo Connector Configuration",
+      "description": "Site-wide Marketo integration connector for Munchkin tracking across all pages",
+      "files": [
+        "Evoq Enterprise/Connectors/Marketo/Components/MarketoConnector.cs",
+        "Evoq Enterprise/Connectors/Marketo/Components/Constants.cs"
+      ],
+      "ui_location": "Admin > Connectors > Marketo",
+      "test_scenarios": [
+        "Configure Marketo Account ID",
+        "Validate Account ID against Marketo servers",
+        "Test encryption/decryption of Account ID",
+        "Verify connector status (configured/not configured)",
+        "Test saving invalid Account ID shows error",
+        "Verify connector appears in connectors list"
+      ],
+      "dependencies": [
+        "Portal Settings",
+        "Connectors Framework"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Munchkin Tracking Script Injection",
+      "description": "Automatically injects Marketo Munchkin tracking JavaScript on all portal pages",
+      "files": [
+        "Evoq Enterprise/Connectors/Marketo/HttpModules/MarketoModule.cs",
+        "Evoq Enterprise/Connectors/Marketo/Components/Constants.cs"
+      ],
+      "ui_location": "Automatic - All Pages (when configured)",
+      "test_scenarios": [
+        "Verify script injection on page load",
+        "Test script only injects when Account ID is configured",
+        "Verify script loads from Marketo CDN",
+        "Test Munchkin.init() called with correct Account ID",
+        "Verify no script injection during installation/upgrade",
+        "Test script injection on different page types"
+      ],
+      "dependencies": [
+        "Marketo Connector Configuration",
+        "HTTP Module Registration"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "HTTP Module Registration",
+      "description": "Registers and manages the Marketo HTTP module in web.config for automatic script injection",
+      "files": [
+        "Evoq Enterprise/Connectors/Marketo/DNNXE_MarketoConnector.dnn",
+        "Evoq Enterprise/Connectors/Marketo/HttpModules/MarketoModule.cs"
+      ],
+      "ui_location": "System Level - Web.config",
+      "test_scenarios": [
+        "Verify module registration in web.config on install",
+        "Test module removal from web.config on uninstall",
+        "Verify module works in both IIS Classic and Integrated modes",
+        "Test module initialization on application start",
+        "Verify PreRequestHandlerExecute event handling",
+        "Test error handling doesn't break page rendering"
+      ],
+      "dependencies": [
+        "IIS Configuration",
+        "Web.config Access"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Form Validation and Error Handling",
+      "description": "Client-side validation of Marketo form configuration and error messaging",
+      "files": [
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/View.ascx"
+      ],
+      "ui_location": "Module Settings > Validation Messages",
+      "test_scenarios": [
+        "Test invalid URL error message display",
+        "Test invalid Code or ID error message",
+        "Verify Update button disabled during validation",
+        "Test script loading timeout handling",
+        "Verify error messages clear on successful validation",
+        "Test form null check prevents JavaScript errors"
+      ],
+      "dependencies": [
+        "Marketo Forms API",
+        "jQuery"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Header and Footer Markup",
+      "description": "Allows custom HTML markup to be displayed before and after the Marketo form",
+      "files": [
+        "Evoq Enterprise/Modules/MarketoForms/View.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/MarketoForms2ModuleBase.cs"
+      ],
+      "ui_location": "Module Settings > Header Markup / Footer Markup",
+      "test_scenarios": [
+        "Add and display header HTML content",
+        "Add and display footer HTML content",
+        "Test HTML encoding and security",
+        "Verify markup renders in correct position",
+        "Test empty markup doesn't break layout",
+        "Verify JavaScript in markup handling"
+      ],
+      "dependencies": [
+        "Form Embedding"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Module Installation and Upgrade",
+      "description": "Handles module package installation, upgrade, and uninstallation processes",
+      "files": [
+        "Evoq Enterprise/Modules/MarketoForms/DNNXE_MarketoForms.dnn",
+        "Evoq Enterprise/Modules/MarketoForms/Components/FeatureController.cs"
+      ],
+      "ui_location": "Host > Extensions > Install Extension",
+      "test_scenarios": [
+        "Install module from package",
+        "Verify all files deployed correctly",
+        "Test module appears in module list",
+        "Verify assembly registration",
+        "Test upgrade from previous version",
+        "Verify uninstall removes all components"
+      ],
+      "dependencies": [
+        "DNN Platform 7.0.2+"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Connector Security and Encryption",
+      "description": "Encrypts and secures Marketo Account ID storage in portal settings",
+      "files": [
+        "Evoq Enterprise/Connectors/Marketo/Components/MarketoConnector.cs",
+        "Evoq Enterprise/Connectors/Marketo/HttpModules/MarketoModule.cs"
+      ],
+      "ui_location": "Admin > Connectors > Marketo > Configuration",
+      "test_scenarios": [
+        "Verify Account ID encrypted in database",
+        "Test decryption for script injection",
+        "Verify encryption uses Host GUID",
+        "Test portal isolation of settings",
+        "Verify no plain text storage",
+        "Test access control to connector settings"
+      ],
+      "dependencies": [
+        "Portal Security",
+        "Host Settings"
+      ],
+      "priority": "Medium"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:34:07.355121",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

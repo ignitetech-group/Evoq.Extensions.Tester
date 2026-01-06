@@ -1,0 +1,176 @@
+{
+  "extension": {
+    "name": "Evoq.MarketoConnector",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Content",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "Marketo Connector Configuration",
+      "description": "Configure and validate Marketo Munchkin account ID for website tracking integration",
+      "files": [
+        "Evoq Enterprise/Connectors/Marketo/Components/MarketoConnector.cs",
+        "Evoq Enterprise/Connectors/Marketo/Components/Constants.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Marketo",
+      "test_scenarios": [
+        "Configure valid Marketo account ID",
+        "Validate account ID against Marketo servers",
+        "Save encrypted account ID to portal settings",
+        "Clear/remove existing account ID configuration",
+        "Test with invalid account ID and verify error message",
+        "Verify configuration persists across sessions",
+        "Test configuration in multi-portal environment"
+      ],
+      "dependencies": [
+        "DNN Connectors Framework",
+        "Portal Settings"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Marketo JavaScript Tracking Injection",
+      "description": "Automatically inject Marketo Munchkin tracking JavaScript into all website pages",
+      "files": [
+        "Evoq Enterprise/Connectors/Marketo/HttpModules/MarketoModule.cs",
+        "Evoq Enterprise/Connectors/Marketo/Components/Constants.cs"
+      ],
+      "ui_location": "Automatic - injected into all pages when configured",
+      "test_scenarios": [
+        "Verify Munchkin script injection on standard pages",
+        "Verify script not injected when account ID not configured",
+        "Test script injection on different page types (CDefault pages)",
+        "Verify script uses correct account ID from settings",
+        "Test script injection with special characters in account ID",
+        "Verify no injection during installation/upgrade",
+        "Test error handling when page context is unavailable"
+      ],
+      "dependencies": [
+        "Marketo Connector Configuration",
+        "HTTP Module Registration in web.config"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Marketo Forms Module Display",
+      "description": "Display Marketo forms on website pages with customizable header and footer markup",
+      "files": [
+        "Evoq Enterprise/Modules/MarketoForms/View.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/View.ascx.cs",
+        "Evoq Enterprise/Modules/MarketoForms/MarketoForms2ModuleBase.cs"
+      ],
+      "ui_location": "Content > Add Module > Marketo Forms",
+      "test_scenarios": [
+        "Display configured Marketo form on page",
+        "Verify form loads with correct Marketo URL, code, and ID",
+        "Test form with header markup display",
+        "Test form with footer markup display",
+        "Verify form doesn't display when not configured",
+        "Test multiple Marketo forms on same page",
+        "Verify form placeholder div is created correctly"
+      ],
+      "dependencies": [
+        "Marketo Forms Settings",
+        "jQuery"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Marketo Forms Settings Management",
+      "description": "Configure individual Marketo form instances with script processing and validation",
+      "files": [
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx.cs",
+        "Evoq Enterprise/Modules/MarketoForms/MarketoForms2ModuleSettingsBase.cs"
+      ],
+      "ui_location": "Module Actions > Settings (on Marketo Forms module)",
+      "test_scenarios": [
+        "Process Marketo embed script to extract URL, code, and form ID",
+        "Save form configuration settings",
+        "Load existing form settings",
+        "Validate form configuration with live Marketo API",
+        "Test script processing with invalid format",
+        "Configure header markup HTML",
+        "Configure footer markup HTML",
+        "Test settings persistence across module copies"
+      ],
+      "dependencies": [
+        "DNN Module Settings Framework",
+        "Marketo Forms API"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Form Submission Success Behavior",
+      "description": "Configure custom behaviors after successful Marketo form submission",
+      "files": [
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx",
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx.cs",
+        "Evoq Enterprise/Modules/MarketoForms/View.ascx"
+      ],
+      "ui_location": "Module Actions > Settings > Override On Success dropdown",
+      "test_scenarios": [
+        "Configure default behavior (Marketo's configured follow-up URL)",
+        "Configure redirect to specific URL after submission",
+        "Configure redirect to internal page (by page ID)",
+        "Configure custom thank you message display",
+        "Test form submission with redirect behavior",
+        "Test form submission with custom message",
+        "Verify form clearing after successful submission",
+        "Test URL validation for redirect option",
+        "Test custom message with HTML content"
+      ],
+      "dependencies": [
+        "Marketo Forms Module Display",
+        "DNN URL Control"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Marketo Forms Script Validation",
+      "description": "Real-time validation of Marketo form configuration using Forms 2.0 API",
+      "files": [
+        "Evoq Enterprise/Modules/MarketoForms/Settings.ascx"
+      ],
+      "ui_location": "Module Actions > Settings > Process Script button",
+      "test_scenarios": [
+        "Validate correct Marketo script loads Forms 2.0 library",
+        "Test validation with invalid Marketo URL",
+        "Test validation with invalid form code",
+        "Test validation with invalid form ID",
+        "Verify error messages for invalid configurations",
+        "Test script loading timeout handling",
+        "Verify Update button disabled during validation",
+        "Test validation with network errors"
+      ],
+      "dependencies": [
+        "Marketo Forms 2.0 JavaScript API",
+        "jQuery"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Web.config HTTP Module Registration",
+      "description": "Automatic registration and cleanup of Marketo HTTP module in web.config",
+      "files": [
+        "Evoq Enterprise/Connectors/Marketo/DNNXE_MarketoConnector.dnn"
+      ],
+      "ui_location": "Host > Extensions > Install/Uninstall",
+      "test_scenarios": [
+        "Verify HTTP module registration on install (system.web/httpModules)",
+        "Verify HTTP module registration on install (system.webServer/modules)",
+        "Test HTTP module removal on uninstall",
+        "Verify no duplicate registrations on reinstall",
+        "Test installation with existing web.config modifications"
+      ],
+      "dependencies": [
+        "DNN Extension Installer",
+        "IIS Configuration"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:36:03.312130",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

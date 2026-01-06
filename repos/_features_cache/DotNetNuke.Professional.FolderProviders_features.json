@@ -1,0 +1,296 @@
+{
+  "extension": {
+    "name": "DotNetNuke.Professional.FolderProviders",
+    "priority": "Medium",
+    "repo": "Dnn.Evoq.Basic",
+    "extension_type": "Folder Provider"
+  },
+  "features": [
+    {
+      "name": "Amazon S3 Folder Provider Configuration",
+      "description": "Configure and manage Amazon S3 buckets as folder storage locations for storing files in AWS cloud storage",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs",
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/Settings.ascx",
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/Settings.ascx.cs",
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonS3RemoteStorageItem.cs"
+      ],
+      "ui_location": "Admin > File Management > Add Folder > Amazon S3 Folder Type",
+      "test_scenarios": [
+        "Configure new S3 folder with valid AWS credentials",
+        "Create new S3 bucket through settings interface",
+        "Select existing S3 bucket from dropdown",
+        "Validate AWS access key and secret key",
+        "Test HTTP vs HTTPS protocol selection",
+        "Enable/disable direct link generation",
+        "Verify duplicate folder mapping prevention",
+        "Test credential encryption and storage",
+        "Validate bucket name format requirements",
+        "Test connection with invalid credentials"
+      ],
+      "dependencies": [
+        "File Management Module",
+        "AWS S3 Service"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "UNC Folder Provider Configuration",
+      "description": "Configure network shared folders (UNC paths) as folder storage locations for accessing files on network drives",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/UNCFolderProvider/UNCFolderProvider.cs",
+        "Evoq Platform/Providers/FolderProviders/UNCFolderProvider/Settings.ascx",
+        "Evoq Platform/Providers/FolderProviders/UNCFolderProvider/Settings.ascx.cs"
+      ],
+      "ui_location": "Admin > File Management > Add Folder > UNC Folder Type",
+      "test_scenarios": [
+        "Configure UNC path with valid network location",
+        "Validate UNC path format and accessibility",
+        "Test ASP.NET hosting permission validation",
+        "Verify path encryption and secure storage",
+        "Test duplicate folder mapping prevention",
+        "Configure folder with invalid UNC path",
+        "Test network connectivity requirements",
+        "Verify mapped path support functionality",
+        "Test folder creation with special characters in path",
+        "Validate error handling for inaccessible paths"
+      ],
+      "dependencies": [
+        "File Management Module",
+        "Network Access"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "S3 File Operations",
+      "description": "Perform file operations (upload, download, delete, move, rename) on files stored in Amazon S3 buckets",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs",
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonStream.cs"
+      ],
+      "ui_location": "Admin > File Management > [S3 Folder]",
+      "test_scenarios": [
+        "Upload file to S3 bucket",
+        "Download file from S3 bucket",
+        "Delete file from S3 bucket",
+        "Move file between S3 folders",
+        "Rename file in S3 bucket",
+        "Copy file within S3 bucket",
+        "Upload large file (test streaming)",
+        "Delete multiple files at once",
+        "Move folder with nested content",
+        "Test file operations with special characters in names"
+      ],
+      "dependencies": [
+        "Amazon S3 Folder Provider Configuration"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "UNC File Operations",
+      "description": "Perform file operations on files stored in UNC network paths",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/UNCFolderProvider/UNCFolderProvider.cs"
+      ],
+      "ui_location": "Admin > File Management > [UNC Folder]",
+      "test_scenarios": [
+        "Upload file to UNC path",
+        "Download file from UNC path",
+        "Delete file from UNC path",
+        "Move file between UNC folders",
+        "Rename file in UNC folder",
+        "Create subfolder in UNC path",
+        "Delete folder from UNC path",
+        "Test operations with network disconnection",
+        "Verify path separator handling",
+        "Test file operations with permission restrictions"
+      ],
+      "dependencies": [
+        "UNC Folder Provider Configuration"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "S3 Direct Link Generation",
+      "description": "Generate pre-signed URLs for direct access to S3 files without going through the application",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs"
+      ],
+      "ui_location": "Admin > File Management > [S3 Folder] > File Properties",
+      "test_scenarios": [
+        "Generate direct link for public file",
+        "Generate pre-signed URL for private file",
+        "Test URL expiration settings",
+        "Verify direct link toggle functionality",
+        "Test link generation with HTTPS protocol",
+        "Test link generation with HTTP protocol",
+        "Validate generated URL format",
+        "Test access with expired pre-signed URL"
+      ],
+      "dependencies": [
+        "Amazon S3 Folder Provider Configuration"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Folder Synchronization",
+      "description": "Synchronize folder contents between local storage and remote providers (S3, UNC)",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs",
+        "Evoq Platform/Providers/FolderProviders/UNCFolderProvider/UNCFolderProvider.cs"
+      ],
+      "ui_location": "Admin > File Management > [Provider Folder] > Synchronize",
+      "test_scenarios": [
+        "Synchronize S3 folder with local changes",
+        "Synchronize UNC folder with local changes",
+        "Handle sync conflicts (file exists in both)",
+        "Sync folder with deleted remote files",
+        "Sync folder with new remote files",
+        "Test sync with large number of files",
+        "Verify sync status reporting",
+        "Test sync cancellation",
+        "Sync nested folder structures"
+      ],
+      "dependencies": [
+        "File Management Module"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Provider Icon Customization",
+      "description": "Display custom icons for different folder provider types in the file manager tree",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs",
+        "Evoq Platform/Providers/FolderProviders/UNCFolderProvider/UNCFolderProvider.cs"
+      ],
+      "ui_location": "Admin > File Management > Folder Tree",
+      "test_scenarios": [
+        "Verify S3 folder displays Amazon icon",
+        "Verify UNC folder displays network icon",
+        "Test icon display in folder tree view",
+        "Test icon display in folder list view",
+        "Verify icon path resolution"
+      ],
+      "dependencies": [
+        "File Management Module"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "S3 Bucket Management",
+      "description": "Create and manage S3 buckets directly from the folder provider settings",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/Settings.ascx.cs",
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs"
+      ],
+      "ui_location": "Admin > File Management > Add Folder > Amazon S3 > Settings",
+      "test_scenarios": [
+        "List all available S3 buckets",
+        "Create new S3 bucket with valid name",
+        "Create bucket with invalid name format",
+        "Select bucket from dropdown list",
+        "Refresh bucket list",
+        "Test bucket creation in different regions",
+        "Verify bucket access permissions"
+      ],
+      "dependencies": [
+        "Amazon S3 Folder Provider Configuration"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Folder Provider Security",
+      "description": "Manage security settings and access control for folder providers",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs",
+        "Evoq Platform/Providers/FolderProviders/UNCFolderProvider/UNCFolderProvider.cs"
+      ],
+      "ui_location": "Admin > File Management > [Provider Folder] > Permissions",
+      "test_scenarios": [
+        "Verify IsStorageSecure property for UNC",
+        "Test anonymous access prevention",
+        "Verify encrypted credential storage",
+        "Test folder access with different user roles",
+        "Validate ASP.NET hosting permissions",
+        "Test secure communication over HTTPS",
+        "Verify credential masking in UI"
+      ],
+      "dependencies": [
+        "File Management Module",
+        "User Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Provider Cache Management",
+      "description": "Manage caching of remote file listings to improve performance",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs"
+      ],
+      "ui_location": "Admin > File Management > [S3 Folder]",
+      "test_scenarios": [
+        "Test object list caching for S3",
+        "Verify cache expiration",
+        "Force cache refresh",
+        "Test performance with cached listings",
+        "Verify cache invalidation on file changes",
+        "Test cache behavior with large file lists"
+      ],
+      "dependencies": [
+        "Amazon S3 Folder Provider Configuration"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Path Handling and Conversion",
+      "description": "Handle path format conversions between different storage systems",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/UNCFolderProvider/UNCFolderProvider.cs",
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs"
+      ],
+      "ui_location": "Admin > File Management",
+      "test_scenarios": [
+        "Convert UNC paths to relative paths",
+        "Handle path separators (forward/backward slash)",
+        "Test special characters in paths",
+        "Verify GetActualPath functionality",
+        "Verify GetRelativePath functionality",
+        "Test path repair for invalid separators",
+        "Handle Unicode characters in paths",
+        "Test maximum path length limits"
+      ],
+      "dependencies": [
+        "File Management Module"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Provider Installation and Configuration",
+      "description": "Install and configure folder providers through the extension installer",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/FolderProviders.dnn",
+        "Evoq Platform/Providers/FolderProviders/Provider.build",
+        "Evoq Platform/Providers/FolderProviders/DotNetNuke.Professional.FolderProviders.nuspec"
+      ],
+      "ui_location": "Host > Extensions > Install Extension",
+      "test_scenarios": [
+        "Install folder providers package",
+        "Verify web.config modifications",
+        "Test provider registration",
+        "Verify assembly deployment",
+        "Test resource file installation",
+        "Verify Azure compatibility flag",
+        "Test package upgrade scenario",
+        "Test package uninstallation",
+        "Verify provider availability after install"
+      ],
+      "dependencies": [
+        "Extension Installer",
+        "Platform Core"
+      ],
+      "priority": "Medium"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:23:28.837340",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

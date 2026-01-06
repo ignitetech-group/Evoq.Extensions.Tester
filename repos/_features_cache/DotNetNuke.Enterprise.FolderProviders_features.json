@@ -1,0 +1,376 @@
+{
+  "extension": {
+    "name": "DotNetNuke.Enterprise.FolderProviders",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Content",
+    "extension_type": "Folder Provider"
+  },
+  "features": [
+    {
+      "name": "Dropbox Provider Configuration",
+      "description": "Configure and authenticate Dropbox folder provider with OAuth 2.0 flow, including app credentials and folder settings",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/Settings.ascx",
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/Settings.ascx.cs",
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/Authorize.aspx",
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/Authorize.aspx.cs",
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/Constants.cs"
+      ],
+      "ui_location": "Admin > Settings > Folders > Add Folder Type > Dropbox",
+      "test_scenarios": [
+        "Configure Dropbox with valid App Key and Secret",
+        "Configure Dropbox with invalid credentials",
+        "Complete OAuth authorization flow successfully",
+        "Cancel OAuth authorization flow",
+        "Validate parent folder exists during authorization",
+        "Test parent folder path regex validation",
+        "Verify credentials are encrypted in database",
+        "Test connection validation before usage",
+        "Detect duplicate folder mappings with same credentials"
+      ],
+      "dependencies": [
+        "Dropbox.Api SDK",
+        "DNN Folder Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Dropbox File Operations",
+      "description": "Upload, download, copy, move, delete and manage files stored in Dropbox through DNN interface",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/DropboxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/DropboxRemoteStorageItem.cs",
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/DropboxStream.cs"
+      ],
+      "ui_location": "Admin > File Management > Dropbox Folders",
+      "test_scenarios": [
+        "Upload file to Dropbox folder",
+        "Upload file with overwrite mode",
+        "Download file from Dropbox",
+        "Copy file within Dropbox",
+        "Move file between Dropbox folders",
+        "Delete file from Dropbox",
+        "Handle orphaned file deletion",
+        "Verify 150ms rate limiting delay",
+        "Test file operations with invalid characters (< > | ? * . : \")",
+        "Verify cache clearing after file operations"
+      ],
+      "dependencies": [
+        "Dropbox Provider Configuration"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Dropbox Folder Operations",
+      "description": "Create, delete, move and list folders in Dropbox storage",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/DropboxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/DropboxRemoteStorageItem.cs"
+      ],
+      "ui_location": "Admin > File Management > Dropbox Folders",
+      "test_scenarios": [
+        "Create single folder in Dropbox",
+        "Create nested folder hierarchy",
+        "Delete empty folder",
+        "Delete folder with contents recursively",
+        "Move folder to different location",
+        "List folder contents",
+        "List folders recursively with pagination",
+        "Test case-insensitive folder name matching",
+        "Verify trailing slash handling in paths",
+        "Test folder caching and cache invalidation"
+      ],
+      "dependencies": [
+        "Dropbox Provider Configuration"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Dropbox Direct Link Generation",
+      "description": "Generate direct download links for Dropbox files using sharing API or DNN file controller",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/DropboxFolderProvider.cs"
+      ],
+      "ui_location": "File properties and sharing dialogs",
+      "test_scenarios": [
+        "Generate direct link with DirectLink=true",
+        "Check for existing shared links before creating",
+        "Create new shared link when needed",
+        "Convert Dropbox URL format (dl=0 to raw=1)",
+        "Generate DNN-managed link with DirectLink=false",
+        "Use direct links in email notifications"
+      ],
+      "dependencies": [
+        "Dropbox Provider Configuration"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Box Provider Configuration",
+      "description": "Configure and authenticate Box folder provider with OAuth 2.0 flow, including client credentials and folder settings",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Settings.ascx",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Settings.ascx.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Authorize.aspx",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Authorize.aspx.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxConstants.cs"
+      ],
+      "ui_location": "Admin > Settings > Folders > Add Folder Type > Box",
+      "test_scenarios": [
+        "Configure Box with valid Client ID and Secret",
+        "Configure Box with invalid credentials",
+        "Complete OAuth authorization flow successfully",
+        "Cancel OAuth authorization flow",
+        "Validate HTTPS requirement for OAuth (except localhost)",
+        "Resolve parent folder name to Box folder ID",
+        "Test parent folder not found scenario",
+        "Verify credentials are encrypted in database",
+        "Test connection validation before usage",
+        "Auto-generate redirect URI from current request"
+      ],
+      "dependencies": [
+        "DNN Folder Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Box File Operations",
+      "description": "Upload, download, copy, move, rename, delete and manage files stored in Box through DNN interface",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxRemoteStorageItem.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxApi.cs"
+      ],
+      "ui_location": "Admin > File Management > Box Folders",
+      "test_scenarios": [
+        "Upload file to Box folder",
+        "Delete existing file before upload",
+        "Download file from Box",
+        "Copy file within Box",
+        "Move file between Box folders",
+        "Rename file in Box",
+        "Delete file from Box",
+        "Get SHA1 hash code for file",
+        "Create shared link after upload",
+        "Handle 401 with automatic token refresh",
+        "Verify cache clearing after file operations"
+      ],
+      "dependencies": [
+        "Box Provider Configuration",
+        "Box Token Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Box Folder Operations",
+      "description": "Create, delete, move, rename and list folders in Box storage",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxRemoteStorageItem.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxApi.cs"
+      ],
+      "ui_location": "Admin > File Management > Box Folders",
+      "test_scenarios": [
+        "Create single folder in Box",
+        "Create nested folder hierarchy",
+        "Delete empty folder",
+        "Delete folder with contents recursively",
+        "Move folder to different location",
+        "Rename folder in Box",
+        "List folder contents with pagination (1000 item limit)",
+        "List folders recursively",
+        "Test case-insensitive folder name matching",
+        "Test folder caching and cache invalidation"
+      ],
+      "dependencies": [
+        "Box Provider Configuration",
+        "Box Token Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Box Token Management",
+      "description": "Manage OAuth access and refresh tokens for Box API authentication with automatic refresh on expiration",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxAuth.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxApi.cs"
+      ],
+      "ui_location": "Background service (automatic)",
+      "test_scenarios": [
+        "Store access and refresh tokens",
+        "Detect expired token (401 response)",
+        "Refresh access token using refresh token",
+        "Update stored tokens after refresh",
+        "Handle concurrent token refresh requests",
+        "Test thread-safe token cache",
+        "Handle token refresh failure",
+        "Maintain in-memory token cache per folder mapping"
+      ],
+      "dependencies": [
+        "Box Provider Configuration"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Box Direct Link Generation",
+      "description": "Generate direct download links for Box files using sharing API or DNN file controller",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/Components/BoxApi.cs"
+      ],
+      "ui_location": "File properties and sharing dialogs",
+      "test_scenarios": [
+        "Generate direct link with DirectLink=true",
+        "Check for existing shared link in file info",
+        "Create new shared link with open access",
+        "Extract download URL from shared link",
+        "Generate DNN-managed link with DirectLink=false",
+        "Handle shared link creation failure"
+      ],
+      "dependencies": [
+        "Box Provider Configuration",
+        "Box Token Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Provider Cache Management",
+      "description": "Manage object and list caches for both Dropbox and Box providers to optimize performance",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/DropboxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs"
+      ],
+      "ui_location": "Background service (automatic)",
+      "test_scenarios": [
+        "Cache individual file/folder metadata",
+        "Cache complete folder listings",
+        "Test cache hit on repeated access",
+        "Clear cache on write operations",
+        "Test root folder cache for Dropbox",
+        "Detect folder modifications using hash comparison",
+        "Handle service unavailable with 5-minute delay (Dropbox)",
+        "Test cache timeout expiration",
+        "Verify cache key generation"
+      ],
+      "dependencies": [
+        "Dropbox Provider Configuration",
+        "Box Provider Configuration"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Settings Persistence and Validation",
+      "description": "Store, encrypt, and validate folder provider settings with duplicate detection",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/SettingsBase.cs",
+        "Evoq Enterprise/Providers/FolderProviders/Components/BusinessController.cs"
+      ],
+      "ui_location": "Admin > Settings > Folders > Provider Settings",
+      "test_scenarios": [
+        "Save encrypted credentials to database",
+        "Load and decrypt stored settings",
+        "Detect duplicate folder mappings",
+        "Validate required fields",
+        "Test settings cache during configuration",
+        "Handle missing or corrupted settings",
+        "Verify Host.GUID encryption key usage"
+      ],
+      "dependencies": [
+        "DNN Folder Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Cloud Connector Services",
+      "description": "Web services for Dropbox and Box connectors providing API endpoints for folder operations",
+      "files": [
+        "Evoq Enterprise/Connectors/DropboxConnector/Services/ServicesController.cs",
+        "Evoq Enterprise/Connectors/DropboxConnector/DropboxConnector.cs",
+        "Evoq Enterprise/Connectors/BoxConnector/Services/ServicesController.cs",
+        "Evoq Enterprise/Connectors/BoxConnector/BoxConnector.cs"
+      ],
+      "ui_location": "API endpoints accessed by folder provider UI",
+      "test_scenarios": [
+        "Get folder list via API",
+        "Create folder via API",
+        "Delete folder via API",
+        "Handle API authentication",
+        "Return JSON responses",
+        "Handle API errors gracefully",
+        "Test CORS configuration"
+      ],
+      "dependencies": [
+        "Dropbox Provider Configuration",
+        "Box Provider Configuration"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Provider Upgrade Migration",
+      "description": "Migrate Dropbox provider from V1 API to V2 API during version upgrade",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/Components/BusinessController.cs",
+        "Evoq Enterprise/Providers/FolderProviders/Scripts/09.01.00.SqlDataProvider",
+        "Evoq Enterprise/Providers/FolderProviders/Scripts/09.02.00.SqlDataProvider"
+      ],
+      "ui_location": "Automatic during extension upgrade",
+      "test_scenarios": [
+        "Detect V1 API tokens (;;; delimited)",
+        "Convert V1 tokens to V2 format",
+        "Use token_from_oauth1 endpoint",
+        "Handle migration failures gracefully",
+        "Log failed migrations for manual remediation",
+        "Test upgrade from 9.1 to 9.2"
+      ],
+      "dependencies": [
+        "Dropbox Provider Configuration"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "File Stream Management",
+      "description": "Handle file streams for upload and download operations with proper resource management",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/DropboxStream.cs",
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/DropboxFolderProvider.cs",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/BoxFolderProvider.cs"
+      ],
+      "ui_location": "File upload/download operations",
+      "test_scenarios": [
+        "Stream file upload to Dropbox",
+        "Stream file download from Dropbox",
+        "Handle MemoryStream for Box operations",
+        "Test stream disposal and cleanup",
+        "Handle large file streams",
+        "Test stream position reset"
+      ],
+      "dependencies": [
+        "Dropbox Provider Configuration",
+        "Box Provider Configuration"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Provider Icon Display",
+      "description": "Display provider-specific icons in folder management UI",
+      "files": [
+        "Evoq Enterprise/Providers/FolderProviders/DropboxFolderProvider/images/FolderDropbox_32x32_Standard.png",
+        "Evoq Enterprise/Providers/FolderProviders/BoxFolderProvider/images/Icon-Box-Folder-32x32.png",
+        "Evoq Enterprise/Providers/FolderProviders/DNNXE_FolderProviders.dnn"
+      ],
+      "ui_location": "Admin > File Management > Folder icons",
+      "test_scenarios": [
+        "Display Dropbox folder icon",
+        "Display Box folder icon",
+        "Show icon in folder tree view",
+        "Show icon in folder type selection"
+      ],
+      "dependencies": [
+        "DNN Folder Management"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:43:11.706623",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

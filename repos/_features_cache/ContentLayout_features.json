@@ -1,0 +1,345 @@
+{
+  "extension": {
+    "name": "ContentLayout",
+    "priority": "High",
+    "repo": "Dnn.Evoq.Basic",
+    "extension_type": "Module"
+  },
+  "features": [
+    {
+      "name": "Layout Management",
+      "description": "Core functionality for creating and managing multi-column layouts on pages, including default layout creation and column configuration.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/Components/ContentLayoutController.cs",
+        "Evoq Content/Modules/ContentLayout/Components/IContentLayoutController.cs",
+        "Evoq Content/Modules/ContentLayout/Components/Dto/Layout.cs",
+        "Evoq Content/Modules/ContentLayout/View.ascx.cs"
+      ],
+      "ui_location": "Page Edit Mode > Content Layout Module",
+      "test_scenarios": [
+        "Create default layout on new module instance",
+        "Get existing layout for a module",
+        "Verify column sizes are properly saved",
+        "Verify CSS classes are generated correctly",
+        "Test layout rendering in view mode",
+        "Test layout rendering in edit mode"
+      ],
+      "dependencies": [
+        "DNN Module System",
+        "Page Versioning"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Layout Template Management",
+      "description": "Manages predefined layout templates that users can apply to quickly configure column layouts.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/Components/LayoutTemplateController.cs",
+        "Evoq Content/Modules/ContentLayout/Components/ILayoutTemplateController.cs",
+        "Evoq Content/Modules/ContentLayout/Components/Dto/LayoutTemplate.cs",
+        "Evoq Content/Modules/ContentLayout/Templates/data.xml"
+      ],
+      "ui_location": "Page Edit Mode > Content Layout Module > Template Selector",
+      "test_scenarios": [
+        "Load available layout templates",
+        "Apply template to existing layout",
+        "Verify template caching works correctly",
+        "Test template XML deserialization",
+        "Verify all default templates are available"
+      ],
+      "dependencies": [
+        "Layout Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Custom Column Sizing",
+      "description": "Allows users to set custom column widths beyond predefined templates using percentage values.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/Components/ContentLayoutController.cs",
+        "Evoq Content/Modules/ContentLayout/Components/ColumnSizesHelper.cs",
+        "Evoq Content/Modules/ContentLayout/Components/Dto/LayoutWithColumnSizes.cs",
+        "Evoq Content/Modules/ContentLayout/Services/ServiceController.cs"
+      ],
+      "ui_location": "Page Edit Mode > Content Layout Module > Column Size Editor",
+      "test_scenarios": [
+        "Update layout with custom column sizes",
+        "Validate column size format",
+        "Test invalid column size rejection",
+        "Verify CSS class generation for custom sizes",
+        "Test responsive behavior with custom sizes",
+        "Verify custom size persistence"
+      ],
+      "dependencies": [
+        "Layout Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Interactive Column Resizing",
+      "description": "Provides drag-and-drop column resizing functionality in edit mode for visual layout adjustments.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/ClientScripts/LayoutEditor.js",
+        "Evoq Content/Modules/ContentLayout/Css/LayoutEditor.css",
+        "Evoq Content/Modules/ContentLayout/View.ascx.cs"
+      ],
+      "ui_location": "Page Edit Mode > Content Layout Module > Column Borders",
+      "test_scenarios": [
+        "Drag column border to resize",
+        "Verify minimum column width constraints",
+        "Test maximum column width constraints",
+        "Verify resize updates persist after save",
+        "Test resize with multiple columns",
+        "Verify resize UI feedback"
+      ],
+      "dependencies": [
+        "Custom Column Sizing",
+        "JavaScript Libraries"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Module Placement in Columns",
+      "description": "Manages placement and movement of modules within content layout columns/panes.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/View.ascx.cs",
+        "Evoq Content/Modules/ContentLayout/Controls/LayoutPane.cs",
+        "Evoq Content/Modules/ContentLayout/Components/ContentLayoutController.cs"
+      ],
+      "ui_location": "Page Edit Mode > Content Layout Panes",
+      "test_scenarios": [
+        "Add module to content layout pane",
+        "Move module between panes",
+        "Remove module from pane",
+        "Verify module order preservation",
+        "Test empty pane handling",
+        "Verify pane visibility settings"
+      ],
+      "dependencies": [
+        "DNN Module System",
+        "Pane Management"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Layout Versioning",
+      "description": "Tracks changes to layouts and maintains version history for rollback and publishing workflows.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/Components/VersionController.cs",
+        "Evoq Content/Modules/ContentLayout/Components/IVersionController.cs",
+        "Evoq Content/Modules/ContentLayout/Components/Dto/LayoutVersion.cs",
+        "Evoq Content/Modules/ContentLayout/Components/Repositories/VersionRepository.cs"
+      ],
+      "ui_location": "Page Edit Mode > Content Layout Module > Version History",
+      "test_scenarios": [
+        "Create first version",
+        "Track layout changes",
+        "Publish version",
+        "Rollback to previous version",
+        "Delete version",
+        "Get latest version",
+        "Get published version",
+        "Test version caching"
+      ],
+      "dependencies": [
+        "Page Versioning System",
+        "Tab Change Tracker"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Dynamic Pane Management",
+      "description": "Dynamically creates and manages content panes within the layout at runtime.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/View.ascx.cs",
+        "Evoq Content/Modules/ContentLayout/Controls/LayoutPane.cs",
+        "Evoq Content/Modules/ContentLayout/Components/LayoutPanePrefixGenerator.cs",
+        "Evoq Content/Modules/ContentLayout/Components/ILayoutPanePrefixGenerator.cs"
+      ],
+      "ui_location": "Page Edit Mode > Content Layout Module",
+      "test_scenarios": [
+        "Generate unique pane names",
+        "Register panes with skin",
+        "Handle pane name conflicts",
+        "Test pane visibility toggling",
+        "Verify pane CSS classes",
+        "Test empty pane styling"
+      ],
+      "dependencies": [
+        "DNN Skin System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Content Layout Migration",
+      "description": "Migrates legacy Content Layout instances from Evoq 8.x to the new module-based architecture.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/Components/Migration/ContentLayoutMigrationController.cs",
+        "Evoq Content/Modules/ContentLayout/Components/Migration/ContentLayoutMigrationRepository.cs",
+        "Evoq Content/Modules/ContentLayout/Components/Migration/Entities/ContentLayout.cs"
+      ],
+      "ui_location": "Admin > Site Settings > Migration Tool",
+      "test_scenarios": [
+        "Detect legacy content layouts",
+        "Migrate single content layout",
+        "Migrate multiple layouts on same page",
+        "Handle migration errors gracefully",
+        "Preserve module permissions during migration",
+        "Update pane names after migration",
+        "Verify tab versioning state preservation"
+      ],
+      "dependencies": [
+        "Tab Versioning",
+        "Module System"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "API Endpoints",
+      "description": "RESTful API endpoints for managing content layouts programmatically.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/Services/ServiceController.cs",
+        "Evoq Content/Modules/ContentLayout/Services/ServiceRouteMapper.cs",
+        "Evoq Content/Modules/ContentLayout/Services/Attributes/ContentLayoutExceptionFilterAttribute.cs"
+      ],
+      "ui_location": "API: /DesktopModules/ContentLayout/API/",
+      "test_scenarios": [
+        "GET content layout templates",
+        "POST update layout with column sizes",
+        "POST update layout from template",
+        "Test authorization requirements",
+        "Verify anti-forgery token validation",
+        "Test error handling and responses"
+      ],
+      "dependencies": [
+        "DNN Web API Framework"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Edit Mode UI Controls",
+      "description": "Provides visual editing interface for content layout configuration in page edit mode.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/ClientScripts/LayoutEditor.js",
+        "Evoq Content/Modules/ContentLayout/ClientScripts/ModuleEditor.js",
+        "Evoq Content/Modules/ContentLayout/Css/LayoutEditor.css",
+        "Evoq Content/Modules/ContentLayout/View.ascx"
+      ],
+      "ui_location": "Page Edit Mode > Content Layout Module > Edit Controls",
+      "test_scenarios": [
+        "Display edit controls in edit mode",
+        "Hide edit controls in view mode",
+        "Test column height adjustment",
+        "Verify module action menu modifications",
+        "Test drag state handling",
+        "Verify responsive behavior"
+      ],
+      "dependencies": [
+        "DNN Edit Mode",
+        "jQuery"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Shared Module Restrictions",
+      "description": "Enforces restrictions on shared module instances to prevent layout conflicts across pages.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/Components/ContentLayoutController.cs",
+        "Evoq Content/Modules/ContentLayout/View.ascx.cs"
+      ],
+      "ui_location": "Page Edit Mode > Shared Modules",
+      "test_scenarios": [
+        "Prevent layout changes on shared modules",
+        "Display appropriate error messages",
+        "Redirect to master page for edits",
+        "Verify read-only behavior on non-master pages"
+      ],
+      "dependencies": [
+        "DNN Module Sharing"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Bootstrap Grid Integration",
+      "description": "Integrates Bootstrap responsive grid system for column layouts.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/Css/bootstrap.min.css",
+        "Evoq Content/Modules/ContentLayout/Components/ColumnSizesHelper.cs",
+        "Evoq Content/Modules/ContentLayout/View.ascx.cs"
+      ],
+      "ui_location": "All Pages with Content Layout",
+      "test_scenarios": [
+        "Verify Bootstrap CSS loading",
+        "Test responsive breakpoints",
+        "Verify column CSS classes",
+        "Test mobile responsiveness",
+        "Verify IE8 compatibility with respond.js"
+      ],
+      "dependencies": [
+        "Bootstrap Framework"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Permission Management",
+      "description": "Controls access to content layout editing features based on user permissions.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/View.ascx.cs",
+        "Evoq Content/Modules/ContentLayout/Services/ServiceController.cs",
+        "Evoq Content/Modules/ContentLayout/Components/Constants.cs"
+      ],
+      "ui_location": "Module Settings > Permissions",
+      "test_scenarios": [
+        "Test edit permission validation",
+        "Verify view-only access",
+        "Test admin override permissions",
+        "Verify API endpoint authorization",
+        "Test permission inheritance"
+      ],
+      "dependencies": [
+        "DNN Permission System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Print and Popup Mode Support",
+      "description": "Handles special rendering modes for print view and popup windows.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/View.ascx.cs"
+      ],
+      "ui_location": "Page Print View / Popup Windows",
+      "test_scenarios": [
+        "Test print mode rendering",
+        "Test popup mode rendering",
+        "Verify edit controls hidden in special modes",
+        "Test layout preservation in print view"
+      ],
+      "dependencies": [
+        "DNN Page Modes"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "SQL Data Provider Scripts",
+      "description": "Database schema and migration scripts for content layout data persistence.",
+      "files": [
+        "Evoq Content/Modules/ContentLayout/Providers/DataProviders/SqlDataProvider/08.02.00.SqlDataProvider",
+        "Evoq Content/Modules/ContentLayout/Providers/DataProviders/SqlDataProvider/Uninstall.SqlDataProvider"
+      ],
+      "ui_location": "Database Installation/Upgrade",
+      "test_scenarios": [
+        "Test fresh installation",
+        "Test upgrade from previous version",
+        "Test uninstall cleanup",
+        "Verify table creation",
+        "Test stored procedure execution"
+      ],
+      "dependencies": [
+        "SQL Server Database"
+      ],
+      "priority": "Medium"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:22:12.024756",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

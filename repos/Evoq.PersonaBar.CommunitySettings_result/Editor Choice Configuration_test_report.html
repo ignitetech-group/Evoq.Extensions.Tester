@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor Choice Configuration - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #7f8c8d;
+            margin-top: 20px;
+        }
+        .feature-info {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .feature-info p {
+            margin: 8px 0;
+        }
+        .feature-info strong {
+            color: #2c3e50;
+        }
+        .test-scenario {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-scenario h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        .status.pass {
+            background: #27ae60;
+            color: white;
+        }
+        .status.fail {
+            background: #e74c3c;
+            color: white;
+        }
+        .steps {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin: 8px 0;
+        }
+        .screenshot {
+            margin: 15px 0;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            color: #7f8c8d;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        .observations {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .summary {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #155724;
+            border-left: none;
+            padding-left: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .code-info {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Editor Choice Configuration - Test Report</h1>
+
+        <div class="feature-info">
+            <p><strong>Extension:</strong> Evoq.PersonaBar.CommunitySettings (PersonaBar Module)</p>
+            <p><strong>Feature:</strong> Editor Choice Configuration</p>
+            <p><strong>Priority:</strong> Medium</p>
+            <p><strong>Description:</strong> Configure text editor type (Plain Text or Rich WYSIWYG) for content creation in Answers, Discussions, Ideas, and Social Events modules.</p>
+            <p><strong>UI Location:</strong> Admin > Settings > Community Settings > Settings tab</p>
+            <p><strong>Test Date:</strong> December 30, 2025</p>
+            <p><strong>Tester:</strong> Automated Test via Playwright MCP</p>
+        </div>
+
+        <h2>Code Analysis</h2>
+        <div class="code-info">
+            <p><strong>Relevant Files:</strong></p>
+            <ul>
+                <li>src/Modules/Evoq.PersonaBar.CommunitySettings/Services/CommunitySettingsController.cs - API endpoints (GetSettings, SaveSettings)</li>
+                <li>src/Modules/Evoq.PersonaBar.CommunitySettings/admin/personaBar/scripts/CommunitySettings.js - UI logic and binding</li>
+            </ul>
+            <p><strong>Implementation Details:</strong></p>
+            <ul>
+                <li>EditorChoice settings stored as dictionary with module names as keys (Answers, Discussions, Ideas, SocialEvents)</li>
+                <li>Values: 0 = Plain Text editor, 1 = Rich WYSIWYG editor</li>
+                <li>UI uses checkboxes bound to Knockout observables</li>
+                <li>Settings saved via POST to SaveSettings API endpoint</li>
+            </ul>
+        </div>
+
+        <h2>Test Scenarios</h2>
+
+        <div class="test-scenario">
+            <h3>Scenario 1: Initial State Verification</h3>
+            <span class="status pass">PASS</span>
+            <div class="steps">
+                <ol>
+                    <li>Navigate to Admin > Settings > Community Settings</li>
+                    <li>Observe the "Enable WYSIWYG" section</li>
+                    <li>Verify all four modules have checkboxes</li>
+                </ol>
+            </div>
+            <p><strong>Expected:</strong> All checkboxes visible for Answers, Discussions, Ideas, and Social Events</p>
+            <p><strong>Actual:</strong> All checkboxes present and checked (Rich WYSIWYG enabled by default)</p>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step01_initial_state.png" alt="Initial State">
+                <p class="screenshot-caption">Initial state showing all WYSIWYG checkboxes checked (Rich editor enabled)</p>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h3>Scenario 2: Set Answers Module to Plain Text Editor</h3>
+            <span class="status pass">PASS</span>
+            <div class="steps">
+                <ol>
+                    <li>Uncheck the "Answers" checkbox under "Enable WYSIWYG"</li>
+                    <li>Verify checkbox state changes to unchecked</li>
+                </ol>
+            </div>
+            <p><strong>Expected:</strong> Answers checkbox becomes unchecked (Plain Text = 0)</p>
+            <p><strong>Actual:</strong> Checkbox successfully unchecked</p>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step02_answers_plain_text.png" alt="Answers Plain Text">
+                <p class="screenshot-caption">Answers set to Plain Text (unchecked)</p>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h3>Scenario 3: Set Answers Module to Rich Editor</h3>
+            <span class="status pass">PASS</span>
+            <div class="steps">
+                <ol>
+                    <li>Check the "Answers" checkbox under "Enable WYSIWYG"</li>
+                    <li>Verify checkbox state changes to checked</li>
+                </ol>
+            </div>
+            <p><strong>Expected:</strong> Answers checkbox becomes checked (Rich = 1)</p>
+            <p><strong>Actual:</strong> Checkbox successfully checked</p>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step03_answers_rich.png" alt="Answers Rich">
+                <p class="screenshot-caption">Answers set to Rich WYSIWYG (checked)</p>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h3>Scenario 4: Set Discussions Module to Plain Text Editor</h3>
+            <span class="status pass">PASS</span>
+            <div class="steps">
+                <ol>
+                    <li>Uncheck the "Discussions" checkbox under "Enable WYSIWYG"</li>
+                    <li>Verify checkbox state changes to unchecked</li>
+                </ol>
+            </div>
+            <p><strong>Expected:</strong> Discussions checkbox becomes unchecked (Plain Text = 0)</p>
+            <p><strong>Actual:</strong> Checkbox successfully unchecked</p>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step04_discussions_plain_text.png" alt="Discussions Plain Text">
+                <p class="screenshot-caption">Discussions set to Plain Text (unchecked)</p>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h3>Scenario 5: Set Discussions Module to Rich Editor</h3>
+            <span class="status pass">PASS</span>
+            <div class="steps">
+                <ol>
+                    <li>Check the "Discussions" checkbox under "Enable WYSIWYG"</li>
+                    <li>Verify checkbox state changes to checked</li>
+                </ol>
+            </div>
+            <p><strong>Expected:</strong> Discussions checkbox becomes checked (Rich = 1)</p>
+            <p><strong>Actual:</strong> Checkbox successfully checked</p>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step05_discussions_rich.png" alt="Discussions Rich">
+                <p class="screenshot-caption">Discussions set to Rich WYSIWYG (checked)</p>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h3>Scenario 6: Set Ideas Module to Plain Text Editor</h3>
+            <span class="status pass">PASS</span>
+            <div class="steps">
+                <ol>
+                    <li>Uncheck the "Ideas" checkbox under "Enable WYSIWYG"</li>
+                    <li>Verify checkbox state changes to unchecked</li>
+                </ol>
+            </div>
+            <p><strong>Expected:</strong> Ideas checkbox becomes unchecked (Plain Text = 0)</p>
+            <p><strong>Actual:</strong> Checkbox successfully unchecked</p>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step06_ideas_plain_text.png" alt="Ideas Plain Text">
+                <p class="screenshot-caption">Ideas set to Plain Text (unchecked)</p>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h3>Scenario 7: Set Ideas Module to Rich Editor</h3>
+            <span class="status pass">PASS</span>
+            <div class="steps">
+                <ol>
+                    <li>Check the "Ideas" checkbox under "Enable WYSIWYG"</li>
+                    <li>Verify checkbox state changes to checked</li>
+                </ol>
+            </div>
+            <p><strong>Expected:</strong> Ideas checkbox becomes checked (Rich = 1)</p>
+            <p><strong>Actual:</strong> Checkbox successfully checked</p>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step07_ideas_rich.png" alt="Ideas Rich">
+                <p class="screenshot-caption">Ideas set to Rich WYSIWYG (checked)</p>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h3>Scenario 8: Set Social Events Module to Plain Text Editor</h3>
+            <span class="status pass">PASS</span>
+            <div class="steps">
+                <ol>
+                    <li>Uncheck the "Social Events" checkbox under "Enable WYSIWYG"</li>
+                    <li>Verify checkbox state changes to unchecked</li>
+                </ol>
+            </div>
+            <p><strong>Expected:</strong> Social Events checkbox becomes unchecked (Plain Text = 0)</p>
+            <p><strong>Actual:</strong> Checkbox successfully unchecked</p>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step08_social_events_plain_text.png" alt="Social Events Plain Text">
+                <p class="screenshot-caption">Social Events set to Plain Text (unchecked)</p>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h3>Scenario 9: Set Social Events Module to Rich Editor</h3>
+            <span class="status pass">PASS</span>
+            <div class="steps">
+                <ol>
+                    <li>Check the "Social Events" checkbox under "Enable WYSIWYG"</li>
+                    <li>Verify checkbox state changes to checked</li>
+                </ol>
+            </div>
+            <p><strong>Expected:</strong> Social Events checkbox becomes checked (Rich = 1)</p>
+            <p><strong>Actual:</strong> Checkbox successfully checked</p>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step09_social_events_rich.png" alt="Social Events Rich">
+                <p class="screenshot-caption">Social Events set to Rich WYSIWYG (checked)</p>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h3>Scenario 10: Save Settings and Verify Persistence</h3>
+            <span class="status pass">PASS</span>
+            <div class="steps">
+                <ol>
+                    <li>Set a specific configuration: Answers=Plain Text, Discussions=Rich, Ideas=Plain Text, Social Events=Rich</li>
+                    <li>Click Save button</li>
+                    <li>Verify success message appears</li>
+                    <li>Refresh the page</li>
+                    <li>Navigate back to Community Settings</li>
+                    <li>Verify settings persisted correctly</li>
+                </ol>
+            </div>
+            <p><strong>Expected:</strong> Settings persist after page reload</p>
+            <p><strong>Actual:</strong> All settings persisted correctly - Answers and Ideas unchecked, Discussions and Social Events checked</p>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step10_before_save.png" alt="Before Save">
+                <p class="screenshot-caption">Configuration before saving: Answers=Plain, Discussions=Rich, Ideas=Plain, Social Events=Rich</p>
+            </div>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step11_save_success.png" alt="Save Success">
+                <p class="screenshot-caption">Save success message displayed</p>
+            </div>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step12_persistence_verified.png" alt="Persistence Verified">
+                <p class="screenshot-caption">Settings persisted after page refresh - configuration maintained</p>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h3>Scenario 11: Verify Default Values (All Rich/1)</h3>
+            <span class="status pass">PASS</span>
+            <div class="steps">
+                <ol>
+                    <li>Restore all checkboxes to checked state</li>
+                    <li>Save settings</li>
+                    <li>Verify all modules set to Rich WYSIWYG editor</li>
+                </ol>
+            </div>
+            <p><strong>Expected:</strong> Default state is all Rich (checked)</p>
+            <p><strong>Actual:</strong> All modules successfully restored to Rich WYSIWYG (all checked)</p>
+            <div class="screenshot">
+                <img src="Editor Choice Configuration_step13_defaults_restored.png" alt="Defaults Restored">
+                <p class="screenshot-caption">Default values restored - all modules set to Rich WYSIWYG</p>
+            </div>
+        </div>
+
+        <div class="summary">
+            <h2>Test Summary</h2>
+            <table>
+                <tr>
+                    <th>Test Scenario</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>Initial State Verification</td>
+                    <td><span class="status pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td>Set Answers to Plain Text (0)</td>
+                    <td><span class="status pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td>Set Answers to Rich (1)</td>
+                    <td><span class="status pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td>Set Discussions to Plain Text (0)</td>
+                    <td><span class="status pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td>Set Discussions to Rich (1)</td>
+                    <td><span class="status pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td>Set Ideas to Plain Text (0)</td>
+                    <td><span class="status pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td>Set Ideas to Rich (1)</td>
+                    <td><span class="status pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td>Set Social Events to Plain Text (0)</td>
+                    <td><span class="status pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td>Set Social Events to Rich (1)</td>
+                    <td><span class="status pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td>Save and Verify Persistence</td>
+                    <td><span class="status pass">PASS</span></td>
+                </tr>
+                <tr>
+                    <td>Verify Default Values (All Rich)</td>
+                    <td><span class="status pass">PASS</span></td>
+                </tr>
+            </table>
+
+            <h3>Overall Result: ALL TESTS PASSED (11/11)</h3>
+
+            <h3>Observations</h3>
+            <ul>
+                <li>All Editor Choice settings toggle correctly between Plain Text (0) and Rich WYSIWYG (1)</li>
+                <li>Settings are properly saved via the SaveSettings API endpoint</li>
+                <li>Settings persist correctly after page refresh</li>
+                <li>UI checkboxes are properly bound to the underlying data model</li>
+                <li>Success notification displayed after saving</li>
+                <li>Default values are all Rich WYSIWYG (checked) as expected</li>
+            </ul>
+
+            <h3>Issues Found</h3>
+            <p>No issues found during testing. All functionality works as expected.</p>
+        </div>
+    </div>
+</body>
+</html>

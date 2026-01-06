@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Localization Support - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #7f8c8d;
+        }
+        .feature-info {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .feature-info p {
+            margin: 5px 0;
+        }
+        .test-scenario {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .scenario-header {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .scenario-header h3 {
+            margin: 0;
+            color: white;
+        }
+        .status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        .status.pass {
+            background: #27ae60;
+        }
+        .status.fail {
+            background: #e74c3c;
+        }
+        .status.partial {
+            background: #f39c12;
+        }
+        .scenario-content {
+            padding: 20px;
+        }
+        .steps {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin: 8px 0;
+        }
+        .screenshot {
+            margin: 15px 0;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .observations {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .observations h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .summary-table th, .summary-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .summary-table th {
+            background: #3498db;
+            color: white;
+        }
+        .summary-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Localization Support - Test Report</h1>
+
+        <div class="feature-info">
+            <p><strong>Extension:</strong> Evoq.PersonaBar.UI (PersonaBar Module)</p>
+            <p><strong>Feature:</strong> Localization Support (Feature 6 of 12)</p>
+            <p><strong>Priority:</strong> Medium</p>
+            <p><strong>Description:</strong> Provides multi-language support for all UI elements and messages in the PersonaBar.</p>
+            <p><strong>Test Date:</strong> December 30, 2025</p>
+            <p><strong>Environment:</strong> http://localhost:8081</p>
+        </div>
+
+        <h2>Test Summary</h2>
+        <table class="summary-table">
+            <tr>
+                <th>Test Scenario</th>
+                <th>Status</th>
+                <th>Notes</th>
+            </tr>
+            <tr>
+                <td>Switch language to Spanish</td>
+                <td><span class="status pass">PASS</span></td>
+                <td>Successfully switched via URL /es-ar/</td>
+            </tr>
+            <tr>
+                <td>Switch language to French</td>
+                <td><span class="status pass">PASS</span></td>
+                <td>Successfully switched via URL /fr-fr/</td>
+            </tr>
+            <tr>
+                <td>Switch language to German</td>
+                <td><span class="status pass">PASS</span></td>
+                <td>Successfully switched via URL /de-de/</td>
+            </tr>
+            <tr>
+                <td>Verify all UI strings are localized</td>
+                <td><span class="status partial">PARTIAL</span></td>
+                <td>Resource File Verifier shows 350-355 missing files per language</td>
+            </tr>
+            <tr>
+                <td>Test with missing translation keys</td>
+                <td><span class="status pass">PASS</span></td>
+                <td>Verifier correctly identifies missing .resx files</td>
+            </tr>
+            <tr>
+                <td>Verify date/time format localization</td>
+                <td><span class="status pass">PASS</span></td>
+                <td>Date format changes: MM/DD/YYYY (EN) to DD/MM/YYYY (ES)</td>
+            </tr>
+            <tr>
+                <td>Test RTL language support</td>
+                <td><span class="status partial">PARTIAL</span></td>
+                <td>Arabic language can be added; RTL CSS not applied by theme</td>
+            </tr>
+            <tr>
+                <td>Verify fallback to default language</td>
+                <td><span class="status pass">PASS</span></td>
+                <td>Content displays in English when translations unavailable</td>
+            </tr>
+        </table>
+
+        <!-- Scenario 1: Language Switching -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>1. Language Switching (Spanish, French, German)</h3>
+                <span class="status pass">PASS</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> Verify that the system supports switching between multiple languages via URL-based language parameter.</p>
+
+                <div class="steps">
+                    <h4>Steps Performed:</h4>
+                    <ol>
+                        <li>Navigated to Site Settings > Languages</li>
+                        <li>Added Spanish (Español Argentina), French (Français France), and German (Deutsch Deutschland)</li>
+                        <li>Verified "Enable Language Parameter in URLs" is ON</li>
+                        <li>Tested language switching via URLs: /es-ar/, /fr-fr/, /de-de/, /en-us/</li>
+                    </ol>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Localization_Support_step10_all_languages_added.png" alt="All Languages Added">
+                    <p class="screenshot-caption">All four languages (English, Spanish, French, German) enabled in Site Settings</p>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Localization_Support_step13_spanish_language_active.png" alt="Spanish Language Active">
+                    <p class="screenshot-caption">Spanish language active - URL shows /es-ar/</p>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Localization_Support_step14_french_language_active.png" alt="French Language Active">
+                    <p class="screenshot-caption">French language active - URL shows /fr-fr/</p>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Localization_Support_step15_german_language_active.png" alt="German Language Active">
+                    <p class="screenshot-caption">German language active - URL shows /de-de/</p>
+                </div>
+
+                <div class="observations">
+                    <h4>Observations:</h4>
+                    <ul>
+                        <li>Language flags appear in header for language switching</li>
+                        <li>URL-based language parameter works correctly</li>
+                        <li>Active language flag appears without link (others are clickable links)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario 2: Missing Translation Keys -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>2. Missing Translation Keys Behavior</h3>
+                <span class="status pass">PASS</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> Test how the system handles missing translation keys and resource files.</p>
+
+                <div class="steps">
+                    <h4>Steps Performed:</h4>
+                    <ol>
+                        <li>Navigated to Site Settings > Languages</li>
+                        <li>Clicked "Verify Language Resource Files" button</li>
+                        <li>Reviewed the Resource File Verifier results</li>
+                        <li>Expanded dropdown to see detailed list of missing files</li>
+                    </ol>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Localization_Support_step16_resource_file_verifier.png" alt="Resource File Verifier">
+                    <p class="screenshot-caption">Resource File Verifier showing missing/malformed files for each language</p>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Localization_Support_step17_missing_files_detail.png" alt="Missing Files Detail">
+                    <p class="screenshot-caption">Detailed list of 355 missing Spanish resource files</p>
+                </div>
+
+                <div class="observations">
+                    <h4>Results Summary:</h4>
+                    <ul>
+                        <li><strong>English (United States):</strong> 142 malformed resource files</li>
+                        <li><strong>Español (Argentina):</strong> 355 missing resource files</li>
+                        <li><strong>Français (France):</strong> 353 missing, 1 older, 1 malformed</li>
+                        <li><strong>Deutsch (Deutschland):</strong> 350 missing, 2 obsolete, 3 older, 2 malformed</li>
+                    </ul>
+                    <p>The Resource File Verifier correctly identifies all missing .resx localization files, helping administrators understand what translations are needed.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario 3: Date/Time Format Localization -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>3. Date/Time Format Localization</h3>
+                <span class="status pass">PASS</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> Verify that date and time formats adapt to the selected language/locale.</p>
+
+                <div class="steps">
+                    <h4>Steps Performed:</h4>
+                    <ol>
+                        <li>Navigated to Manage > Users in English locale</li>
+                        <li>Noted date format in "Joined" column (MM/DD/YYYY)</li>
+                        <li>Switched to Spanish locale (/es-ar/)</li>
+                        <li>Verified date format changed to DD/MM/YYYY</li>
+                    </ol>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Localization_Support_step18_date_format_english.png" alt="English Date Format">
+                    <p class="screenshot-caption">English locale: Dates shown as MM/DD/YYYY (12/30/2025, 12/27/2025)</p>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Localization_Support_step19_date_format_spanish.png" alt="Spanish Date Format">
+                    <p class="screenshot-caption">Spanish locale: Dates shown as DD/MM/YYYY (30/12/2025, 27/12/2025)</p>
+                </div>
+
+                <div class="observations">
+                    <h4>Observations:</h4>
+                    <ul>
+                        <li>Date format correctly changes based on locale</li>
+                        <li>English (US): 12/30/2025 (Month/Day/Year)</li>
+                        <li>Spanish (AR): 30/12/2025 (Day/Month/Year)</li>
+                        <li>This demonstrates proper culture-aware date formatting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario 4: RTL Language Support -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>4. RTL (Right-to-Left) Language Support</h3>
+                <span class="status partial">PARTIAL</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> Test support for RTL languages like Arabic or Hebrew.</p>
+
+                <div class="steps">
+                    <h4>Steps Performed:</h4>
+                    <ol>
+                        <li>Navigated to Site Settings > Languages</li>
+                        <li>Added Arabic (Eritrea) - an RTL language</li>
+                        <li>Navigated to /ar-er/ URL</li>
+                        <li>Verified language switching works for Arabic</li>
+                        <li>Checked page layout direction</li>
+                    </ol>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Localization_Support_step20_arabic_language_added.png" alt="Arabic Language Added">
+                    <p class="screenshot-caption">Arabic language successfully added to the system</p>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Localization_Support_step22_arabic_rtl_main_page.png" alt="Arabic RTL Page">
+                    <p class="screenshot-caption">Page viewed in Arabic locale - content falls back to English</p>
+                </div>
+
+                <div class="observations">
+                    <h4>Observations:</h4>
+                    <ul>
+                        <li><strong>Working:</strong> Arabic language can be added and enabled</li>
+                        <li><strong>Working:</strong> URL-based switching works (/ar-er/)</li>
+                        <li><strong>Working:</strong> Content falls back to English (default language)</li>
+                        <li><strong>Limited:</strong> Page layout remains LTR - theme doesn't have RTL-specific CSS</li>
+                        <li><strong>Note:</strong> Full RTL support would require:
+                            <ul>
+                                <li>Arabic translation files (.resx)</li>
+                                <li>RTL-aware theme CSS</li>
+                                <li>dir="rtl" attribute on HTML elements</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario 5: Fallback to Default Language -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>5. Fallback to Default Language</h3>
+                <span class="status pass">PASS</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> Verify that when translations are not available, content falls back to the default language (English).</p>
+
+                <div class="steps">
+                    <h4>Steps Performed:</h4>
+                    <ol>
+                        <li>Selected Arabic language (no translations available)</li>
+                        <li>Navigated through the site</li>
+                        <li>Verified all content displays in English</li>
+                        <li>Checked PersonaBar UI elements</li>
+                    </ol>
+                </div>
+
+                <div class="observations">
+                    <h4>Observations:</h4>
+                    <ul>
+                        <li>When viewing site in Arabic locale with no Arabic translations, all content displays in English</li>
+                        <li>This is the expected fallback behavior</li>
+                        <li>Site remains functional even without translations for selected language</li>
+                        <li>User experience is preserved by showing content in fallback language rather than broken/missing text</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Code Analysis Section -->
+        <h2>Code Analysis</h2>
+        <div class="feature-info">
+            <h3>Relevant Files Reviewed:</h3>
+            <ul>
+                <li><strong>App_LocalResources/Evoq.resx</strong> - Contains English localization strings</li>
+                <li><strong>scripts/evoq.js</strong> - Uses <code>util.resx.Evoq</code> for localization via Knockout bindings</li>
+                <li><strong>scripts/tasks.js</strong> - Uses <code>utility.resx.PersonaBar</code> with string formatting</li>
+            </ul>
+
+            <h3>Localization Implementation:</h3>
+            <ul>
+                <li>Uses .NET Resource files (.resx) for storing localized strings</li>
+                <li>Knockout.js data-binding for displaying localized content: <code>data-bind="html: resx.PropertyName"</code></li>
+                <li>String formatting with placeholders: <code>utility.resx.PersonaBar.txt_ViewIndex.replace('{0}', index)</code></li>
+                <li>DNN Localization Engine handles language detection and resource loading</li>
+            </ul>
+        </div>
+
+        <!-- Overall Summary -->
+        <h2>Overall Test Results</h2>
+        <div class="feature-info">
+            <p><strong>Total Scenarios Tested:</strong> 8</p>
+            <p><strong>Passed:</strong> 6</p>
+            <p><strong>Partial:</strong> 2</p>
+            <p><strong>Failed:</strong> 0</p>
+
+            <h3>Key Findings:</h3>
+            <ol>
+                <li><strong>Language Switching:</strong> Fully functional via URL parameters</li>
+                <li><strong>Resource File Management:</strong> Verifier tool works correctly to identify missing translations</li>
+                <li><strong>Date/Time Localization:</strong> Works correctly with culture-specific formatting</li>
+                <li><strong>RTL Support:</strong> Infrastructure exists but requires theme modifications for full support</li>
+                <li><strong>Fallback Mechanism:</strong> Works correctly, displaying default language when translations unavailable</li>
+            </ol>
+
+            <h3>Recommendations:</h3>
+            <ul>
+                <li>Consider adding translation files for commonly needed languages</li>
+                <li>For RTL support, theme CSS needs to be updated with RTL-specific styles</li>
+                <li>Review and fix the 142 malformed English resource files identified by the verifier</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>Test Report Generated: December 30, 2025</p>
+            <p>Extension: Evoq.PersonaBar.UI | Feature: Localization Support</p>
+            <p>Testing performed using Playwright MCP browser automation</p>
+        </div>
+    </div>
+</body>
+</html>

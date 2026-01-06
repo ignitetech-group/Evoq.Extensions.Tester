@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Operations - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+        }
+        .header p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        .summary-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .summary-card.pass {
+            border-left: 4px solid #28a745;
+        }
+        .summary-card.fail {
+            border-left: 4px solid #dc3545;
+        }
+        .summary-card.not-available {
+            border-left: 4px solid #ffc107;
+        }
+        .summary-card h3 {
+            margin: 0;
+            font-size: 2em;
+        }
+        .summary-card p {
+            margin: 5px 0 0 0;
+            color: #666;
+        }
+        .test-scenario {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .scenario-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .scenario-header h2 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .status-badge.pass {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-badge.fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status-badge.not-available {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .scenario-content {
+            padding: 20px;
+        }
+        .steps-list {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .steps-list ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps-list li {
+            margin-bottom: 8px;
+        }
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        .screenshot-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .screenshot-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .screenshot-item .caption {
+            padding: 10px;
+            background: #f8f9fa;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .observations {
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        .observations h4 {
+            margin: 0 0 10px 0;
+            color: #0066cc;
+        }
+        .error-box {
+            background: #fff5f5;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        .error-box h4 {
+            margin: 0 0 10px 0;
+            color: #dc3545;
+        }
+        .findings-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .findings-section h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .finding-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .finding-item h4 {
+            margin: 0 0 10px 0;
+            color: #495057;
+        }
+        .finding-item p {
+            margin: 0;
+            color: #666;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9em;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Bulk Operations - Test Report</h1>
+        <p><strong>Extension:</strong> Evoq.PersonaBar.Assets (PersonaBar Module)</p>
+        <p><strong>Feature:</strong> Bulk Operations - Performs operations on multiple files or folders simultaneously</p>
+        <p><strong>UI Location:</strong> Admin &gt; Content &gt; Assets &gt; Multi-Select Mode</p>
+        <p><strong>Test Date:</strong> December 30, 2025</p>
+        <p><strong>Priority:</strong> Medium | <strong>Extension Priority:</strong> High</p>
+    </div>
+
+    <div class="summary-box">
+        <div class="summary-card pass">
+            <h3>3</h3>
+            <p>Tests Passed</p>
+        </div>
+        <div class="summary-card fail">
+            <h3>1</h3>
+            <p>Tests Failed</p>
+        </div>
+        <div class="summary-card not-available">
+            <h3>4</h3>
+            <p>Not Available</p>
+        </div>
+    </div>
+
+    <!-- Test Scenario 1: Multi-Select -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>1. Select Multiple Files</h2>
+            <span class="status-badge not-available">NOT AVAILABLE</span>
+        </div>
+        <div class="scenario-content">
+            <div class="steps-list">
+                <ol>
+                    <li>Navigated to Admin &gt; Content &gt; Assets</li>
+                    <li>Attempted to find multi-select mode or checkbox selection</li>
+                    <li>Clicked on files - resulted in file download instead of selection</li>
+                    <li>Reviewed Assets.js code for multi-select functionality</li>
+                </ol>
+            </div>
+
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="Bulk Operations_step03_assets_view.png" alt="Assets View">
+                    <div class="caption">Assets panel showing file listing</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="Bulk Operations_step04_file_hover.png" alt="File Hover">
+                    <div class="caption">Hovering over a file - no multi-select option visible</div>
+                </div>
+            </div>
+
+            <div class="observations">
+                <h4>Key Finding</h4>
+                <p>The "Multi-Select Mode" mentioned in the feature requirements does <strong>NOT exist</strong> in the current implementation. The code review of <code>Assets.js</code> revealed:</p>
+                <ul>
+                    <li><code>item.selected = ko.observable(false)</code> exists but is not used for multi-select UI</li>
+                    <li>Clicking a file triggers <code>viewModel.itemClick</code> which downloads files or navigates into folders</li>
+                    <li>No multi-select toggle or checkbox interface is present</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Scenario 2: Bulk Delete -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>2. Bulk Delete Files</h2>
+            <span class="status-badge not-available">NOT AVAILABLE</span>
+        </div>
+        <div class="scenario-content">
+            <div class="steps-list">
+                <ol>
+                    <li>Attempted to select multiple files for deletion</li>
+                    <li>Multi-select not available - cannot select multiple files</li>
+                    <li>Bulk delete functionality requires multi-select which is not implemented</li>
+                </ol>
+            </div>
+
+            <div class="observations">
+                <h4>Observation</h4>
+                <p>Without multi-select capability, true bulk deletion of multiple individual files is not possible. However, deleting a folder will delete all its contents (folder-level bulk operation).</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Scenario 3: Bulk Move -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>3. Bulk Move Files</h2>
+            <span class="status-badge not-available">NOT AVAILABLE</span>
+        </div>
+        <div class="scenario-content">
+            <div class="steps-list">
+                <ol>
+                    <li>Attempted to select multiple files for move operation</li>
+                    <li>Multi-select not available - cannot select multiple files</li>
+                    <li>Bulk move functionality requires multi-select which is not implemented</li>
+                </ol>
+            </div>
+
+            <div class="observations">
+                <h4>Observation</h4>
+                <p>Moving a folder moves all its contents, which serves as an alternative to bulk file move.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Scenario 4: Bulk Copy -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>4. Bulk Copy Files</h2>
+            <span class="status-badge not-available">NOT AVAILABLE</span>
+        </div>
+        <div class="scenario-content">
+            <div class="steps-list">
+                <ol>
+                    <li>Attempted to select multiple files for copy operation</li>
+                    <li>Multi-select not available - cannot select multiple files</li>
+                    <li>Bulk copy functionality requires multi-select which is not implemented</li>
+                </ol>
+            </div>
+
+            <div class="observations">
+                <h4>Note</h4>
+                <p>Individual file copy works correctly (see Single File Operations below).</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Scenario 5: Single File Copy (Alternative Test) -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>5. Single File Copy Operation</h2>
+            <span class="status-badge pass">PASSED</span>
+        </div>
+        <div class="scenario-content">
+            <div class="steps-list">
+                <ol>
+                    <li>Navigated to Home folder in Assets</li>
+                    <li>Located test_document.docx file</li>
+                    <li>Hovered over file to reveal action buttons</li>
+                    <li>Clicked Copy icon</li>
+                    <li>Selected TestFolder1 as destination in folder tree</li>
+                    <li>Clicked Copy button to confirm</li>
+                    <li>Verified file appeared in destination folder</li>
+                </ol>
+            </div>
+
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="Bulk Operations_step07_file_actions.png" alt="File Actions">
+                    <div class="caption">File action buttons visible on hover</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="Bulk Operations_step09_copy_dialog.png" alt="Copy Dialog">
+                    <div class="caption">Copy dialog with folder tree selection</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="Bulk Operations_step10_after_copy.png" alt="After Copy">
+                    <div class="caption">After copy operation completed</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="Bulk Operations_step11_copy_verified.png" alt="Copy Verified">
+                    <div class="caption">File verified in destination folder</div>
+                </div>
+            </div>
+
+            <div class="observations">
+                <h4>Result</h4>
+                <p>Single file copy operation works correctly. The file was successfully copied from Home to TestFolder1.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Scenario 6: Single File Move -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>6. Single File Move Operation</h2>
+            <span class="status-badge pass">PASSED</span>
+        </div>
+        <div class="scenario-content">
+            <div class="steps-list">
+                <ol>
+                    <li>Navigated to TestFolder1 containing the copied file</li>
+                    <li>Located test_document.docx file</li>
+                    <li>Hovered over file to reveal action buttons</li>
+                    <li>Clicked Move icon</li>
+                    <li>Selected TestSingleFolder as destination</li>
+                    <li>Clicked Move button to confirm</li>
+                    <li>Verified file was removed from source and appeared in destination</li>
+                </ol>
+            </div>
+
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="Bulk Operations_step12_move_dialog.png" alt="Move Dialog">
+                    <div class="caption">Move dialog with destination folder selection</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="Bulk Operations_step13_after_move.png" alt="After Move">
+                    <div class="caption">Source folder after move - file no longer present</div>
+                </div>
+            </div>
+
+            <div class="observations">
+                <h4>Result</h4>
+                <p>Single file move operation works correctly. The file was successfully moved from TestFolder1 to TestSingleFolder.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Scenario 7: Single File Delete -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>7. Single File Delete Operation</h2>
+            <span class="status-badge pass">PASSED</span>
+        </div>
+        <div class="scenario-content">
+            <div class="steps-list">
+                <ol>
+                    <li>Navigated to Home folder</li>
+                    <li>Located test_folder_upload.txt file</li>
+                    <li>Hovered over file to reveal action buttons</li>
+                    <li>Clicked Delete icon</li>
+                    <li>Confirmation dialog appeared asking "Are you sure you want to delete 'test_folder_upload.txt'?"</li>
+                    <li>Clicked Delete button to confirm</li>
+                    <li>Verified file was removed from the folder</li>
+                </ol>
+            </div>
+
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="Bulk Operations_step14_delete_confirm.png" alt="Delete Confirmation">
+                    <div class="caption">Delete confirmation dialog</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="Bulk Operations_step15_after_delete.png" alt="After Delete">
+                    <div class="caption">Folder view after deletion - file removed</div>
+                </div>
+            </div>
+
+            <div class="observations">
+                <h4>Result</h4>
+                <p>Single file delete operation works correctly with proper confirmation dialog.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Scenario 8: Folder Permissions -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>8. Bulk Permission Changes (Folder-Level)</h2>
+            <span class="status-badge fail">FAILED</span>
+        </div>
+        <div class="scenario-content">
+            <div class="steps-list">
+                <ol>
+                    <li>Navigated to folder in Assets</li>
+                    <li>Clicked on edit/details icon for folder</li>
+                    <li>Folder details panel opened successfully</li>
+                    <li>Clicked on "Permissions" tab</li>
+                    <li>Permissions failed to load - server error occurred</li>
+                </ol>
+            </div>
+
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="Bulk Operations_step16_folder_details.png" alt="Folder Details">
+                    <div class="caption">Folder details panel opened</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="Bulk Operations_step17_permissions_tab.png" alt="Permissions Tab">
+                    <div class="caption">Permissions tab - loading failed</div>
+                </div>
+            </div>
+
+            <div class="error-box">
+                <h4>Error Details</h4>
+                <p><strong>Error Type:</strong> Server-side Exception</p>
+                <p><strong>Error Message:</strong> "Could not load type 'Dnn.PersonaBar.Library.Dto.Permissions'"</p>
+                <p><strong>Analysis:</strong> This is a backend configuration or assembly loading issue, not a UI problem. The permissions DTO class cannot be resolved at runtime.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Findings Section -->
+    <div class="findings-section">
+        <h2>Key Findings &amp; Recommendations</h2>
+
+        <div class="finding-item">
+            <h4>1. Multi-Select Mode Does Not Exist</h4>
+            <p>The feature specification mentions "Multi-Select Mode" at Admin &gt; Content &gt; Assets, but this functionality is <strong>not implemented</strong> in the current codebase. The Assets.js file has a <code>selected</code> observable on items but no UI to toggle multi-selection. True bulk operations on multiple individual files are not possible.</p>
+        </div>
+
+        <div class="finding-item">
+            <h4>2. Folder-Level Operations as Alternative</h4>
+            <p>While individual file multi-select is unavailable, users can perform "bulk" operations at the folder level:</p>
+            <ul>
+                <li><strong>Bulk Delete:</strong> Delete a folder to remove all contents</li>
+                <li><strong>Bulk Move:</strong> Move a folder to relocate all contents</li>
+                <li><strong>Bulk Permissions:</strong> Set folder permissions that apply to contents (when working)</li>
+            </ul>
+        </div>
+
+        <div class="finding-item">
+            <h4>3. Single File Operations Work Correctly</h4>
+            <p>Individual file operations (Copy, Move, Delete) function as expected with proper UI feedback, confirmation dialogs, and folder tree navigation for destination selection.</p>
+        </div>
+
+        <div class="finding-item">
+            <h4>4. Permissions Loading Bug</h4>
+            <p>Critical bug found: Folder permissions cannot be loaded due to server-side error. The <code>Dnn.PersonaBar.Library.Dto.Permissions</code> type cannot be resolved. This needs backend investigation.</p>
+        </div>
+
+        <div class="finding-item">
+            <h4>5. Progress Tracking Not Testable</h4>
+            <p>The test scenario "Test operation progress tracking" could not be tested because bulk operations are not available. Single file operations complete too quickly to show progress tracking UI.</p>
+        </div>
+    </div>
+
+    <!-- Code Review Section -->
+    <div class="findings-section">
+        <h2>Code Review Summary</h2>
+
+        <div class="finding-item">
+            <h4>Backend API (AssetsController.cs)</h4>
+            <p>The controller provides individual item endpoints:</p>
+            <div class="code-block">
+[HttpPost]
+public HttpResponseMessage DeleteFile(DeleteFileRequest request)
+
+[HttpPost]
+public HttpResponseMessage CopyFile(CopyMoveItemRequest request)
+
+[HttpPost]
+public HttpResponseMessage MoveFile(CopyMoveItemRequest request)
+
+[HttpPost]
+public HttpResponseMessage DeleteFolder(DeleteFolderRequest request)
+
+[HttpPost]
+public HttpResponseMessage MoveFolder(CopyMoveItemRequest request)</div>
+            <p style="margin-top: 10px;">No bulk endpoints (accepting arrays of files) were found.</p>
+        </div>
+
+        <div class="finding-item">
+            <h4>Frontend (Assets.js)</h4>
+            <p>Item selection exists but is unused for multi-select:</p>
+            <div class="code-block">
+item.selected = ko.observable(false);
+
+// itemClick handles navigation/download, not selection
+viewModel.itemClick = function (item, e, parent, event) {
+    if (item.isFolder) {
+        // Navigate into folder
+    } else {
+        // Download file
+    }
+}</div>
+        </div>
+    </div>
+
+    <!-- Additional Screenshots -->
+    <div class="findings-section">
+        <h2>Additional Test Evidence</h2>
+
+        <div class="screenshot-grid">
+            <div class="screenshot-item">
+                <img src="Bulk Operations_step01_homepage.png" alt="Homepage">
+                <div class="caption">Step 1: DNN Homepage before login</div>
+            </div>
+            <div class="screenshot-item">
+                <img src="Bulk Operations_step02_logged_in.png" alt="Logged In">
+                <div class="caption">Step 2: Successfully logged in as host</div>
+            </div>
+            <div class="screenshot-item">
+                <img src="Bulk Operations_step05_folder_hover.png" alt="Folder Hover">
+                <div class="caption">Step 5: Folder hover actions</div>
+            </div>
+            <div class="screenshot-item">
+                <img src="Bulk Operations_step06_folder_contents.png" alt="Folder Contents">
+                <div class="caption">Step 6: Inside a folder</div>
+            </div>
+            <div class="screenshot-item">
+                <img src="Bulk Operations_step08_hover_actions.png" alt="Hover Actions">
+                <div class="caption">Step 8: File action buttons detail</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Test Report Generated: December 30, 2025</p>
+        <p>Extension: Evoq.PersonaBar.Assets | Feature: Bulk Operations (14 of 15)</p>
+        <p>Repository: Dnn.AdminExperience.Evoq.Basic</p>
+    </footer>
+</body>
+</html>

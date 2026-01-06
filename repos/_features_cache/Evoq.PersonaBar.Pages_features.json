@@ -1,0 +1,341 @@
+{
+  "extension": {
+    "name": "Evoq.PersonaBar.Pages",
+    "priority": "High",
+    "repo": "Dnn.AdminExperience.Evoq.Basic",
+    "extension_type": "PersonaBar Module"
+  },
+  "features": [
+    {
+      "name": "Page List Retrieval",
+      "description": "Retrieve list of pages with filtering by parent ID and search key",
+      "files": [
+        "Services/EvoqPagesController.cs",
+        "Components/EvoqPagesControllerImpl.cs",
+        "Components/IEvoqPagesController.cs"
+      ],
+      "ui_location": "Admin > Content > Pages",
+      "test_scenarios": [
+        "Get pages by parent ID",
+        "Search pages with search key",
+        "Verify empty parent returns root pages",
+        "Test pagination in page list",
+        "Verify permission-based filtering"
+      ],
+      "dependencies": [
+        "DNN Platform Core",
+        "PersonaBar Framework"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Advanced Page Search",
+      "description": "Search pages with multiple filters including page type, tags, publish status, date range, and workflow",
+      "files": [
+        "Services/EvoqPagesController.cs",
+        "Components/EvoqPagesControllerImpl.cs"
+      ],
+      "ui_location": "Admin > Content > Pages > Search",
+      "test_scenarios": [
+        "Search by page type (normal, template)",
+        "Filter by tags",
+        "Filter by publish status (All, Published, Draft)",
+        "Filter by date range",
+        "Filter by workflow ID",
+        "Test combined filters",
+        "Verify pagination in search results",
+        "Test empty search results"
+      ],
+      "dependencies": [
+        "Page List Retrieval",
+        "Workflow Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Page Details Management",
+      "description": "Retrieve and save page settings including metadata, appearance, and permissions",
+      "files": [
+        "Services/EvoqPagesController.cs",
+        "Services/DTO/EvoqPageSettings.cs",
+        "Components/EvoqPagesControllerImpl.cs"
+      ],
+      "ui_location": "Admin > Content > Pages > Page Settings",
+      "test_scenarios": [
+        "Get page details by ID",
+        "Save page details with all fields",
+        "Verify page not found handling",
+        "Test timezone conversion",
+        "Verify permission checks for page management",
+        "Test page type changes",
+        "Verify workflow assignment",
+        "Test disabled link pages"
+      ],
+      "dependencies": [
+        "Security and Permissions",
+        "Workflow Management"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Page Movement",
+      "description": "Move pages within the site hierarchy including reordering and parent changes",
+      "files": [
+        "Services/EvoqPagesController.cs",
+        "Components/EvoqPagesControllerImpl.cs"
+      ],
+      "ui_location": "Admin > Content > Pages > Drag and Drop",
+      "test_scenarios": [
+        "Move page to different parent",
+        "Reorder pages within same parent",
+        "Verify permission checks for source and target",
+        "Test invalid move scenarios",
+        "Verify page not found handling",
+        "Test moving with child pages"
+      ],
+      "dependencies": [
+        "Page List Retrieval",
+        "Security and Permissions"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Bulk Page Creation",
+      "description": "Create multiple pages at once with validation and batch processing",
+      "files": [
+        "Services/EvoqPagesController.cs",
+        "Services/DTO/EvoqBulkPage.cs",
+        "Components/EvoqBulkPagesControllerImpl.cs",
+        "Components/IEvoqBulkPagesController.cs"
+      ],
+      "ui_location": "Admin > Content > Pages > Add Multiple Pages",
+      "test_scenarios": [
+        "Validate bulk pages before creation",
+        "Create multiple pages successfully",
+        "Test duplicate page name handling",
+        "Verify permission checks",
+        "Test validation errors",
+        "Create pages with different types",
+        "Test maximum page limit",
+        "Verify parent page assignment"
+      ],
+      "dependencies": [
+        "Page Details Management",
+        "Security and Permissions"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Workflow Management",
+      "description": "Manage content workflows for page approval and publishing",
+      "files": [
+        "Services/EvoqPagesController.cs",
+        "Components/Workflow/WorkflowHelper.cs",
+        "Components/Workflow/WorkflowStatusManager.cs"
+      ],
+      "ui_location": "Admin > Content > Pages > Workflow Settings",
+      "test_scenarios": [
+        "Get available workflows",
+        "Assign workflow to page",
+        "Test direct publish workflow",
+        "Verify workflow state transitions",
+        "Test unpublished changes detection",
+        "Verify workflow completion status",
+        "Test workflow permissions"
+      ],
+      "dependencies": [
+        "Evoq Content Workflow System"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Page Thumbnail Management",
+      "description": "Generate and manage page thumbnails in different sizes",
+      "files": [
+        "Components/ThumbnailsManagementController.cs",
+        "Services/ThumbnailsController.cs"
+      ],
+      "ui_location": "Admin > Content > Pages > Page Thumbnail",
+      "test_scenarios": [
+        "Get page thumbnail (Medium size)",
+        "Get page thumbnail (Large size)",
+        "Test default thumbnail fallback",
+        "Upload custom thumbnail",
+        "Test thumbnail generation",
+        "Verify thumbnail caching"
+      ],
+      "dependencies": [
+        "Page Details Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Security and Permissions",
+      "description": "Permission-based access control for page management operations",
+      "files": [
+        "Components/Security/EvoqSecurityService.cs",
+        "Services/EvoqPagesController.cs"
+      ],
+      "ui_location": "Admin > Content > Pages > All Operations",
+      "test_scenarios": [
+        "Verify page admin role checks",
+        "Test CanManagePage permission",
+        "Test CanSavePageDetails permission",
+        "Verify VIEW_PAGE_LIST permission",
+        "Test forbidden response handling",
+        "Verify menu permission attributes",
+        "Test license check validation"
+      ],
+      "dependencies": [
+        "DNN Security Framework"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Page Publishing",
+      "description": "Publish pages and manage publishing states",
+      "files": [
+        "Services/EvoqPagesController.cs",
+        "Components/Workflow/WorkflowHelper.cs"
+      ],
+      "ui_location": "Admin > Content > Pages > Publish",
+      "test_scenarios": [
+        "Publish unpublished page",
+        "Test direct publish for non-normal pages",
+        "Create new tab version",
+        "Verify HasBeenPublished flag",
+        "Test publish with workflow",
+        "Verify publish permissions"
+      ],
+      "dependencies": [
+        "Workflow Management",
+        "Page Details Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Default Page Settings",
+      "description": "Get default settings for new pages based on parent or system defaults",
+      "files": [
+        "Services/EvoqPagesController.cs",
+        "Components/EvoqPagesControllerImpl.cs"
+      ],
+      "ui_location": "Admin > Content > Pages > Add Page",
+      "test_scenarios": [
+        "Get default settings without parent",
+        "Get default settings with parent ID",
+        "Verify default workflow assignment",
+        "Test default permissions inheritance",
+        "Verify default page type"
+      ],
+      "dependencies": [
+        "Page Details Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Page Validation",
+      "description": "Validate page data before saving including name, URL, and settings",
+      "files": [
+        "Services/EvoqPagesController.cs",
+        "Components/EvoqPagesControllerImpl.cs"
+      ],
+      "ui_location": "Admin > Content > Pages > All Save Operations",
+      "test_scenarios": [
+        "Validate page name requirements",
+        "Test URL path validation",
+        "Verify duplicate page name detection",
+        "Test special characters in page name",
+        "Validate required fields",
+        "Test field length limits"
+      ],
+      "dependencies": [
+        "Page Details Management",
+        "Bulk Page Creation"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Timezone Handling",
+      "description": "Handle timezone conversions for page scheduling and dates",
+      "files": [
+        "Services/EvoqPagesController.cs"
+      ],
+      "ui_location": "Admin > Content > Pages > Scheduling",
+      "test_scenarios": [
+        "Test timezone conversion on save",
+        "Test timezone conversion on retrieve",
+        "Verify UTC storage",
+        "Test daylight saving time handling"
+      ],
+      "dependencies": [
+        "Page Details Management"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Page Type Management",
+      "description": "Manage different page types including normal, template, and special pages",
+      "files": [
+        "Services/EvoqPagesController.cs",
+        "Services/DTO/EvoqPageSettings.cs"
+      ],
+      "ui_location": "Admin > Content > Pages > Page Type",
+      "test_scenarios": [
+        "Create normal page",
+        "Create template page",
+        "Test page type restrictions",
+        "Verify type-specific workflow rules",
+        "Test disabled link page type"
+      ],
+      "dependencies": [
+        "Page Details Management",
+        "Workflow Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "JavaScript UI Components",
+      "description": "Client-side page management interface with React components",
+      "files": [
+        "admin/personaBar/scripts/Pages.js",
+        "admin/personaBar/scripts/EvoqPages.js",
+        "EvoqPages.Web/src/containers/ContainerLinkTrackingForMultiplePages.jsx",
+        "EvoqPages.Web/src/containers/ContainerWorkflowForMultiplePages.jsx"
+      ],
+      "ui_location": "Admin > Content > Pages",
+      "test_scenarios": [
+        "Test page tree rendering",
+        "Verify drag and drop functionality",
+        "Test mobile responsiveness",
+        "Verify real-time updates",
+        "Test error handling in UI",
+        "Verify loading states"
+      ],
+      "dependencies": [
+        "PersonaBar UI Framework"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Localization Support",
+      "description": "Multi-language support for page management interface",
+      "files": [
+        "admin/personaBar/App_LocalResources/EvoqPages.resx"
+      ],
+      "ui_location": "Admin > Content > Pages > All UI Elements",
+      "test_scenarios": [
+        "Verify all UI strings are localized",
+        "Test language switching",
+        "Verify resource key mapping",
+        "Test fallback to default language"
+      ],
+      "dependencies": [
+        "JavaScript UI Components"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T18:04:40.665091",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

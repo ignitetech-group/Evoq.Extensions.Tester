@@ -1,0 +1,250 @@
+{
+  "extension": {
+    "name": "Evoq.PersonaBar.Workflow",
+    "priority": "High",
+    "repo": "Dnn.AdminExperience.Evoq.Basic",
+    "extension_type": "PersonaBar Module"
+  },
+  "features": [
+    {
+      "name": "Workflow Management",
+      "description": "Create, edit, delete content workflows and set the default workflow for new content items.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Workflow/Services/WorkflowsController.cs",
+        "src/Modules/Evoq.PersonaBar.Workflow/Components/WorkflowController.cs",
+        "src/Modules/Evoq.PersonaBar.Workflow/admin/personaBar/scripts/bundles/workflow-bundle.js"
+      ],
+      "ui_location": "Settings > Workflow",
+      "test_scenarios": [
+        "Create new workflow with unique name",
+        "Create workflow with duplicate name - verify error",
+        "Edit workflow name and description",
+        "Delete workflow not in use",
+        "Attempt to delete workflow in use - verify error",
+        "Set workflow as default for new pages",
+        "Verify default workflow selection persists",
+        "View list of all workflows with usage status"
+      ],
+      "dependencies": [
+        "DNN Core Content Workflow Engine",
+        "PersonaBar Framework"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Workflow State Management",
+      "description": "Manage workflow states including creating, editing, reordering, and deleting states within workflows.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Workflow/Services/WorkflowStatesController.cs",
+        "src/Modules/Evoq.PersonaBar.Workflow/admin/personaBar/scripts/bundles/workflow-bundle.js"
+      ],
+      "ui_location": "Settings > Workflow > [Select Workflow] > States",
+      "test_scenarios": [
+        "Create new workflow state",
+        "Edit state name and notification settings",
+        "Move state up in order",
+        "Move state down in order",
+        "Delete unused workflow state",
+        "Attempt to delete state in use - verify error",
+        "Verify state order changes persist",
+        "Configure state notification to administrators",
+        "Configure state notification settings"
+      ],
+      "dependencies": [
+        "Workflow Management"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Workflow State Permissions",
+      "description": "Configure role-based and user-specific permissions for workflow state transitions and reviews.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Workflow/Services/WorkflowStatesController.cs",
+        "src/Modules/Evoq.PersonaBar.Workflow/admin/personaBar/scripts/bundles/workflow-bundle.js"
+      ],
+      "ui_location": "Settings > Workflow > [Select Workflow] > [Select State] > Permissions",
+      "test_scenarios": [
+        "Assign review permission to Content Manager role",
+        "Assign review permission to specific user",
+        "Remove permission from role",
+        "Remove permission from user",
+        "Verify Content Editor role appears by default",
+        "Verify Content Manager role appears by default",
+        "Test permission inheritance for new states",
+        "Verify permissions are enforced during state transitions"
+      ],
+      "dependencies": [
+        "Workflow State Management",
+        "Role Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Asset Workflow Management",
+      "description": "Apply workflows to files and assets, managing their approval process through workflow states.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Assets/Services/AssetsWorkflowController.cs",
+        "src/Modules/Evoq.PersonaBar.Assets/Components/WorkflowController.cs",
+        "src/Modules/Evoq.PersonaBar.Assets/Components/WorkflowActions/WorkflowStartFileAction.cs",
+        "src/Modules/Evoq.PersonaBar.Assets/Components/WorkflowActions/WorkflowCompleteFileAction.cs",
+        "src/Modules/Evoq.PersonaBar.Assets/Components/WorkflowActions/WorkflowDiscardFileAction.cs"
+      ],
+      "ui_location": "Content > Assets > [Select File] > Workflow",
+      "test_scenarios": [
+        "Apply workflow to new file upload",
+        "Complete workflow state for file",
+        "Discard workflow state for file",
+        "Discard draft file - verify deletion",
+        "Complete workflow to publish file",
+        "Add workflow note/comment to file",
+        "Verify workflow state change notifications",
+        "Check workflow history for file"
+      ],
+      "dependencies": [
+        "Assets Module",
+        "Workflow Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Page Workflow Management",
+      "description": "Apply workflows to pages, managing page publishing and approval through workflow states.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Pages/Services/EvoqPagesController.cs",
+        "src/Modules/Evoq.PersonaBar.Pages/Services/PageManagementController.cs",
+        "src/Modules/Evoq.PersonaBar.Pages/Components/Workflow/WorkflowStatusManager.cs",
+        "src/Modules/Evoq.PersonaBar.Pages/Components/Workflow/WorkflowHelper.cs",
+        "src/Modules/Evoq.PersonaBar.Pages/Components/Workflow/Actions/WorkflowStartTabAction.cs",
+        "src/Modules/Evoq.PersonaBar.Pages/Components/Workflow/Actions/WorkflowCompleteTabAction.cs",
+        "src/Modules/Evoq.PersonaBar.Pages/Components/Workflow/Actions/WorkflowDiscardTabAction.cs"
+      ],
+      "ui_location": "Content > Pages > [Select Page] > Settings > Workflow",
+      "test_scenarios": [
+        "Apply workflow to new page",
+        "Change workflow for existing page",
+        "Apply workflow to child pages",
+        "Complete workflow state for page",
+        "Discard workflow state for page",
+        "Verify page shows unpublished changes indicator",
+        "Test workflow propagation to subpages",
+        "Verify direct publish workflow for system pages",
+        "Check workflow state in page list view"
+      ],
+      "dependencies": [
+        "Pages Module",
+        "Workflow Management"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Workflow Resources Tracking",
+      "description": "View and track which content items (pages, files) are using specific workflows.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Workflow/Services/WorkflowsController.cs"
+      ],
+      "ui_location": "Settings > Workflow > [Select Workflow] > Resources",
+      "test_scenarios": [
+        "View resources using workflow",
+        "Load more resources with pagination",
+        "Verify resource count accuracy",
+        "Check resource types displayed",
+        "Verify resource titles are correct",
+        "Test empty resource list for unused workflow"
+      ],
+      "dependencies": [
+        "Workflow Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Workflow UI Components",
+      "description": "React-based UI components for workflow selection, status display, and workflow notes.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Pages/EvoqPages.Web/src/components/Workflow.jsx",
+        "src/Modules/Evoq.PersonaBar.Pages/EvoqPages.Web/src/components/WorkflowBubble/WorkflowBubble.jsx",
+        "src/Modules/Evoq.PersonaBar.Pages/EvoqPages.Web/src/components/WorkflowNote/WorkflowNote.jsx",
+        "src/Modules/Evoq.PersonaBar.Pages/EvoqPages.Web/src/containers/ContainerWorkflow.jsx",
+        "src/Modules/Evoq.PersonaBar.Pages/EvoqPages.Web/src/containers/ContainerWorkflowForMultiplePages.jsx"
+      ],
+      "ui_location": "Content > Pages > Settings / Content > Assets",
+      "test_scenarios": [
+        "Select workflow from dropdown",
+        "View workflow status bubble on hover",
+        "Add workflow note to state change",
+        "View workflow note history",
+        "Toggle apply workflow to children switch",
+        "Verify workflow dropdown disabled when workflow incomplete",
+        "Test workflow UI responsiveness",
+        "Verify workflow selection persists after save"
+      ],
+      "dependencies": [
+        "React Framework",
+        "Redux State Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Workflow Link Actions",
+      "description": "Generate and manage workflow action links for files and pages to facilitate workflow transitions.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Pages/Components/Workflow/LinkActions/WorkflowLinksActionsMap.cs",
+        "src/Modules/Evoq.PersonaBar.Pages/Components/Workflow/LinkActions/WorkflowLinksFileAction.cs",
+        "src/Modules/Evoq.PersonaBar.Pages/Components/Workflow/LinkActions/WorkflowLinksTabAction.cs",
+        "src/Modules/Evoq.PersonaBar.Pages/Components/Workflow/LinkActions/IWorkflowLinksAction.cs"
+      ],
+      "ui_location": "Internal - Used in workflow notifications",
+      "test_scenarios": [
+        "Generate workflow link for page",
+        "Generate workflow link for file",
+        "Verify link navigates to correct content",
+        "Test link expiration if applicable",
+        "Verify link permissions enforcement"
+      ],
+      "dependencies": [
+        "Workflow State Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Workflow Search and Filtering",
+      "description": "Search and filter pages based on workflow status and workflow assignment.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Pages/Services/EvoqPagesController.cs"
+      ],
+      "ui_location": "Content > Pages > Search/Filter",
+      "test_scenarios": [
+        "Filter pages by workflow ID",
+        "Search pages with workflow criteria",
+        "Combine workflow filter with other filters",
+        "Verify search results accuracy",
+        "Test pagination with workflow filter"
+      ],
+      "dependencies": [
+        "Pages Module",
+        "Workflow Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Workflow Localization",
+      "description": "Multi-language support for workflow names, states, and notification messages.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Workflow/admin/personaBar/App_LocalResources/Workflow.resx"
+      ],
+      "ui_location": "Settings > Workflow (All UI elements)",
+      "test_scenarios": [
+        "Verify workflow UI in different languages",
+        "Test notification messages localization",
+        "Verify state names can be localized",
+        "Check workflow descriptions localization",
+        "Test error messages in different languages"
+      ],
+      "dependencies": [
+        "DNN Localization Framework"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T18:16:42.243466",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

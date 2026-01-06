@@ -1,0 +1,231 @@
+{
+  "extension": {
+    "name": "Evoq.OptimizelyConnector",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Content",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "Script Snippet Configuration",
+      "description": "Manages saving, retrieving, and validating Optimizely script snippets for portal integration",
+      "files": [
+        "Evoq Enterprise/Connectors/Optimizely/Components/OptimizelyConnector.cs",
+        "Evoq Enterprise/Connectors/Optimizely/Components/Constants.cs",
+        "Evoq Enterprise/Connectors/Optimizely/App_LocalResources/SharedResources.resx"
+      ],
+      "ui_location": "Admin > Connectors > Optimizely",
+      "test_scenarios": [
+        "Save valid script snippet with standard closing tag format",
+        "Save valid script snippet with self-closing tag format",
+        "Reject invalid script snippet formats",
+        "Save empty/null script snippet",
+        "Validate script with non-existent CDN URL (404 response)",
+        "Validate script with valid CDN URL (200 response)",
+        "Verify script snippet encryption during save",
+        "Retrieve and decrypt saved script snippet",
+        "Update existing script snippet configuration",
+        "Handle network timeout during CDN validation",
+        "Validate both HTTP and HTTPS protocol handling",
+        "Verify localized error messages for invalid scripts"
+      ],
+      "dependencies": [
+        "Portal Settings",
+        "Portal Security"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Script Injection",
+      "description": "Injects validated Optimizely script snippet into page header for tracking",
+      "files": [
+        "Evoq Enterprise/Connectors/Optimizely/View.ascx",
+        "Evoq Enterprise/Connectors/Optimizely/View.ascx.cs"
+      ],
+      "ui_location": "Any page with Optimizely module added",
+      "test_scenarios": [
+        "Verify script injection into page header when configured",
+        "Verify no script injection when not configured",
+        "Verify decryption of script before injection",
+        "Verify LiteralControl added to header controls",
+        "Test script injection across different portal contexts",
+        "Verify script appears in page source",
+        "Test multiple page loads with same configuration"
+      ],
+      "dependencies": [
+        "Portal Settings",
+        "Page Header Access"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Module UI Display",
+      "description": "Controls module visibility and status messages based on configuration and user mode",
+      "files": [
+        "Evoq Enterprise/Connectors/Optimizely/View.ascx",
+        "Evoq Enterprise/Connectors/Optimizely/View.ascx.cs",
+        "Evoq Enterprise/Connectors/Optimizely/connector.htm",
+        "Evoq Enterprise/Connectors/Optimizely/Scripts/connector.js"
+      ],
+      "ui_location": "Any page with Optimizely module in Edit/View mode",
+      "test_scenarios": [
+        "Display 'Optimizely Script Connector not configured' in edit mode when unconfigured",
+        "Display 'Optimizely Snippet Active' in edit mode when configured",
+        "Hide module title in edit mode",
+        "Hide entire container in view mode",
+        "Verify knockout.js data bindings render correctly",
+        "Test configuration value binding in UI",
+        "Verify localized label display",
+        "Test module visibility for admin vs non-admin users"
+      ],
+      "dependencies": [
+        "DNN Edit/View Mode",
+        "User Permissions"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Portal Configuration Check",
+      "description": "Verifies if Optimizely configuration exists for specific portal",
+      "files": [
+        "Evoq Enterprise/Connectors/Optimizely/Components/OptimizelyConnector.cs",
+        "Evoq Enterprise/Connectors/Optimizely/Components/OptimizelyManager.cs"
+      ],
+      "ui_location": "N/A - Backend functionality",
+      "test_scenarios": [
+        "Check configuration exists for configured portal",
+        "Check configuration doesn't exist for unconfigured portal",
+        "Verify HasConfig returns false for empty configuration",
+        "Verify HasConfig returns true for valid configuration",
+        "Test with multiple portal IDs",
+        "Test OptimizelyManager.HasConfig property",
+        "Verify portal context switching"
+      ],
+      "dependencies": [
+        "Portal Settings"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Connector Properties",
+      "description": "Provides connector metadata and identification information",
+      "files": [
+        "Evoq Enterprise/Connectors/Optimizely/Components/OptimizelyConnector.cs",
+        "Evoq Enterprise/Connectors/Optimizely/DNNXE_OptimizelyConnector.dnn"
+      ],
+      "ui_location": "Admin > Connectors",
+      "test_scenarios": [
+        "Verify Name returns 'Optimizely'",
+        "Verify DisplayName returns custom or default name",
+        "Verify IconUrl returns correct path",
+        "Verify PluginFolder returns correct folder path",
+        "Verify IsEngageConnector returns false",
+        "Verify Type returns ConnectorCategories.Marketting",
+        "Verify SupportsMultiple returns false",
+        "Verify GetConnectors returns single instance",
+        "Verify Azure compatibility flag"
+      ],
+      "dependencies": [
+        "DNN Connector Framework"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Error Handling",
+      "description": "Handles exceptions and error scenarios gracefully",
+      "files": [
+        "Evoq Enterprise/Connectors/Optimizely/View.ascx.cs",
+        "Evoq Enterprise/Connectors/Optimizely/Components/OptimizelyConnector.cs"
+      ],
+      "ui_location": "Any page with module errors",
+      "test_scenarios": [
+        "Handle exception during page load in edit mode (shows error)",
+        "Handle exception during page load in view mode (silent failure)",
+        "Log errors via ProcessModuleLoadException in edit mode",
+        "Log SaveConfig exceptions to DNN logger",
+        "Verify DeleteConnector throws NotImplementedException",
+        "Handle null portal settings gracefully",
+        "Handle decryption failures",
+        "Handle invalid configuration data",
+        "Test WebResourceExists exception handling"
+      ],
+      "dependencies": [
+        "DNN Exception Handling",
+        "DNN Logger"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Security and Encryption",
+      "description": "Encrypts and decrypts script snippets for secure storage",
+      "files": [
+        "Evoq Enterprise/Connectors/Optimizely/Components/OptimizelyConnector.cs",
+        "Evoq Enterprise/Connectors/Optimizely/View.ascx.cs"
+      ],
+      "ui_location": "N/A - Backend functionality",
+      "test_scenarios": [
+        "Encrypt script snippet using PortalSecurity",
+        "Decrypt script snippet using PortalSecurity",
+        "Verify encryption key uses Host.GUID",
+        "Test XSS prevention via regex validation",
+        "Verify only valid Optimizely CDN URLs accepted",
+        "Test portal isolation (no cross-portal access)",
+        "Verify encrypted storage in database",
+        "Test decryption with invalid key"
+      ],
+      "dependencies": [
+        "Portal Security",
+        "Host Settings"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "OptimizelyManager Service",
+      "description": "Provides service layer access to Optimizely configuration",
+      "files": [
+        "Evoq Enterprise/Connectors/Optimizely/Components/OptimizelyManager.cs",
+        "Evoq Enterprise/Connectors/Optimizely/Components/IOptimizelyManager.cs"
+      ],
+      "ui_location": "N/A - Service layer",
+      "test_scenarios": [
+        "Verify Url property retrieves decrypted script snippet",
+        "Test Url property with no configuration",
+        "Verify HasConfig property returns correct status",
+        "Test GetFactory() returns new instance",
+        "Verify service locator pattern implementation",
+        "Test with different portal contexts",
+        "Verify interface implementation"
+      ],
+      "dependencies": [
+        "Portal Settings",
+        "OptimizelyConnector"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Module Installation",
+      "description": "Installs and registers the Optimizely connector module",
+      "files": [
+        "Evoq Enterprise/Connectors/Optimizely/DNNXE_OptimizelyConnector.dnn",
+        "Evoq Enterprise/Connectors/Optimizely/module.css",
+        "Evoq Enterprise/Connectors/Optimizely/Scripts/connector.css"
+      ],
+      "ui_location": "Host > Extensions",
+      "test_scenarios": [
+        "Verify module installs successfully",
+        "Verify minimum DNN version requirement (07.03.00)",
+        "Verify module appears in connector list",
+        "Verify resource files are deployed",
+        "Verify CSS files are loaded",
+        "Test module uninstallation",
+        "Verify Azure compatibility"
+      ],
+      "dependencies": [
+        "DNN Platform 07.03.00+"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:41:23.940121",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

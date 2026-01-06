@@ -1,0 +1,406 @@
+{
+  "extension": {
+    "name": "Evoq.PersonaBar.Users",
+    "priority": "High",
+    "repo": "Dnn.AdminExperience.Evoq.Basic",
+    "extension_type": "PersonaBar Module"
+  },
+  "features": [
+    {
+      "name": "User Activity Details View",
+      "description": "Display comprehensive user activity metrics including rank, reputation, experience, engagement, influence, and contribution statistics",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/Services/EvoqUsersController.cs",
+        "src/Modules/Evoq.PersonaBar.Users/Components/UsersController.cs",
+        "src/Modules/Evoq.PersonaBar.Users/Components/Dto/UserDetailDto.cs",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/UserActivityDetails/index.jsx",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/services/userActivityService.js",
+        "src/Modules/Evoq.PersonaBar.Users/Providers/DataProviders/SqlDataProvider/Install.SqlDataProvider"
+      ],
+      "ui_location": "Admin > Users > Select User > Activity Tab",
+      "test_scenarios": [
+        "View activity details for regular user with activities",
+        "View activity details for user with no activities",
+        "Verify all metrics display correctly (rank, reputation, experience)",
+        "Verify engagement percentage calculation (0-100)",
+        "Verify influence percentage display",
+        "Verify total contributions count",
+        "Verify last active date formatting (relative time)",
+        "Verify SuperUser activities cannot be viewed",
+        "Test permission requirement SHOW_USER_ACTIVITY",
+        "Verify data loads from PersonaBar_GetUserActivityDetail stored procedure",
+        "Test error handling for non-existent user",
+        "Verify Social SKU-specific features (rank, engagement, influence) only show for DNNSOCIAL"
+      ],
+      "dependencies": [
+        "User Management Module",
+        "Mechanics_UserScoring table",
+        "Analytics tables (Social only)"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Recent Activities Pagination",
+      "description": "Browse through paginated list of user's recent activities with details about area, action, and timestamp",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/Services/EvoqUsersController.cs",
+        "src/Modules/Evoq.PersonaBar.Users/Components/UsersController.cs",
+        "src/Modules/Evoq.PersonaBar.Users/Components/Dto/UserActivityDto.cs",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/UserActivityDetails/RecentActivities/index.jsx",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/services/userActivityService.js",
+        "src/Modules/Evoq.PersonaBar.Users/Providers/DataProviders/SqlDataProvider/Install.SqlDataProvider"
+      ],
+      "ui_location": "Admin > Users > Select User > Activity Tab > Recent Activities Section",
+      "test_scenarios": [
+        "Load first page of activities (10 items)",
+        "Navigate to next page",
+        "Navigate to previous page",
+        "Verify page size fixed at 10 items",
+        "Verify total activities count display",
+        "Test empty activities list ('No recent activities' message)",
+        "Verify activity title HTML stripping",
+        "Verify activity title truncation with ellipsis",
+        "Verify relative date formatting for activities",
+        "Test pagination boundary conditions (first/last page)",
+        "Verify auto-refresh when switching users",
+        "Test GetUserRecentActivities API with different page indices",
+        "Verify activities sorted by date (newest first)"
+      ],
+      "dependencies": [
+        "User Activity Details View",
+        "Mechanics_UserScoringLog table"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Edit User Points",
+      "description": "Modify user's reputation and experience points with validation and note tracking",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/Services/EvoqUsersController.cs",
+        "src/Modules/Evoq.PersonaBar.Users/Components/UsersController.cs",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/UserActivityDetails/index.jsx",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/services/userActivityService.js",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/actions/usersActivity.js"
+      ],
+      "ui_location": "Admin > Users > Select User > Activity Tab > Edit Points Button",
+      "test_scenarios": [
+        "Toggle edit mode on",
+        "Edit reputation points with valid value",
+        "Edit experience points with valid value",
+        "Add note explaining changes",
+        "Save changes successfully",
+        "Cancel changes and verify reset to original values",
+        "Attempt to set negative experience (should fail with error)",
+        "Attempt to set reputation greater than experience (should fail)",
+        "Verify EDIT_POINTS permission requirement",
+        "Test edit points for user with no existing score",
+        "Test edit points for user with existing score (delta calculation)",
+        "Verify adhoc scoring action is recorded",
+        "Verify changes reflected immediately in UI",
+        "Test multiline notes support",
+        "Verify feature only available in DNNSOCIAL SKU"
+      ],
+      "dependencies": [
+        "User Activity Details View",
+        "Mechanics_UserScoring system"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Login As User (Impersonation)",
+      "description": "Impersonate another user with security restrictions and audit logging",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/Services/EvoqUsersController.cs",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/index.jsx",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/permissionHelpers.js",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/services/usersService.js",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/actions/users.js"
+      ],
+      "ui_location": "Admin > Users > Select User > More Menu > Login As User",
+      "test_scenarios": [
+        "Successfully impersonate regular authorized user",
+        "Verify cannot impersonate self",
+        "Verify cannot impersonate deleted user",
+        "Verify cannot impersonate locked user",
+        "Verify cannot impersonate unauthorized user",
+        "Verify non-admin cannot impersonate admin user",
+        "Verify admin cannot impersonate SuperUser",
+        "Verify SuperUser can impersonate other SuperUser",
+        "Verify LOGIN_AS_USER permission requirement",
+        "Test CSRF token validation",
+        "Verify event log entry created with impersonation details",
+        "Verify user cache cleared after impersonation",
+        "Verify current user logged out before impersonation",
+        "Verify page reloads after successful impersonation",
+        "Test error handling for non-existent user (404)",
+        "Test insufficient permissions error (401)"
+      ],
+      "dependencies": [
+        "User Management Module",
+        "Event Logging System"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "View User Assets",
+      "description": "Access and view files in a user's personal folder",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/index.jsx",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/permissionHelpers.js"
+      ],
+      "ui_location": "Admin > Users > Select User > More Menu > View Assets",
+      "test_scenarios": [
+        "Open assets panel for user with files",
+        "Verify error notification for user without folder",
+        "Verify error notification for user with empty folder",
+        "Test VIEW_ASSETS permission requirement",
+        "Verify Assets panel opens with correct user folder",
+        "Test admin access without explicit permission",
+        "Verify menu item visibility based on permissions",
+        "Test integration with Evoq.Assets module"
+      ],
+      "dependencies": [
+        "Evoq.Assets Module",
+        "User Folders System"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Remove Deleted Users",
+      "description": "Permanently remove users marked as deleted from the system",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/index.jsx",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/permissionHelpers.js"
+      ],
+      "ui_location": "Admin > Users > Remove Deleted Users Button",
+      "test_scenarios": [
+        "Display confirmation dialog before removal",
+        "Successfully remove all deleted users",
+        "Verify user list refreshes after removal",
+        "Display success notification after completion",
+        "Verify admin-only permission requirement",
+        "Test button visibility for non-admin users",
+        "Verify only affects users with deleted status",
+        "Test with no deleted users present",
+        "Test with multiple deleted users"
+      ],
+      "dependencies": [
+        "User Management Module"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "User Search and Filtering",
+      "description": "Search for users and filter by various status criteria",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/index.jsx"
+      ],
+      "ui_location": "Admin > Users > Search/Filter Controls",
+      "test_scenarios": [
+        "Search users by name/email",
+        "Filter by authorized users",
+        "Filter by unauthorized users",
+        "Filter by deleted users",
+        "Filter by SuperUser status",
+        "Filter by locked users",
+        "Real-time search updates",
+        "Reset pagination on filter change",
+        "Combine search with filters",
+        "Clear filters and search",
+        "Verify filter persistence during pagination",
+        "Test case-insensitive search"
+      ],
+      "dependencies": [
+        "User Management Module"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "User List Pagination",
+      "description": "Navigate through paginated list of users with configurable page sizes",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/index.jsx"
+      ],
+      "ui_location": "Admin > Users > Pagination Controls",
+      "test_scenarios": [
+        "Navigate to next page",
+        "Navigate to previous page",
+        "Jump to specific page",
+        "Change page size (10, 25, 50, 100)",
+        "Verify total users count display",
+        "Test first/last page boundaries",
+        "Verify current page indicator",
+        "Test with empty user list",
+        "Test with single page of users",
+        "Verify pagination resets on filter change",
+        "Default page size is 10"
+      ],
+      "dependencies": [
+        "User Management Module"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Create User",
+      "description": "Add new users to the system",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/index.jsx",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/permissionHelpers.js"
+      ],
+      "ui_location": "Admin > Users > Create User Button",
+      "test_scenarios": [
+        "Open create user form",
+        "Verify ADD_USER permission requirement",
+        "Test admin access without explicit permission",
+        "Verify button visibility based on permissions",
+        "Integration with user creation workflow"
+      ],
+      "dependencies": [
+        "User Management Module"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "User Activity Icon Display",
+      "description": "Show activity indicator icon for users with viewable activities",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/index.jsx",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/permissionHelpers.js"
+      ],
+      "ui_location": "Admin > Users > User Table > Activity Column",
+      "test_scenarios": [
+        "Display activity icon for regular users",
+        "Hide activity icon for SuperUsers",
+        "Verify icon click opens activity tab",
+        "Test SHOW_USER_ACTIVITY permission requirement",
+        "Verify icon tooltip/hover state"
+      ],
+      "dependencies": [
+        "User Activity Details View"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Permission System",
+      "description": "Control access to features based on user permissions and roles",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/permissionHelpers.js",
+        "src/Modules/Evoq.PersonaBar.Users/Services/EvoqUsersController.cs",
+        "src/Modules/Evoq.PersonaBar.Users/Components/Constants.cs"
+      ],
+      "ui_location": "Admin > Users > All Features",
+      "test_scenarios": [
+        "Test SHOW_USER_ACTIVITY permission gates activity viewing",
+        "Test EDIT_POINTS permission gates point editing",
+        "Test LOGIN_AS_USER permission gates impersonation",
+        "Test VIEW_ASSETS permission gates asset viewing",
+        "Test ADD_USER permission gates user creation",
+        "Verify admin users bypass permission checks",
+        "Test combination of multiple permissions",
+        "Verify UI elements hidden when permissions missing",
+        "Test API endpoints return 401 for insufficient permissions"
+      ],
+      "dependencies": [
+        "DNN Permission System"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "User Activity Redux State Management",
+      "description": "Manage user activity data in Redux store with proper state updates",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/reducers/userActivity.js",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/actions/usersActivity.js"
+      ],
+      "ui_location": "Admin > Users > Activity Tab (State Management)",
+      "test_scenarios": [
+        "Verify RETRIEVED_USER_ACTIVITY_DETAILS updates state",
+        "Test state shape matches expected structure",
+        "Verify state updates trigger component re-renders",
+        "Test state persistence during tab switches",
+        "Verify state cleanup on user change"
+      ],
+      "dependencies": [
+        "Redux",
+        "React"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Error Handling and Notifications",
+      "description": "Display appropriate error messages and handle failures gracefully",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/Services/EvoqUsersController.cs",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/services/userActivityService.js",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/services/usersService.js"
+      ],
+      "ui_location": "Admin > Users > All Features",
+      "test_scenarios": [
+        "Display error notification for API failures",
+        "Test 5-second auto-dismiss for error notifications",
+        "Verify specific error messages for validation failures",
+        "Test network timeout handling",
+        "Verify error logging to console",
+        "Test graceful degradation for missing data",
+        "Handle 404 errors for non-existent users",
+        "Handle 401 errors for permission failures",
+        "Handle 500 errors with user-friendly message"
+      ],
+      "dependencies": [
+        "Notification System"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Engagement and Influence Metrics",
+      "description": "Calculate and display user engagement and influence percentages (Social SKU only)",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/Components/UsersController.cs",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/UserActivityDetails/index.jsx",
+        "src/Modules/Evoq.PersonaBar.Users/Providers/DataProviders/SqlDataProvider/Install.SqlDataProvider"
+      ],
+      "ui_location": "Admin > Users > Select User > Activity Tab > Engagement/Influence Section",
+      "test_scenarios": [
+        "Calculate engagement percentage from XML time series",
+        "Display engagement progress bar (0-100%)",
+        "Display influence percentage",
+        "Handle missing engagement data gracefully",
+        "Handle malformed XML data",
+        "Verify metrics only show for DNNSOCIAL SKU",
+        "Test with 0% engagement",
+        "Test with 100% engagement",
+        "Verify optimal engagement score comparison"
+      ],
+      "dependencies": [
+        "Analytics_Users table",
+        "Analytics_UserInfluenceRollup table"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "User Rank Calculation",
+      "description": "Calculate and display user's rank based on reputation points",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Users/Components/UsersController.cs",
+        "src/Modules/Evoq.PersonaBar.Users/EvoqUsers.Web/src/components/Body/UserActivityDetails/index.jsx",
+        "src/Modules/Evoq.PersonaBar.Users/Providers/DataProviders/SqlDataProvider/Install.SqlDataProvider"
+      ],
+      "ui_location": "Admin > Users > Select User > Activity Tab > Rank Display",
+      "test_scenarios": [
+        "Calculate rank based on reputation points",
+        "Display rank position (e.g., #1, #2)",
+        "Handle tied reputation scores",
+        "Update rank after points change",
+        "Test with single user",
+        "Test with multiple users",
+        "Verify rank only shows for DNNSOCIAL SKU"
+      ],
+      "dependencies": [
+        "Mechanics_UserScoring table"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T18:17:17.289323",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

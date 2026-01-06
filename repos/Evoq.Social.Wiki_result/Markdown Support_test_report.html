@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Support - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #7f8c8d;
+        }
+        .feature-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .feature-info p {
+            margin: 5px 0;
+        }
+        .test-scenario {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .pass {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .fail {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+        }
+        .status-pass {
+            background-color: #27ae60;
+        }
+        .status-fail {
+            background-color: #e74c3c;
+        }
+        .screenshot {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .steps {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .observations {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', monospace;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .summary-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .summary-box h2 {
+            color: white;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Report: Markdown Support</h1>
+
+    <div class="summary-box">
+        <h2>Test Summary</h2>
+        <p><strong>Feature:</strong> Markdown Support (Wiki Links Processing)</p>
+        <p><strong>Extension:</strong> Evoq.Social.Wiki</p>
+        <p><strong>Test Date:</strong> December 30, 2025</p>
+        <p><strong>Overall Result:</strong> <span class="status-badge status-pass">ALL TESTS PASSED</span></p>
+    </div>
+
+    <div class="feature-info">
+        <h2>Feature Details</h2>
+        <p><strong>Feature Name:</strong> Markdown Support</p>
+        <p><strong>Description:</strong> Process and render wiki-style link syntax in wiki articles</p>
+        <p><strong>UI Location:</strong> Wiki Module > Article Edit > Content editor</p>
+        <p><strong>Relevant Files:</strong></p>
+        <ul>
+            <li>DesktopModules/DNNCorp/Wiki/Components/Controllers/MarkdownProcessor.cs</li>
+            <li>DesktopModules/DNNCorp/Wiki/Components/Controllers/IMarkdownProcessor.cs</li>
+            <li>DesktopModules/DNNCorp/Wiki/Services/ContentController.cs</li>
+            <li>DesktopModules/DNNCorp/Wiki/Controls/ContentEditor.ascx</li>
+        </ul>
+    </div>
+
+    <div class="feature-info">
+        <h2>Technical Overview</h2>
+        <p>The "Markdown Support" feature in Evoq Wiki is actually a <strong>Wiki Link Processor</strong> that transforms wiki-style link syntax into HTML links. It supports:</p>
+        <div class="code-block">
+            <p>// Simple wiki link - links to article with subject name</p>
+            <p>[[Subject]] → &lt;a href="/Wiki/Subject"&gt;Subject&lt;/a&gt;</p>
+            <br>
+            <p>// Complex wiki link - custom display text</p>
+            <p>[[Display Text|Subject]] → &lt;a href="/Wiki/Subject"&gt;Display Text&lt;/a&gt;</p>
+        </div>
+        <p><strong>Link Styling:</strong></p>
+        <ul>
+            <li><strong>Existing articles:</strong> Standard cyan/teal link (class: <code>dnnSocialLink</code>)</li>
+            <li><strong>Non-existing articles:</strong> Red highlighted background (class: <code>wiki-nonexistent-article</code>)</li>
+        </ul>
+    </div>
+
+    <h2>Test Scenarios</h2>
+
+    <!-- Test 1: Navigate to Wiki Module -->
+    <div class="test-scenario">
+        <h3>Test 1: Navigate to Wiki Module</h3>
+        <p><strong>Status:</strong> <span class="status-badge status-pass">PASS</span></p>
+        <div class="steps">
+            <strong>Steps:</strong>
+            <ol>
+                <li>Navigate to http://localhost:8081</li>
+                <li>Login as host (username: host, password: Pass123456)</li>
+                <li>Navigate to Community > Wiki</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> Successfully navigated to Wiki module and accessed article list.</p>
+        <img src="Markdown_Support_step01_homepage.png" alt="Homepage" class="screenshot">
+        <img src="Markdown_Support_step02_logged_in.png" alt="Logged in" class="screenshot">
+        <img src="Markdown_Support_step03_wiki_page.png" alt="Wiki page" class="screenshot">
+    </div>
+
+    <!-- Test 2: Create Article with Wiki Links -->
+    <div class="test-scenario">
+        <h3>Test 2: Create Article with Wiki Links Syntax</h3>
+        <p><strong>Status:</strong> <span class="status-badge status-pass">PASS</span></p>
+        <div class="steps">
+            <strong>Steps:</strong>
+            <ol>
+                <li>Click "Create article" button</li>
+                <li>Enter title: "Wiki Links Test Article"</li>
+                <li>Select Article Type: "Misc."</li>
+                <li>Click HTML button to enter raw HTML mode</li>
+                <li>Enter content with wiki link syntax</li>
+                <li>Add tag: "markdown-test"</li>
+                <li>Click Publish</li>
+            </ol>
+        </div>
+        <p><strong>Wiki Link Syntax Used:</strong></p>
+        <div class="code-block">
+            // Simple links
+            [[Test Draft Article]]     // Existing article
+            [[Non Existing Article]]   // Non-existing article
+
+            // Complex links with custom text
+            [[Click Here for Draft|Test Draft Article]]    // Existing
+            [[Create This Page|New Page To Create]]        // Non-existing
+
+            // Mixed content
+            [[Published Wiki Article]]
+            [[Learn More About Events|Events]]
+        </div>
+        <p><strong>Result:</strong> Article created successfully with wiki link syntax entered in HTML mode.</p>
+        <img src="Markdown_Support_step04_create_article_dialog.png" alt="Create article dialog" class="screenshot">
+        <img src="Markdown_Support_step05_html_content_entry.png" alt="HTML content with wiki links" class="screenshot">
+    </div>
+
+    <!-- Test 3: Wiki Links Rendering -->
+    <div class="test-scenario">
+        <h3>Test 3: Wiki Links Rendering on Published Article</h3>
+        <p><strong>Status:</strong> <span class="status-badge status-pass">PASS</span></p>
+        <div class="steps">
+            <strong>Steps:</strong>
+            <ol>
+                <li>View published article</li>
+                <li>Verify wiki links are transformed into HTML links</li>
+                <li>Verify existing article links display as cyan/teal links</li>
+                <li>Verify non-existing article links display with red background</li>
+            </ol>
+        </div>
+        <p><strong>Observations:</strong></p>
+        <div class="observations">
+            <ul>
+                <li><strong>Simple wiki links [[Subject]]</strong> - Correctly transformed to links</li>
+                <li><strong>Complex wiki links [[Title|Subject]]</strong> - Custom text displayed correctly</li>
+                <li><strong>Existing articles</strong> - Displayed as standard links (cyan color)</li>
+                <li><strong>Non-existing articles</strong> - Highlighted with red background</li>
+                <li><strong>Table of Contents</strong> - Correctly shows section headings with wiki link syntax preserved</li>
+            </ul>
+        </div>
+        <p><strong>Result:</strong> All wiki links rendered correctly with appropriate styling.</p>
+        <img src="Markdown_Support_step06_article_published_wikilinks_rendered.png" alt="Published article with wiki links" class="screenshot">
+    </div>
+
+    <!-- Test 4: Link to Existing Article -->
+    <div class="test-scenario">
+        <h3>Test 4: Click Wiki Link to Existing Article</h3>
+        <p><strong>Status:</strong> <span class="status-badge status-pass">PASS</span></p>
+        <div class="steps">
+            <strong>Steps:</strong>
+            <ol>
+                <li>Click on "Test Draft Article" link</li>
+                <li>Verify navigation to the existing article</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> Successfully navigated to "Test Draft Article" page at URL: <code>/Community/Wiki/Test-Draft-Article</code></p>
+        <img src="Markdown_Support_step07_existing_article_link_works.png" alt="Existing article navigation" class="screenshot">
+    </div>
+
+    <!-- Test 5: Link to Non-Existing Article -->
+    <div class="test-scenario">
+        <h3>Test 5: Click Wiki Link to Non-Existing Article</h3>
+        <p><strong>Status:</strong> <span class="status-badge status-pass">PASS</span></p>
+        <div class="steps">
+            <strong>Steps:</strong>
+            <ol>
+                <li>Click on "Non Existing Article" link (red highlighted)</li>
+                <li>Verify navigation behavior</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> Navigated to subject search page at URL: <code>/Community/Wiki/subject/Non%20Existing%20Article</code></p>
+        <div class="observations">
+            <strong>Behavior:</strong> When clicking a non-existing article link, the user is taken to a wiki search/list page where they can:
+            <ul>
+                <li>Search for the article</li>
+                <li>Create a new article with that subject</li>
+                <li>Browse existing articles</li>
+            </ul>
+            This is the expected behavior per the MarkdownProcessor.cs implementation which uses <code>wiki-nonexistent-article</code> class.
+        </div>
+        <img src="Markdown_Support_step08_nonexisting_article_link.png" alt="Non-existing article link behavior" class="screenshot">
+    </div>
+
+    <h2>Test Results Summary</h2>
+    <table>
+        <tr>
+            <th>Test Scenario</th>
+            <th>Expected Result</th>
+            <th>Actual Result</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>Simple Wiki Link [[Subject]]</td>
+            <td>Transform to HTML link</td>
+            <td>Correctly transformed</td>
+            <td class="pass">PASS</td>
+        </tr>
+        <tr>
+            <td>Complex Wiki Link [[Title|Subject]]</td>
+            <td>Transform with custom display text</td>
+            <td>Custom text displayed correctly</td>
+            <td class="pass">PASS</td>
+        </tr>
+        <tr>
+            <td>Link to Existing Article</td>
+            <td>Navigate to article page</td>
+            <td>Successfully navigated</td>
+            <td class="pass">PASS</td>
+        </tr>
+        <tr>
+            <td>Link to Non-Existing Article</td>
+            <td>Navigate to subject/create page</td>
+            <td>Navigated to subject page</td>
+            <td class="pass">PASS</td>
+        </tr>
+        <tr>
+            <td>Existing Article Styling</td>
+            <td>Standard link appearance (cyan)</td>
+            <td>Displayed as dnnSocialLink</td>
+            <td class="pass">PASS</td>
+        </tr>
+        <tr>
+            <td>Non-Existing Article Styling</td>
+            <td>Red highlighted background</td>
+            <td>Displayed with wiki-nonexistent-article class</td>
+            <td class="pass">PASS</td>
+        </tr>
+        <tr>
+            <td>Mix HTML and Wiki Links</td>
+            <td>Both render correctly together</td>
+            <td>HTML and wiki links work together</td>
+            <td class="pass">PASS</td>
+        </tr>
+    </table>
+
+    <h2>Technical Notes</h2>
+    <div class="feature-info">
+        <h3>Implementation Details from Code Review</h3>
+        <p>The MarkdownProcessor.cs uses regular expressions to transform wiki links:</p>
+        <div class="code-block">
+            // Simple transform: [[Subject]]
+            Regex: \[\[([^\]\|\r\n]+?)\]\]
+
+            // Complex transform: [[Title|Subject]]
+            Regex: \[\[([^\]\|\r\n]+?)\|([^\]\|\r\n]+?)\]\]
+        </div>
+        <p>The processor checks if the linked article exists:</p>
+        <ul>
+            <li><strong>Exists:</strong> Creates link with class <code>dnnSocialLink</code></li>
+            <li><strong>Does not exist:</strong> Creates link with class <code>wiki-nonexistent-article</code> and includes <code>subject</code> attribute</li>
+        </ul>
+    </div>
+
+    <h2>Conclusion</h2>
+    <div class="summary-box">
+        <p>The <strong>Markdown Support</strong> feature (Wiki Links Processing) in Evoq.Social.Wiki is functioning correctly.</p>
+        <p>All test scenarios passed:</p>
+        <ul>
+            <li>Wiki link syntax is properly parsed and transformed</li>
+            <li>Both simple and complex link formats work correctly</li>
+            <li>Links to existing articles navigate properly</li>
+            <li>Links to non-existing articles are styled differently and navigate to a subject page</li>
+            <li>HTML content can be mixed with wiki links</li>
+        </ul>
+        <p><strong>Overall Status:</strong> <span class="status-badge status-pass">FEATURE WORKING AS EXPECTED</span></p>
+    </div>
+
+    <footer style="text-align: center; margin-top: 40px; color: #7f8c8d;">
+        <p>Test Report Generated: December 30, 2025</p>
+        <p>Tested by: Claude Code Automated Testing</p>
+    </footer>
+</body>
+</html>

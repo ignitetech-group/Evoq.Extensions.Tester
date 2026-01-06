@@ -1,0 +1,483 @@
+{
+  "extension": {
+    "name": "Evoq.Social.Activities",
+    "priority": "Medium",
+    "repo": "Dnn.Evoq.Social",
+    "extension_type": "Module"
+  },
+  "features": [
+    {
+      "name": "Activities List Display",
+      "description": "Displays a searchable, sortable table of scoring activities with reputation points",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Activities.ascx",
+        "DesktopModules/DNNCorp/Activities/Activities.ascx.cs",
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.ActivitiesView.js",
+        "DesktopModules/DNNCorp/Activities/Components/Controllers/ActivitiesController.cs"
+      ],
+      "ui_location": "Page with Activities Module > Main View",
+      "test_scenarios": [
+        "View activities list with default pagination (25 items)",
+        "Search activities by name",
+        "Search activities by module name",
+        "Clear search filter",
+        "Sort by Activity Name ascending/descending",
+        "Sort by Module Name ascending/descending",
+        "Sort by Points ascending/descending",
+        "Navigate through paginated results",
+        "View activity tooltips with descriptions",
+        "Handle empty search results"
+      ],
+      "dependencies": [
+        "Evoq.Social.Mechanics"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Activities API Service",
+      "description": "Web API endpoint for retrieving activities with filtering, sorting, and pagination",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Services/ActivityController.cs",
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.SearchController.js"
+      ],
+      "ui_location": "API Endpoint: /API/DNNCorp/Activities/Activity/GetActivities",
+      "test_scenarios": [
+        "Get activities with default parameters",
+        "Filter activities by search text",
+        "Paginate through results (pageIndex, pageSize)",
+        "Sort by different columns (sortColumn parameter)",
+        "Toggle sort direction (sortAscending)",
+        "Filter by specific desktop module (desktopModuleId)",
+        "Verify only positive reputation activities returned",
+        "Test with anonymous access",
+        "Validate response structure (Results array, TotalResults)"
+      ],
+      "dependencies": [
+        "DNN Core API"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "User Badges Display",
+      "description": "Displays user badges in a grid layout with earned status and interactive details",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/UserBadges.ascx",
+        "DesktopModules/DNNCorp/Activities/UserBadges.ascx.cs",
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.UserBadgesView.js",
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.Badge.js"
+      ],
+      "ui_location": "Page with User Badges Module > Main View",
+      "test_scenarios": [
+        "View badges grid for anonymous user",
+        "View badges grid for authenticated user showing earned badges",
+        "View specific user's badges via userId parameter",
+        "Hover badge to see tooltip with 'How to Earn' info (desktop)",
+        "Click badge to expand details (mobile)",
+        "View 'Completed By' section with recent earners",
+        "Click 'View More' button for pagination",
+        "Test with different page sizes (5, 10, 25, 50)",
+        "Verify fallback badge image handling",
+        "Navigate to user profiles from badge earners list"
+      ],
+      "dependencies": [
+        "Evoq.Social.Mechanics",
+        "User Profile System"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Badge Settings Configuration",
+      "description": "Module settings page for configuring badge display options like page size",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/BadgeSettings.ascx",
+        "DesktopModules/DNNCorp/Activities/BadgeSettings.ascx.cs"
+      ],
+      "ui_location": "User Badges Module Menu > Settings",
+      "test_scenarios": [
+        "Access module settings page",
+        "View current page size setting",
+        "Change page size to 5 items",
+        "Change page size to 10 items",
+        "Change page size to 25 items",
+        "Change page size to 50 items",
+        "Save settings and verify persistence",
+        "Verify settings affect badge display"
+      ],
+      "dependencies": [
+        "DNN Module Settings"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "User Badges API Service",
+      "description": "Web API endpoints for retrieving badges and badge details with personalization",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Services/UserBadgesController.cs",
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.UserBadgesController.js",
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.BadgeCardView.js"
+      ],
+      "ui_location": "API Endpoints: /API/DNNCorp/Activities/UserBadges/GetBadges, /API/DNNCorp/Activities/UserBadges/GetBadgeCard",
+      "test_scenarios": [
+        "POST GetBadges with valid anti-forgery token",
+        "POST GetBadges without anti-forgery token (should fail)",
+        "GetBadges with pagination parameters",
+        "GetBadges filtering by viewUserId",
+        "GetBadges with sequence number tracking",
+        "GET GetBadgeCard with valid badgeId",
+        "GET GetBadgeCard with invalid badgeId (404 error)",
+        "GET GetBadgeCard for badge in different portal (400 error)",
+        "Verify badge personalization for authenticated users",
+        "Test anonymous access to badge endpoints"
+      ],
+      "dependencies": [
+        "DNN Core API",
+        "Anti-Forgery Protection"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Badge Detail Popup",
+      "description": "Interactive badge detail card showing description and recent earners",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.BadgeCardView.js",
+        "DesktopModules/DNNCorp/Activities/Components/Contracts/BadgeCardView.cs"
+      ],
+      "ui_location": "User Badges Module > Badge Hover/Click",
+      "test_scenarios": [
+        "Display badge name and tier",
+        "Show 'How to Earn' description",
+        "Display recent badge earners with avatars",
+        "Show user profile links",
+        "Handle badges with no earners",
+        "Test desktop tooltip display",
+        "Test mobile expandable view",
+        "Verify proper rendering of bronze/silver/gold tiers"
+      ],
+      "dependencies": [
+        "User Badges Display"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Privileges Display",
+      "description": "Displays available privileges with reputation requirements",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/ModulePrivileges.ascx",
+        "DesktopModules/DNNCorp/Activities/ModulePrivileges.ascx.cs",
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.PrivilegeView.js"
+      ],
+      "ui_location": "Page with Privileges Module > Main View",
+      "test_scenarios": [
+        "View list of all privileges",
+        "Click privilege to see details",
+        "View privilege name and description",
+        "View reputation points required",
+        "Test privilege selection interaction",
+        "Verify module association display"
+      ],
+      "dependencies": [
+        "Evoq.Social.Mechanics"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Privileges API Service",
+      "description": "Web API endpoint for retrieving privilege information",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Services/PrivilegeController.cs",
+        "DesktopModules/DNNCorp/Activities/Components/Controllers/PrivilegeController.cs"
+      ],
+      "ui_location": "API Endpoint: /API/DNNCorp/Activities/Privilege/GetPrivileges",
+      "test_scenarios": [
+        "GET GetPrivileges with authentication",
+        "GET GetPrivileges without authentication (should fail)",
+        "Filter privileges by desktopModuleId",
+        "Verify response includes privilege details",
+        "Test pagination (fixed at 1024 items)",
+        "Verify sorting by PrivilegeName"
+      ],
+      "dependencies": [
+        "DNN Authorization"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Profile Event Tracking",
+      "description": "Tracks and scores user profile updates including photo, bio, and completion milestones",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Components/ExtensionPoint/ProfileEventHandlers.cs"
+      ],
+      "ui_location": "User Profile > Edit Profile Actions",
+      "test_scenarios": [
+        "Update profile and verify ProfileUpdated event",
+        "Add profile photo and verify AddedProfilePhoto event",
+        "Remove profile photo and verify RemovedProfilePhoto event",
+        "Add biography and verify CompletedBio event",
+        "Remove biography and verify RemovedBio event",
+        "Complete 50% of profile and verify CompletedHalfProfile event",
+        "Complete 100% of profile and verify CompletedFullProfile event",
+        "Verify scoring actions are logged correctly",
+        "Test multiple profile updates in succession"
+      ],
+      "dependencies": [
+        "User Profile System",
+        "Evoq.Social.Mechanics"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Relationship Event Tracking",
+      "description": "Tracks friend and follow relationship changes with bilateral activity logging",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Components/ExtensionPoint/RelationshipEventsHandler.cs"
+      ],
+      "ui_location": "User Profile > Friends/Followers Actions",
+      "test_scenarios": [
+        "Send friend request and verify FriendshipRequested event",
+        "Accept friend request and verify FriendAdded for both users",
+        "Remove friend and verify FriendRemoved for both users",
+        "Follow user and verify FollowedUser and FollowedByUser events",
+        "Unfollow user and verify UnfollowedUser and UnfollowedByUser events",
+        "Verify bilateral event logging",
+        "Test relationship context tracking",
+        "Verify events have 0 points by default"
+      ],
+      "dependencies": [
+        "Social Relationships System",
+        "Evoq.Social.Mechanics"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Module Installation and Upgrade",
+      "description": "Handles module installation and version upgrades with scoring action migrations",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Components/Controllers/BusinessController.cs"
+      ],
+      "ui_location": "Admin > Extensions > Install/Upgrade",
+      "test_scenarios": [
+        "Fresh install creates default scoring actions",
+        "Upgrade from 01.00.00 adds ViewedActivities and ViewedBadges scoring",
+        "Upgrade to 02.00.01 adds Login, Register, and ReceivedBadge scoring",
+        "Upgrade to 02.00.01 creates default 'Getting Started' badge",
+        "Upgrade to 08.00.00 disables old scoring and adds relationship scoring",
+        "Upgrade to 08.01.00 adds profile-related scoring actions",
+        "Verify badge migration to Evoq Content Library",
+        "Test incremental upgrades through versions",
+        "Verify module categorization as Social"
+      ],
+      "dependencies": [
+        "DNN Extension System",
+        "Evoq.Social.Mechanics"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Portal Creation Handler",
+      "description": "Automatically adds default badges when new portals are created",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Components/ExtensionPoint/PortalCreatedEventHandlers.cs"
+      ],
+      "ui_location": "Admin > Site Management > Add New Site",
+      "test_scenarios": [
+        "Create new portal and verify default badges added",
+        "Verify 'Getting Started' badge created",
+        "Verify badge scoring actions updated for new portal",
+        "Test with multiple portal creation",
+        "Verify portal-specific badge isolation"
+      ],
+      "dependencies": [
+        "DNN Portal System",
+        "Badge System"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Default Badge Creation",
+      "description": "Creates and manages the default 'Getting Started' badge for new users",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Components/Controllers/BusinessController.cs",
+        "DesktopModules/DNNCorp/Activities/Images/Bronze-Gettingstarted.png"
+      ],
+      "ui_location": "User Badges Module > Getting Started Badge",
+      "test_scenarios": [
+        "Verify 'Getting Started' badge exists after installation",
+        "New user registration triggers badge earning",
+        "Badge requires registration within 30 days",
+        "Badge is Bronze tier",
+        "Badge image displays correctly",
+        "Badge can only be earned once per user",
+        "Test badge earning notification"
+      ],
+      "dependencies": [
+        "User Registration",
+        "Badge System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Activity Search and Filter",
+      "description": "Real-time search functionality for activities with debounced input",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.SearchController.js",
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.SearchResult.js"
+      ],
+      "ui_location": "Activities Module > Search Box",
+      "test_scenarios": [
+        "Type search term and verify 250ms debounce",
+        "Search by partial activity name",
+        "Search by partial module name",
+        "Clear search with empty input",
+        "Search with special characters",
+        "Case-insensitive search",
+        "Search result highlighting",
+        "No results found message",
+        "Search persistence during pagination"
+      ],
+      "dependencies": [
+        "Activities List Display"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Table Sorting",
+      "description": "Client-side table sorting for activities with visual indicators",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.SortTable.js"
+      ],
+      "ui_location": "Activities Module > Column Headers",
+      "test_scenarios": [
+        "Click column header to sort ascending",
+        "Click again to sort descending",
+        "Sort indicator arrow display",
+        "Multi-column sorting behavior",
+        "Sort persistence during pagination",
+        "Sort with filtered results",
+        "Numeric sorting for Points column",
+        "Alphabetical sorting for text columns"
+      ],
+      "dependencies": [
+        "Activities List Display"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Badge Image Management",
+      "description": "Handles badge image display with fallback support for missing images",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/UserBadges.ascx.cs",
+        "DesktopModules/DNNCorp/Activities/Images/"
+      ],
+      "ui_location": "User Badges Module > Badge Images",
+      "test_scenarios": [
+        "Display badge with valid image",
+        "Handle missing badge image with fallback",
+        "Display bronze tier badge images",
+        "Display silver tier badge images",
+        "Display gold tier badge images",
+        "Test image caching",
+        "Verify image alt text",
+        "Test responsive image sizing"
+      ],
+      "dependencies": [
+        "User Badges Display"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Mobile Responsive Views",
+      "description": "Responsive design for activities and badges on mobile devices",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.UserBadgesView.js",
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.ActivitiesView.js"
+      ],
+      "ui_location": "All Module Views > Mobile Devices",
+      "test_scenarios": [
+        "Test activities table on mobile screens",
+        "Test badge grid on mobile screens",
+        "Verify touch interactions for badges",
+        "Test expandable badge details on mobile",
+        "Verify pagination controls on mobile",
+        "Test search functionality on mobile",
+        "Verify responsive breakpoints",
+        "Test landscape vs portrait orientation"
+      ],
+      "dependencies": [
+        "Activities List Display",
+        "User Badges Display"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Pagination Controls",
+      "description": "Navigation controls for paginated results in activities and badges",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.ActivitiesView.js",
+        "DesktopModules/DNNCorp/Activities/Scripts/dnn.activities.UserBadgesView.js"
+      ],
+      "ui_location": "Activities Module > Bottom, User Badges Module > Bottom",
+      "test_scenarios": [
+        "Navigate to next page",
+        "Navigate to previous page",
+        "Jump to specific page number",
+        "Display current page indicator",
+        "Show 'X-Y of Z Results' text",
+        "Disable previous on first page",
+        "Disable next on last page",
+        "Test with single page of results",
+        "Test with many pages of results",
+        "Verify page size settings applied"
+      ],
+      "dependencies": [
+        "Activities List Display",
+        "User Badges Display"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Anti-Forgery Token Validation",
+      "description": "CSRF protection for POST endpoints using anti-forgery tokens",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/Services/UserBadgesController.cs"
+      ],
+      "ui_location": "User Badges API > POST Endpoints",
+      "test_scenarios": [
+        "POST with valid anti-forgery token succeeds",
+        "POST without token returns 400 error",
+        "POST with invalid token returns error",
+        "Token regeneration after expiry",
+        "Multiple concurrent requests with same token",
+        "Cross-site request blocking"
+      ],
+      "dependencies": [
+        "DNN Security Framework"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Localization Support",
+      "description": "Multi-language support for activities and badges with resource files",
+      "files": [
+        "DesktopModules/DNNCorp/Activities/App_LocalResources/",
+        "DesktopModules/DNNCorp/Activities/Components/Contracts/BadgeContract.cs"
+      ],
+      "ui_location": "All Module Views > Language Selector",
+      "test_scenarios": [
+        "Display activities in default language",
+        "Switch to secondary language",
+        "Verify badge names localization",
+        "Verify badge descriptions localization",
+        "Test missing translation fallback",
+        "Verify UI labels translation",
+        "Test right-to-left language support",
+        "Verify date/number formatting by locale"
+      ],
+      "dependencies": [
+        "DNN Localization System"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:47:06.394068",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

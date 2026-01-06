@@ -1,0 +1,227 @@
+{
+  "extension": {
+    "name": "DotNetNuke.Enterprise.HubspotForms",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Content",
+    "extension_type": "Module"
+  },
+  "features": [
+    {
+      "name": "HubSpot Form Configuration",
+      "description": "Configure HubSpot Portal ID and Form ID to connect and embed HubSpot forms into DNN pages.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx.cs",
+        "Evoq Enterprise/Modules/HubspotForms/Components/Common/Constants.cs"
+      ],
+      "ui_location": "Module Settings > HubSpot Forms Settings",
+      "test_scenarios": [
+        "Enter valid Portal ID and Form ID",
+        "Enter invalid Portal ID and verify error message",
+        "Enter invalid Form ID and verify error message",
+        "Leave Portal ID empty and verify required field validation",
+        "Leave Form ID empty and verify required field validation",
+        "Save settings and verify they persist",
+        "Cancel settings without saving and verify no changes"
+      ],
+      "dependencies": [
+        "DNN Module Settings Framework"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "HubSpot Credentials Validation",
+      "description": "Validates HubSpot Portal ID and Form ID against HubSpot API to ensure they exist and are accessible.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx.cs",
+        "Evoq Enterprise/Modules/HubspotForms/Components/Common/Constants.cs"
+      ],
+      "ui_location": "Module Settings > HubSpot Forms Settings",
+      "test_scenarios": [
+        "Validate correct Portal ID and Form ID combination",
+        "Validate incorrect Portal ID shows 'Portal Id or Form Id is invalid' error",
+        "Validate incorrect Form ID shows 'Portal Id or Form Id is invalid' error",
+        "Test validation timeout handling",
+        "Test validation when HubSpot API is unavailable"
+      ],
+      "dependencies": [
+        "RestSharp",
+        "HubSpot API"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "HubSpot Form Display",
+      "description": "Renders embedded HubSpot forms on DNN pages using JavaScript integration.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx.cs",
+        "Evoq Enterprise/Modules/HubspotForms/scripts/jquery.cookie-1.4.1.min.js"
+      ],
+      "ui_location": "Any page where HubSpot Forms module is added",
+      "test_scenarios": [
+        "Display form when valid configuration exists",
+        "Show initialization message when Portal ID is not configured",
+        "Verify form loads from HubSpot JavaScript API",
+        "Test form rendering in different browsers",
+        "Verify form placeholder is created with correct ID",
+        "Test error handling when HubSpot script fails to load"
+      ],
+      "dependencies": [
+        "HubSpot JavaScript API",
+        "jQuery"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Form Submission Completion Actions",
+      "description": "Configure different actions to occur after successful form submission including redirect, custom message, or default behavior.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx.cs",
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx.cs"
+      ],
+      "ui_location": "Module Settings > Completion Action dropdown",
+      "test_scenarios": [
+        "Select 'HubSpot's Default Action' and verify form uses HubSpot's configured follow-up",
+        "Select 'No Action' and verify form hides after submission",
+        "Select 'Redirect To Url' and verify redirect URL field appears",
+        "Select 'Custom Message' and verify rich text editor appears",
+        "Change completion action and verify UI updates dynamically"
+      ],
+      "dependencies": [
+        "DNN Module Settings"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Post-Submission Redirect",
+      "description": "Redirect users to a specific URL after successful form submission.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx.cs",
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx.cs"
+      ],
+      "ui_location": "Module Settings > Completion Action > Redirect To Url",
+      "test_scenarios": [
+        "Configure redirect to internal page using page picker",
+        "Configure redirect to external URL",
+        "Configure redirect using Tab ID (numeric value)",
+        "Submit form and verify redirect occurs",
+        "Test redirect with invalid URL",
+        "Verify redirect URL is properly encoded"
+      ],
+      "dependencies": [
+        "DNN URL Control"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Post-Submission Custom Message",
+      "description": "Display a custom HTML message after successful form submission instead of default behavior.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx.cs",
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx.cs"
+      ],
+      "ui_location": "Module Settings > Completion Action > Custom Message",
+      "test_scenarios": [
+        "Enter plain text custom message",
+        "Enter HTML formatted custom message",
+        "Test special characters and HTML encoding",
+        "Verify message displays after form submission",
+        "Test empty custom message handling",
+        "Verify rich text editor functionality",
+        "Test multi-line message with line breaks"
+      ],
+      "dependencies": [
+        "DNN Text Editor Control"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Module Initialization Check",
+      "description": "Displays warning message when module is not properly configured with HubSpot credentials.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx.cs",
+        "Evoq Enterprise/Modules/HubspotForms/App_LocalResources/View.ascx.resx"
+      ],
+      "ui_location": "Any page where unconfigured HubSpot Forms module is added",
+      "test_scenarios": [
+        "Add module without configuration and verify initialization message",
+        "Configure Portal ID and verify message disappears",
+        "Remove Portal ID and verify message reappears",
+        "Verify message styling (dnnFormMessage dnnFormWarning)"
+      ],
+      "dependencies": [
+        "DNN Module Framework"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Module Localization",
+      "description": "Support for multiple languages through resource files for all user-facing text.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/App_LocalResources/Settings.ascx.resx",
+        "Evoq Enterprise/Modules/HubspotForms/App_LocalResources/View.ascx.resx"
+      ],
+      "ui_location": "All module UI elements",
+      "test_scenarios": [
+        "Verify all labels display correctly from resource files",
+        "Test error messages localization",
+        "Verify dropdown option text localization",
+        "Test default 'Thank You' message localization",
+        "Verify help text displays for form fields"
+      ],
+      "dependencies": [
+        "DNN Localization Framework"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Settings Persistence",
+      "description": "Save and retrieve module settings including HubSpot configuration and submission behavior.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx.cs"
+      ],
+      "ui_location": "Module Settings",
+      "test_scenarios": [
+        "Save all settings and verify persistence after page reload",
+        "Update individual settings and verify only changed values update",
+        "Test settings with special characters",
+        "Verify settings are module-specific (not shared between instances)",
+        "Test NoRedirectOnUpdate query parameter functionality"
+      ],
+      "dependencies": [
+        "DNN ModuleController"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "JavaScript Error Handling",
+      "description": "Handles JavaScript errors during form loading and displays error messages to users.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx"
+      ],
+      "ui_location": "Form display area on page",
+      "test_scenarios": [
+        "Test form loading with invalid HubSpot credentials",
+        "Test behavior when HubSpot JavaScript fails to load",
+        "Verify console.error messages are captured and displayed",
+        "Test error display in form placeholder",
+        "Verify error handling doesn't break page functionality"
+      ],
+      "dependencies": [
+        "HubSpot JavaScript API",
+        "jQuery"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:31:17.006659",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

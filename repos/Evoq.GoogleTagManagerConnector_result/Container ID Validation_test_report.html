@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Container ID Validation - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #7f8c8d;
+        }
+        .feature-info {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .feature-info p {
+            margin: 8px 0;
+        }
+        .feature-info strong {
+            color: #2c3e50;
+        }
+        .test-scenario {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .test-header {
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .test-header.pass {
+            background: #27ae60;
+            color: white;
+        }
+        .test-header.fail {
+            background: #e74c3c;
+            color: white;
+        }
+        .test-content {
+            padding: 20px;
+        }
+        .test-steps {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .test-steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .test-steps li {
+            margin: 8px 0;
+        }
+        .screenshot {
+            margin: 15px 0;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            font-style: italic;
+            color: #666;
+            margin-top: 8px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .status-badge.pass {
+            background: #27ae60;
+            color: white;
+        }
+        .status-badge.fail {
+            background: #e74c3c;
+            color: white;
+        }
+        .observations {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        .observations h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Consolas', monospace;
+            overflow-x: auto;
+        }
+        .summary {
+            background: #e8f6f3;
+            border: 2px solid #1abc9c;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .summary h2 {
+            color: #16a085;
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #34495e;
+            color: white;
+        }
+        tr:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Container ID Validation - Test Report</h1>
+
+        <div class="feature-info">
+            <h2>Feature Information</h2>
+            <p><strong>Extension:</strong> Evoq.GoogleTagManagerConnector</p>
+            <p><strong>Feature Name:</strong> Container ID Validation</p>
+            <p><strong>Description:</strong> Validates GTM container IDs by checking if they exist and are published on Google's servers</p>
+            <p><strong>UI Location:</strong> Admin > Settings > Connectors > Google Tag Manager</p>
+            <p><strong>Test Date:</strong> December 30, 2025</p>
+            <p><strong>Relevant Code:</strong> Evoq Enterprise/Connectors/GoogleTagManager/Components/GoogleTagManagerConnector.cs</p>
+        </div>
+
+        <h2>Code Analysis</h2>
+        <p>The validation is performed by the <code>ValidateContainer()</code> method which makes an HTTP GET request to Google's GTM servers:</p>
+        <div class="code-block">
+            <pre>private bool ValidateContainer(string containerId)
+{
+    var verifyUrl = string.Format(Constants.VerifyUrl, containerId);
+    // VerifyUrl = "https://www.googletagmanager.com/gtm.js?id={0}"
+
+    var client = new RestClient();
+    var request = new RestRequest(verifyUrl, Method.GET);
+
+    try
+    {
+        var response = client.Execute(request);
+        return response.StatusCode == HttpStatusCode.OK;
+    }
+    catch (Exception e)
+    {
+        Exceptions.LogException(e);
+        return false;
+    }
+}</pre>
+        </div>
+
+        <h2>Test Scenarios</h2>
+
+        <!-- Test 1: Valid Container ID -->
+        <div class="test-scenario">
+            <div class="test-header pass">Test 1: Validate Published GTM Container Returns Success</div>
+            <div class="test-content">
+                <p><strong>Objective:</strong> Verify that a valid, published GTM container ID is accepted by the system.</p>
+
+                <div class="test-steps">
+                    <h4>Steps Taken:</h4>
+                    <ol>
+                        <li>Navigated to Admin > Settings > Connectors</li>
+                        <li>Clicked "Connect" on Google Tag Manager connector</li>
+                        <li>Entered valid Container ID: <code>GTM-5CVQBG</code></li>
+                        <li>Clicked Save button</li>
+                    </ol>
+                </div>
+
+                <p><strong>Expected Result:</strong> Configuration saves successfully with "Item successfully saved" message</p>
+                <p><strong>Actual Result:</strong> Configuration saved successfully. Green checkmark appeared next to Google Tag Manager indicating active configuration.</p>
+
+                <p><span class="status-badge pass">PASS</span></p>
+
+                <div class="screenshot">
+                    <img src="Container_ID_Validation_step04_valid_container_entered.png" alt="Valid container ID entered">
+                    <p class="screenshot-caption">Valid GTM Container ID entered in the form</p>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Container_ID_Validation_step05_valid_container_success.png" alt="Valid container ID success">
+                    <p class="screenshot-caption">After save - Google Tag Manager shows green checkmark indicating successful configuration</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 2: Malformed Container ID -->
+        <div class="test-scenario">
+            <div class="test-header pass">Test 2: Validate Malformed Container ID Shows Error</div>
+            <div class="test-content">
+                <p><strong>Objective:</strong> Verify that a malformed container ID (not following GTM format) is rejected.</p>
+
+                <div class="test-steps">
+                    <h4>Steps Taken:</h4>
+                    <ol>
+                        <li>In the Google Tag Manager connector form</li>
+                        <li>Entered malformed Container ID: <code>invalid-id-12345</code></li>
+                        <li>Clicked Save button</li>
+                    </ol>
+                </div>
+
+                <p><strong>Expected Result:</strong> Validation error message displayed, configuration not saved</p>
+                <p><strong>Actual Result:</strong> Error message displayed: "The Container Id is invalid or container hasn't been published yet."</p>
+
+                <p><span class="status-badge pass">PASS</span></p>
+
+                <div class="screenshot">
+                    <img src="Container_ID_Validation_step06_malformed_id_entered.png" alt="Malformed container ID entered">
+                    <p class="screenshot-caption">Malformed container ID entered in the form</p>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Container_ID_Validation_step07_malformed_id_error.png" alt="Malformed container ID error">
+                    <p class="screenshot-caption">Error shown after attempting to save malformed container ID</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test 3: Non-existent Container ID -->
+        <div class="test-scenario">
+            <div class="test-header pass">Test 3: Validate Non-existent Container ID Shows Error</div>
+            <div class="test-content">
+                <p><strong>Objective:</strong> Verify that a properly formatted but non-existent container ID is rejected.</p>
+
+                <div class="test-steps">
+                    <h4>Steps Taken:</h4>
+                    <ol>
+                        <li>In the Google Tag Manager connector form</li>
+                        <li>Entered non-existent Container ID: <code>GTM-ZZZZZZ9</code></li>
+                        <li>Clicked Save button</li>
+                    </ol>
+                </div>
+
+                <p><strong>Expected Result:</strong> Validation error message displayed, configuration not saved</p>
+                <p><strong>Actual Result:</strong> Error message displayed: "The Container Id is invalid or container hasn't been published yet."</p>
+
+                <p><span class="status-badge pass">PASS</span></p>
+
+                <div class="screenshot">
+                    <img src="Container_ID_Validation_step08_nonexistent_id_entered.png" alt="Non-existent container ID entered">
+                    <p class="screenshot-caption">Non-existent (but properly formatted) container ID entered in the form</p>
+                </div>
+
+                <div class="screenshot">
+                    <img src="Container_ID_Validation_step09_nonexistent_id_error.png" alt="Non-existent container ID error">
+                    <p class="screenshot-caption">Error shown after attempting to save non-existent container ID</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary">
+            <h2>Test Summary</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test Scenario</th>
+                        <th>Input</th>
+                        <th>Expected</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Valid published container</td>
+                        <td><code>GTM-5CVQBG</code></td>
+                        <td>Success</td>
+                        <td><span class="status-badge pass">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td>Malformed container ID</td>
+                        <td><code>invalid-id-12345</code></td>
+                        <td>Error</td>
+                        <td><span class="status-badge pass">PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td>Non-existent container</td>
+                        <td><code>GTM-ZZZZZZ9</code></td>
+                        <td>Error</td>
+                        <td><span class="status-badge pass">PASS</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Overall Result: 3/3 Tests Passed</h3>
+
+            <div class="observations">
+                <h4>Observations</h4>
+                <ul>
+                    <li>The validation correctly contacts Google's servers at <code>https://www.googletagmanager.com/gtm.js?id={containerId}</code></li>
+                    <li>Valid containers return HTTP 200 OK and are accepted</li>
+                    <li>Invalid or non-existent containers return non-200 status codes and are rejected</li>
+                    <li>The error message is user-friendly and informative</li>
+                    <li>The validation happens server-side using RestSharp HTTP client</li>
+                </ul>
+            </div>
+
+            <h4>Test Scenarios Not Executed</h4>
+            <ul>
+                <li><strong>Network timeout test:</strong> Would require network manipulation not available in this test environment</li>
+                <li><strong>Google servers unreachable test:</strong> Would require network manipulation not available in this test environment</li>
+                <li><strong>Unpublished container test:</strong> Would require access to a real GTM account with an unpublished container</li>
+            </ul>
+        </div>
+
+        <h2>Additional Screenshots</h2>
+
+        <div class="screenshot">
+            <img src="Container_ID_Validation_step01_homepage.png" alt="Homepage">
+            <p class="screenshot-caption">Step 1: Homepage before login</p>
+        </div>
+
+        <div class="screenshot">
+            <img src="Container_ID_Validation_step02_connectors_panel.png" alt="Connectors panel">
+            <p class="screenshot-caption">Step 2: Connectors panel showing all available connectors</p>
+        </div>
+
+        <div class="screenshot">
+            <img src="Container_ID_Validation_step03_gtm_form_empty.png" alt="GTM form empty">
+            <p class="screenshot-caption">Step 3: Google Tag Manager connector form (empty state)</p>
+        </div>
+
+    </div>
+</body>
+</html>

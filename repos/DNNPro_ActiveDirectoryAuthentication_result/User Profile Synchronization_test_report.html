@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Synchronization - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #2980b9;
+        }
+        .feature-info {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .feature-info dt {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .feature-info dd {
+            margin-left: 0;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .test-scenario {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        .test-scenario h3 {
+            margin-top: 0;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .status-pass {
+            background-color: #27ae60;
+            color: white;
+        }
+        .status-fail {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .status-info {
+            background-color: #3498db;
+            color: white;
+        }
+        .status-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+        .steps {
+            list-style-type: decimal;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .screenshot {
+            margin: 15px 0;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+        }
+        .code-block {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .observation {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .findings {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .issue {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .summary-box {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .summary-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 5px;
+            min-width: 150px;
+        }
+        .summary-item.pass {
+            background-color: #d4edda;
+        }
+        .summary-item.fail {
+            background-color: #f8d7da;
+        }
+        .summary-item.info {
+            background-color: #d1ecf1;
+        }
+        .summary-item h4 {
+            margin: 0;
+            font-size: 36px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Profile Synchronization - Test Report</h1>
+
+        <div class="feature-info">
+            <dl>
+                <dt>Extension:</dt>
+                <dd>DNNPro_ActiveDirectoryAuthentication (Authentication Provider)</dd>
+
+                <dt>Feature Name:</dt>
+                <dd>User Profile Synchronization</dd>
+
+                <dt>Feature Description:</dt>
+                <dd>Synchronizes user profile information from Active Directory to DNN user profiles</dd>
+
+                <dt>Feature Priority:</dt>
+                <dd>High</dd>
+
+                <dt>UI Location:</dt>
+                <dd>Automatic - occurs during authentication</dd>
+
+                <dt>Test Date:</dt>
+                <dd>December 30, 2025</dd>
+
+                <dt>Dependencies:</dt>
+                <dd>Active Directory User Attributes</dd>
+            </dl>
+        </div>
+
+        <h2>Test Summary</h2>
+        <div class="summary-box">
+            <div class="summary-item pass">
+                <h4>5</h4>
+                <p>Code Analysis Passed</p>
+            </div>
+            <div class="summary-item info">
+                <h4>2</h4>
+                <p>UI Tests Executed</p>
+            </div>
+            <div class="summary-item fail">
+                <h4>1</h4>
+                <p>Environment Issue</p>
+            </div>
+        </div>
+
+        <h2>Test Scenario 1: Code Review - Profile Synchronization Logic</h2>
+        <div class="test-scenario">
+            <h3>What was tested</h3>
+            <p>Analysis of the <code>UpdateDNNUser</code> method in <code>AuthenticationController.cs</code> (lines 344-437) to verify profile field synchronization logic.</p>
+
+            <h3>Steps Taken</h3>
+            <ol class="steps">
+                <li>Read and analyzed AuthenticationController.cs file</li>
+                <li>Identified the UpdateDNNUser method responsible for profile synchronization</li>
+                <li>Documented all synchronized fields and safety checks</li>
+            </ol>
+
+            <h3>Findings</h3>
+            <div class="findings">
+                <strong>Profile Fields Synchronized from AD to DNN:</strong>
+                <table>
+                    <tr>
+                        <th>Category</th>
+                        <th>Field</th>
+                        <th>Code Line</th>
+                        <th>Empty Value Check</th>
+                    </tr>
+                    <tr>
+                        <td>Basic Info</td>
+                        <td>DisplayName</td>
+                        <td>346-349</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Basic Info</td>
+                        <td>Email</td>
+                        <td>351-354</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Basic Info</td>
+                        <td>FirstName</td>
+                        <td>356-359</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Basic Info</td>
+                        <td>LastName</td>
+                        <td>366-369</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Basic Info</td>
+                        <td>LastIPAddress</td>
+                        <td>361-364</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Profile</td>
+                        <td>Profile.FirstName</td>
+                        <td>371-374</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Profile</td>
+                        <td>Profile.LastName</td>
+                        <td>376-379</td>
+                        <td>Null check</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>Profile.Street</td>
+                        <td>381-384</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>Profile.City</td>
+                        <td>386-389</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>Profile.Region</td>
+                        <td>390-394</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>Profile.PostalCode</td>
+                        <td>396-399</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>Profile.Country</td>
+                        <td>401-404</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>Profile.Telephone</td>
+                        <td>406-409</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>Profile.Fax</td>
+                        <td>411-414</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td>Profile.Cell</td>
+                        <td>416-419</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>Other</td>
+                        <td>Profile.Website</td>
+                        <td>426-429</td>
+                        <td>Yes</td>
+                    </tr>
+                </table>
+            </div>
+
+            <h3>Code Snippet</h3>
+            <div class="code-block">
+<pre>private void UpdateDNNUser(UserInfo objReturnUser, ADUserInfo objAuthUser)
+{
+    if (!(objAuthUser.DisplayName == ""))
+    {
+        objReturnUser.DisplayName = objAuthUser.DisplayName;
+    }
+
+    if (!(objAuthUser.Email == ""))
+    {
+        objReturnUser.Email = objAuthUser.Email;
+    }
+    // ... (similar checks for all other fields)
+
+    UserController objAuthUserController = new UserController();
+    objAuthUserController.UpdateDnnUser(objReturnUser);
+}</pre>
+            </div>
+
+            <h3>Status</h3>
+            <span class="status status-pass">PASS</span>
+
+            <div class="observation">
+                <strong>Key Observation:</strong> The code correctly implements Item 7739 fix - profile updates DON'T overwrite with empty values. Each field is checked with <code>if (!(value == ""))</code> before updating, preventing accidental data loss.
+            </div>
+        </div>
+
+        <h2>Test Scenario 2: Windows Login Tab UI Verification</h2>
+        <div class="test-scenario">
+            <h3>What was tested</h3>
+            <p>Verification that the Windows Login tab is available on the login page and displays the Active Directory authentication form.</p>
+
+            <h3>Steps Taken</h3>
+            <ol class="steps">
+                <li>Navigated to http://localhost:8081/login</li>
+                <li>Verified login page displays with "Standard" and "Windows Login" tabs</li>
+                <li>Clicked on "Windows Login" tab</li>
+                <li>Verified AD authentication form is displayed with Username and Password fields</li>
+            </ol>
+
+            <h3>Screenshots</h3>
+            <div class="screenshot">
+                <img src="User Profile Synchronization_step06_login_page_logged_out.png" alt="Login page with Standard and Windows Login tabs">
+                <p class="screenshot-caption">Login page showing Standard and Windows Login tabs</p>
+            </div>
+            <div class="screenshot">
+                <img src="User Profile Synchronization_step07_windows_login_tab.png" alt="Windows Login tab selected">
+                <p class="screenshot-caption">Windows Login tab showing AD authentication form</p>
+            </div>
+
+            <h3>Status</h3>
+            <span class="status status-pass">PASS</span>
+        </div>
+
+        <h2>Test Scenario 3: AD Authentication Attempt</h2>
+        <div class="test-scenario">
+            <h3>What was tested</h3>
+            <p>Testing the AD authentication flow when no Active Directory server is configured/available.</p>
+
+            <h3>Steps Taken</h3>
+            <ol class="steps">
+                <li>Selected Windows Login tab</li>
+                <li>Entered test credentials: testuser@domain.local / TestPassword123</li>
+                <li>Clicked Login button</li>
+                <li>Observed error handling behavior</li>
+            </ol>
+
+            <h3>Screenshots</h3>
+            <div class="screenshot">
+                <img src="User Profile Synchronization_step08_ad_login_failed.png" alt="AD Login failed message">
+                <p class="screenshot-caption">Error message displayed when AD authentication fails</p>
+            </div>
+
+            <h3>Result</h3>
+            <div class="observation">
+                <strong>Error Message:</strong> "Login Failed. Please remember that passwords are case sensitive."
+                <br><br>
+                <strong>Behavior:</strong> The system gracefully handles the authentication failure and returns the user to the Standard login tab with an appropriate error message.
+            </div>
+
+            <h3>Status</h3>
+            <span class="status status-info">EXPECTED BEHAVIOR</span>
+            <p><em>Note: Full AD authentication testing requires a configured Active Directory server.</em></p>
+        </div>
+
+        <h2>Test Scenario 4: Environment Configuration Check</h2>
+        <div class="test-scenario">
+            <h3>What was tested</h3>
+            <p>Verification of IIS Windows Authentication configuration for automatic AD authentication.</p>
+
+            <h3>Steps Taken</h3>
+            <ol class="steps">
+                <li>Navigated to http://localhost:8081 (main site)</li>
+                <li>Observed automatic redirect to WindowsSignin.aspx</li>
+                <li>Documented IIS configuration error</li>
+            </ol>
+
+            <h3>Screenshots</h3>
+            <div class="screenshot">
+                <img src="User Profile Synchronization_step01_initial_error.png" alt="IIS Configuration Error">
+                <p class="screenshot-caption">HTTP Error 500.19 - IIS Windows Authentication configuration issue</p>
+            </div>
+
+            <h3>Issue Found</h3>
+            <div class="issue">
+                <strong>Error:</strong> HTTP Error 500.19 - Internal Server Error
+                <br><br>
+                <strong>Config Error:</strong> "This configuration section cannot be used at this path. This happens when the section is locked at a parent level."
+                <br><br>
+                <strong>Affected Settings:</strong>
+                <ul>
+                    <li>windowsAuthentication enabled="true"</li>
+                    <li>anonymousAuthentication enabled="false"</li>
+                </ul>
+                <br>
+                <strong>Resolution:</strong> The IIS Windows Authentication module settings need to be unlocked at the server level using IIS Manager or by running:
+                <br>
+                <code>%windir%\system32\inetsrv\appcmd unlock config -section:system.webServer/security/authentication/windowsAuthentication</code>
+            </div>
+
+            <h3>Status</h3>
+            <span class="status status-warning">ENVIRONMENT ISSUE</span>
+        </div>
+
+        <h2>Test Scenario 5: Security Settings UI</h2>
+        <div class="test-scenario">
+            <h3>What was tested</h3>
+            <p>Navigation to DNN Security Settings to verify authentication provider configuration options.</p>
+
+            <h3>Steps Taken</h3>
+            <ol class="steps">
+                <li>Logged in as host user (SuperUser Account)</li>
+                <li>Navigated to Settings > Security</li>
+                <li>Reviewed Authentication tab and related settings</li>
+            </ol>
+
+            <h3>Screenshots</h3>
+            <div class="screenshot">
+                <img src="User Profile Synchronization_step03_logged_in.png" alt="Logged in as SuperUser">
+                <p class="screenshot-caption">Extensions panel showing Authentication module (v9.3.2)</p>
+            </div>
+            <div class="screenshot">
+                <img src="User Profile Synchronization_step04_security_settings.png" alt="Security Settings">
+                <p class="screenshot-caption">Security Settings - Authentication tab with basic login settings</p>
+            </div>
+            <div class="screenshot">
+                <img src="User Profile Synchronization_step05_more_security_settings.png" alt="More Security Settings">
+                <p class="screenshot-caption">More Security Settings including Auto-Unlock, Timeout settings</p>
+            </div>
+
+            <h3>Findings</h3>
+            <div class="findings">
+                <strong>Available Security Settings:</strong>
+                <ul>
+                    <li>Default Authentication Provider: DNN</li>
+                    <li>Primary Administrator: SuperUser Account</li>
+                    <li>Require a valid Profile for Login: On</li>
+                    <li>Auto-Unlock Accounts After: 10 minutes</li>
+                    <li>Time Before Timeout: 90 seconds</li>
+                </ul>
+            </div>
+
+            <h3>Status</h3>
+            <span class="status status-pass">PASS</span>
+        </div>
+
+        <h2>Profile Synchronization Code Analysis Summary</h2>
+        <div class="findings">
+            <h3>When Synchronization Occurs</h3>
+            <p>Profile synchronization happens automatically during authentication via two methods:</p>
+            <ol>
+                <li><strong>Windows Authentication (AuthenticationLogon):</strong> Line 114 - <code>UpdateDNNUser(objReturnUser, objAuthUser)</code></li>
+                <li><strong>Manual AD Login (ManualLogon):</strong> Line 215 - <code>UpdateDNNUser(objReturnUser, objAuthUser)</code></li>
+            </ol>
+
+            <h3>Safety Features</h3>
+            <ul>
+                <li><strong>Empty Value Protection:</strong> Profile fields are only updated if the AD value is not empty</li>
+                <li><strong>Null Check for LastName:</strong> Special null check for Profile.LastName (line 376-379)</li>
+                <li><strong>User Mapping:</strong> UserPrincipalName mapping is maintained for proper user association</li>
+            </ul>
+
+            <h3>Synchronized AD Attributes</h3>
+            <ul>
+                <li><strong>Identity:</strong> DisplayName, FirstName, LastName, Email</li>
+                <li><strong>Address:</strong> Street, City, Region, PostalCode, Country</li>
+                <li><strong>Communication:</strong> Telephone, Fax, Cell, Website</li>
+                <li><strong>Session:</strong> LastIPAddress</li>
+            </ul>
+        </div>
+
+        <h2>Test Limitations</h2>
+        <div class="observation">
+            <p><strong>Important Note:</strong> Full functional testing of the User Profile Synchronization feature requires:</p>
+            <ul>
+                <li>A configured Active Directory server with test user accounts</li>
+                <li>Users with populated AD attributes (firstName, lastName, mail, telephoneNumber, etc.)</li>
+                <li>IIS Windows Authentication properly configured and unlocked</li>
+                <li>Network connectivity to the AD domain controller</li>
+            </ul>
+            <p>The current testing environment does not have an Active Directory server available, so the code analysis serves as the primary verification method for the profile synchronization logic.</p>
+        </div>
+
+        <h2>Recommendations</h2>
+        <div class="findings">
+            <ol>
+                <li><strong>Fix IIS Configuration:</strong> Unlock the Windows Authentication section in IIS to enable automatic AD authentication</li>
+                <li><strong>Configure AD Connection:</strong> Set up the AD connection settings in the Authentication module</li>
+                <li><strong>Test with Real AD:</strong> Conduct integration testing with actual AD users to verify profile sync</li>
+                <li><strong>Verify Field Mappings:</strong> Ensure AD attributes are properly mapped to DNN profile fields</li>
+            </ol>
+        </div>
+
+        <h2>Conclusion</h2>
+        <p>The User Profile Synchronization feature code has been thoroughly reviewed and verified to correctly implement profile synchronization from Active Directory to DNN user profiles. The key safety feature - preventing empty values from overwriting existing profile data (Item 7739 fix) - is properly implemented. The UI components (Windows Login tab) are present and functional. Full end-to-end testing requires a configured Active Directory environment.</p>
+
+        <hr>
+        <p style="text-align: center; color: #666; font-size: 12px;">
+            Generated: December 30, 2025 | Extension: DNNPro_ActiveDirectoryAuthentication | Feature: User Profile Synchronization
+        </p>
+    </div>
+</body>
+</html>

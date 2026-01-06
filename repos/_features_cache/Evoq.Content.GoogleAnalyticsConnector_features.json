@@ -1,0 +1,272 @@
+{
+  "extension": {
+    "name": "Evoq.Content.GoogleAnalyticsConnector",
+    "priority": "High",
+    "repo": "Dnn.Evoq.Content",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "Google Analytics OAuth Authorization",
+      "description": "Enables OAuth-based authorization flow to connect Google Analytics account to the Evoq site",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Services/ServicesController.cs",
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Components/GoogleAnalyticsRemoteManager.cs",
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Scripts/authorize.js"
+      ],
+      "ui_location": "Persona Bar > Settings > Connectors > Google Analytics",
+      "test_scenarios": [
+        "Initiate OAuth authorization with valid Google account",
+        "Complete authorization flow and verify token storage",
+        "Handle authorization failure scenarios",
+        "Test authorization with insufficient Google Analytics permissions",
+        "Verify popup window behavior for OAuth flow",
+        "Test authorization cancellation by user"
+      ],
+      "dependencies": [
+        "Google Analytics API",
+        "OAuth 2.0"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Google Analytics Account Configuration",
+      "description": "Allows selection and configuration of Google Analytics account, web property, and data stream",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Scripts/authorize.js",
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Services/ServicesController.cs"
+      ],
+      "ui_location": "Persona Bar > Settings > Connectors > Google Analytics > Configuration",
+      "test_scenarios": [
+        "Load and display available Google Analytics accounts",
+        "Select and change Google Analytics account",
+        "Load web properties for selected account",
+        "Select and change web property",
+        "Load data streams for selected property",
+        "Select and configure data stream",
+        "Verify tracking ID is correctly set after configuration",
+        "Test configuration with multiple GA accounts"
+      ],
+      "dependencies": [
+        "Google Analytics OAuth Authorization"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Token Management and Caching",
+      "description": "Manages OAuth tokens for Google Analytics API access with caching and refresh capabilities",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Components/GoogleAnalyticsRemoteManager.cs",
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Services/ServicesController.cs"
+      ],
+      "ui_location": "Backend service (no direct UI)",
+      "test_scenarios": [
+        "Obtain new token for authorized user",
+        "Retrieve cached token for subsequent requests",
+        "Clear token cache manually",
+        "Handle token expiration and refresh",
+        "Test token storage per portal and user",
+        "Verify token security and encryption"
+      ],
+      "dependencies": [
+        "Google Analytics OAuth Authorization"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Retry Mechanism for Failed Operations",
+      "description": "Implements automatic retry logic for failed Google Analytics API operations with exponential backoff",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Components/GoogleAnalyticsRemoteRetryManager.cs"
+      ],
+      "ui_location": "Backend service (no direct UI)",
+      "test_scenarios": [
+        "Test retry on HTTP 401 Unauthorized error",
+        "Test retry on HTTP 503 Service Unavailable",
+        "Verify maximum retry attempts (3 retries)",
+        "Test exponential backoff timing",
+        "Verify token cache clearing on authorization failure",
+        "Test successful operation after retry"
+      ],
+      "dependencies": [
+        "Token Management and Caching"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Google Analytics Script Injection",
+      "description": "Injects Google Analytics tracking scripts into website pages with configurable placement",
+      "files": [
+        "DNN Platform/Website/Config/SiteAnalytics.config",
+        "Evoq Content/Connectors/GoogleAnalytics/SiteAnalytics.GA4.config"
+      ],
+      "ui_location": "Automatic injection on all portal pages",
+      "test_scenarios": [
+        "Verify tracking script appears in page HTML head",
+        "Test tracking ID replacement in script template",
+        "Verify script injection position (top/bottom of head)",
+        "Test custom script template injection",
+        "Verify no script injection when disabled",
+        "Test script injection on different page types",
+        "Verify GA4 script format and functionality"
+      ],
+      "dependencies": [
+        "Google Analytics Account Configuration"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Google Analytics 4 (GA4) Support",
+      "description": "Provides support for Google Analytics 4 with updated tracking code and configuration",
+      "files": [
+        "Evoq Content/Connectors/GoogleAnalytics/SiteAnalytics.GA4.config",
+        "Evoq Enterprise/Connectors/GoogleAnalytics/GoogleAnalytics4Engine.cs",
+        "Evoq Enterprise/Connectors/GoogleAnalytics/GoogleAnalytics4Connector.cs"
+      ],
+      "ui_location": "Persona Bar > Settings > Connectors > Google Analytics > GA4 Configuration",
+      "test_scenarios": [
+        "Configure GA4 measurement ID",
+        "Verify GA4 gtag.js script injection",
+        "Test GA4 event tracking",
+        "Verify migration from Universal Analytics to GA4",
+        "Test GA4 data stream configuration",
+        "Verify GA4 tracking code format"
+      ],
+      "dependencies": [
+        "Google Analytics Account Configuration"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Deauthorization and Disconnection",
+      "description": "Allows administrators to disconnect Google Analytics integration and revoke authorization",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Services/ServicesController.cs",
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Scripts/authorize.js"
+      ],
+      "ui_location": "Persona Bar > Settings > Connectors > Google Analytics > Disconnect",
+      "test_scenarios": [
+        "Disconnect Google Analytics account",
+        "Verify token removal after disconnection",
+        "Verify tracking script stops appearing after disconnection",
+        "Test re-authorization after disconnection",
+        "Verify configuration is cleared on disconnection",
+        "Test disconnect with active tracking"
+      ],
+      "dependencies": [
+        "Google Analytics OAuth Authorization"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Configuration Migration and Upgrade",
+      "description": "Handles migration of Google Analytics configuration during module upgrades",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleAnalytics/GoogleAnalyticsController.cs",
+        "Evoq Enterprise/Connectors/GoogleAnalytics/DNNXE_GoogleAnalyticsConnector.dnn"
+      ],
+      "ui_location": "Automatic during module upgrade",
+      "test_scenarios": [
+        "Test upgrade from Universal Analytics to GA4",
+        "Verify config file migration preserves settings",
+        "Test upgrade with custom script templates",
+        "Verify backward compatibility",
+        "Test clean installation vs upgrade",
+        "Verify manifest dependencies are met"
+      ],
+      "dependencies": [
+        "DNN Core 07.04.00",
+        "Evoq.Library",
+        "Evoq.GoogleAnalyticsConnector"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "REST API Services",
+      "description": "Provides REST API endpoints for Google Analytics configuration and management",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Services/ServicesController.cs",
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Services/ServiceRouteMapper.cs"
+      ],
+      "ui_location": "API endpoints at /DesktopModules/DNNCorp/ContentGoogleAnalyticsConnector/API/",
+      "test_scenarios": [
+        "Test GetAuthUri endpoint returns valid OAuth URL",
+        "Test GetToken endpoint with valid credentials",
+        "Test Deauthorize endpoint removes authorization",
+        "Verify API authentication and permissions",
+        "Test API error handling for invalid requests",
+        "Verify API route mapping configuration"
+      ],
+      "dependencies": [
+        "DNN Web API Framework"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Localization Support",
+      "description": "Provides multi-language support for Google Analytics connector UI and messages",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleAnalytics/App_LocalResources/ContentGoogleAnalytics.resx",
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Scripts/authorize.js"
+      ],
+      "ui_location": "All Google Analytics UI elements",
+      "test_scenarios": [
+        "Test UI display in different languages",
+        "Verify resource string loading",
+        "Test fallback to default language (en-US)",
+        "Verify localStorage caching of localization data",
+        "Test missing translation handling",
+        "Verify all UI strings are localized"
+      ],
+      "dependencies": [
+        "DNN Localization Framework"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Error Handling and Logging",
+      "description": "Comprehensive error handling and logging for Google Analytics operations",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Components/GoogleAnalyticsRemoteManager.cs",
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Components/GoogleAnalyticsRemoteRetryManager.cs"
+      ],
+      "ui_location": "Event Log and backend logging",
+      "test_scenarios": [
+        "Test error logging for authorization failures",
+        "Verify error messages for API failures",
+        "Test error handling for network issues",
+        "Verify detailed error information in logs",
+        "Test error recovery mechanisms",
+        "Verify user-friendly error messages in UI"
+      ],
+      "dependencies": [
+        "DNN Logging Framework"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Azure Compatibility",
+      "description": "Ensures Google Analytics connector works correctly in Azure cloud environment",
+      "files": [
+        "Evoq Enterprise/Connectors/GoogleAnalytics/DNNXE_GoogleAnalyticsConnector.dnn",
+        "Evoq Enterprise/Connectors/GoogleAnalytics/Evoq.Content.GoogleAnalyticsConnector.csproj"
+      ],
+      "ui_location": "All functionality when deployed on Azure",
+      "test_scenarios": [
+        "Test connector installation on Azure",
+        "Verify token storage in Azure environment",
+        "Test API calls from Azure-hosted site",
+        "Verify script injection on Azure",
+        "Test performance and scalability on Azure",
+        "Verify Azure-specific security requirements"
+      ],
+      "dependencies": [
+        "Azure Web Apps",
+        "DNN Azure Support"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:36:58.794371",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

@@ -1,0 +1,297 @@
+{
+  "extension": {
+    "name": "Evoq.Engage.ZendeskConnector",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Social",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "Zendesk Connection Configuration",
+      "description": "Configure and validate Zendesk connection settings including URL, agent email, and password with encryption and security validation.",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskConnector/Components/ZendeskConnector.cs",
+        "DesktopModules/DNNCorp/ZendeskConnector/Components/ZendeskManager.cs",
+        "DesktopModules/DNNCorp/ZendeskConnector/Components/Constants.cs",
+        "DesktopModules/DNNCorp/ZendeskConnector/connector.htm",
+        "DesktopModules/DNNCorp/ZendeskConnector/Scripts/connector.js"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Zendesk",
+      "test_scenarios": [
+        "Configure valid Zendesk connection with correct URL, email, and password",
+        "Validate connection with invalid credentials shows error",
+        "Verify URL cannot start with http:// or https://",
+        "Test email validation with invalid email format",
+        "Verify credentials are encrypted in portal settings",
+        "Test connection validation via Zendesk API /users/me endpoint",
+        "Verify TLS 1.1/1.2 security protocols are enforced",
+        "Test partial configuration updates",
+        "Clear all configuration settings"
+      ],
+      "dependencies": [
+        "DNN Portal Settings",
+        "DNN Security Encryption"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Automatic Ticket Creation Settings",
+      "description": "Configure automatic ticket creation rules for unanswered Answers and Discussions posts based on time thresholds and user roles.",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskConnector/Components/ZendeskConnector.cs",
+        "DesktopModules/DNNCorp/ZendeskConnector/advanced.htm",
+        "DesktopModules/DNNCorp/ZendeskConnector/Scripts/connector.js"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Zendesk > Advanced Settings",
+      "test_scenarios": [
+        "Enable/disable automatic ticket creation toggle",
+        "Set hours threshold for creating tickets from Answers (0-999)",
+        "Set hours threshold for creating tickets from Discussions (0-999)",
+        "Configure role-based restrictions for ticket creation",
+        "Validate role IDs exist in the portal",
+        "Test invalid role IDs show error message",
+        "Verify hours must be numeric values",
+        "Test multiple role selection with comma separation",
+        "Save and retrieve advanced settings configuration"
+      ],
+      "dependencies": [
+        "DNN Role System",
+        "Answers Module",
+        "Discussions Module"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Zendesk Tickets Module - List View",
+      "description": "View list of Zendesk tickets with search, filtering by status, and pagination capabilities.",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/HelpDesk.ascx",
+        "DesktopModules/DNNCorp/ZendeskTickets/Scripts/HelpDesk.js"
+      ],
+      "ui_location": "Module: Zendesk Tickets (User Desk view)",
+      "test_scenarios": [
+        "View list of all user's tickets",
+        "Search tickets by keyword in subject or description",
+        "Filter tickets by status (New, Open, Pending, Hold, Solved, Closed, All)",
+        "Navigate through paginated results",
+        "Display ticket ID, subject, status, and creation date",
+        "Click ticket to open detail view",
+        "Show 'No Activity' message when no tickets exist",
+        "Refresh ticket list",
+        "Sort tickets by creation date (newest first)"
+      ],
+      "dependencies": [
+        "Zendesk API",
+        "User Authentication"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Create New Ticket",
+      "description": "Create new Zendesk support tickets with dynamic form fields, custom fields, and file attachments.",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/HelpDesk.ascx",
+        "DesktopModules/DNNCorp/ZendeskTickets/Scripts/HelpDesk.js",
+        "DesktopModules/DNNCorp/ZendeskTickets/Components/Controllers/TicketController.cs"
+      ],
+      "ui_location": "Module: Zendesk Tickets > Create Ticket button",
+      "test_scenarios": [
+        "Open create ticket form",
+        "Fill required fields (Subject, Description)",
+        "Fill optional custom fields (text, textarea, dropdown, regexp)",
+        "Validate required fields show error when empty",
+        "Attach single file to ticket",
+        "Attach multiple files to ticket",
+        "Submit ticket successfully",
+        "Display success message after creation",
+        "Cancel ticket creation",
+        "Validate field patterns for regexp fields",
+        "Test custom dropdown field options"
+      ],
+      "dependencies": [
+        "Zendesk API",
+        "Custom Field Configuration"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Ticket Detail View",
+      "description": "View detailed ticket information including description, status, dates, and full conversation history.",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/HelpDesk.ascx",
+        "DesktopModules/DNNCorp/ZendeskTickets/Scripts/HelpDesk.js"
+      ],
+      "ui_location": "Module: Zendesk Tickets > Click on ticket",
+      "test_scenarios": [
+        "Display ticket subject, ID, and status",
+        "Show ticket description",
+        "Display creation date and last activity date",
+        "View all public comments in chronological order",
+        "Show comment author and timestamp",
+        "Verify user can only view own tickets",
+        "Verify collaborators can view shared tickets",
+        "Refresh ticket details",
+        "Navigate back to ticket list",
+        "Display attached files in comments"
+      ],
+      "dependencies": [
+        "Zendesk API",
+        "User Permissions"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Add Comments to Tickets",
+      "description": "Add new comments to existing tickets with optional file attachments.",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/HelpDesk.ascx",
+        "DesktopModules/DNNCorp/ZendeskTickets/Scripts/HelpDesk.js"
+      ],
+      "ui_location": "Module: Zendesk Tickets > Ticket Detail > Comment button",
+      "test_scenarios": [
+        "Open comment form on ticket",
+        "Enter comment text",
+        "Attach file to comment",
+        "Attach multiple files to comment",
+        "Submit comment successfully",
+        "Comment updates ticket status to 'open'",
+        "Cancel comment without saving",
+        "View newly added comment in conversation",
+        "Verify comment author is current user",
+        "Test empty comment validation"
+      ],
+      "dependencies": [
+        "Zendesk API",
+        "Ticket Permissions"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Custom Field Management",
+      "description": "Configure which Zendesk custom fields appear in the ticket creation form.",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskConnector/Components/ZendeskConnector.cs",
+        "DesktopModules/DNNCorp/ZendeskConnector/advanced.htm",
+        "DesktopModules/DNNCorp/ZendeskTickets/Components/Controllers/TicketController.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Zendesk > Advanced Settings > Field Selection",
+      "test_scenarios": [
+        "View list of selected custom fields",
+        "Add new custom field from dropdown",
+        "Remove custom field (except required fields)",
+        "Display field name and type",
+        "Save field configuration",
+        "Retrieve saved field IDs",
+        "Verify required fields cannot be removed",
+        "Test field ordering by position",
+        "Validate field IDs are encrypted in storage"
+      ],
+      "dependencies": [
+        "Zendesk API Field Definitions"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "User Synchronization",
+      "description": "Automatically create and sync DNN users with Zendesk users using external ID mapping.",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskConnector/Entities/ZendeskUser.cs"
+      ],
+      "ui_location": "Automatic during ticket/comment operations",
+      "test_scenarios": [
+        "Create new Zendesk user when DNN user creates first ticket",
+        "Match existing Zendesk user by email",
+        "Update Zendesk user with DNN external ID",
+        "Handle special characters in display names",
+        "Verify user lookup by external ID",
+        "Test user creation with locale settings",
+        "Handle duplicate email scenarios",
+        "Verify collaborator access permissions"
+      ],
+      "dependencies": [
+        "DNN User System",
+        "Zendesk User API"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Scheduled Automatic Ticket Creation",
+      "description": "Background scheduler that automatically creates Zendesk tickets from unanswered Answers and Discussion posts.",
+      "files": [
+        "DesktopModules/DNNCorp/SocialLibrary/Components/Schedulers/ZendeskTicketCreationScheduler.cs",
+        "DesktopModules/DNNCorp/SocialLibrary/Components/Integration/Zendesk.cs",
+        "DesktopModules/DNNCorp/Answers/Components/Integration/ZendeskTicketCreationController.cs",
+        "DesktopModules/DNNCorp/Discussions/Components/Integration/ZendeskTicketCreationController.cs"
+      ],
+      "ui_location": "Admin > Schedule > Zendesk Ticket Creation Scheduler",
+      "test_scenarios": [
+        "Schedule runs at configured interval",
+        "Create ticket from Answer post after X hours without response",
+        "Create ticket from Discussion post after Y hours without response",
+        "Respect role-based restrictions",
+        "Process multiple portals in single run",
+        "Skip portals without Zendesk configuration",
+        "Skip when automatic creation is disabled",
+        "Log number of tickets created",
+        "Handle and log errors during creation"
+      ],
+      "dependencies": [
+        "DNN Scheduler",
+        "Answers Module",
+        "Discussions Module"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "File Attachment Handling",
+      "description": "Upload and display file attachments on tickets and comments with support for images and documents.",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/HelpDesk.ascx"
+      ],
+      "ui_location": "Ticket creation form and comment form",
+      "test_scenarios": [
+        "Upload single file attachment",
+        "Upload multiple files simultaneously",
+        "Display image attachments as thumbnails",
+        "Display non-image attachments as download links",
+        "Validate file size limits",
+        "Test various file types (PDF, DOC, PNG, JPG)",
+        "Handle upload errors gracefully",
+        "View attachments in ticket comments",
+        "Download attached files"
+      ],
+      "dependencies": [
+        "Zendesk Attachments API"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Social Mechanics Integration",
+      "description": "Track user activities and award points for Zendesk ticket interactions.",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Components/Common/Constants.cs"
+      ],
+      "ui_location": "Automatic during user actions",
+      "test_scenarios": [
+        "Award points for creating a ticket",
+        "Award points for commenting on ticket",
+        "Award points for viewing ticket details",
+        "Verify activity logging in social mechanics",
+        "Test point accumulation in user profile"
+      ],
+      "dependencies": [
+        "Social Mechanics Module"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T18:01:14.523098",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

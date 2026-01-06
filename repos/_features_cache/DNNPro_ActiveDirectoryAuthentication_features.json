@@ -1,0 +1,345 @@
+{
+  "extension": {
+    "name": "DNNPro_ActiveDirectoryAuthentication",
+    "priority": "High",
+    "repo": "Dnn.Evoq.Basic",
+    "extension_type": "Authentication Provider"
+  },
+  "features": [
+    {
+      "name": "AD Authentication Settings Configuration",
+      "description": "Configure Active Directory authentication settings including Windows authentication, domain settings, and authentication credentials",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Settings.ascx",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Settings.ascx.cs",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/Config/Configuration.cs"
+      ],
+      "ui_location": "Admin > Extensions > Authentication Systems > Active Directory > Settings",
+      "test_scenarios": [
+        "Enable/disable Windows authentication",
+        "Configure root domain and email domain",
+        "Set authentication username and password",
+        "Test connection to Active Directory",
+        "Verify network status indicators",
+        "Configure authentication type (Delegation, Basic, etc.)",
+        "Save and validate settings persistence"
+      ],
+      "dependencies": [
+        "DNN Portal Settings",
+        "Active Directory Services"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Manual AD Login",
+      "description": "Allows users to manually login using their Active Directory credentials through a login form",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Login.ascx",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Login.ascx.cs",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/AuthenticationController.cs"
+      ],
+      "ui_location": "Login Page > Active Directory Authentication",
+      "test_scenarios": [
+        "Login with valid AD credentials",
+        "Login with invalid credentials",
+        "Login with domain\\username format",
+        "Login with username@domain format",
+        "Test default domain prefix functionality",
+        "Verify CAPTCHA integration when enabled",
+        "Test login failure event logging",
+        "Verify password field security"
+      ],
+      "dependencies": [
+        "Active Directory",
+        "DNN User System"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Windows Single Sign-On (SSO)",
+      "description": "Automatic authentication using Windows integrated authentication for domain-joined computers",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/WindowsSignIn.aspx",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/WindowsSignIn.aspx.cs",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/HttpModule/AuthenticationModule.cs"
+      ],
+      "ui_location": "Automatic - triggered by accessing the site from domain-joined computer",
+      "test_scenarios": [
+        "Auto-login from domain-joined computer",
+        "Test with Windows authentication enabled in IIS",
+        "Verify redirect to WindowsSignIn.aspx",
+        "Test authentication status cookie management",
+        "Verify proper handling of non-authenticated users",
+        "Test logout and re-authentication flow"
+      ],
+      "dependencies": [
+        "IIS Windows Authentication",
+        "Domain membership"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Role Synchronization",
+      "description": "Synchronizes user roles in DNN with Active Directory security groups",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/Users/UserController.cs",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/Groups/GroupController.cs"
+      ],
+      "ui_location": "Admin > Extensions > Authentication Systems > Active Directory > Settings > Synchronize Role",
+      "test_scenarios": [
+        "Enable role synchronization",
+        "Verify AD groups are mapped to DNN roles on login",
+        "Test adding user to new AD group and verify role assignment",
+        "Test removing user from AD group and verify role removal",
+        "Verify auto-assigned roles are not synchronized",
+        "Test admin role mapping functionality",
+        "Verify role synchronization doesn't affect non-AD roles"
+      ],
+      "dependencies": [
+        "Active Directory Groups",
+        "DNN Role System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "User Profile Synchronization",
+      "description": "Synchronizes user profile information from Active Directory to DNN user profiles",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/AuthenticationController.cs",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/Users/UserController.cs"
+      ],
+      "ui_location": "Automatic - occurs during authentication",
+      "test_scenarios": [
+        "Verify first name synchronization from AD",
+        "Verify last name synchronization from AD",
+        "Verify email synchronization from AD",
+        "Test display name updates",
+        "Verify address fields synchronization (street, city, region, postal code, country)",
+        "Test phone number synchronization (telephone, fax, cell)",
+        "Verify profile updates don't overwrite with empty values"
+      ],
+      "dependencies": [
+        "Active Directory User Attributes"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Auto User Creation",
+      "description": "Automatically creates DNN user accounts for authenticated Active Directory users",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/AuthenticationController.cs"
+      ],
+      "ui_location": "Admin > Extensions > Authentication Systems > Active Directory > Settings > Auto Create Users",
+      "test_scenarios": [
+        "Enable auto user creation",
+        "Login with AD user not in DNN",
+        "Verify user account is created",
+        "Test with auto creation disabled",
+        "Verify proper user profile population",
+        "Test user creation across multiple portals",
+        "Verify deleted users can be re-created"
+      ],
+      "dependencies": [
+        "Active Directory",
+        "DNN User System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "IP-Based Auto Authentication",
+      "description": "Automatically authenticate users based on their IP address ranges",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/HttpModule/AuthenticationModule.cs",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Settings.ascx.cs"
+      ],
+      "ui_location": "Admin > Extensions > Authentication Systems > Active Directory > Settings > Auto IP",
+      "test_scenarios": [
+        "Configure single IP address for auto-authentication",
+        "Configure IP range (e.g., 192.168.1.1-192.168.1.254)",
+        "Test with multiple IP ranges separated by semicolons",
+        "Verify authentication from configured IP",
+        "Test authentication from non-configured IP",
+        "Validate IP address format validation",
+        "Test IPv4 address handling"
+      ],
+      "dependencies": [
+        "Network Configuration"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Domain Name Management",
+      "description": "Configure how domain names are handled in usernames",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/Config/Configuration.cs",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Login.ascx.cs"
+      ],
+      "ui_location": "Admin > Extensions > Authentication Systems > Active Directory > Settings > Strip Domain Name & Default Domain",
+      "test_scenarios": [
+        "Enable domain name stripping",
+        "Test login with DOMAIN\\username",
+        "Test login with username@domain.com",
+        "Configure default domain",
+        "Test login with just username (uses default domain)",
+        "Verify username format in DNN after login",
+        "Test multiple domain support"
+      ],
+      "dependencies": [
+        "Active Directory Domains"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Search Bot Exclusion",
+      "description": "Exclude search engine crawlers from Active Directory authentication",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/HttpModule/AuthenticationModule.cs",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Settings.ascx.cs"
+      ],
+      "ui_location": "Admin > Extensions > Authentication Systems > Active Directory > Settings > Search Bots",
+      "test_scenarios": [
+        "Configure search bot user agents",
+        "Test with Googlebot user agent",
+        "Test with MS Search Robot user agent",
+        "Verify bots bypass authentication",
+        "Test with custom bot configuration",
+        "Verify normal users still authenticate"
+      ],
+      "dependencies": [
+        "HTTP User Agent Detection"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Admin Role Mapping",
+      "description": "Map Active Directory groups to DNN administrator role",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/Users/UserController.cs",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/Config/Configuration.cs"
+      ],
+      "ui_location": "Admin > Extensions > Authentication Systems > Active Directory > Settings > Admin Role Mapping",
+      "test_scenarios": [
+        "Configure AD group for admin mapping",
+        "Login with user in admin-mapped AD group",
+        "Verify administrator role assignment",
+        "Remove user from AD admin group and verify role removal",
+        "Test with multiple admin groups",
+        "Verify super user permissions are preserved"
+      ],
+      "dependencies": [
+        "Active Directory Groups",
+        "DNN Administrator Role"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "User Identity Mapping",
+      "description": "Maps Active Directory User Principal Names to DNN usernames for flexible authentication",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/Common/DataProvider.cs",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Providers/DataProviders/SqlDataProvider/07.01.01.SqlDataProvider"
+      ],
+      "ui_location": "Database-level feature - automatic during authentication",
+      "test_scenarios": [
+        "Verify user mapping table creation",
+        "Test UPN to username mapping on first login",
+        "Verify mapping persistence across sessions",
+        "Test login with different UPN formats",
+        "Verify mapping updates on user profile changes",
+        "Test mapping cleanup on user deletion"
+      ],
+      "dependencies": [
+        "SQL Database",
+        "Active Directory UPN"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Authentication Cookie Management",
+      "description": "Manages authentication cookies and timeout settings for persistent login",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/AuthenticationController.cs"
+      ],
+      "ui_location": "Automatic - managed during authentication",
+      "test_scenarios": [
+        "Test persistent cookie creation",
+        "Verify cookie timeout configuration",
+        "Test cookie expiration handling",
+        "Verify cookie security settings",
+        "Test logout cookie cleanup",
+        "Verify authentication status cookie management"
+      ],
+      "dependencies": [
+        "ASP.NET Forms Authentication"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Network Status Monitoring",
+      "description": "Monitors and reports Active Directory connection status and availability",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/AuthenticationController.cs",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Providers/ADSIProvider/ADSIProvider.cs"
+      ],
+      "ui_location": "Admin > Extensions > Authentication Systems > Active Directory > Settings (Status display)",
+      "test_scenarios": [
+        "Test with valid AD connection",
+        "Test with invalid credentials",
+        "Test with unreachable domain controller",
+        "Verify LDAP status reporting",
+        "Verify Global Catalog status",
+        "Test error message localization",
+        "Verify status updates after configuration changes"
+      ],
+      "dependencies": [
+        "Active Directory",
+        "Network Connectivity"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Password Synchronization",
+      "description": "Synchronizes passwords between Active Directory and DNN (one-way randomization for security)",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/AuthenticationController.cs"
+      ],
+      "ui_location": "Admin > Extensions > Authentication Systems > Active Directory > Settings > Synchronize Password",
+      "test_scenarios": [
+        "Enable password synchronization",
+        "Verify DNN password is randomized on AD login",
+        "Test account unlock functionality",
+        "Verify locked account handling",
+        "Test password reset workflow",
+        "Verify AD password is never stored in DNN"
+      ],
+      "dependencies": [
+        "Active Directory",
+        "ASP.NET Membership"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Hide Windows Login Option",
+      "description": "Option to hide the Windows authentication login button from the login page",
+      "files": [
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Settings.ascx.cs",
+        "Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/Components/Config/Configuration.cs"
+      ],
+      "ui_location": "Admin > Extensions > Authentication Systems > Active Directory > Settings > Hide Windows Login",
+      "test_scenarios": [
+        "Enable hide Windows login option",
+        "Verify login button is hidden on login page",
+        "Test automatic authentication still works",
+        "Verify manual login still available",
+        "Test with option disabled",
+        "Verify configuration persistence"
+      ],
+      "dependencies": [
+        "Login Page UI"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:24:34.629843",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

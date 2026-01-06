@@ -1,0 +1,229 @@
+{
+  "extension": {
+    "name": "Evoq.DisqusConnector",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Content",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "Disqus Connector Configuration",
+      "description": "Configure and validate Disqus API credentials and forum shortname through the Connections interface",
+      "files": [
+        "Evoq Enterprise/Connectors/Disqus/Components/DisqusConnector.cs",
+        "Evoq Enterprise/Connectors/Disqus/Components/Constants.cs",
+        "Evoq Enterprise/Connectors/Disqus/Scripts/connector.js"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Disqus",
+      "test_scenarios": [
+        "Configure Disqus with valid API key and shortname",
+        "Configure Disqus with invalid API key - verify error message",
+        "Configure Disqus with invalid shortname format (uppercase/spaces) - verify validation",
+        "Configure Disqus with non-existent forum - verify error",
+        "Clear Disqus configuration by leaving fields empty",
+        "Verify configuration is encrypted in portal settings",
+        "Test configuration persistence across sessions"
+      ],
+      "dependencies": [
+        "DNN Connections Framework",
+        "Portal Settings"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Disqus Forum Validation",
+      "description": "Validates that the configured Disqus forum exists and API key is valid through Disqus API",
+      "files": [
+        "Evoq Enterprise/Connectors/Disqus/Components/DisqusConnector.cs",
+        "Evoq Enterprise/Connectors/Disqus/Components/Constants.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Disqus",
+      "test_scenarios": [
+        "Validate existing Disqus forum with correct API key",
+        "Handle HTTP 403 Forbidden response for invalid API key",
+        "Handle HTTP 400 Bad Request for invalid shortname",
+        "Test API connectivity and timeout handling",
+        "Verify proper error logging for API failures"
+      ],
+      "dependencies": [
+        "Disqus API",
+        "RestSharp"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Disqus Configuration Retrieval",
+      "description": "Retrieve Disqus configuration settings for the current portal through DisqusManager",
+      "files": [
+        "Evoq Enterprise/Connectors/Disqus/Components/DisqusManager.cs",
+        "Evoq Enterprise/Connectors/Disqus/Components/IDisqusManager.cs"
+      ],
+      "ui_location": "N/A - Backend service",
+      "test_scenarios": [
+        "Retrieve shortname for configured portal",
+        "Check if Disqus has been configured",
+        "Handle missing configuration gracefully",
+        "Verify service locator pattern implementation",
+        "Test configuration retrieval across different portals"
+      ],
+      "dependencies": [
+        "Portal Settings",
+        "Service Locator"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Publisher Module Disqus Integration",
+      "description": "Display Disqus comments on Publisher module post detail pages when configured",
+      "files": [
+        "Evoq Enterprise/Modules/Publisher/Detail.ascx",
+        "Evoq Enterprise/Modules/Publisher/Detail.ascx.cs",
+        "Evoq Enterprise/Modules/Publisher/Components/Integration/DisqusManager.cs"
+      ],
+      "ui_location": "Publisher Module > Post Detail Page > Comments Section",
+      "test_scenarios": [
+        "Display Disqus comments when properly configured",
+        "Hide Disqus comments when not configured",
+        "Hide comments in Edit mode",
+        "Hide comments for unpublished posts",
+        "Hide comments when comments are disabled for post",
+        "Verify Disqus thread loads with correct post identifier",
+        "Test Disqus thread title matches post title",
+        "Verify JavaScript fallback message for disabled JavaScript"
+      ],
+      "dependencies": [
+        "Publisher Module",
+        "Disqus Configuration"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "New Comment Notification System",
+      "description": "Notify the system when new comments are added through Disqus to trigger notifications",
+      "files": [
+        "Evoq Enterprise/Modules/Publisher/ClientScripts/DisqusManager.js",
+        "Evoq Enterprise/Modules/Publisher/Services/ViewPostController.cs",
+        "Evoq Enterprise/Modules/Publisher/Components/PostManager.cs"
+      ],
+      "ui_location": "Publisher Module > Post Detail Page > Comments",
+      "test_scenarios": [
+        "Trigger notification when new comment is added",
+        "Verify AJAX request to NotifyAboutNewComment endpoint",
+        "Test anti-forgery token validation",
+        "Verify comment notification includes content item ID",
+        "Test notification with authenticated users",
+        "Test notification with anonymous users",
+        "Verify proper error handling for failed notifications"
+      ],
+      "dependencies": [
+        "Publisher Module",
+        "Disqus Comments",
+        "Web API"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Disqus Shortname Format Validation",
+      "description": "Validates that Disqus shortname follows required format (lowercase, no spaces)",
+      "files": [
+        "Evoq Enterprise/Connectors/Disqus/Components/DisqusConnector.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Disqus",
+      "test_scenarios": [
+        "Accept lowercase shortname without spaces",
+        "Reject shortname with uppercase characters",
+        "Reject shortname with spaces",
+        "Reject shortname with special characters if applicable",
+        "Display appropriate validation error message"
+      ],
+      "dependencies": [
+        "Disqus Configuration"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Connector Metadata and Properties",
+      "description": "Provides connector metadata including name, icon, type, and plugin folder information",
+      "files": [
+        "Evoq Enterprise/Connectors/Disqus/Components/DisqusConnector.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors",
+      "test_scenarios": [
+        "Verify connector name is 'Disqus'",
+        "Verify connector icon URL is correct",
+        "Verify connector type is 'Social'",
+        "Verify SupportsMultiple is false",
+        "Verify IsEngageConnector is false",
+        "Test GetConnectors returns single instance"
+      ],
+      "dependencies": [
+        "DNN Connections Framework"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Disqus Connector Localization",
+      "description": "Provides localized strings for UI elements and error messages",
+      "files": [
+        "Evoq Enterprise/Connectors/Disqus/App_LocalResources/SharedResources.resx"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Disqus",
+      "test_scenarios": [
+        "Display localized field labels (API Key, Shortname)",
+        "Display localized validation error messages",
+        "Test fallback to default language",
+        "Verify all resource keys are properly defined",
+        "Test special characters in localized strings"
+      ],
+      "dependencies": [
+        "DNN Localization"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Disqus Connector Installation",
+      "description": "Install and register the Disqus Connector as a DNN extension package",
+      "files": [
+        "Evoq Enterprise/Connectors/Disqus/DNNXE_DisqusConnector.dnn"
+      ],
+      "ui_location": "Admin > Extensions > Install Extension",
+      "test_scenarios": [
+        "Install connector package successfully",
+        "Verify DNN Core version requirement (07.04.00)",
+        "Verify Evoq.Library dependency (08.01.00)",
+        "Verify assembly deployment to bin folder",
+        "Verify resource files deployment",
+        "Test upgrade from previous version",
+        "Test Azure compatibility"
+      ],
+      "dependencies": [
+        "DNN Core 07.04.00",
+        "Evoq.Library 08.01.00"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Configuration Security",
+      "description": "Encrypts and decrypts Disqus API credentials using DNN portal security",
+      "files": [
+        "Evoq Enterprise/Connectors/Disqus/Components/DisqusConnector.cs"
+      ],
+      "ui_location": "Admin > Settings > Connectors > Disqus",
+      "test_scenarios": [
+        "Verify API key is encrypted before storage",
+        "Verify shortname is encrypted before storage",
+        "Verify successful decryption on retrieval",
+        "Test encryption with Host GUID",
+        "Verify encrypted values in database",
+        "Test configuration security across portals"
+      ],
+      "dependencies": [
+        "DNN Portal Security",
+        "Host Settings"
+      ],
+      "priority": "High"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:33:03.197555",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

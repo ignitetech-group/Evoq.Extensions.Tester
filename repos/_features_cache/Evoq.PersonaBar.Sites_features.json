@@ -1,0 +1,259 @@
+{
+  "extension": {
+    "name": "Evoq.PersonaBar.Sites",
+    "priority": "Medium",
+    "repo": "Dnn.AdminExperience.Evoq.Basic",
+    "extension_type": "PersonaBar Module"
+  },
+  "features": [
+    {
+      "name": "Sites List and Filtering",
+      "description": "View and filter the list of sites/portals with pagination, thumbnails, and portal details.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Sites/Services/EvoqSitesController.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Components/Dto/PortalDto.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Components/Dto/HttpAliasDto.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/admin/personaBar/EvoqSites.html",
+        "src/Modules/Evoq.PersonaBar.Sites/admin/personaBar/scripts/EvoqSites.js"
+      ],
+      "ui_location": "Admin > PersonaBar > Sites",
+      "test_scenarios": [
+        "View all sites without filter",
+        "Filter sites by portal name",
+        "Filter sites by portal group ID",
+        "Verify pagination works with different page sizes",
+        "Verify portal details display (ID, name, aliases, users, pages, space, fee)",
+        "Verify expiry date formatting",
+        "Verify content localization status display",
+        "Verify delete permission logic (cannot delete current portal or group member)",
+        "Test with large number of portals for performance",
+        "Verify thumbnail display for each site"
+      ],
+      "dependencies": [
+        "PersonaBar",
+        "Portal Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Site Thumbnail Management",
+      "description": "Create, update, and manage site thumbnails with image cropping and multiple size generation.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Sites/Services/SiteThumbnailsController.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Components/ThumbnailsManagementController.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Components/Dto/SiteThumbnailDto.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/admin/personaBar/scripts/sites.thumbnails.js"
+      ],
+      "ui_location": "Admin > PersonaBar > Sites > Site Thumbnail Actions",
+      "test_scenarios": [
+        "Upload image and create thumbnails",
+        "Crop image to specific area",
+        "Generate all thumbnail sizes (XSmall: 48x30, Small: 64x40, Medium: 240x150, Large: 640x400)",
+        "Verify base64 image conversion",
+        "Test image proxy for cross-domain images",
+        "Handle invalid image formats",
+        "Verify thumbnail folder creation",
+        "Test concurrent thumbnail generation with locking",
+        "Verify old thumbnails are deleted on update",
+        "Test error handling for corrupted images",
+        "Verify default fallback thumbnail display"
+      ],
+      "dependencies": [
+        "File System",
+        "Image Processing"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Site Groups Management",
+      "description": "Create, edit, delete, and manage groups of related sites/portals.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Sites/Services/SiteGroupController.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Components/GroupsController.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Components/Dto/PortalGroupDto.cs"
+      ],
+      "ui_location": "Admin > PersonaBar > Sites > Site Groups",
+      "test_scenarios": [
+        "Create new site group",
+        "Edit existing site group name and description",
+        "Set authentication domain for group",
+        "Delete empty site group",
+        "Verify cannot delete group with members",
+        "List all site groups",
+        "Verify master portal assignment",
+        "Test group validation (name and description required)",
+        "Verify error messages for invalid group operations",
+        "Test concurrent group operations"
+      ],
+      "dependencies": [
+        "Portal Groups"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Site Group Membership",
+      "description": "Add or remove sites from portal groups and manage group membership.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Sites/Services/SiteGroupController.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Components/GroupsController.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Components/Dto/PortalGroupMembersDto.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Components/Dto/PortalRemovedDto.cs"
+      ],
+      "ui_location": "Admin > PersonaBar > Sites > Site Groups > Group Members",
+      "test_scenarios": [
+        "Get portals without group assignment",
+        "Add portal to group",
+        "Remove portal from group",
+        "Copy users when removing portal from group",
+        "Don't copy users when removing portal from group",
+        "Verify master portal cannot be removed",
+        "Update multiple group members at once",
+        "Test adding portal already in another group",
+        "Verify permissions for non-superuser",
+        "Test group membership with shared users"
+      ],
+      "dependencies": [
+        "Portal Groups",
+        "User Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Thumbnail Auto-Refresh on Page Changes",
+      "description": "Automatically delete and refresh site thumbnails when homepage content changes.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Sites/Components/EventHandlers/TabEventsHandler.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Components/EventHandlers/ModuleEventsHandler.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Data/DataService.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Data/IDataService.cs"
+      ],
+      "ui_location": "Background Process",
+      "test_scenarios": [
+        "Update homepage tab and verify thumbnail deletion",
+        "Delete homepage tab and verify thumbnail deletion",
+        "Restore homepage tab and verify thumbnail deletion",
+        "Add module to homepage and verify thumbnail deletion",
+        "Update module on homepage and verify thumbnail deletion",
+        "Remove module from homepage and verify thumbnail deletion",
+        "Mark homepage as published and verify thumbnail deletion",
+        "Verify thumbnail expiry based on homepage update time",
+        "Test with different culture codes",
+        "Verify non-homepage changes don't affect thumbnails"
+      ],
+      "dependencies": [
+        "Tab Events",
+        "Module Events"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Portal Template Thumbnails",
+      "description": "Create thumbnails for portal templates when templates are created.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Sites/Components/EventHandlers/PortalTemplateEventsHandler.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Components/ThumbnailsManagementController.cs"
+      ],
+      "ui_location": "Background Process",
+      "test_scenarios": [
+        "Create portal template and verify thumbnail generation",
+        "Verify medium thumbnail copied to template path",
+        "Handle missing source thumbnail gracefully",
+        "Test with existing template thumbnail (no overwrite)",
+        "Verify PNG format for template thumbnails",
+        "Test error handling for file system issues",
+        "Verify template path validation"
+      ],
+      "dependencies": [
+        "Portal Templates"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Sites Menu Controller",
+      "description": "Control menu visibility and settings for the Sites module in PersonaBar.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Sites/MenuControllers/SiteMenuController.cs"
+      ],
+      "ui_location": "Admin > PersonaBar > Sites Menu",
+      "test_scenarios": [
+        "Verify menu visible for SuperUser",
+        "Verify menu visible for Administrator role",
+        "Verify menu hidden for regular users",
+        "Verify menu path is set to 'EvoqSites'",
+        "Verify default thumbnail setting is passed",
+        "Test menu parameters update"
+      ],
+      "dependencies": [
+        "PersonaBar Menu",
+        "User Permissions"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Portal Aliases Display",
+      "description": "Format and display portal aliases with proper HTTP/HTTPS and port handling.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Sites/Services/EvoqSitesController.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Components/Dto/HttpAliasDto.cs"
+      ],
+      "ui_location": "Admin > PersonaBar > Sites > Site List",
+      "test_scenarios": [
+        "Display primary alias first",
+        "Format alias with HTTP/HTTPS",
+        "Add port number when necessary",
+        "Handle missing aliases gracefully",
+        "Test with URL rewrite scenarios",
+        "Verify multiple aliases ordering",
+        "Test with custom ports",
+        "Verify alias link generation"
+      ],
+      "dependencies": [
+        "Portal Aliases"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "License Validation",
+      "description": "Validate Evoq license for Sites module access.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Sites/Services/EvoqSitesController.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Services/SiteThumbnailsController.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Services/SiteGroupController.cs"
+      ],
+      "ui_location": "All Sites API Endpoints",
+      "test_scenarios": [
+        "Access with valid Evoq license",
+        "Access without valid license (should be denied)",
+        "Verify all controllers check license",
+        "Test license expiry scenarios"
+      ],
+      "dependencies": [
+        "Evoq License"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Anti-Forgery Token Validation",
+      "description": "Validate anti-forgery tokens for all POST operations.",
+      "files": [
+        "src/Modules/Evoq.PersonaBar.Sites/Services/SiteThumbnailsController.cs",
+        "src/Modules/Evoq.PersonaBar.Sites/Services/SiteGroupController.cs"
+      ],
+      "ui_location": "All POST API Endpoints",
+      "test_scenarios": [
+        "POST with valid anti-forgery token",
+        "POST without token (should fail)",
+        "POST with invalid token (should fail)",
+        "Verify all POST endpoints validate token",
+        "Test token expiry",
+        "Test concurrent requests with same token"
+      ],
+      "dependencies": [
+        "Security Framework"
+      ],
+      "priority": "High"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T18:09:22.310992",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

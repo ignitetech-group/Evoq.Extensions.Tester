@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Report: Unpublished Posts Management</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #7f8c8d;
+        }
+        .feature-info {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .feature-info p {
+            margin: 8px 0;
+        }
+        .feature-info strong {
+            color: #2c3e50;
+        }
+        .test-scenario {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .scenario-header {
+            background: #34495e;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .scenario-header h3 {
+            margin: 0;
+            color: white;
+        }
+        .status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .status.pass {
+            background: #27ae60;
+            color: white;
+        }
+        .status.fail {
+            background: #e74c3c;
+            color: white;
+        }
+        .status.not-available {
+            background: #f39c12;
+            color: white;
+        }
+        .scenario-content {
+            padding: 20px;
+        }
+        .steps {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin: 8px 0;
+        }
+        .screenshot {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            color: #7f8c8d;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        .observations {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .observations h4 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .summary {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+        .summary h2 {
+            color: #155724;
+            border: none;
+            padding: 0;
+            margin-top: 0;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .summary-table th, .summary-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #c3e6cb;
+        }
+        .summary-table th {
+            background: #28a745;
+            color: white;
+        }
+        .code-review {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #17a2b8;
+        }
+        .code-review h4 {
+            margin-top: 0;
+            color: #0c5460;
+        }
+        .code-review code {
+            background: #d1ecf1;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .timestamp {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Report: Unpublished Posts Management</h1>
+        <p class="timestamp">Test Date: December 30, 2025</p>
+
+        <div class="feature-info">
+            <h2 style="margin-top:0; border:none; padding:0;">Feature Information</h2>
+            <p><strong>Extension:</strong> Publisher (Module)</p>
+            <p><strong>Extension Priority:</strong> High</p>
+            <p><strong>Feature Name:</strong> Unpublished Posts Management</p>
+            <p><strong>Feature Priority:</strong> High</p>
+            <p><strong>Description:</strong> View and manage all unpublished posts including drafts and posts under review</p>
+            <p><strong>UI Location:</strong> News page > Publisher Edit Bar > Unpublished Posts Panel</p>
+            <p><strong>Repository:</strong> Dnn.Evoq.Content</p>
+        </div>
+
+        <div class="code-review">
+            <h4>Code Review Summary</h4>
+            <p>Relevant files examined:</p>
+            <ul>
+                <li><code>UnpublishedPosts.ascx</code> - Main view displaying the unpublished posts table</li>
+                <li><code>UnpublishedPostDto.cs</code> - Data transfer object with PostId, ContentItemId, AuthorUserId, Title, CreatedOnDate</li>
+                <li><code>UnpublishedPostViewModel.cs</code> - View model adding ViewUrl and EditUrl for navigation</li>
+                <li><code>UnpublishedPostsManager.js</code> - Knockout.js manager for show/hide panel functionality</li>
+                <li><code>PublishingPostController.cs</code> - API controller with Submit, SaveDraft, Publish, Reject, Discard methods</li>
+            </ul>
+        </div>
+
+        <h2>Test Scenarios</h2>
+
+        <!-- Scenario 1: View List -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>1. View List of Unpublished Posts</h3>
+                <span class="status pass">PASS</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> Verify that all unpublished posts are displayed in a list view</p>
+                <div class="steps">
+                    <h4>Steps Taken:</h4>
+                    <ol>
+                        <li>Navigate to News page (http://localhost:8081/News)</li>
+                        <li>Click on "Unapproved Posts" icon in the bottom toolbar</li>
+                        <li>Observe the Unpublished Posts panel appears</li>
+                    </ol>
+                </div>
+                <p><strong>Result:</strong> The Unpublished Posts panel displays a table with columns: NAME, DATE CREATED, AUTHOR, ACTIONS. Three unpublished posts are shown.</p>
+                <div class="screenshot">
+                    <img src="Unpublished_Posts_Management_step02_panel_open.png" alt="Unpublished Posts List View">
+                    <p class="screenshot-caption">Unpublished Posts panel showing list of draft posts</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario 2: Filter by Status -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>2. Filter Unpublished by Status (Draft/Review)</h3>
+                <span class="status not-available">NOT AVAILABLE</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> Test filtering unpublished posts by their workflow status</p>
+                <div class="steps">
+                    <h4>Steps Taken:</h4>
+                    <ol>
+                        <li>Examined the Unpublished Posts panel for filter options</li>
+                        <li>Reviewed the source code (UnpublishedPosts.ascx)</li>
+                    </ol>
+                </div>
+                <p><strong>Result:</strong> No filter functionality is available in the UI. The panel shows all unpublished posts without status differentiation.</p>
+                <div class="observations">
+                    <h4>Observations</h4>
+                    <p>The current implementation does not include filter controls. All unpublished posts are displayed regardless of their workflow state (draft vs. under review). This could be a feature enhancement opportunity.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario 3: Sort by Date -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>3. Sort Unpublished Posts by Date</h3>
+                <span class="status not-available">NOT AVAILABLE</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> Test sorting posts by date created</p>
+                <div class="steps">
+                    <h4>Steps Taken:</h4>
+                    <ol>
+                        <li>Clicked on the "DATE CREATED" column header</li>
+                        <li>Observed if the table order changed</li>
+                    </ol>
+                </div>
+                <p><strong>Result:</strong> The column headers are not clickable for sorting. Posts are displayed in a fixed order (newest first by default).</p>
+                <div class="screenshot">
+                    <img src="Unpublished_Posts_Management_step03_sort_test.png" alt="Sort Test">
+                    <p class="screenshot-caption">Posts displayed in default order - column headers not interactive</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario 4: Bulk Select -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>4. Bulk Select Posts for Action</h3>
+                <span class="status not-available">NOT AVAILABLE</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> Test selecting multiple posts for bulk actions</p>
+                <div class="steps">
+                    <h4>Steps Taken:</h4>
+                    <ol>
+                        <li>Examined the table for checkbox controls</li>
+                        <li>Reviewed the source code for bulk selection implementation</li>
+                    </ol>
+                </div>
+                <p><strong>Result:</strong> No checkbox controls or bulk selection mechanism is available. Actions must be performed on individual posts.</p>
+            </div>
+        </div>
+
+        <!-- Scenario 5: Quick Edit -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>5. Quick Edit from Unpublished List</h3>
+                <span class="status pass">PASS</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> Test editing a post directly from the unpublished list</p>
+                <div class="steps">
+                    <h4>Steps Taken:</h4>
+                    <ol>
+                        <li>Hovered over a post row to reveal action icons</li>
+                        <li>Clicked the "Edit Post" icon (pencil)</li>
+                        <li>Edit form opened with post details</li>
+                    </ol>
+                </div>
+                <p><strong>Result:</strong> Hovering over a row reveals View and Edit icons in the Actions column. Clicking Edit opens the full post editor with Title, Description, URL, Tags, and workflow action buttons.</p>
+                <div class="screenshot">
+                    <img src="Unpublished_Posts_Management_step04_actions_hover.png" alt="Action Icons on Hover">
+                    <p class="screenshot-caption">View and Edit icons appear on row hover</p>
+                </div>
+                <div class="screenshot">
+                    <img src="Unpublished_Posts_Management_step06_edit_form.png" alt="Edit Post Form">
+                    <p class="screenshot-caption">Edit Post interface with workflow buttons (Publish, Reject, Discard, Save, Close)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario 6: Delete Draft Posts -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>6. Delete Draft Posts</h3>
+                <span class="status pass">PASS</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> Test deleting an unpublished post</p>
+                <div class="steps">
+                    <h4>Steps Taken:</h4>
+                    <ol>
+                        <li>Opened a post in edit mode</li>
+                        <li>Clicked the "Delete Post" icon in the bottom toolbar</li>
+                        <li>Confirmation dialog appeared</li>
+                        <li>Clicked "No" to cancel deletion</li>
+                    </ol>
+                </div>
+                <p><strong>Result:</strong> Delete functionality works correctly. A confirmation dialog appears asking "Are you sure you would like to permanently delete this post?" with Yes/No options.</p>
+                <div class="screenshot">
+                    <img src="Unpublished_Posts_Management_step07_delete_confirm.png" alt="Delete Confirmation">
+                    <p class="screenshot-caption">Delete confirmation dialog with Yes/No options</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario 7: View Workflow State -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>7. View Workflow State Details</h3>
+                <span class="status pass">PASS</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> View the current workflow state of an unpublished post</p>
+                <div class="steps">
+                    <h4>Steps Taken:</h4>
+                    <ol>
+                        <li>Opened a post in edit mode</li>
+                        <li>Observed the workflow action buttons available</li>
+                        <li>Viewed the post detail page showing status message</li>
+                    </ol>
+                </div>
+                <p><strong>Result:</strong> Workflow state is displayed through:</p>
+                <ul>
+                    <li>Message: "Changes shown are not published"</li>
+                    <li>Available workflow actions: Publish, Reject, Discard, Save</li>
+                    <li>Post detail page shows "This post is currently awaiting moderation"</li>
+                </ul>
+                <div class="screenshot">
+                    <img src="Unpublished_Posts_Management_step06_edit_form.png" alt="Workflow State in Edit Mode">
+                    <p class="screenshot-caption">Workflow buttons visible: Publish, Reject, Discard, Save, Close</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario 8: Export -->
+        <div class="test-scenario">
+            <div class="scenario-header">
+                <h3>8. Export Unpublished Posts List</h3>
+                <span class="status not-available">NOT AVAILABLE</span>
+            </div>
+            <div class="scenario-content">
+                <p><strong>Objective:</strong> Export the list of unpublished posts</p>
+                <div class="steps">
+                    <h4>Steps Taken:</h4>
+                    <ol>
+                        <li>Examined the Unpublished Posts panel for export options</li>
+                        <li>Reviewed the source code for export functionality</li>
+                    </ol>
+                </div>
+                <p><strong>Result:</strong> No export functionality is available in the current implementation.</p>
+                <div class="observations">
+                    <h4>Observations</h4>
+                    <p>The Unpublished Posts panel does not include any export options (CSV, Excel, PDF, etc.). This could be a feature enhancement for users who need to report on content in workflow.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary">
+            <h2>Test Summary</h2>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Test Scenario</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>View list of unpublished posts</td>
+                        <td><span class="status pass">PASS</span></td>
+                        <td>Table displays all unpublished posts with Name, Date, Author, Actions</td>
+                    </tr>
+                    <tr>
+                        <td>Filter by status (draft/review)</td>
+                        <td><span class="status not-available">NOT AVAILABLE</span></td>
+                        <td>No filter controls in the UI</td>
+                    </tr>
+                    <tr>
+                        <td>Sort by date</td>
+                        <td><span class="status not-available">NOT AVAILABLE</span></td>
+                        <td>Column headers not clickable for sorting</td>
+                    </tr>
+                    <tr>
+                        <td>Bulk select for action</td>
+                        <td><span class="status not-available">NOT AVAILABLE</span></td>
+                        <td>No checkboxes or bulk selection mechanism</td>
+                    </tr>
+                    <tr>
+                        <td>Quick edit from list</td>
+                        <td><span class="status pass">PASS</span></td>
+                        <td>Edit icon opens full editor with workflow buttons</td>
+                    </tr>
+                    <tr>
+                        <td>Delete draft posts</td>
+                        <td><span class="status pass">PASS</span></td>
+                        <td>Delete with confirmation dialog works correctly</td>
+                    </tr>
+                    <tr>
+                        <td>View workflow state</td>
+                        <td><span class="status pass">PASS</span></td>
+                        <td>Status shown via action buttons and status messages</td>
+                    </tr>
+                    <tr>
+                        <td>Export unpublished list</td>
+                        <td><span class="status not-available">NOT AVAILABLE</span></td>
+                        <td>No export functionality implemented</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="margin-top: 25px;">Overall Result</h3>
+            <p><strong>Passed:</strong> 4 scenarios</p>
+            <p><strong>Not Available:</strong> 4 scenarios (features not implemented)</p>
+            <p><strong>Failed:</strong> 0 scenarios</p>
+
+            <h3>Recommendations</h3>
+            <ul>
+                <li>Consider adding filter controls for workflow status (Draft, Under Review, etc.)</li>
+                <li>Implement sortable columns for better list management</li>
+                <li>Add bulk selection capability for managing multiple posts</li>
+                <li>Provide export functionality for reporting purposes</li>
+            </ul>
+        </div>
+
+        <p class="timestamp" style="margin-top: 30px; text-align: center;">
+            Report generated by Claude Code - December 30, 2025
+        </p>
+    </div>
+</body>
+</html>

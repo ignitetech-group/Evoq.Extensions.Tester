@@ -1,0 +1,294 @@
+{
+  "extension": {
+    "name": "Evoq.AmazonS3Connector",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Basic",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "Connector Configuration Management",
+      "description": "Configure and manage Amazon S3 connections including AWS credentials, bucket selection, and connection settings",
+      "files": [
+        "Evoq Platform/Connectors/AmazonS3/Components/AmazonS3Connector.cs",
+        "Evoq Platform/Connectors/AmazonS3/Settings.ascx",
+        "Evoq Platform/Connectors/AmazonS3/Settings.ascx.cs",
+        "Evoq Platform/Connectors/AmazonS3/connector.js",
+        "Evoq Platform/Connectors/AmazonS3/Components/Constants.cs"
+      ],
+      "ui_location": "Admin > Settings > Folder Providers > Amazon S3 Settings",
+      "test_scenarios": [
+        "Add new S3 connector with valid credentials",
+        "Add connector with invalid AWS credentials",
+        "Edit existing connector configuration",
+        "Delete S3 connector configuration",
+        "Validate required fields (Access Key ID, Secret Access Key)",
+        "Test credential encryption and storage",
+        "Configure multiple S3 connectors for different portals",
+        "Verify connector exists check (HasConfig)",
+        "Test configuration retrieval (GetConfig)"
+      ],
+      "dependencies": [
+        "DNN Folder Provider Framework",
+        "AWS SDK"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Bucket Management",
+      "description": "List, select, and create Amazon S3 buckets for file storage",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs",
+        "Evoq Platform/Connectors/AmazonS3/Settings.ascx",
+        "Evoq Platform/Connectors/AmazonS3/connector.js"
+      ],
+      "ui_location": "Admin > Settings > Folder Providers > Amazon S3 Settings > Bucket Dropdown",
+      "test_scenarios": [
+        "List all available S3 buckets",
+        "Select existing bucket from dropdown",
+        "Create new bucket through UI",
+        "Handle bucket access denied errors",
+        "Test bucket validation during configuration",
+        "Verify bucket region compatibility",
+        "Test empty bucket list scenario"
+      ],
+      "dependencies": [
+        "AWS S3 Service",
+        "Valid AWS Credentials"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "File Upload Operations",
+      "description": "Upload files from DNN to Amazon S3 storage with proper metadata and permissions",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs",
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonStream.cs"
+      ],
+      "ui_location": "Admin > File Management > Upload to S3-mapped folder",
+      "test_scenarios": [
+        "Upload single file to S3",
+        "Upload multiple files simultaneously",
+        "Upload large file (>100MB)",
+        "Upload with special characters in filename",
+        "Test upload progress tracking",
+        "Verify file metadata preservation",
+        "Test upload cancellation",
+        "Handle network interruption during upload",
+        "Verify file overwrites existing file",
+        "Test zero-byte file upload"
+      ],
+      "dependencies": [
+        "S3 Bucket",
+        "DNN File Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "File Download Operations",
+      "description": "Download files from Amazon S3 storage to local system or serve to users",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs",
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonStream.cs"
+      ],
+      "ui_location": "Admin > File Management > Download from S3-mapped folder",
+      "test_scenarios": [
+        "Download single file from S3",
+        "Download large file (>100MB)",
+        "Resume interrupted download",
+        "Download file with special characters",
+        "Verify file integrity after download",
+        "Test concurrent downloads",
+        "Handle missing file scenario",
+        "Test download permissions"
+      ],
+      "dependencies": [
+        "S3 Bucket",
+        "DNN File Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "File Management Operations",
+      "description": "Copy, move, delete, and rename files within S3 storage",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs"
+      ],
+      "ui_location": "Admin > File Management > S3-mapped folder context menu",
+      "test_scenarios": [
+        "Copy file within same bucket",
+        "Copy file to different folder",
+        "Move file to different folder",
+        "Delete single file",
+        "Delete multiple files",
+        "Rename file",
+        "Test file exists check",
+        "Handle operation on non-existent file",
+        "Verify file permissions after copy/move",
+        "Test file locking during operations"
+      ],
+      "dependencies": [
+        "S3 Bucket",
+        "DNN File Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Folder Operations",
+      "description": "Create, delete, and manage folder structures in S3 (using object key prefixes)",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs"
+      ],
+      "ui_location": "Admin > File Management > S3-mapped folder tree",
+      "test_scenarios": [
+        "Create new folder",
+        "Create nested folder structure",
+        "Delete empty folder",
+        "Delete folder with contents",
+        "Rename folder",
+        "List folder contents",
+        "Test folder exists check",
+        "Handle special characters in folder names",
+        "Verify folder permissions"
+      ],
+      "dependencies": [
+        "S3 Bucket",
+        "DNN File Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "URL Generation",
+      "description": "Generate direct S3 URLs or DNN-mediated URLs for file access with configurable expiration",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs",
+        "Evoq Platform/Connectors/AmazonS3/Components/Constants.cs"
+      ],
+      "ui_location": "File properties or when accessing file URLs",
+      "test_scenarios": [
+        "Generate direct S3 URL",
+        "Generate DNN click-based URL",
+        "Test URL expiration settings",
+        "Verify HTTPS protocol in URLs",
+        "Test URL for private files",
+        "Generate pre-signed URLs",
+        "Handle URL generation for missing files",
+        "Test URL encoding for special characters"
+      ],
+      "dependencies": [
+        "S3 Bucket",
+        "Direct Link Configuration"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Protocol Configuration",
+      "description": "Configure HTTP or HTTPS protocol for S3 communications",
+      "files": [
+        "Evoq Platform/Connectors/AmazonS3/Settings.ascx",
+        "Evoq Platform/Connectors/AmazonS3/Components/AmazonS3Connector.cs"
+      ],
+      "ui_location": "Admin > Settings > Folder Providers > Amazon S3 Settings > Protocol Selection",
+      "test_scenarios": [
+        "Configure HTTP protocol",
+        "Configure HTTPS protocol",
+        "Switch from HTTP to HTTPS",
+        "Verify protocol in generated URLs",
+        "Test SSL certificate validation",
+        "Handle protocol mismatch errors"
+      ],
+      "dependencies": [
+        "S3 Connector Configuration"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Direct Link Configuration",
+      "description": "Toggle between direct S3 links and DNN-mediated file access",
+      "files": [
+        "Evoq Platform/Connectors/AmazonS3/Settings.ascx",
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs"
+      ],
+      "ui_location": "Admin > Settings > Folder Providers > Amazon S3 Settings > Direct Link Checkbox",
+      "test_scenarios": [
+        "Enable direct links",
+        "Disable direct links",
+        "Verify URL format with direct links enabled",
+        "Verify URL format with direct links disabled",
+        "Test file access with each configuration",
+        "Verify security implications of direct links"
+      ],
+      "dependencies": [
+        "S3 Connector Configuration"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Caching and Performance",
+      "description": "Object list caching for improved performance when accessing S3 resources",
+      "files": [
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs"
+      ],
+      "ui_location": "Backend operation - no direct UI",
+      "test_scenarios": [
+        "Verify object list caching",
+        "Test cache expiration",
+        "Measure performance with cache enabled",
+        "Test cache invalidation on file changes",
+        "Verify memory usage with large file lists",
+        "Test concurrent access to cached data"
+      ],
+      "dependencies": [
+        "S3 Bucket",
+        "DNN Caching Framework"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Error Handling and Validation",
+      "description": "Comprehensive error handling for S3 operations and credential validation",
+      "files": [
+        "Evoq Platform/Connectors/AmazonS3/Components/AmazonS3Connector.cs",
+        "Evoq Platform/Providers/FolderProviders/AmazonS3FolderProvider/AmazonFolderProvider.cs",
+        "Evoq Platform/Connectors/AmazonS3/connector.js"
+      ],
+      "ui_location": "Error messages throughout S3 operations",
+      "test_scenarios": [
+        "Invalid AWS credentials error",
+        "Bucket not found error",
+        "Network timeout handling",
+        "Insufficient permissions error",
+        "File not found error",
+        "Quota exceeded error",
+        "Region mismatch error",
+        "Malformed request error"
+      ],
+      "dependencies": [
+        "AWS SDK Error Handling"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Multi-Portal Support",
+      "description": "Support for multiple S3 configurations across different DNN portals",
+      "files": [
+        "Evoq Platform/Connectors/AmazonS3/Components/AmazonS3Connector.cs"
+      ],
+      "ui_location": "Portal-specific folder provider settings",
+      "test_scenarios": [
+        "Configure S3 for Portal A",
+        "Configure different S3 bucket for Portal B",
+        "Verify portal isolation",
+        "Test cross-portal file access prevention",
+        "Delete configuration for specific portal",
+        "Verify configuration persistence"
+      ],
+      "dependencies": [
+        "DNN Multi-Portal Framework"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:24:23.516122",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

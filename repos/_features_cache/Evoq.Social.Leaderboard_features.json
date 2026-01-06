@@ -1,0 +1,338 @@
+{
+  "extension": {
+    "name": "Evoq.Social.Leaderboard",
+    "priority": "Medium",
+    "repo": "Dnn.Evoq.Social",
+    "extension_type": "Module"
+  },
+  "features": [
+    {
+      "name": "Leaderboard Display - All Users Mode",
+      "description": "Displays a ranked list of all portal users based on their reputation points with support for different time intervals",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Home.ascx",
+        "DesktopModules/DNNCorp/Leaderboard/Components/Controllers/LeaderboardControllerImpl.cs",
+        "DesktopModules/DNNCorp/Leaderboard/Services/LeaderboardController.cs"
+      ],
+      "ui_location": "Module View > Mode Buttons > Everyone",
+      "test_scenarios": [
+        "Display all users ranked by reputation",
+        "Verify user ranking positions",
+        "Check pagination works correctly",
+        "Test time interval filtering (All Time, Year, Month, Week, Day)",
+        "Verify reputation points display",
+        "Test with no users",
+        "Test with large number of users"
+      ],
+      "dependencies": [
+        "Evoq.Social.Mechanics",
+        "User Reputation System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Leaderboard Display - Friends Mode",
+      "description": "Shows leaderboard filtered to only display the current user's friends and their rankings",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Home.ascx",
+        "DesktopModules/DNNCorp/Leaderboard/Components/Controllers/LeaderboardControllerImpl.cs",
+        "DesktopModules/DNNCorp/Analytics.Warehouse/Controllers/LeaderboardController.cs"
+      ],
+      "ui_location": "Module View > Mode Buttons > Friends",
+      "test_scenarios": [
+        "Display only friends in leaderboard",
+        "Verify correct friend filtering",
+        "Test with user having no friends",
+        "Test with user having many friends",
+        "Verify friend rankings are relative to friends only",
+        "Test pagination within friends list"
+      ],
+      "dependencies": [
+        "Evoq Social Friends/Connections System",
+        "User Reputation System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Leaderboard Display - Group Members Mode",
+      "description": "Displays leaderboard filtered to show only members of a specific role/group",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Home.ascx",
+        "DesktopModules/DNNCorp/Leaderboard/Components/Controllers/LeaderboardControllerImpl.cs",
+        "DesktopModules/DNNCorp/Leaderboard/Settings.ascx"
+      ],
+      "ui_location": "Module View > Mode Buttons > Members",
+      "test_scenarios": [
+        "Display group members only",
+        "Test group selection in settings",
+        "Verify correct group filtering",
+        "Test with empty groups",
+        "Test with large groups",
+        "Verify rankings are relative to group",
+        "Test group access permissions"
+      ],
+      "dependencies": [
+        "DNN Roles/Groups System",
+        "User Reputation System"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "User Search Functionality",
+      "description": "Allows searching for specific users within the leaderboard by name or username",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Home.ascx",
+        "DesktopModules/DNNCorp/Leaderboard/Scripts/dnn.leaderboard.Home.js",
+        "DesktopModules/DNNCorp/Leaderboard/Services/LeaderboardController.cs"
+      ],
+      "ui_location": "Module View > Search Box",
+      "test_scenarios": [
+        "Search by username",
+        "Search by display name",
+        "Search with partial matches",
+        "Test search with special characters",
+        "Test empty search results",
+        "Test search auto-complete delay",
+        "Verify search works in all modes"
+      ],
+      "dependencies": [
+        "User Profile System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Pagination Controls",
+      "description": "Provides pagination for navigating through large lists of users in the leaderboard",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Scripts/dnn.leaderboard.PagedBoard.js",
+        "DesktopModules/DNNCorp/Leaderboard/Services/LeaderboardController.cs"
+      ],
+      "ui_location": "Module View > Bottom of leaderboard",
+      "test_scenarios": [
+        "Navigate to next page",
+        "Navigate to previous page",
+        "Jump to specific page",
+        "Test with different page sizes",
+        "Verify page boundaries",
+        "Test pagination with search results",
+        "Verify total record count"
+      ],
+      "dependencies": [],
+      "priority": "High"
+    },
+    {
+      "name": "Ranking Mode Selection",
+      "description": "Allows switching between Relative Ranking (user's position) and Top Contributors (top users only) display modes",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Settings.ascx",
+        "DesktopModules/DNNCorp/Leaderboard/Components/Contracts/RankMode.cs",
+        "DesktopModules/DNNCorp/Leaderboard/Services/LeaderboardController.cs"
+      ],
+      "ui_location": "Module Settings > Rank Mode",
+      "test_scenarios": [
+        "Switch to Relative Ranking mode",
+        "Switch to Top Contributors mode",
+        "Verify correct data display in each mode",
+        "Test 'Scroll to Me' in Relative Ranking",
+        "Verify Top Contributors shows only top users"
+      ],
+      "dependencies": [],
+      "priority": "Medium"
+    },
+    {
+      "name": "Time Interval Filtering",
+      "description": "Filters leaderboard results based on reputation points earned within specific time periods",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Settings.ascx",
+        "DesktopModules/DNNCorp/Leaderboard/Components/Common/Interval.cs",
+        "DesktopModules/DNNCorp/Leaderboard/Components/Controllers/LeaderboardControllerImpl.cs"
+      ],
+      "ui_location": "Module Settings > Interval",
+      "test_scenarios": [
+        "Filter by All Time",
+        "Filter by Year",
+        "Filter by Month",
+        "Filter by Week",
+        "Filter by Day",
+        "Verify correct date calculations",
+        "Test timezone handling"
+      ],
+      "dependencies": [
+        "Analytics Warehouse Data"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Template Customization",
+      "description": "Allows customization of leaderboard display using predefined or custom HTML templates",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Settings.ascx",
+        "DesktopModules/DNNCorp/Leaderboard/Components/Common/TemplateSettings.cs",
+        "DesktopModules/DNNCorp/Leaderboard/Components/Common/TemplateEvaluator.cs"
+      ],
+      "ui_location": "Module Settings > Configuration Template",
+      "test_scenarios": [
+        "Select Default template",
+        "Select Sidebar template",
+        "Select Predefined templates",
+        "Create custom template",
+        "Test template tokens/variables",
+        "Verify HTML rendering",
+        "Test malformed templates"
+      ],
+      "dependencies": [],
+      "priority": "Low"
+    },
+    {
+      "name": "Mobile View Support",
+      "description": "Provides responsive mobile-optimized view of the leaderboard for mobile devices",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Home.ascx",
+        "DesktopModules/DNNCorp/Leaderboard/Scripts/dnn.leaderboard.MobileBoard.js",
+        "DesktopModules/DNNCorp/Leaderboard/Components/Common/MobileSettings.cs"
+      ],
+      "ui_location": "Module View (on mobile devices)",
+      "test_scenarios": [
+        "Test mobile view detection",
+        "Verify mobile pagination",
+        "Test mobile search",
+        "Test mode switching on mobile",
+        "Verify touch interactions",
+        "Test responsive layout"
+      ],
+      "dependencies": [],
+      "priority": "Medium"
+    },
+    {
+      "name": "Current User Highlighting",
+      "description": "Highlights the currently logged-in user in the leaderboard with a different template/style",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Services/LeaderboardController.cs",
+        "DesktopModules/DNNCorp/Leaderboard/Components/Common/TemplateEvaluator.cs"
+      ],
+      "ui_location": "Module View > User's own entry",
+      "test_scenarios": [
+        "Verify current user is highlighted",
+        "Test highlighting template",
+        "Test with anonymous user",
+        "Test user not in results",
+        "Verify highlighting in all modes"
+      ],
+      "dependencies": [
+        "User Authentication"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Scroll to Me Feature",
+      "description": "Allows users to quickly navigate to their own position in the leaderboard",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Home.ascx",
+        "DesktopModules/DNNCorp/Leaderboard/Scripts/dnn.leaderboard.Home.js",
+        "DesktopModules/DNNCorp/Leaderboard/Scripts/dnn.leaderboard.PagedBoard.js"
+      ],
+      "ui_location": "Module View > Me Button",
+      "test_scenarios": [
+        "Click 'Me' button to scroll to user",
+        "Test when user is on different page",
+        "Test when user not in results",
+        "Verify button visibility conditions",
+        "Test in Relative Ranking mode"
+      ],
+      "dependencies": [
+        "User Authentication"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Module Settings Configuration",
+      "description": "Comprehensive settings page for configuring all leaderboard display options and behaviors",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Settings.ascx",
+        "DesktopModules/DNNCorp/Leaderboard/Settings.ascx.cs",
+        "DesktopModules/DNNCorp/Leaderboard/Components/Common/BoardSettings.cs"
+      ],
+      "ui_location": "Module Actions > Settings",
+      "test_scenarios": [
+        "Save page size setting",
+        "Configure default mode",
+        "Set excluded roles",
+        "Toggle mode panel visibility",
+        "Toggle mode buttons visibility",
+        "Select default group",
+        "Save and verify all settings persist"
+      ],
+      "dependencies": [
+        "DNN Module Settings Framework"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Web API Endpoints",
+      "description": "RESTful API endpoints for retrieving leaderboard data programmatically",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Services/LeaderboardController.cs",
+        "DesktopModules/DNNCorp/Leaderboard/Services/ServiceRouteMapper.cs"
+      ],
+      "ui_location": "API: /DesktopModules/Leaderboard/API/",
+      "test_scenarios": [
+        "Test GetLeaders endpoint",
+        "Test LoadPage endpoint",
+        "Verify authentication",
+        "Test parameter validation",
+        "Test response format",
+        "Test error handling",
+        "Verify CORS settings"
+      ],
+      "dependencies": [
+        "DNN Web API Framework"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Help System Integration",
+      "description": "Context-sensitive help dialogs and tooltips for user guidance",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Home.ascx",
+        "DesktopModules/DNNCorp/Leaderboard/Scripts/dnn.leaderboard.Home.js"
+      ],
+      "ui_location": "Module View > Help Icons",
+      "test_scenarios": [
+        "Click help button",
+        "Verify help dialog display",
+        "Test help content localization",
+        "Close help dialog",
+        "Test multiple help topics",
+        "Verify tooltip display"
+      ],
+      "dependencies": [
+        "DNN Localization System"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Badge/Reputation Display",
+      "description": "Shows user badges and reputation points within the leaderboard entries",
+      "files": [
+        "DesktopModules/DNNCorp/Leaderboard/Components/Entities/Leader.cs",
+        "DesktopModules/DNNCorp/Leaderboard/Components/Common/TemplateEvaluator.cs"
+      ],
+      "ui_location": "Module View > Each user entry",
+      "test_scenarios": [
+        "Display reputation points",
+        "Show user badges",
+        "Test badge tooltips",
+        "Verify point calculations",
+        "Test with users having no points",
+        "Test formatting of large numbers"
+      ],
+      "dependencies": [
+        "Evoq.Social.Mechanics",
+        "Badge System"
+      ],
+      "priority": "Medium"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:52:01.386772",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

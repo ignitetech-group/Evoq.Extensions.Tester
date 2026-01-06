@@ -1,0 +1,285 @@
+{
+  "extension": {
+    "name": "Evoq.Social.SocialShare",
+    "priority": "Medium",
+    "repo": "Dnn.Evoq.Social",
+    "extension_type": "Module"
+  },
+  "features": [
+    {
+      "name": "Social Network Share Buttons",
+      "description": "Provides share buttons for multiple social networks including Facebook, Twitter, LinkedIn, Google+, and Pinterest with configurable visibility",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/Share.ascx",
+        "DesktopModules/DNNCorp/SocialShare/Share.ascx.cs",
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.controls.Facebook.js",
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.controls.Twitter.js",
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.controls.Google.js",
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.controls.LinkedIn.js",
+        "DesktopModules/DNNCorp/SocialShare/ClientScripts/dnn.share.controls.Pinterest.js"
+      ],
+      "ui_location": "Any page where Social Share module is added",
+      "test_scenarios": [
+        "Share to Facebook successfully opens share dialog",
+        "Share to Twitter opens tweet intent with shortened URL",
+        "Share to LinkedIn opens share dialog",
+        "Share to Google+ opens share dialog",
+        "Share to Pinterest opens pin creation dialog",
+        "Verify share buttons display based on module settings",
+        "Test share functionality with anonymous users",
+        "Verify share label visibility toggle"
+      ],
+      "dependencies": [
+        "URL Transformation Service"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "URL Transformation Service",
+      "description": "Shortens URLs using configurable services like Bitly, TinyURL, Is.gd, Cli.gs, or Twitter's shortener",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/Services/ShareController.cs",
+        "DesktopModules/DNNCorp/SocialShare/Components/Controllers/UrlTransformerFactory.cs",
+        "DesktopModules/DNNCorp/SocialShare/Components/Controllers/BitlyServiceController.cs",
+        "DesktopModules/DNNCorp/SocialShare/Components/Controllers/IsgdServiceController.cs",
+        "DesktopModules/DNNCorp/SocialShare/Components/Controllers/TinyUrlServiceController.cs",
+        "DesktopModules/DNNCorp/SocialShare/Components/Controllers/TwitterServiceController.cs",
+        "DesktopModules/DNNCorp/SocialShare/Components/Controllers/CligsServiceController.cs"
+      ],
+      "ui_location": "Backend service called during sharing",
+      "test_scenarios": [
+        "Transform URL with Is.gd service",
+        "Transform URL with TinyURL service",
+        "Transform URL with Bitly service (requires API credentials)",
+        "Transform URL with Cli.gs service (requires API credentials)",
+        "Test fallback mechanism when preferred service fails",
+        "Verify default transformer selection logic",
+        "Test with invalid URLs",
+        "Test with very long URLs",
+        "Verify service configuration from module settings"
+      ],
+      "dependencies": [
+        "Module Settings"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Share Tracking and Analytics",
+      "description": "Records sharing activities for analytics and integrates with Mechanics points system to award users for sharing",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/Services/ShareController.cs",
+        "DesktopModules/DNNCorp/SocialShare/Components/Integration/Mechanics.cs"
+      ],
+      "ui_location": "Backend tracking - no direct UI",
+      "test_scenarios": [
+        "Verify share completion is logged for each social network",
+        "Test Mechanics points awarded for Facebook share",
+        "Test Mechanics points awarded for Twitter share",
+        "Test Mechanics points awarded for LinkedIn share",
+        "Test Mechanics points awarded for Google+ share",
+        "Test Mechanics points awarded for Pinterest share",
+        "Verify analytics tracking with content item ID",
+        "Test tracking for anonymous users",
+        "Verify user activity logging with group context"
+      ],
+      "dependencies": [
+        "Mechanics Module",
+        "Analytics Module"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Module Settings Configuration",
+      "description": "Configure which social networks to display, URL shortening preferences, and API credentials for URL services",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/Settings.ascx",
+        "DesktopModules/DNNCorp/SocialShare/Settings.ascx.cs"
+      ],
+      "ui_location": "Module Settings > Social Share Settings",
+      "test_scenarios": [
+        "Enable/disable individual social networks",
+        "Configure share label visibility",
+        "Select preferred URL transformation service",
+        "Configure Bitly API credentials (username and API key)",
+        "Configure Cli.gs API credentials (App ID and key)",
+        "Save and verify settings persistence",
+        "Test dynamic form sections based on selected URL service",
+        "Verify default settings on new module instance"
+      ],
+      "dependencies": [],
+      "priority": "High"
+    },
+    {
+      "name": "Facebook Like Button",
+      "description": "Embeds Facebook Like button with configurable styles (standard, button only, button with count)",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/FacebookLike.ascx",
+        "DesktopModules/DNNCorp/SocialShare/FacebookLike.ascx.cs",
+        "DesktopModules/DNNCorp/SocialShare/FacebookLikeSettings.ascx"
+      ],
+      "ui_location": "Any page where Facebook Like module is added",
+      "test_scenarios": [
+        "Display Facebook Like button in standard layout",
+        "Display Facebook Like button only (no count)",
+        "Display Facebook Like button with share count",
+        "Configure Like button settings",
+        "Test Like functionality (requires Facebook login)",
+        "Verify Like button renders correctly on page load"
+      ],
+      "dependencies": [
+        "Facebook SDK"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Facebook Comments",
+      "description": "Embeds Facebook Comments plugin allowing users to comment on pages using their Facebook accounts",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/FacebookComments.ascx",
+        "DesktopModules/DNNCorp/SocialShare/FacebookComments.ascx.cs",
+        "DesktopModules/DNNCorp/SocialShare/FacebookCommentsSettings.ascx"
+      ],
+      "ui_location": "Any page where Facebook Comments module is added",
+      "test_scenarios": [
+        "Display Facebook Comments widget",
+        "Configure maximum number of posts to display",
+        "Configure widget width",
+        "Configure color scheme (light/dark)",
+        "Post a comment (requires Facebook login)",
+        "Reply to existing comments",
+        "Moderate comments if admin"
+      ],
+      "dependencies": [
+        "Facebook SDK"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Facebook Send Button",
+      "description": "Provides Facebook Send button allowing users to privately send content to Facebook friends",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/FacebookSendButton.ascx",
+        "DesktopModules/DNNCorp/SocialShare/FacebookSendButton.ascx.cs"
+      ],
+      "ui_location": "Any page where Facebook Send Button module is added",
+      "test_scenarios": [
+        "Display Facebook Send button",
+        "Click Send button opens Facebook dialog",
+        "Send to Facebook friends (requires Facebook login)",
+        "Verify button renders correctly"
+      ],
+      "dependencies": [
+        "Facebook SDK"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Facebook Facepile",
+      "description": "Shows profile pictures of Facebook users who have liked or shared the page",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/FacebookFacepile.ascx",
+        "DesktopModules/DNNCorp/SocialShare/FacebookFacepile.ascx.cs"
+      ],
+      "ui_location": "Any page where Facebook Facepile module is added",
+      "test_scenarios": [
+        "Display Facepile widget",
+        "Show profile pictures of users who liked the page",
+        "Configure maximum number of faces to display",
+        "Test with pages that have likes",
+        "Test with pages that have no likes"
+      ],
+      "dependencies": [
+        "Facebook SDK"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Facebook Recommendations",
+      "description": "Displays Facebook recommendations widget showing related content from the site",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/FacebookRecommendations.ascx",
+        "DesktopModules/DNNCorp/SocialShare/FacebookRecommendations.ascx.cs"
+      ],
+      "ui_location": "Any page where Facebook Recommendations module is added",
+      "test_scenarios": [
+        "Display recommendations widget",
+        "Configure widget dimensions",
+        "Verify recommendations are relevant to site content",
+        "Test with different page contexts"
+      ],
+      "dependencies": [
+        "Facebook SDK"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Facebook Shared Activity",
+      "description": "Shows recent activity and shares from the site on Facebook",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/FacebookSharedActivity.ascx",
+        "DesktopModules/DNNCorp/SocialShare/FacebookSharedActivity.ascx.cs",
+        "DesktopModules/DNNCorp/SocialShare/FacebookSharedActivitySettings.ascx"
+      ],
+      "ui_location": "Any page where Facebook Shared Activity module is added",
+      "test_scenarios": [
+        "Display shared activity feed",
+        "Configure feed dimensions",
+        "Configure color scheme",
+        "Show recent shares and likes from the site",
+        "Test with sites having activity",
+        "Test with sites having no activity"
+      ],
+      "dependencies": [
+        "Facebook SDK"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Share Completion API",
+      "description": "Web API endpoint that records share completions and triggers analytics/mechanics tracking",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/Services/ShareController.cs"
+      ],
+      "ui_location": "API endpoint: /DesktopModules/DNNCorp/SocialShare/API/Share/ShareCompletion",
+      "test_scenarios": [
+        "POST valid share completion data",
+        "Verify anti-forgery token validation",
+        "Test with anonymous users",
+        "Test with authenticated users",
+        "Verify content item ID tracking",
+        "Verify group context tracking",
+        "Test with invalid social network names",
+        "Verify response format"
+      ],
+      "dependencies": [
+        "Analytics Module",
+        "Mechanics Module"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Transform URL API",
+      "description": "Web API endpoint for URL shortening that can be called directly by client applications",
+      "files": [
+        "DesktopModules/DNNCorp/SocialShare/Services/ShareController.cs"
+      ],
+      "ui_location": "API endpoint: /DesktopModules/DNNCorp/SocialShare/API/Share/TransformUrl",
+      "test_scenarios": [
+        "GET with valid URL and transformer",
+        "GET with valid URL and default transformer",
+        "GET with invalid URL format",
+        "GET with invalid transformer name",
+        "Test fallback to default transformer",
+        "Verify shortened URL response format",
+        "Test with very long URLs",
+        "Test with URLs containing special characters"
+      ],
+      "dependencies": [
+        "URL Transformation Service"
+      ],
+      "priority": "Medium"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:57:53.991995",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Page Creation - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+        }
+        .header p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        .summary {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .summary h2 {
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .summary-item {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .summary-item .number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .summary-item .label {
+            color: #666;
+            margin-top: 5px;
+        }
+        .test-case {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .test-case h3 {
+            color: #333;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .status.pass {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .steps {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin: 8px 0;
+        }
+        .screenshot {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        .observations {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin-top: 15px;
+        }
+        .observations h4 {
+            margin: 0 0 10px 0;
+            color: #856404;
+        }
+        .code-info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .code-info h3 {
+            color: #004085;
+            margin-top: 0;
+        }
+        .code-info code {
+            background: #d1e7ff;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #667eea;
+            color: white;
+        }
+        tr:hover {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Bulk Page Creation - Test Report</h1>
+        <p><strong>Extension:</strong> Evoq.PersonaBar.Pages (PersonaBar Module)</p>
+        <p><strong>Feature:</strong> Bulk Page Creation - Create multiple pages at once with validation and batch processing</p>
+        <p><strong>Test Date:</strong> December 30, 2025</p>
+        <p><strong>Test Environment:</strong> http://localhost:8081</p>
+    </div>
+
+    <div class="summary">
+        <h2>Test Summary</h2>
+        <div class="summary-grid">
+            <div class="summary-item">
+                <div class="number">5</div>
+                <div class="label">Test Scenarios</div>
+            </div>
+            <div class="summary-item">
+                <div class="number">5</div>
+                <div class="label">Passed</div>
+            </div>
+            <div class="summary-item">
+                <div class="number">0</div>
+                <div class="label">Failed</div>
+            </div>
+            <div class="summary-item">
+                <div class="number">100%</div>
+                <div class="label">Pass Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="code-info">
+        <h3>Code Review Summary</h3>
+        <p>The Bulk Page Creation feature is implemented through the following key components:</p>
+        <ul>
+            <li><code>EvoqPagesController.cs</code> - Main API controller with endpoints:
+                <ul>
+                    <li><code>PreSaveBulkPagesValidate</code> - POST endpoint to validate pages before creation</li>
+                    <li><code>SaveBulkPages</code> - POST endpoint to create the pages</li>
+                </ul>
+            </li>
+            <li><code>EvoqBulkPage.cs</code> - DTO extending BulkPage with TrackLinks and WorkflowId properties</li>
+            <li><code>EvoqBulkPagesControllerImpl.cs</code> - Implementation that handles workflow assignment and link tracking</li>
+            <li>Hierarchy is created using "&gt;" prefix notation (e.g., "&gt;SubPage" under parent)</li>
+        </ul>
+    </div>
+
+    <!-- Test Case 1: Validate Bulk Pages Before Creation -->
+    <div class="test-case">
+        <h3><span class="status pass">PASS</span> Test Case 1: Validate Bulk Pages Before Creation</h3>
+        <p><strong>Description:</strong> Verify that bulk pages can be validated before actual creation to check for errors.</p>
+
+        <div class="steps">
+            <h4>Steps Performed:</h4>
+            <ol>
+                <li>Logged in as superuser (host/Pass123456)</li>
+                <li>Navigated to Content &gt; Pages in PersonaBar</li>
+                <li>Clicked "Add Multiple Pages" button</li>
+                <li>Entered 5 test pages with hierarchy:
+                    <pre>BulkTestPage1
+>BulkSubPage1
+>BulkSubPage2
+>>BulkSubSubPage1
+BulkTestPage2</pre>
+                </li>
+                <li>Clicked "Validate Pages" button</li>
+                <li>Verified validation success message appeared</li>
+            </ol>
+        </div>
+
+        <div class="screenshot">
+            <img src="Bulk_Page_Creation_step03_dialog_opened.png" alt="Add Multiple Pages Dialog">
+            <p class="screenshot-caption">Add Multiple Pages dialog opened</p>
+        </div>
+
+        <div class="screenshot">
+            <img src="Bulk_Page_Creation_step04_pages_entered.png" alt="Pages Entered">
+            <p class="screenshot-caption">5 pages with hierarchy entered in the dialog</p>
+        </div>
+
+        <div class="screenshot">
+            <img src="Bulk_Page_Creation_step05_validation_success.png" alt="Validation Success">
+            <p class="screenshot-caption">Validation successful - all 5 pages passed validation</p>
+        </div>
+
+        <div class="observations">
+            <h4>Observations:</h4>
+            <p>The validation correctly parsed the hierarchy notation and validated all 5 pages. The "&gt;" prefix system works correctly for creating nested page structures.</p>
+        </div>
+    </div>
+
+    <!-- Test Case 2: Create Multiple Pages Successfully -->
+    <div class="test-case">
+        <h3><span class="status pass">PASS</span> Test Case 2: Create Multiple Pages Successfully</h3>
+        <p><strong>Description:</strong> Verify that multiple pages with hierarchy can be created in a single batch operation.</p>
+
+        <div class="steps">
+            <h4>Steps Performed:</h4>
+            <ol>
+                <li>After validation success, clicked "Add Pages" button</li>
+                <li>Verified success message showing all 5 pages created</li>
+                <li>Closed the dialog</li>
+                <li>Expanded the page tree to verify hierarchy</li>
+                <li>Confirmed all pages exist with correct parent-child relationships</li>
+            </ol>
+        </div>
+
+        <div class="screenshot">
+            <img src="Bulk_Page_Creation_step06_pages_created_success.png" alt="Pages Created">
+            <p class="screenshot-caption">All 5 pages created successfully</p>
+        </div>
+
+        <div class="screenshot">
+            <img src="Bulk_Page_Creation_step07_hierarchy_expanded.png" alt="Hierarchy Verified">
+            <p class="screenshot-caption">Page hierarchy expanded showing correct parent-child structure</p>
+        </div>
+
+        <div class="observations">
+            <h4>Observations:</h4>
+            <p>The bulk page creation successfully created all pages with the correct hierarchical structure:
+            <ul>
+                <li>BulkTestPage1 (root level)</li>
+                <li>&nbsp;&nbsp;BulkSubPage1 (child of BulkTestPage1)</li>
+                <li>&nbsp;&nbsp;BulkSubPage2 (child of BulkTestPage1)</li>
+                <li>&nbsp;&nbsp;&nbsp;&nbsp;BulkSubSubPage1 (grandchild - child of BulkSubPage2)</li>
+                <li>BulkTestPage2 (root level)</li>
+            </ul>
+            </p>
+        </div>
+    </div>
+
+    <!-- Test Case 3: Duplicate Page Name Handling -->
+    <div class="test-case">
+        <h3><span class="status pass">PASS</span> Test Case 3: Duplicate Page Name Handling</h3>
+        <p><strong>Description:</strong> Verify that the system correctly detects and reports duplicate page names.</p>
+
+        <div class="steps">
+            <h4>Steps Performed:</h4>
+            <ol>
+                <li>Opened Add Multiple Pages dialog</li>
+                <li>Entered pages including:
+                    <ul>
+                        <li>"Home" - an existing page in the system</li>
+                        <li>"DuplicateTest" - entered twice to test in-batch duplicate detection</li>
+                    </ul>
+                </li>
+                <li>Clicked "Validate Pages" button</li>
+                <li>Verified error messages appeared for duplicate pages</li>
+            </ol>
+        </div>
+
+        <div class="screenshot">
+            <img src="Bulk_Page_Creation_step08_duplicate_test_input.png" alt="Duplicate Test Input">
+            <p class="screenshot-caption">Test input with duplicate page names</p>
+        </div>
+
+        <div class="screenshot">
+            <img src="Bulk_Page_Creation_step09_duplicate_validation_error.png" alt="Duplicate Validation Error">
+            <p class="screenshot-caption">Validation correctly detected duplicate page names</p>
+        </div>
+
+        <div class="observations">
+            <h4>Observations:</h4>
+            <p>The system correctly identified two types of duplicates:
+            <ul>
+                <li><strong>Existing page duplicate:</strong> "Home" was flagged as it already exists in the system</li>
+                <li><strong>In-batch duplicate:</strong> "DuplicateTest" was entered twice and flagged as duplicate</li>
+            </ul>
+            Error message displayed: "A page with that name has already been added."
+            </p>
+        </div>
+    </div>
+
+    <!-- Test Case 4: Validation Errors -->
+    <div class="test-case">
+        <h3><span class="status pass">PASS</span> Test Case 4: Validation Errors (Invalid Hierarchy)</h3>
+        <p><strong>Description:</strong> Verify that validation correctly catches invalid page hierarchy structures.</p>
+
+        <div class="steps">
+            <h4>Steps Performed:</h4>
+            <ol>
+                <li>Opened Add Multiple Pages dialog</li>
+                <li>Entered pages with invalid hierarchy:
+                    <pre>>InvalidChildPage
+>>InvalidGrandChild</pre>
+                    (Starting with child page without parent)
+                </li>
+                <li>Clicked "Validate Pages" button</li>
+                <li>Verified appropriate error message appeared</li>
+            </ol>
+        </div>
+
+        <div class="screenshot">
+            <img src="Bulk_Page_Creation_step10_validation_error_no_parent.png" alt="No Parent Error">
+            <p class="screenshot-caption">Validation error: "No parent page supplied" for orphaned child pages</p>
+        </div>
+
+        <div class="observations">
+            <h4>Observations:</h4>
+            <p>The system correctly detected the invalid hierarchy and displayed "No parent page supplied" error. This validates that:
+            <ul>
+                <li>Child pages (with "&gt;" prefix) cannot be created without a parent page</li>
+                <li>The validation logic properly traverses the hierarchy structure</li>
+                <li>Clear error messages are provided to guide users</li>
+            </ul>
+            </p>
+        </div>
+    </div>
+
+    <!-- Test Case 5: Parent Page Assignment -->
+    <div class="test-case">
+        <h3><span class="status pass">PASS</span> Test Case 5: Parent Page Assignment</h3>
+        <p><strong>Description:</strong> Verify that pages can be created under a specific existing parent page.</p>
+
+        <div class="steps">
+            <h4>Steps Performed:</h4>
+            <ol>
+                <li>Opened Add Multiple Pages dialog</li>
+                <li>Selected "News" as the parent page from dropdown</li>
+                <li>Entered child pages:
+                    <pre>NewsChildPage1
+NewsChildPage2</pre>
+                </li>
+                <li>Validated and created the pages</li>
+                <li>Expanded News page to verify children were created correctly</li>
+            </ol>
+        </div>
+
+        <div class="screenshot">
+            <img src="Bulk_Page_Creation_step11_parent_page_selected.png" alt="Parent Page Selected">
+            <p class="screenshot-caption">News selected as parent page for new child pages</p>
+        </div>
+
+        <div class="screenshot">
+            <img src="Bulk_Page_Creation_step12_parent_page_success.png" alt="Parent Page Success">
+            <p class="screenshot-caption">Child pages created successfully under News parent</p>
+        </div>
+
+        <div class="screenshot">
+            <img src="Bulk_Page_Creation_step13_news_children_verified.png" alt="News Children Verified">
+            <p class="screenshot-caption">News page expanded showing new child pages</p>
+        </div>
+
+        <div class="observations">
+            <h4>Observations:</h4>
+            <p>The parent page assignment feature works correctly:
+            <ul>
+                <li>Dropdown allows selection of existing pages as parent</li>
+                <li>New pages are correctly created as children of the selected parent</li>
+                <li>The page tree correctly shows the parent-child relationship</li>
+            </ul>
+            </p>
+        </div>
+    </div>
+
+    <div class="summary">
+        <h2>Test Results Summary</h2>
+        <table>
+            <tr>
+                <th>Test Scenario</th>
+                <th>Status</th>
+                <th>Notes</th>
+            </tr>
+            <tr>
+                <td>Validate bulk pages before creation</td>
+                <td><span class="status pass">PASS</span></td>
+                <td>Validation correctly validates all pages before creation</td>
+            </tr>
+            <tr>
+                <td>Create multiple pages successfully</td>
+                <td><span class="status pass">PASS</span></td>
+                <td>5 pages with hierarchy created in single batch</td>
+            </tr>
+            <tr>
+                <td>Duplicate page name handling</td>
+                <td><span class="status pass">PASS</span></td>
+                <td>Detects both existing and in-batch duplicates</td>
+            </tr>
+            <tr>
+                <td>Validation errors (invalid hierarchy)</td>
+                <td><span class="status pass">PASS</span></td>
+                <td>"No parent page supplied" error shown correctly</td>
+            </tr>
+            <tr>
+                <td>Parent page assignment</td>
+                <td><span class="status pass">PASS</span></td>
+                <td>Pages correctly created under selected parent</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="summary">
+        <h2>Conclusion</h2>
+        <p>All 5 test scenarios for the <strong>Bulk Page Creation</strong> feature passed successfully. The feature correctly:</p>
+        <ul>
+            <li>Validates pages before creation to catch errors early</li>
+            <li>Creates multiple pages with proper hierarchical structure using the "&gt;" prefix notation</li>
+            <li>Detects duplicate page names (both existing pages and in-batch duplicates)</li>
+            <li>Validates hierarchy structure and reports "No parent page supplied" for orphaned child pages</li>
+            <li>Allows creation of pages under a specific existing parent page</li>
+        </ul>
+        <p>The feature is working as expected based on the code implementation in <code>EvoqPagesController.cs</code> and <code>EvoqBulkPagesControllerImpl.cs</code>.</p>
+    </div>
+</body>
+</html>

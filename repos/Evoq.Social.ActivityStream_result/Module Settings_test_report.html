@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module Settings - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a5490 0%, #2980b9 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2em;
+        }
+        .header p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        .summary-box {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .summary-card {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .summary-card.pass { border-left: 4px solid #27ae60; }
+        .summary-card.fail { border-left: 4px solid #e74c3c; }
+        .summary-card.partial { border-left: 4px solid #f39c12; }
+        .summary-card h3 { margin: 0; color: #333; font-size: 2em; }
+        .summary-card p { margin: 5px 0 0 0; color: #666; }
+        .test-scenario {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .scenario-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .scenario-header h2 {
+            margin: 0;
+            font-size: 1.3em;
+            color: #333;
+        }
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .status-pass { background: #d4edda; color: #155724; }
+        .status-fail { background: #f8d7da; color: #721c24; }
+        .status-partial { background: #fff3cd; color: #856404; }
+        .scenario-content {
+            padding: 20px;
+        }
+        .steps-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        .steps-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: flex-start;
+        }
+        .steps-list li:last-child { border-bottom: none; }
+        .step-number {
+            background: #1a5490;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .screenshot-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .screenshot-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .screenshot-caption {
+            padding: 10px;
+            background: #f8f9fa;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .observations {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .observations h4 {
+            margin: 0 0 10px 0;
+            color: #856404;
+        }
+        .observations ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .error-box {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .error-box h4 {
+            margin: 0 0 10px 0;
+            color: #721c24;
+        }
+        .code-review {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .code-review h4 {
+            margin: 0 0 10px 0;
+            color: #004085;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Module Settings - Test Report</h1>
+        <p><strong>Extension:</strong> Evoq.Social.ActivityStream (Module)</p>
+        <p><strong>Feature:</strong> Configure activity stream module settings and behavior</p>
+        <p><strong>UI Location:</strong> Admin > Activity Stream Module > Settings</p>
+        <p><strong>Test Date:</strong> December 30, 2025</p>
+    </div>
+
+    <div class="summary-box">
+        <div class="summary-card partial">
+            <h3>6/8</h3>
+            <p>Scenarios Passed</p>
+        </div>
+        <div class="summary-card fail">
+            <h3>1</h3>
+            <p>Critical Bug Found</p>
+        </div>
+        <div class="summary-card partial">
+            <h3>Partial</h3>
+            <p>Overall Status</p>
+        </div>
+    </div>
+
+    <div class="code-review">
+        <h4>Code Review Summary</h4>
+        <p>Reviewed the following relevant files:</p>
+        <ul>
+            <li><code>DesktopModules/DNNCorp/ActivityStream/Settings.ascx</code> - Main settings control with the following configurable options:
+                <ul>
+                    <li>Enable Editor (chkEnableEditor) - Master toggle for posting capabilities</li>
+                    <li>Allow Files (chkAllowFiles) - Enable/disable file attachments</li>
+                    <li>Allow Photos (chkAllowPhotos) - Enable/disable photo uploads</li>
+                    <li>Max Files Per Journal (ddlMaxFiles) - Dropdown with values 1-10</li>
+                    <li>Enable View Filters (chkEnableViewFilters) - Toggle activity filters</li>
+                    <li>Enable Grouping (chkEnableGrouping) - Toggle activity grouping</li>
+                    <li>Default Page Size (drpDefaultPageSize) - Values: 5, 10, 20, 30, 40, 50, 75, 100</li>
+                    <li>Max Message Length (drpMaxMessageLength) - Values: 140, 250, 500, 1000, 2000</li>
+                    <li>Journal Filters (chkJournalFilters) - CheckBoxList for activity types</li>
+                </ul>
+            </li>
+            <li><code>DesktopModules/DNNCorp/ActivityStream/ActivityFilterSettings.ascx</code> - Activity filter settings with CheckBoxList (chkActivityFilters)</li>
+        </ul>
+        <p><strong>Note:</strong> JavaScript in Settings.ascx controls the enabling/disabling of Allow Files and Allow Photos based on Enable Editor checkbox state.</p>
+    </div>
+
+    <!-- Test Scenario 1: Navigate to Module Settings -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>1. Navigate to Module Settings</h2>
+            <span class="status-badge status-pass">PASS</span>
+        </div>
+        <div class="scenario-content">
+            <p><strong>Objective:</strong> Access the Activity Stream module settings through the DNN admin interface.</p>
+            <ol class="steps-list">
+                <li><span class="step-number">1</span>Navigate to http://localhost:8081/Home</li>
+                <li><span class="step-number">2</span>Login as superuser (host/Pass123456)</li>
+                <li><span class="step-number">3</span>Navigate to Community page containing Activity Stream module</li>
+                <li><span class="step-number">4</span>Enter Edit mode via Persona Bar</li>
+                <li><span class="step-number">5</span>Hover over Activity Stream module to show action menu</li>
+                <li><span class="step-number">6</span>Click Admin > Settings to open module settings dialog</li>
+            </ol>
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="Module Settings_step01_homepage.png" alt="Homepage">
+                    <div class="screenshot-caption">Step 1: Initial homepage navigation</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="Module Settings_step02_login_page.png" alt="Login Page">
+                    <div class="screenshot-caption">Step 2: Login form</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="Module Settings_step03_logged_in.png" alt="Logged In">
+                    <div class="screenshot-caption">Step 3: Successfully logged in as SuperUser</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="Module Settings_step04_community_page.png" alt="Community Page">
+                    <div class="screenshot-caption">Step 4: Community page with Activity Stream module</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Scenario 2: Access Settings Dialog -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>2. Access Settings Dialog</h2>
+            <span class="status-badge status-pass">PASS</span>
+        </div>
+        <div class="scenario-content">
+            <p><strong>Objective:</strong> Open the module settings dialog and locate the Activity Stream tab.</p>
+            <ol class="steps-list">
+                <li><span class="step-number">1</span>Enable Edit mode from Persona Bar</li>
+                <li><span class="step-number">2</span>Click module Actions menu</li>
+                <li><span class="step-number">3</span>Select Admin > Settings</li>
+                <li><span class="step-number">4</span>Navigate to Activity Stream settings tab</li>
+            </ol>
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="Module Settings_step05_edit_mode.png" alt="Edit Mode">
+                    <div class="screenshot-caption">Step 1: Edit mode enabled with module action menus visible</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="Module Settings_step06_settings_dialog.png" alt="Settings Dialog">
+                    <div class="screenshot-caption">Step 2: Module settings dialog opened</div>
+                </div>
+                <div class="screenshot-item">
+                    <img src="Module Settings_step07_activity_stream_settings.png" alt="Activity Stream Tab">
+                    <div class="screenshot-caption">Step 3: Activity Stream settings tab with all configurable options</div>
+                </div>
+            </div>
+            <div class="observations">
+                <h4>Settings Available</h4>
+                <ul>
+                    <li><strong>Enable Editor:</strong> Checkbox (checked by default)</li>
+                    <li><strong>Enable File Attachments:</strong> Checkbox (checked by default)</li>
+                    <li><strong>Enable Photo Attachments:</strong> Checkbox (checked by default)</li>
+                    <li><strong>Maximum Files per Post:</strong> Dropdown (1-10)</li>
+                    <li><strong>Enable View Filters:</strong> Checkbox</li>
+                    <li><strong>Enable Grouping:</strong> Checkbox</li>
+                    <li><strong>Default Page Size:</strong> Dropdown (5-100)</li>
+                    <li><strong>Maximum Characters:</strong> Dropdown (140-2000)</li>
+                    <li><strong>Activity Filters:</strong> CheckBoxList for activity types (Posts, Links, Photos, Files, Badge, etc.)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Scenario 3: Enable/Disable File Uploads -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>3. Enable/Disable File Uploads</h2>
+            <span class="status-badge status-pass">PASS</span>
+        </div>
+        <div class="scenario-content">
+            <p><strong>Objective:</strong> Test the file attachments toggle functionality.</p>
+            <ol class="steps-list">
+                <li><span class="step-number">1</span>Located "Enable File Attachments" checkbox in settings</li>
+                <li><span class="step-number">2</span>Verified checkbox was initially checked (enabled)</li>
+                <li><span class="step-number">3</span>Unchecked the file attachments option</li>
+                <li><span class="step-number">4</span>Confirmed visual state changed</li>
+            </ol>
+            <p><strong>Result:</strong> File attachments toggle works correctly. The checkbox can be toggled on/off.</p>
+        </div>
+    </div>
+
+    <!-- Test Scenario 4: Enable/Disable Photo Uploads -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>4. Enable/Disable Photo Uploads</h2>
+            <span class="status-badge status-pass">PASS</span>
+        </div>
+        <div class="scenario-content">
+            <p><strong>Objective:</strong> Test the photo attachments toggle functionality.</p>
+            <ol class="steps-list">
+                <li><span class="step-number">1</span>Located "Enable Photo Attachments" checkbox in settings</li>
+                <li><span class="step-number">2</span>Verified checkbox was initially checked (enabled)</li>
+                <li><span class="step-number">3</span>Unchecked the photo attachments option</li>
+                <li><span class="step-number">4</span>Confirmed visual state changed</li>
+            </ol>
+            <p><strong>Result:</strong> Photo attachments toggle works correctly. The checkbox can be toggled on/off.</p>
+        </div>
+    </div>
+
+    <!-- Test Scenario 5: Configure Maximum Comment Length -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>5. Configure Maximum Comment Length</h2>
+            <span class="status-badge status-pass">PASS</span>
+        </div>
+        <div class="scenario-content">
+            <p><strong>Objective:</strong> Test the maximum message length configuration.</p>
+            <ol class="steps-list">
+                <li><span class="step-number">1</span>Located "Maximum Characters" dropdown in settings</li>
+                <li><span class="step-number">2</span>Verified default value (250 characters)</li>
+                <li><span class="step-number">3</span>Changed value to 500 characters</li>
+                <li><span class="step-number">4</span>Confirmed dropdown selection updated</li>
+            </ol>
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="Module Settings_step09_modified_top_settings.png" alt="Modified Settings Top">
+                    <div class="screenshot-caption">Maximum Characters changed to 500</div>
+                </div>
+            </div>
+            <p><strong>Available Options:</strong> 140, 250, 500, 1000, 2000 characters</p>
+        </div>
+    </div>
+
+    <!-- Test Scenario 6: Configure Activity Stream Filters -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>6. Configure Activity Stream Filters</h2>
+            <span class="status-badge status-pass">PASS</span>
+        </div>
+        <div class="scenario-content">
+            <p><strong>Objective:</strong> Test the activity type filter configuration.</p>
+            <ol class="steps-list">
+                <li><span class="step-number">1</span>Located "Journal Filters" checkbox list</li>
+                <li><span class="step-number">2</span>Reviewed available activity types (Posts, Links, Photos, Files, Badge, etc.)</li>
+                <li><span class="step-number">3</span>Unchecked "Badge" activity type filter</li>
+                <li><span class="step-number">4</span>Confirmed filter checkbox state changed</li>
+            </ol>
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="Module Settings_step08_modified_settings.png" alt="Modified Settings">
+                    <div class="screenshot-caption">Badge filter unchecked along with other settings modifications</div>
+                </div>
+            </div>
+            <p><strong>Result:</strong> Activity filters can be individually toggled to control which activity types appear in the stream.</p>
+        </div>
+    </div>
+
+    <!-- Test Scenario 7: Emoji Panel (Not Found) -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>7. Enable/Disable Emoji Panel</h2>
+            <span class="status-badge status-partial">N/A</span>
+        </div>
+        <div class="scenario-content">
+            <p><strong>Objective:</strong> Test the emoji panel toggle functionality.</p>
+            <div class="observations">
+                <h4>Observation</h4>
+                <ul>
+                    <li>No dedicated "Enable Emoji Panel" setting was found in the Activity Stream module settings</li>
+                    <li>Emoji functionality appears to be controlled at a different level (possibly site-wide settings)</li>
+                    <li>The Settings.ascx code review confirms there is no emoji-specific setting in this control</li>
+                </ul>
+            </div>
+            <p><strong>Result:</strong> Emoji panel setting not available in module-level settings. Feature may be controlled elsewhere.</p>
+        </div>
+    </div>
+
+    <!-- Test Scenario 8: Save and Verify Settings Persistence -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>8. Save and Verify Settings Persistence</h2>
+            <span class="status-badge status-fail">FAIL</span>
+        </div>
+        <div class="scenario-content">
+            <p><strong>Objective:</strong> Save settings and verify they persist after page reload.</p>
+            <ol class="steps-list">
+                <li><span class="step-number">1</span>Made the following changes:
+                    <ul>
+                        <li>Disabled File Attachments</li>
+                        <li>Disabled Photo Attachments</li>
+                        <li>Changed Maximum Characters to 500</li>
+                        <li>Unchecked Badge filter</li>
+                    </ul>
+                </li>
+                <li><span class="step-number">2</span>Clicked "Update" button to save settings</li>
+                <li><span class="step-number">3</span>Encountered critical server error</li>
+            </ol>
+            <div class="screenshot-grid">
+                <div class="screenshot-item">
+                    <img src="Module Settings_step10_save_error.png" alt="Save Error">
+                    <div class="screenshot-caption">Critical error when attempting to save settings</div>
+                </div>
+            </div>
+            <div class="error-box">
+                <h4>Critical Bug Found</h4>
+                <p><strong>Error Message:</strong> "A critical error has occurred. Please check the Admin Logs for further details."</p>
+                <p><strong>URL Parameter:</strong> <code>error=Object+reference+not+set+to+an+instance+of+an+object</code></p>
+                <p><strong>Root Cause:</strong> NullReferenceException in the server-side code when processing the settings update.</p>
+                <p><strong>Impact:</strong> Module settings cannot be saved. This blocks administrators from configuring the Activity Stream module behavior.</p>
+                <p><strong>Severity:</strong> HIGH - Core functionality is broken</p>
+                <p><strong>Recommendation:</strong> Review the Settings.ascx.cs code-behind file to identify the null reference. Check if all required module settings are properly initialized before saving.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Summary -->
+    <div class="test-scenario">
+        <div class="scenario-header">
+            <h2>Test Summary</h2>
+        </div>
+        <div class="scenario-content">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: #f8f9fa;">
+                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6;">Test Scenario</th>
+                        <th style="padding: 10px; text-align: center; border-bottom: 2px solid #dee2e6;">Status</th>
+                        <th style="padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6;">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Navigate to Module Settings</td>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;"><span class="status-badge status-pass">PASS</span></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Successfully accessed via Edit mode</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Access Settings Dialog</td>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;"><span class="status-badge status-pass">PASS</span></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">All settings options visible</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Enable/Disable File Uploads</td>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;"><span class="status-badge status-pass">PASS</span></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Toggle works correctly</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Enable/Disable Photo Uploads</td>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;"><span class="status-badge status-pass">PASS</span></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Toggle works correctly</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Enable/Disable Emoji Panel</td>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;"><span class="status-badge status-partial">N/A</span></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Setting not found in module settings</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Configure Maximum Comment Length</td>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;"><span class="status-badge status-pass">PASS</span></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Dropdown selection works</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Configure Activity Stream Filters</td>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;"><span class="status-badge status-pass">PASS</span></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Filter toggles work correctly</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">Save and Verify Settings Persistence</td>
+                        <td style="padding: 10px; text-align: center; border-bottom: 1px solid #eee;"><span class="status-badge status-fail">FAIL</span></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #eee;">NullReferenceException on save</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="observations" style="margin-top: 20px;">
+                <h4>Key Findings</h4>
+                <ul>
+                    <li><strong>Bug:</strong> Critical error when saving module settings prevents administrators from customizing the Activity Stream behavior</li>
+                    <li><strong>Missing Feature:</strong> No dedicated emoji panel setting found in module-level configuration</li>
+                    <li><strong>UI Works:</strong> All settings UI elements render correctly and respond to user input</li>
+                    <li><strong>Code Match:</strong> Settings displayed in UI match the controls defined in Settings.ascx</li>
+                </ul>
+            </div>
+
+            <div class="error-box" style="margin-top: 20px;">
+                <h4>Recommended Actions</h4>
+                <ul>
+                    <li>Investigate the NullReferenceException in Settings.ascx.cs UpdateSettings method</li>
+                    <li>Check Admin Logs for detailed stack trace</li>
+                    <li>Verify all module settings are properly initialized before save operation</li>
+                    <li>Consider adding null checks and validation before persisting settings</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Test Report Generated: December 30, 2025 | Evoq.Social.ActivityStream Module Settings Test</p>
+        <p>Tested by: Automated Testing Suite</p>
+    </div>
+</body>
+</html>

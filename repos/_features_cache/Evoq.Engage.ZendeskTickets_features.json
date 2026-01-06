@@ -1,0 +1,306 @@
+{
+  "extension": {
+    "name": "Evoq.Engage.ZendeskTickets",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Social",
+    "extension_type": "Support Module"
+  },
+  "features": [
+    {
+      "name": "Ticket List Display",
+      "description": "Display a paginated list of user's support tickets with sorting and status information",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/HelpDesk.ascx",
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Scripts/HelpDesk.js"
+      ],
+      "ui_location": "Module view > Main ticket list",
+      "test_scenarios": [
+        "View list of tickets when user has tickets",
+        "Display 'No Activity' message when no tickets exist",
+        "Navigate through paginated results",
+        "Verify correct display of ticket ID, subject, status, and date",
+        "Click on ticket row to open ticket details"
+      ],
+      "dependencies": [
+        "Zendesk API Configuration",
+        "User Authentication"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Create New Ticket",
+      "description": "Create new support tickets with custom fields and file attachments",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/HelpDesk.ascx",
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Components/Controllers/TicketController.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Scripts/HelpDesk.js"
+      ],
+      "ui_location": "Module view > Create Ticket button",
+      "test_scenarios": [
+        "Create ticket with required fields only",
+        "Create ticket with all custom fields populated",
+        "Attach single file to ticket",
+        "Attach multiple files to ticket",
+        "Validate required field enforcement",
+        "Validate field format for regexp fields",
+        "Cancel ticket creation and return to list",
+        "Display success message after ticket creation"
+      ],
+      "dependencies": [
+        "Zendesk API Configuration",
+        "Custom Field Configuration"
+      ],
+      "priority": "Top"
+    },
+    {
+      "name": "Search and Filter Tickets",
+      "description": "Search tickets by keyword and filter by status",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/HelpDesk.ascx",
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Scripts/HelpDesk.js"
+      ],
+      "ui_location": "Module view > Search/Filter toolbar",
+      "test_scenarios": [
+        "Search tickets by keyword in subject",
+        "Search tickets by keyword in description",
+        "Filter tickets by status (New, Open, Pending, Hold, Solved, Closed, All)",
+        "Combine keyword search with status filter",
+        "Clear search and show all tickets",
+        "Verify search is case-insensitive"
+      ],
+      "dependencies": [
+        "Ticket List Display"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "View Ticket Details",
+      "description": "Display detailed information about a specific ticket including comments and attachments",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/HelpDesk.ascx",
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Scripts/HelpDesk.js"
+      ],
+      "ui_location": "Module view > Click on ticket row",
+      "test_scenarios": [
+        "View ticket subject and description",
+        "Display creation and last activity dates",
+        "Show all public comments on ticket",
+        "Display comment author and timestamp",
+        "View attached files in comments",
+        "Click 'Back to Tickets' to return to list",
+        "Click 'Refresh Ticket' to reload details",
+        "Verify user can only view their own tickets"
+      ],
+      "dependencies": [
+        "Ticket List Display",
+        "Zendesk API Configuration"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Add Comments to Tickets",
+      "description": "Add new comments to existing tickets with optional file attachments",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/HelpDesk.ascx",
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Scripts/HelpDesk.js"
+      ],
+      "ui_location": "Ticket Details view > Comment button",
+      "test_scenarios": [
+        "Add text-only comment to ticket",
+        "Add comment with single file attachment",
+        "Add comment with multiple file attachments",
+        "Cancel comment without saving",
+        "Verify comment appears after submission",
+        "Verify ticket status changes to 'open' after comment",
+        "Validate empty comment rejection",
+        "Handle file upload errors (0-byte files)"
+      ],
+      "dependencies": [
+        "View Ticket Details"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "File Attachment Management",
+      "description": "Upload and display file attachments for tickets and comments",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Components/Entities/AttachmentModel.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Scripts/HelpDesk.js"
+      ],
+      "ui_location": "Create Ticket form > File field, Comment form > Attach File",
+      "test_scenarios": [
+        "Upload single file with ticket creation",
+        "Upload multiple files with ticket creation",
+        "Upload files with comment",
+        "Display image attachments as thumbnails",
+        "Display non-image attachments as download links",
+        "Handle large file uploads",
+        "Validate file upload errors",
+        "Open attachment in new tab"
+      ],
+      "dependencies": [
+        "Create New Ticket",
+        "Add Comments to Tickets"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Custom Field Configuration",
+      "description": "Dynamic form fields based on Zendesk ticket field configuration",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Components/Controllers/TicketController.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Components/Entities/TicketFieldModel.cs"
+      ],
+      "ui_location": "Create Ticket form",
+      "test_scenarios": [
+        "Display text input fields",
+        "Display textarea fields",
+        "Display dropdown/select fields (tagger)",
+        "Display regexp validated fields",
+        "Display file upload fields",
+        "Enforce required field validation",
+        "Show field descriptions as tooltips",
+        "Order fields by position"
+      ],
+      "dependencies": [
+        "Zendesk API Configuration"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "User Synchronization",
+      "description": "Automatically create or update Zendesk users based on DNN user information",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs"
+      ],
+      "ui_location": "Background process during ticket operations",
+      "test_scenarios": [
+        "Create new Zendesk user on first ticket creation",
+        "Update existing Zendesk user with external ID",
+        "Find user by email if external ID not set",
+        "Handle special characters in display names",
+        "Verify user ID association with tickets",
+        "Handle user creation failures gracefully"
+      ],
+      "dependencies": [
+        "Zendesk API Configuration",
+        "DNN User Authentication"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Pagination",
+      "description": "Navigate through pages of tickets when list exceeds page size",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/HelpDesk.ascx",
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Scripts/HelpDesk.js"
+      ],
+      "ui_location": "Module view > Bottom pagination controls",
+      "test_scenarios": [
+        "Display page count information",
+        "Navigate to next page",
+        "Navigate to previous page",
+        "Disable prev button on first page",
+        "Disable next button on last page",
+        "Hide pagination when only one page exists",
+        "Respect configured page size setting"
+      ],
+      "dependencies": [
+        "Ticket List Display"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Configuration Validation",
+      "description": "Validate Zendesk connector configuration before allowing module usage",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/Attiributes/ZendDeskConnectorConfiguredAttribute.cs",
+        "DesktopModules/DNNCorp/ZendeskConnector/Components/ZendeskManager.cs"
+      ],
+      "ui_location": "All API endpoints",
+      "test_scenarios": [
+        "Block API calls when Zendesk not configured",
+        "Display 'Not Configured' error message",
+        "Verify configuration on module load",
+        "Check for required settings (URL, Email, Password)",
+        "Validate field IDs configuration"
+      ],
+      "dependencies": [
+        "Zendesk Connector Module"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Error Handling",
+      "description": "Handle and display errors from Zendesk API and network issues",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/Attiributes/ZendeskExceptionFilterAttribute.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs"
+      ],
+      "ui_location": "All module operations",
+      "test_scenarios": [
+        "Handle Zendesk API connection errors",
+        "Display user-friendly error messages",
+        "Log exceptions to DNN event log",
+        "Handle ticket not found errors",
+        "Handle authentication failures",
+        "Handle network timeouts",
+        "Validate form data before API calls"
+      ],
+      "dependencies": [
+        "Zendesk API Configuration"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Browser History Navigation",
+      "description": "Support browser back/forward buttons for navigation between views",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Scripts/HelpDesk.js"
+      ],
+      "ui_location": "Browser navigation buttons",
+      "test_scenarios": [
+        "Navigate back from ticket details to list",
+        "Navigate back from create ticket to list",
+        "Navigate forward to previously viewed ticket",
+        "Maintain state during browser navigation",
+        "Update URL parameters for deep linking"
+      ],
+      "dependencies": [
+        "Ticket List Display",
+        "View Ticket Details"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Social Scoring Integration",
+      "description": "Track user activities for gamification and scoring purposes",
+      "files": [
+        "DesktopModules/DNNCorp/ZendeskTickets/Services/ZendeskTickets.cs",
+        "DesktopModules/DNNCorp/ZendeskTickets/Components/Controllers/BusinessController.cs"
+      ],
+      "ui_location": "Background process during user actions",
+      "test_scenarios": [
+        "Log points for creating a ticket",
+        "Log points for viewing a ticket",
+        "Log points for commenting on a ticket",
+        "Verify scoring action definitions exist",
+        "Handle scoring failures gracefully"
+      ],
+      "dependencies": [
+        "DNN Social Library"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T18:01:42.944155",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

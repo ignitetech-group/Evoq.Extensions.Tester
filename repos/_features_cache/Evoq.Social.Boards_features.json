@@ -1,0 +1,319 @@
+{
+  "extension": {
+    "name": "Evoq.Social.Boards",
+    "priority": "Medium",
+    "repo": "Dnn.Evoq.Social",
+    "extension_type": "Module"
+  },
+  "features": [
+    {
+      "name": "Board Creation",
+      "description": "Create new boards with title, content, tags, and optional subscription to activity notifications",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Services/EditController.cs",
+        "DesktopModules/DNNCorp/Boards/Components/Controllers/BoardsController.cs",
+        "DesktopModules/DNNCorp/Boards/Providers/Data/SqlDataProvider/SqlDataProvider.cs"
+      ],
+      "ui_location": "Boards Module > Create New Board",
+      "test_scenarios": [
+        "Create board with valid title and content",
+        "Create board with tags",
+        "Create board with profanity in title (verify filtering)",
+        "Create board with malicious HTML (verify sanitization)",
+        "Create board and subscribe to activity notifications",
+        "Create board without required fields (verify validation)",
+        "Create board as unauthorized user (verify permission check)"
+      ],
+      "dependencies": [
+        "DNN Social Library",
+        "User Authentication",
+        "Notifications System"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Board Search and Filtering",
+      "description": "Search boards by keyword, filter by tags, and view user's own boards",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Services/ListController.cs",
+        "DesktopModules/DNNCorp/Boards/Components/Controllers/BoardsController.cs",
+        "DesktopModules/DNNCorp/Boards/Components/Controllers/BusinessController.cs"
+      ],
+      "ui_location": "Boards Module > Main View > Search/Filter Options",
+      "test_scenarios": [
+        "Search boards by keyword",
+        "Filter boards by single tag",
+        "Filter boards by multiple tags",
+        "View 'My Boards' filter",
+        "Paginate through board results",
+        "Sort boards by different criteria",
+        "Search with no results",
+        "Search with special characters"
+      ],
+      "dependencies": [
+        "Search Index",
+        "User Authentication"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Board List Management",
+      "description": "Create, update, delete, and reorder lists/columns within a board",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Services/BoardsServiceController.cs",
+        "DesktopModules/DNNCorp/Boards/Components/Controllers/BoardsController.cs",
+        "DesktopModules/DNNCorp/Boards/Providers/Data/SqlDataProvider/SqlDataProvider.cs"
+      ],
+      "ui_location": "Boards Module > Board View > List Management",
+      "test_scenarios": [
+        "Create new list in board",
+        "Update list name",
+        "Delete empty list",
+        "Delete list with cards (verify card handling)",
+        "Reorder lists within board",
+        "Create list with invalid board ID",
+        "Maximum number of lists per board"
+      ],
+      "dependencies": [
+        "Board Management"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Card Management",
+      "description": "Create, update, delete cards within board lists, move cards between lists, reorder cards",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Services/BoardsServiceController.cs",
+        "DesktopModules/DNNCorp/Boards/Components/Entities/Card.cs",
+        "DesktopModules/DNNCorp/Boards/Providers/Data/SqlDataProvider/SqlDataProvider.cs"
+      ],
+      "ui_location": "Boards Module > Board View > Cards",
+      "test_scenarios": [
+        "Create card with title and description",
+        "Update card title",
+        "Update card description",
+        "Delete card",
+        "Move card to different list",
+        "Reorder cards within list",
+        "Create card with due date",
+        "Add labels to card",
+        "Assign members to card",
+        "Create card with malicious content (verify sanitization)"
+      ],
+      "dependencies": [
+        "Board List Management",
+        "User Authentication"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Card Item Management",
+      "description": "Create and manage checklist items within cards",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Components/Entities/CardItem.cs",
+        "DesktopModules/DNNCorp/Boards/Providers/Data/SqlDataProvider/SqlDataProvider.cs"
+      ],
+      "ui_location": "Boards Module > Card View > Checklist Items",
+      "test_scenarios": [
+        "Add item to card checklist",
+        "Mark item as complete",
+        "Mark item as incomplete",
+        "Update item text",
+        "Delete item from checklist",
+        "Reorder items in checklist",
+        "Add multiple items at once"
+      ],
+      "dependencies": [
+        "Card Management"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Comments System",
+      "description": "Add, approve, and delete comments on boards with moderation workflow",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Services/EditController.cs",
+        "DesktopModules/DNNCorp/Boards/Services/NotificationServiceController.cs"
+      ],
+      "ui_location": "Boards Module > Board View > Comments Section",
+      "test_scenarios": [
+        "Add comment to board",
+        "Add comment with profanity (verify filtering)",
+        "Approve pending comment",
+        "Reject comment",
+        "Delete comment",
+        "Edit own comment",
+        "Reply to comment",
+        "View comment history"
+      ],
+      "dependencies": [
+        "Board Management",
+        "Content Moderation",
+        "Notifications System"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Subscription Management",
+      "description": "Subscribe and unsubscribe from board activity notifications",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Services/EditController.cs",
+        "DesktopModules/DNNCorp/Boards/Components/Controllers/BoardsController.cs"
+      ],
+      "ui_location": "Boards Module > Board View > Subscribe/Unsubscribe Button",
+      "test_scenarios": [
+        "Subscribe to board notifications",
+        "Unsubscribe from board notifications",
+        "Verify notification delivery on new activity",
+        "Subscribe to board during creation",
+        "Check subscription status",
+        "Subscribe as different user roles"
+      ],
+      "dependencies": [
+        "Notifications System",
+        "User Authentication"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Social Integration",
+      "description": "Track likes, views, and social activity for boards and cards",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Services/SocialController.cs",
+        "DesktopModules/DNNCorp/Boards/Components/Controllers/BusinessController.cs"
+      ],
+      "ui_location": "Boards Module > Board/Card View > Social Actions",
+      "test_scenarios": [
+        "Like a board",
+        "Unlike a board",
+        "Track board view count",
+        "Display like count",
+        "Social activity scoring",
+        "Journal entry creation",
+        "Activity feed integration"
+      ],
+      "dependencies": [
+        "DNN Social Library",
+        "User Authentication",
+        "Journal System"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Notifications System",
+      "description": "Send and manage notifications for board activities and comments",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Services/NotificationServiceController.cs",
+        "DesktopModules/DNNCorp/Boards/Services/EditController.cs"
+      ],
+      "ui_location": "User Notifications Center",
+      "test_scenarios": [
+        "Receive notification on board creation",
+        "Receive notification on new comment",
+        "Receive notification on comment approval",
+        "Receive notification on comment rejection",
+        "Mark notification as read",
+        "Clear notifications",
+        "Notification preferences management"
+      ],
+      "dependencies": [
+        "DNN Notifications System",
+        "User Authentication"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Content Moderation",
+      "description": "Filter profanity and moderate content with approval workflow",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Services/EditController.cs",
+        "DesktopModules/DNNCorp/Boards/Components/Controllers/BoardsController.cs"
+      ],
+      "ui_location": "Boards Module > Admin Settings > Moderation",
+      "test_scenarios": [
+        "Enable profanity filtering",
+        "Test filter mode vs prohibit mode",
+        "Approve pending board",
+        "Reject pending board",
+        "Bulk approve/reject content",
+        "Moderate comments",
+        "Configure profanity word list"
+      ],
+      "dependencies": [
+        "Admin Permissions",
+        "Profanity Filter Service"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Module Settings",
+      "description": "Configure module-level settings for the Boards module",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Settings.ascx",
+        "DesktopModules/DNNCorp/Boards/Components/Controllers/BoardsController.cs"
+      ],
+      "ui_location": "Admin > Boards Module > Settings",
+      "test_scenarios": [
+        "Configure default view settings",
+        "Set items per page",
+        "Enable/disable features",
+        "Configure moderation settings",
+        "Set user permissions",
+        "Configure group mode",
+        "Save and apply settings"
+      ],
+      "dependencies": [
+        "Admin Permissions",
+        "Module Framework"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Module Upgrade",
+      "description": "Handle module version upgrades and database schema updates",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Components/Controllers/BusinessController.cs",
+        "DesktopModules/DNNCorp/Boards/Providers/Data/SqlDataProvider/01.02.00.SqlDataProvider"
+      ],
+      "ui_location": "Admin > Extensions > Boards Module > Upgrade",
+      "test_scenarios": [
+        "Upgrade from previous version",
+        "Verify database schema updates",
+        "Check scoring definitions added",
+        "Verify privileges added",
+        "Check subscription types added",
+        "Verify notification types added",
+        "Rollback on upgrade failure"
+      ],
+      "dependencies": [
+        "DNN Extension Framework",
+        "Database Access"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Search Integration",
+      "description": "Index board content for site-wide search functionality",
+      "files": [
+        "DesktopModules/DNNCorp/Boards/Components/Controllers/BusinessController.cs"
+      ],
+      "ui_location": "Site Search",
+      "test_scenarios": [
+        "Search for board by title",
+        "Search for board by content",
+        "Search for board by tags",
+        "Verify search index updates on board creation",
+        "Verify search index updates on board modification",
+        "Search with user permissions applied",
+        "Reindex all boards"
+      ],
+      "dependencies": [
+        "DNN Search Engine",
+        "Search Indexer"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T18:01:43.277456",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}

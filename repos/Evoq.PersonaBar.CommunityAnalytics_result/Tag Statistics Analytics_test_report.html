@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag Statistics Analytics - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a237e, #3949ab);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+        }
+        .header .subtitle {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .meta-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .meta-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .meta-card label {
+            font-weight: bold;
+            color: #666;
+            font-size: 0.85em;
+            text-transform: uppercase;
+        }
+        .meta-card .value {
+            font-size: 1.1em;
+            color: #333;
+            margin-top: 5px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .status-fail {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .status-pass {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status-blocked {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #1a237e;
+            border-bottom: 2px solid #e8eaf6;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .section h3 {
+            color: #3949ab;
+            margin-top: 20px;
+        }
+        .bug-alert {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-left: 5px solid #c62828;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .bug-alert h3 {
+            color: #c62828;
+            margin-top: 0;
+        }
+        .code-block {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .screenshot {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .screenshot .caption {
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
+        }
+        .test-scenario {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .test-scenario h4 {
+            margin-top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .summary-item {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .summary-item .number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .summary-item .label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .total { background: #e3f2fd; }
+        .total .number { color: #1565c0; }
+        .passed { background: #e8f5e9; }
+        .passed .number { color: #2e7d32; }
+        .failed { background: #ffebee; }
+        .failed .number { color: #c62828; }
+        .blocked { background: #fff3e0; }
+        .blocked .number { color: #ef6c00; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Tag Statistics Analytics - Test Report</h1>
+        <div class="subtitle">Evoq.PersonaBar.CommunityAnalytics Extension Testing</div>
+    </div>
+
+    <div class="meta-info">
+        <div class="meta-card">
+            <label>Extension</label>
+            <div class="value">Evoq.PersonaBar.CommunityAnalytics</div>
+        </div>
+        <div class="meta-card">
+            <label>Feature</label>
+            <div class="value">Tag Statistics Analytics</div>
+        </div>
+        <div class="meta-card">
+            <label>Priority</label>
+            <div class="value">High</div>
+        </div>
+        <div class="meta-card">
+            <label>Test Date</label>
+            <div class="value">December 30, 2025</div>
+        </div>
+        <div class="meta-card">
+            <label>Overall Status</label>
+            <div class="value"><span class="status-badge status-blocked">BLOCKED - CRITICAL BUG</span></div>
+        </div>
+        <div class="meta-card">
+            <label>UI Location</label>
+            <div class="value">PersonaBar > Dashboard > Community Analytics > Tags Section</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Executive Summary</h2>
+        <div class="summary-grid">
+            <div class="summary-item total">
+                <div class="number">7</div>
+                <div class="label">Total Scenarios</div>
+            </div>
+            <div class="summary-item passed">
+                <div class="number">0</div>
+                <div class="label">Passed</div>
+            </div>
+            <div class="summary-item failed">
+                <div class="number">0</div>
+                <div class="label">Failed</div>
+            </div>
+            <div class="summary-item blocked">
+                <div class="number">7</div>
+                <div class="label">Blocked</div>
+            </div>
+        </div>
+        <p><strong>Summary:</strong> Testing of the Tag Statistics Analytics feature was <strong>BLOCKED</strong> due to a critical JavaScript error that prevents the Community Analytics module from loading. All planned test scenarios could not be executed.</p>
+    </div>
+
+    <div class="section">
+        <h2>Critical Bug Found</h2>
+        <div class="bug-alert">
+            <h3>BUG: Community Analytics Module Fails to Load</h3>
+            <table>
+                <tr>
+                    <th>Severity</th>
+                    <td><span class="status-badge status-fail">CRITICAL</span></td>
+                </tr>
+                <tr>
+                    <th>Error Type</th>
+                    <td>JavaScript TypeError</td>
+                </tr>
+                <tr>
+                    <th>Error Message</th>
+                    <td><code>TypeError: utility.serializeCustomDate is not a function</code></td>
+                </tr>
+                <tr>
+                    <th>Affected File</th>
+                    <td><code>social-dashboard-combined-instance.js</code> (Line 1025)</td>
+                </tr>
+                <tr>
+                    <th>Impact</th>
+                    <td>Complete failure of Community Analytics module - no content loads, blank panel displayed</td>
+                </tr>
+                <tr>
+                    <th>Reproducible</th>
+                    <td>100% - occurs every time when navigating to Community Analytics</td>
+                </tr>
+            </table>
+
+            <h4>Full Stack Trace:</h4>
+            <div class="code-block">TypeError: utility.serializeCustomDate is not a function
+    at dashboardClass.init (http://localhost:8081/DesktopModules/admin/Dnn.PersonaBar/Modules/Evoq.CommunityAnalytics/scripts/social-dashboard-combined-instance.js?cdv=132:1025:39)
+    at Object.init (http://localhost:8081/DesktopModules/admin/Dnn.PersonaBar/Modules/Evoq.CommunityAnalytics/scripts/social-dashboard-combined.js?cdv=132:16:23)
+    at http://localhost:8081/DesktopModules/admin/Dnn.PersonaBar/scripts/extension.js?cdv=132:104:32
+    at Object.execCb (http://localhost:8081/DesktopModules/admin/Dnn.PersonaBar/scripts/contrib/require.js?cdv=132:1696:33)
+    at Module.check (http://localhost:8081/DesktopModules/admin/Dnn.PersonaBar/scripts/contrib/require.js?cdv=132:878:55)</div>
+
+            <h4>Root Cause Analysis:</h4>
+            <p>The <code>utility.serializeCustomDate</code> function is being called during the initialization of the Community Analytics dashboard, but the function does not exist in the utility module. This suggests either:</p>
+            <ul>
+                <li>The utility module is not fully loaded before the dashboard initializes</li>
+                <li>The function was removed or renamed but references were not updated</li>
+                <li>A dependency loading order issue</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Feature Description</h2>
+        <p><strong>Tag Statistics Analytics</strong> displays statistics about tag usage across community content with pagination support. According to the code review:</p>
+        <ul>
+            <li><strong>Backend API:</strong> <code>GetTagStats</code> endpoint in <code>CommunityAnalyticsController.cs</code></li>
+            <li><strong>Parameters:</strong> period, comparativeTerm, startDate, endDate, pageIndex, pageSize</li>
+            <li><strong>Frontend:</strong> Knockout.js component (<code>pageActivities.js</code>) with pagination controls</li>
+            <li><strong>Empty State:</strong> Displays "No Data Available" with placeholder graphics when no tags exist</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Test Execution Steps</h2>
+
+        <div class="test-scenario">
+            <h4>Step 1: Navigate to Login Page <span class="status-badge status-pass">PASS</span></h4>
+            <p><strong>Action:</strong> Navigated to http://localhost:8081/Login</p>
+            <p><strong>Result:</strong> Login page loaded successfully with Standard/Windows Login options</p>
+            <div class="screenshot">
+                <img src="Tag Statistics Analytics_step01_login_page.png" alt="Login Page">
+                <div class="caption">Step 1: Login page displayed correctly</div>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h4>Step 2: Login as Superuser <span class="status-badge status-pass">PASS</span></h4>
+            <p><strong>Action:</strong> Entered credentials (host / Pass123456) and clicked Login</p>
+            <p><strong>Result:</strong> Successfully logged in, PersonaBar visible, "Welcome to Copilot" dialog appeared</p>
+            <div class="screenshot">
+                <img src="Tag Statistics Analytics_step02_logged_in.png" alt="Logged In">
+                <div class="caption">Step 2: Successfully logged in with PersonaBar visible</div>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h4>Step 3: Navigate to Community Analytics <span class="status-badge status-fail">BLOCKED</span></h4>
+            <p><strong>Action:</strong> Hovered over Dashboard icon, clicked on "Community Analytics" submenu</p>
+            <p><strong>Result:</strong> Community Analytics panel opened but displayed blank white content due to JavaScript error</p>
+            <div class="screenshot">
+                <img src="Tag Statistics Analytics_step03_community_analytics.png" alt="Community Analytics Blank">
+                <div class="caption">Step 3: Community Analytics panel shows blank content (BUG)</div>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h4>Step 4: Site Analytics Warning Dialog <span class="status-badge status-pass">PASS</span></h4>
+            <p><strong>Observation:</strong> Analytics warning dialog appeared indicating Google Analytics is not configured</p>
+            <p><strong>Action:</strong> Dismissed warning by clicking "Not now"</p>
+            <div class="screenshot">
+                <img src="Tag Statistics Analytics_step04_mask_blocking.png" alt="Analytics Warning">
+                <div class="caption">Step 4: Analytics warning dialog (dismissible)</div>
+            </div>
+        </div>
+
+        <div class="test-scenario">
+            <h4>Step 5: Retry Community Analytics Navigation <span class="status-badge status-fail">BLOCKED</span></h4>
+            <p><strong>Action:</strong> Navigated to Community Analytics again after dismissing dialogs</p>
+            <p><strong>Result:</strong> Same JavaScript error occurred, panel remained blank</p>
+            <div class="screenshot">
+                <img src="Tag Statistics Analytics_step05_community_analytics_error.png" alt="Community Analytics Error">
+                <div class="caption">Step 5: Community Analytics consistently fails to load</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Planned Test Scenarios (BLOCKED)</h2>
+        <p>The following test scenarios could not be executed due to the critical bug:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Scenario</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>View tag statistics for different time periods</td>
+                    <td>Test period selector functionality (day, week, month, custom)</td>
+                    <td><span class="status-badge status-blocked">BLOCKED</span></td>
+                </tr>
+                <tr>
+                    <td>Navigate through paginated tag results</td>
+                    <td>Test prev/next pagination controls</td>
+                    <td><span class="status-badge status-blocked">BLOCKED</span></td>
+                </tr>
+                <tr>
+                    <td>Compare tag usage between time periods</td>
+                    <td>Test comparative term functionality</td>
+                    <td><span class="status-badge status-blocked">BLOCKED</span></td>
+                </tr>
+                <tr>
+                    <td>Sort tags by usage count</td>
+                    <td>Verify sorting order of tag statistics</td>
+                    <td><span class="status-badge status-blocked">BLOCKED</span></td>
+                </tr>
+                <tr>
+                    <td>Verify tag count accuracy</td>
+                    <td>Compare displayed counts with actual data</td>
+                    <td><span class="status-badge status-blocked">BLOCKED</span></td>
+                </tr>
+                <tr>
+                    <td>Test pagination with large datasets</td>
+                    <td>Verify pagination works with many tags</td>
+                    <td><span class="status-badge status-blocked">BLOCKED</span></td>
+                </tr>
+                <tr>
+                    <td>Test empty state when no tags exist</td>
+                    <td>Verify "No Data Available" message displays</td>
+                    <td><span class="status-badge status-blocked">BLOCKED</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Recommendations</h2>
+        <ol>
+            <li><strong>Immediate:</strong> Fix the missing <code>utility.serializeCustomDate</code> function in the utility module</li>
+            <li><strong>Investigation:</strong> Check if this is a dependency loading order issue or a missing function</li>
+            <li><strong>Testing:</strong> After fix is applied, re-run all blocked test scenarios</li>
+            <li><strong>Regression:</strong> Verify that Site Analytics (which uses similar code) is not affected</li>
+        </ol>
+    </div>
+
+    <div class="section">
+        <h2>Environment Details</h2>
+        <table>
+            <tr>
+                <th>Website URL</th>
+                <td>http://localhost:8081</td>
+            </tr>
+            <tr>
+                <th>Browser</th>
+                <td>Chromium (via Playwright)</td>
+            </tr>
+            <tr>
+                <th>Viewport</th>
+                <td>1920x1080</td>
+            </tr>
+            <tr>
+                <th>Test User</th>
+                <td>host (SuperUser)</td>
+            </tr>
+            <tr>
+                <th>Platform</th>
+                <td>Windows (Evoq Engage Trial - 27 days remaining)</td>
+            </tr>
+            <tr>
+                <th>Repository</th>
+                <td>Dnn.AdminExperience.Evoq.Engage</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section" style="text-align: center; color: #666;">
+        <p>Report generated on December 30, 2025</p>
+        <p>Feature: Tag Statistics Analytics | Extension: Evoq.PersonaBar.CommunityAnalytics</p>
+    </div>
+</body>
+</html>

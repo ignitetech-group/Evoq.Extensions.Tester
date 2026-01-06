@@ -1,0 +1,243 @@
+{
+  "extension": {
+    "name": "Evoq.HubspotConnector",
+    "priority": "Low",
+    "repo": "Dnn.Evoq.Content",
+    "extension_type": "Connector"
+  },
+  "features": [
+    {
+      "name": "Hubspot Connector Registration",
+      "description": "Registers the Hubspot connector in the Evoq connectors list and makes it available for configuration.",
+      "files": [
+        "Evoq Enterprise/Connectors/Hubspot/Components/HubspotConnector.cs",
+        "Evoq Enterprise/Connectors/Hubspot/Components/Constants.cs",
+        "Evoq Enterprise/Connectors/Hubspot/DNNXE_HubspotConnector.dnn"
+      ],
+      "ui_location": "Admin > Connectors > Marketing > Hubspot",
+      "test_scenarios": [
+        "Verify connector appears in the connectors list",
+        "Verify connector displays correct name and icon",
+        "Verify connector is categorized under Marketing",
+        "Verify connector does not support multiple instances",
+        "Verify connector dependency on HubspotForms module"
+      ],
+      "dependencies": [
+        "DotNetNuke.Enterprise.HubspotForms"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Hubspot Forms Module Installation",
+      "description": "Installs the Hubspot Forms module that enables form embedding on pages.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/DNNXE_HubspotForms.dnn",
+        "Evoq Enterprise/Modules/HubspotForms/Module.build",
+        "Evoq Enterprise/Modules/HubspotForms/DotNetNuke.Enterprise.HubspotForms.csproj"
+      ],
+      "ui_location": "Admin > Extensions > Modules > HubSpot Forms",
+      "test_scenarios": [
+        "Verify module installs successfully",
+        "Verify module appears in available modules list",
+        "Verify module can be added to pages",
+        "Verify module dependencies are met",
+        "Verify Azure compatibility"
+      ],
+      "dependencies": [
+        "DotNetNuke.Enterprise v09.03.00"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Hubspot Form Configuration",
+      "description": "Configures Hubspot forms with Portal ID, Form ID, and completion actions.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx.cs",
+        "Evoq Enterprise/Modules/HubspotForms/Components/Common/Constants.cs"
+      ],
+      "ui_location": "Page Module > Settings (gear icon) > HubSpot Forms Settings",
+      "test_scenarios": [
+        "Enter valid Portal ID and Form ID",
+        "Save configuration with empty Portal ID",
+        "Save configuration with empty Form ID",
+        "Verify validation against Hubspot API",
+        "Test invalid Portal ID/Form ID combination",
+        "Verify settings persistence after save",
+        "Test settings page redirect with NoRedirectOnUpdate parameter"
+      ],
+      "dependencies": [
+        "RestSharp",
+        "Hubspot API"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Form Completion Actions",
+      "description": "Configures what happens after a form is successfully submitted.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx.cs",
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx.cs"
+      ],
+      "ui_location": "Page Module > Settings > Completion Action dropdown",
+      "test_scenarios": [
+        "Select 'HubSpot's Default Action' and verify form uses Hubspot's follow-up URL",
+        "Select 'No Action' and verify form hides after submission",
+        "Select 'Redirect to URL' and configure redirect URL",
+        "Select 'Custom Message' and configure custom HTML message",
+        "Verify redirect URL field appears when 'Redirect to URL' is selected",
+        "Verify custom message field appears when 'Custom Message' is selected",
+        "Test page ID redirect (numeric value)",
+        "Test external URL redirect"
+      ],
+      "dependencies": [
+        "DNN URL Control",
+        "DNN Text Editor"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Hubspot Form Display",
+      "description": "Renders Hubspot forms on pages using JavaScript embed code.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx.cs",
+        "Evoq Enterprise/Modules/HubspotForms/scripts/jquery.cookie-1.4.1.min.js",
+        "Evoq Enterprise/Modules/HubspotForms/module.css"
+      ],
+      "ui_location": "Any page where HubSpot Forms module is added",
+      "test_scenarios": [
+        "Verify form renders when valid configuration exists",
+        "Verify initialization message shows when no Portal ID configured",
+        "Test form submission with default action",
+        "Test form submission with redirect action",
+        "Test form submission with custom message",
+        "Test form submission with no action",
+        "Verify JavaScript error handling",
+        "Verify form placeholder generation"
+      ],
+      "dependencies": [
+        "Hubspot Forms JavaScript Library",
+        "jQuery"
+      ],
+      "priority": "High"
+    },
+    {
+      "name": "Connector Status Display",
+      "description": "Shows connector status and lists pages where Hubspot forms are deployed.",
+      "files": [
+        "Evoq Enterprise/Connectors/Hubspot/Components/HubspotConnector.cs",
+        "Evoq Enterprise/Connectors/Hubspot/Components/FormInfo.cs",
+        "Evoq Enterprise/Connectors/Hubspot/connector.htm",
+        "Evoq Enterprise/Connectors/Hubspot/Scripts/connector.js",
+        "Evoq Enterprise/Connectors/Hubspot/connector.css"
+      ],
+      "ui_location": "Admin > Connectors > Hubspot > View",
+      "test_scenarios": [
+        "Verify 'Not Connected' message when no forms exist",
+        "Verify 'Connected' message when forms exist",
+        "Verify list of pages displays correctly",
+        "Verify page links navigate to correct pages",
+        "Test clicking on page link in the list",
+        "Verify JSON serialization of form information"
+      ],
+      "dependencies": [
+        "KnockoutJS",
+        "DNN Persona Bar"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Form Validation",
+      "description": "Validates Hubspot Portal ID and Form ID against Hubspot API.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx.cs",
+        "Evoq Enterprise/Modules/HubspotForms/Components/Common/Constants.cs"
+      ],
+      "ui_location": "Page Module > Settings > Save button",
+      "test_scenarios": [
+        "Test validation with correct Portal ID and Form ID",
+        "Test validation with incorrect Portal ID",
+        "Test validation with incorrect Form ID",
+        "Test validation with network timeout",
+        "Test validation error message display",
+        "Verify validation URL construction",
+        "Test RestSharp client timeout (10 seconds)"
+      ],
+      "dependencies": [
+        "RestSharp",
+        "Hubspot API"
+      ],
+      "priority": "Medium"
+    },
+    {
+      "name": "Module Localization",
+      "description": "Provides localized text for UI elements and messages.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/App_LocalResources/Settings.ascx.resx",
+        "Evoq Enterprise/Modules/HubspotForms/App_LocalResources/View.ascx.resx",
+        "Evoq Enterprise/Connectors/Hubspot/App_LocalResources/SharedResources.resx"
+      ],
+      "ui_location": "All UI elements in the module",
+      "test_scenarios": [
+        "Verify all UI labels display correct text",
+        "Verify error messages display correctly",
+        "Verify help text displays for form fields",
+        "Test resource key resolution",
+        "Verify default text fallback"
+      ],
+      "dependencies": [
+        "DNN Localization Services"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Custom Message Editor",
+      "description": "Rich text editor for creating custom submission messages.",
+      "files": [
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx",
+        "Evoq Enterprise/Modules/HubspotForms/Settings.ascx.cs",
+        "Evoq Enterprise/Modules/HubspotForms/View.ascx.cs"
+      ],
+      "ui_location": "Page Module > Settings > Custom Message field",
+      "test_scenarios": [
+        "Enter plain text message",
+        "Enter HTML formatted message",
+        "Test special character encoding",
+        "Test quote and apostrophe handling",
+        "Verify HTML decode functionality",
+        "Test message trimming of line breaks"
+      ],
+      "dependencies": [
+        "DNN Text Editor Control"
+      ],
+      "priority": "Low"
+    },
+    {
+      "name": "Connector JavaScript Integration",
+      "description": "Client-side functionality for connector management in Persona Bar.",
+      "files": [
+        "Evoq Enterprise/Connectors/Hubspot/Scripts/connector.js",
+        "Evoq Enterprise/Connectors/Hubspot/connector.htm"
+      ],
+      "ui_location": "Admin > Connectors > Hubspot",
+      "test_scenarios": [
+        "Verify KnockoutJS binding initialization",
+        "Test page navigation from connector view",
+        "Verify Persona Bar close functionality",
+        "Test View button text replacement",
+        "Verify computed observables for pages list"
+      ],
+      "dependencies": [
+        "KnockoutJS",
+        "jQuery",
+        "Persona Bar"
+      ],
+      "priority": "Low"
+    }
+  ],
+  "extraction_timestamp": "2025-12-26T17:36:31.969670",
+  "extraction_model": "us.anthropic.claude-opus-4-1-20250805-v1:0"
+}
