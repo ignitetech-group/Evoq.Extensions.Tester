@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Management and Caching - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        .header p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .info-box h2 {
+            color: #1a237e;
+            border-bottom: 2px solid #1a237e;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .status-pass {
+            background-color: #4caf50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .status-fail {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .status-na {
+            background-color: #ff9800;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .test-scenario {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #ff9800;
+        }
+        .test-scenario h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .screenshot {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .steps {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .observations {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        .observations h2 {
+            color: #e65100;
+            margin-top: 0;
+        }
+        .code-analysis {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .code-analysis h3 {
+            color: #1565c0;
+            margin-top: 0;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+        }
+        .summary-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Token Management and Caching - Test Report</h1>
+        <p><strong>Extension:</strong> Evoq.Content.GoogleAnalyticsConnector</p>
+        <p><strong>Feature Priority:</strong> High</p>
+        <p><strong>UI Location:</strong> Backend service (no direct UI)</p>
+        <p><strong>Test Date:</strong> January 6, 2026</p>
+    </div>
+
+    <div class="info-box">
+        <h2>Feature Description</h2>
+        <p>Manages OAuth tokens for Google Analytics API access with caching and refresh capabilities. This is a backend service that handles token acquisition, caching, and cache clearing for the Google Analytics connector.</p>
+
+        <h3>Relevant Files Analyzed</h3>
+        <ul>
+            <li><code>Evoq Enterprise/Connectors/GoogleAnalytics/Components/Authorization/TokenServiceImpl.cs</code></li>
+            <li><code>Evoq Enterprise/Connectors/GoogleAnalytics/Components/GoogleAnalyticsRemoteManager.cs</code></li>
+            <li><code>Evoq Enterprise/Connectors/GoogleAnalytics/Services/ServicesController.cs</code></li>
+            <li><code>Evoq Enterprise/Connectors/GoogleAnalytics/Scripts/authorize.js</code></li>
+        </ul>
+    </div>
+
+    <div class="code-analysis">
+        <h3>Code Analysis Summary</h3>
+        <p>The Token Management and Caching feature is implemented through the following components:</p>
+        <table>
+            <tr>
+                <th>Component</th>
+                <th>Function</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>TokenServiceImpl.cs</code></td>
+                <td><code>ObtainToken()</code></td>
+                <td>Wraps TokenService with TokenCachedService for caching functionality</td>
+            </tr>
+            <tr>
+                <td><code>TokenServiceImpl.cs</code></td>
+                <td><code>ClearCache()</code></td>
+                <td>Clears cached tokens for specific portal and user</td>
+            </tr>
+            <tr>
+                <td><code>GoogleAnalyticsRemoteManager.cs</code></td>
+                <td><code>ObtainToken()</code></td>
+                <td>Gets tokens via TokenServiceImpl for API authorization</td>
+            </tr>
+            <tr>
+                <td><code>ServicesController.cs</code></td>
+                <td><code>GetToken</code> endpoint</td>
+                <td>API endpoint that clears cache first, then obtains fresh token</td>
+            </tr>
+            <tr>
+                <td><code>ServicesController.cs</code></td>
+                <td><code>Deauthorize</code> endpoint</td>
+                <td>API endpoint that clears the token cache</td>
+            </tr>
+            <tr>
+                <td><code>authorize.js</code></td>
+                <td><code>getToken()</code></td>
+                <td>JavaScript function that calls GetToken API to retrieve cached tokens</td>
+            </tr>
+            <tr>
+                <td><code>authorize.js</code></td>
+                <td><code>onUnAuthorize()</code></td>
+                <td>JavaScript function that triggers token cache clearing via Deauthorize API</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="info-box">
+        <h2>Test Environment Setup</h2>
+        <p><strong>Website URL:</strong> http://localhost:8081</p>
+        <p><strong>Login:</strong> SuperUser Account (host)</p>
+        <img src="Token_Management_and_Caching_step00_login_confirmed.png" alt="Login Confirmed" class="screenshot">
+        <p><em>Screenshot: Logged in as SuperUser Account, Connectors panel visible</em></p>
+    </div>
+
+    <div class="info-box">
+        <h2>Test Scenarios Summary</h2>
+        <div class="summary-table">
+            <table>
+                <tr>
+                    <th>Scenario</th>
+                    <th>Status</th>
+                    <th>Reason</th>
+                </tr>
+                <tr>
+                    <td>Obtain new token for authorized user</td>
+                    <td><span class="status-na">NO UI</span></td>
+                    <td>Backend service - no direct UI to test</td>
+                </tr>
+                <tr>
+                    <td>Retrieve cached token for subsequent requests</td>
+                    <td><span class="status-na">NO UI</span></td>
+                    <td>Backend service - no direct UI to test</td>
+                </tr>
+                <tr>
+                    <td>Clear token cache manually</td>
+                    <td><span class="status-na">NO UI</span></td>
+                    <td>Backend service - no direct UI to test</td>
+                </tr>
+                <tr>
+                    <td>Handle token expiration and refresh</td>
+                    <td><span class="status-na">NO UI</span></td>
+                    <td>Backend service - no direct UI to test</td>
+                </tr>
+                <tr>
+                    <td>Test token storage per portal and user</td>
+                    <td><span class="status-na">NO UI</span></td>
+                    <td>Backend service - no direct UI to test</td>
+                </tr>
+                <tr>
+                    <td>Verify token security and encryption</td>
+                    <td><span class="status-na">NO UI</span></td>
+                    <td>Backend service - no direct UI to test</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="test-scenario">
+        <h3>Investigation: Google Analytics Connector UI</h3>
+        <p><strong>Objective:</strong> Find any UI elements that would trigger the Token Management functionality</p>
+
+        <div class="steps">
+            <h4>Steps Taken:</h4>
+            <ol>
+                <li>Examined the Connectors panel for Google Analytics connectors</li>
+                <li>Found only "Google Analytics 4" connector which uses Measurement ID (not OAuth tokens)</li>
+                <li>Clicked Edit on Google Analytics 4 - confirmed it uses Measurement ID configuration</li>
+                <li>Accessed Page Analytics feature - found warning that Analytics is not enabled</li>
+                <li>Clicked "Connect" on Page Analytics warning - redirected to Connectors panel</li>
+                <li>Searched full connectors list - no separate OAuth-based "Google Analytics" connector found</li>
+            </ol>
+        </div>
+
+        <h4>Evidence:</h4>
+        <p><strong>Google Analytics 4 Configuration (uses Measurement ID, not OAuth):</strong></p>
+        <img src="Token_Management_and_Caching_step01_ga4_config.png" alt="GA4 Config" class="screenshot">
+
+        <p><strong>Page Analytics Warning - Analytics Not Enabled:</strong></p>
+        <img src="Token_Management_and_Caching_step02_page_analytics_warning.png" alt="Page Analytics Warning" class="screenshot">
+
+        <p><strong>Full Connectors List - No OAuth-based Google Analytics connector:</strong></p>
+        <img src="Token_Management_and_Caching_step04_full_connectors.png" alt="Full Connectors List" class="screenshot">
+    </div>
+
+    <div class="observations">
+        <h2>Observations</h2>
+
+        <h3>1. Feature Code Exists But No UI Available</h3>
+        <p>The Token Management and Caching feature is fully implemented in the codebase with the following capabilities:</p>
+        <ul>
+            <li><strong>Token Acquisition:</strong> <code>TokenServiceImpl.ObtainToken()</code> obtains tokens with caching via <code>TokenCachedService</code></li>
+            <li><strong>Cache Clearing:</strong> <code>TokenServiceImpl.ClearCache()</code> clears cached tokens per portal/user</li>
+            <li><strong>API Endpoints:</strong> <code>GetToken</code> and <code>Deauthorize</code> endpoints expose token operations</li>
+            <li><strong>JavaScript Integration:</strong> <code>authorize.js</code> contains client-side logic for token retrieval and deauthorization</li>
+        </ul>
+
+        <h3>2. OAuth-based Google Analytics Connector Not Available</h3>
+        <p>The Token Management feature is designed for the OAuth-based Google Analytics connector (Universal Analytics). However:</p>
+        <ul>
+            <li>Only "Google Analytics 4" connector is visible in the Connectors panel</li>
+            <li>GA4 uses a <strong>Measurement ID</strong> approach, not OAuth tokens</li>
+            <li>No separate "Google Analytics" (Universal Analytics) connector appears in the list</li>
+            <li>The connector code references connector name "GoogleAnalytics" in the JavaScript but this connector is not present in the UI</li>
+        </ul>
+
+        <h3>3. Page Analytics Shows Analytics Not Enabled</h3>
+        <p>The Page Analytics feature displays: "Analytics is not currently enabled. Ensure you have correctly setup the Google Analytics Connector and that the DNN Google Analytics application is still authorized on your Google Account settings."</p>
+        <p>This warning appears because the OAuth-based Google Analytics connector (which would use the Token Management feature) is not connected/available.</p>
+
+        <h3>4. Testing Limitation</h3>
+        <p>As stated in the feature description: <strong>"UI Location: Backend service (no direct UI)"</strong></p>
+        <p>The Token Management and Caching operations occur automatically in the background when users interact with Google Analytics features. Without the OAuth-based Google Analytics connector available in the UI, there is no way to trigger or observe the token management functionality through manual UI testing.</p>
+
+        <h3>5. Recommendation</h3>
+        <p>To properly test this feature, one of the following would be needed:</p>
+        <ul>
+            <li>Install/enable the OAuth-based Google Analytics connector</li>
+            <li>Configure a Google Cloud project with OAuth credentials</li>
+            <li>Use API testing tools to directly call the <code>GetToken</code> and <code>Deauthorize</code> endpoints</li>
+            <li>Write automated unit/integration tests for the token service components</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h2>Conclusion</h2>
+        <p>The <strong>Token Management and Caching</strong> feature is a backend service that cannot be tested through the UI in the current environment. The feature code is confirmed to exist and is well-implemented, but the OAuth-based Google Analytics connector that would utilize this functionality is not available in the Connectors panel.</p>
+        <p>Per testing guidelines: "Feature exists in code but not visible in UI? Do NOT create a test for it. Add a note in the report under Observations." - This report documents the findings accordingly.</p>
+    </div>
+
+    <footer style="text-align: center; margin-top: 30px; padding: 20px; color: #666;">
+        <p>Test Report Generated: January 6, 2026</p>
+        <p>Evoq.Content.GoogleAnalyticsConnector - Token Management and Caching</p>
+    </footer>
+</body>
+</html>

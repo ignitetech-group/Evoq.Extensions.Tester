@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Report: Workflow Resources Tracking</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #555;
+        }
+        .feature-info {
+            background-color: #e7f3ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .test-case {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .pass {
+            color: #28a745;
+            font-weight: bold;
+            background-color: #d4edda;
+            padding: 5px 15px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .fail {
+            color: #dc3545;
+            font-weight: bold;
+            background-color: #f8d7da;
+            padding: 5px 15px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .screenshot {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .steps {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .observations {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .summary-table th, .summary-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .summary-table th {
+            background-color: #007bff;
+            color: white;
+        }
+        .summary-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .code-ref {
+            font-family: monospace;
+            background-color: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Report: Workflow Resources Tracking</h1>
+
+    <div class="feature-info">
+        <h3>Feature Information</h3>
+        <p><strong>Extension:</strong> Evoq.PersonaBar.Workflow (PersonaBar Module)</p>
+        <p><strong>Feature Name:</strong> Workflow Resources Tracking</p>
+        <p><strong>Description:</strong> View and track which content items (pages, files) are using specific workflows.</p>
+        <p><strong>Feature Priority:</strong> Medium</p>
+        <p><strong>UI Location:</strong> Settings > Workflow > [Select Workflow] > Resources (View Usage)</p>
+        <p><strong>Relevant Files:</strong> <span class="code-ref">src/Modules/Evoq.PersonaBar.Workflow/Services/WorkflowsController.cs</span></p>
+        <p><strong>Test Date:</strong> 2026-01-06</p>
+    </div>
+
+    <h2>Test Summary</h2>
+    <table class="summary-table">
+        <tr>
+            <th>Test Scenario</th>
+            <th>Status</th>
+            <th>Notes</th>
+        </tr>
+        <tr>
+            <td>View resources using workflow</td>
+            <td><span class="pass">PASS</span></td>
+            <td>Successfully displays resources using the workflow</td>
+        </tr>
+        <tr>
+            <td>Load more resources with pagination</td>
+            <td><span class="fail">FAIL</span></td>
+            <td>No "Load More" button visible in UI despite backend support</td>
+        </tr>
+        <tr>
+            <td>Verify resource count accuracy</td>
+            <td><span class="pass">PASS</span></td>
+            <td>20 resources displayed (pagination limit)</td>
+        </tr>
+        <tr>
+            <td>Check resource types displayed</td>
+            <td><span class="pass">PASS</span></td>
+            <td>Resource types (Folder) displayed correctly</td>
+        </tr>
+        <tr>
+            <td>Verify resource titles are correct</td>
+            <td><span class="pass">PASS</span></td>
+            <td>Folder paths displayed correctly as titles</td>
+        </tr>
+        <tr>
+            <td>Test empty resource list for unused workflow</td>
+            <td><span class="fail">FAIL</span></td>
+            <td>Cannot test - "View Usage" link only appears for workflows in use</td>
+        </tr>
+    </table>
+
+    <h2>Detailed Test Results</h2>
+
+    <!-- Test 1: View resources using workflow -->
+    <div class="test-case">
+        <h3>Test 1: View resources using workflow</h3>
+        <p><strong>Status:</strong> <span class="pass">PASS</span></p>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Navigated to Settings > Workflow</li>
+                <li>Expanded the "Direct Publish" workflow (which shows "This workflow is currently in use")</li>
+                <li>Clicked on "View Usage" link</li>
+                <li>Observed the "Workflow Usage Information" modal dialog</li>
+            </ol>
+        </div>
+
+        <p><strong>Expected Result:</strong> Modal should display resources (content items) using the selected workflow.</p>
+        <p><strong>Actual Result:</strong> The modal displayed correctly showing:
+            <ul>
+                <li>Title: "Workflow Usage Information"</li>
+                <li>Description: "You are viewing usage for the Direct Publish workflow"</li>
+                <li>Table with NAME and CONTENT TYPE columns</li>
+                <li>List of 20 resources (folders) using this workflow</li>
+            </ul>
+        </p>
+
+        <p><strong>Screenshot - Workflow Usage Information Modal:</strong></p>
+        <img src="Workflow_Resources_Tracking_step01_view_resources.png" alt="View Resources Modal" class="screenshot">
+    </div>
+
+    <!-- Test 2: Load more resources with pagination -->
+    <div class="test-case">
+        <h3>Test 2: Load more resources with pagination</h3>
+        <p><strong>Status:</strong> <span class="fail">FAIL</span></p>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Opened the Workflow Usage Information modal for Direct Publish workflow</li>
+                <li>Scrolled through the resources list</li>
+                <li>Looked for a "Load More" button at the bottom of the list</li>
+                <li>Verified the list ends with a "Close" button only</li>
+            </ol>
+        </div>
+
+        <p><strong>Expected Result:</strong> When there are more than 20 resources, a "Load More" button should appear to load additional resources.</p>
+        <p><strong>Actual Result:</strong> No "Load More" button is visible in the UI. The modal only shows a "Close" button at the bottom.</p>
+
+        <p><strong>Code Analysis:</strong> The backend code in <span class="code-ref">WorkflowsController.cs</span> (line 225) returns a <span class="code-ref">loadMore</span> flag when the resource count equals 20 (ResourcesSteps). However, the frontend UI does not implement this pagination functionality.</p>
+
+        <p><strong>Screenshot - No Load More Button:</strong></p>
+        <img src="Workflow_Resources_Tracking_step03_full_list.png" alt="No Load More Button" class="screenshot">
+    </div>
+
+    <!-- Test 3: Verify resource count accuracy -->
+    <div class="test-case">
+        <h3>Test 3: Verify resource count accuracy</h3>
+        <p><strong>Status:</strong> <span class="pass">PASS</span></p>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Opened the Workflow Usage Information modal</li>
+                <li>Counted the resources displayed in the list</li>
+                <li>Verified the count matches the pagination limit</li>
+            </ol>
+        </div>
+
+        <p><strong>Expected Result:</strong> Resources should be displayed up to the pagination limit (20 items).</p>
+        <p><strong>Actual Result:</strong> Exactly 20 resources are displayed, matching the ResourcesSteps constant in the backend code. Resources displayed include:
+            <ul>
+                <li>/, /Badges/, /Groups/, /Groups/9/, /Images/, /Images/Publisher/</li>
+                <li>/PermissionsTestFolder/, /Templates/, /TestNewFolder2026/</li>
+                <li>/TestNewFolder2026/TestSingleFolder/, /TestNewFolder2026/TestSingleFolder/NestedSubfolder/</li>
+                <li>/ThisIsAVeryLongFolderName... (truncated), /Users/, /Users/003/, etc.</li>
+            </ul>
+        </p>
+
+        <p><strong>Note:</strong> The UI does not display a total count number, only the list of resources.</p>
+
+        <p><strong>Screenshot - Resources List:</strong></p>
+        <img src="Workflow_Resources_Tracking_step02_resources_list.png" alt="Resources List" class="screenshot">
+    </div>
+
+    <!-- Test 4: Check resource types displayed -->
+    <div class="test-case">
+        <h3>Test 4: Check resource types displayed</h3>
+        <p><strong>Status:</strong> <span class="pass">PASS</span></p>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Opened the Workflow Usage Information modal</li>
+                <li>Examined the CONTENT TYPE column for each resource</li>
+                <li>Verified the content types are displayed correctly</li>
+            </ol>
+        </div>
+
+        <p><strong>Expected Result:</strong> Each resource should display its content type (e.g., Folder, Page, File).</p>
+        <p><strong>Actual Result:</strong> All resources in the list display "Folder" as their content type. The CONTENT TYPE column is properly populated and visible.</p>
+
+        <p><strong>Screenshot - Resource Types Column:</strong></p>
+        <img src="Workflow_Resources_Tracking_step01_view_resources.png" alt="Resource Types" class="screenshot">
+    </div>
+
+    <!-- Test 5: Verify resource titles are correct -->
+    <div class="test-case">
+        <h3>Test 5: Verify resource titles are correct</h3>
+        <p><strong>Status:</strong> <span class="pass">PASS</span></p>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Opened the Workflow Usage Information modal</li>
+                <li>Examined the NAME column for each resource</li>
+                <li>Verified the resource names/titles are correctly displayed</li>
+            </ol>
+        </div>
+
+        <p><strong>Expected Result:</strong> Each resource should display its name/title correctly.</p>
+        <p><strong>Actual Result:</strong> All resources display their folder paths correctly as titles in the NAME column. Examples include:
+            <ul>
+                <li>/ (root folder)</li>
+                <li>/Badges/</li>
+                <li>/Groups/</li>
+                <li>/Images/</li>
+                <li>/TestNewFolder2026/TestSingleFolder/NestedSubfolder/</li>
+                <li>Long folder names are also displayed (though may be truncated visually)</li>
+            </ul>
+        </p>
+
+        <p><strong>Screenshot - Resource Titles:</strong></p>
+        <img src="Workflow_Resources_Tracking_step02_resources_list.png" alt="Resource Titles" class="screenshot">
+    </div>
+
+    <!-- Test 6: Test empty resource list for unused workflow -->
+    <div class="test-case">
+        <h3>Test 6: Test empty resource list for unused workflow</h3>
+        <p><strong>Status:</strong> <span class="fail">FAIL</span></p>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Navigated to Settings > Workflow</li>
+                <li>Identified workflows that are NOT in use (Save Draft, Test Approval Workflow, QA Test Workflow)</li>
+                <li>Attempted to find "View Usage" link for unused workflows</li>
+                <li>Discovered that "View Usage" link only appears for workflows marked as "in use"</li>
+            </ol>
+        </div>
+
+        <p><strong>Expected Result:</strong> Should be able to view an empty resource list for workflows not currently in use.</p>
+        <p><strong>Actual Result:</strong> Cannot test this scenario. The "View Usage" link only appears for workflows that have the "This workflow is currently in use" indicator. Unused workflows (Save Draft, Test Approval Workflow, QA Test Workflow, NewWorkflow) do not have a "View Usage" option.</p>
+
+        <p><strong>Screenshot - Workflow List (showing "In Use" indicators):</strong></p>
+        <img src="Workflow_Resources_Tracking_step04_workflows_list.png" alt="Workflows List" class="screenshot">
+
+        <p><strong>Note:</strong> This is a design decision - the "View Usage" functionality is only available when there are actual resources to view. However, this means an empty state cannot be verified through the UI.</p>
+    </div>
+
+    <!-- Observations Section -->
+    <div class="observations">
+        <h2>Observations</h2>
+        <ul>
+            <li><strong>Pagination Backend vs Frontend Mismatch:</strong> The backend code (WorkflowsController.cs:225) returns a <span class="code-ref">loadMore</span> flag when exactly 20 resources are returned, indicating more resources are available. However, the frontend UI does not implement a "Load More" button to utilize this functionality.</li>
+            <li><strong>View Usage Availability:</strong> The "View Usage" link only appears for workflows marked as "in use". This prevents testing the empty resource list scenario and may limit visibility for administrators wanting to verify a workflow has no resources.</li>
+            <li><strong>Resource Types:</strong> In the test environment, all resources using the Direct Publish workflow were folders. The system supports multiple content types (as seen in the code returning <span class="code-ref">ContentType</span>), but only Folder types were observed.</li>
+            <li><strong>No Total Count Display:</strong> The UI shows a list of resources but does not display a total count of resources using the workflow. This information might be useful for administrators.</li>
+            <li><strong>Content Approval Workflow:</strong> "Content Approval" workflow is also marked as "in use" with a "View Usage" link available, indicating the feature works for multiple workflows.</li>
+        </ul>
+    </div>
+
+    <h2>Test Environment</h2>
+    <ul>
+        <li><strong>Website URL:</strong> http://localhost:8081</li>
+        <li><strong>Browser:</strong> Playwright (Chromium)</li>
+        <li><strong>Viewport:</strong> 1280x720</li>
+        <li><strong>User:</strong> SuperUser Account (host)</li>
+    </ul>
+
+    <h2>Login Confirmation Screenshot</h2>
+    <img src="Workflow_Resources_Tracking_step00_login_confirmed.png" alt="Login Confirmed" class="screenshot">
+
+</body>
+</html>

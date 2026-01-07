@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page View Tracking - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #7f8c8d;
+        }
+        .feature-info {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-scenario {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+        }
+        .test-scenario.pass {
+            border-left-color: #27ae60;
+        }
+        .test-scenario.fail {
+            border-left-color: #e74c3c;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status.pass {
+            background-color: #27ae60;
+            color: white;
+        }
+        .status.fail {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .screenshot {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .steps {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+        .observations {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #ffc107;
+            margin-top: 30px;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .summary-table th, .summary-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .summary-table th {
+            background-color: #3498db;
+            color: white;
+        }
+        .summary-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .issue {
+            background: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 3px solid #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Page View Tracking - Test Report</h1>
+
+    <div class="feature-info">
+        <h2>Feature Information</h2>
+        <p><strong>Feature Name:</strong> Page View Tracking</p>
+        <p><strong>Extension:</strong> Evoq.GoogleAnalyticsConnector</p>
+        <p><strong>Priority:</strong> Top</p>
+        <p><strong>Description:</strong> Tracks page views with detailed metrics including visitor ID, session ID, referrer information, and time on page.</p>
+        <p><strong>UI Location:</strong> Automatic tracking on all pages (when configured)</p>
+        <p><strong>Test Date:</strong> January 6, 2026</p>
+        <p><strong>Tested By:</strong> Claude Code (Automated Testing)</p>
+    </div>
+
+    <h2>Test Summary</h2>
+    <table class="summary-table">
+        <tr>
+            <th>Test Scenario</th>
+            <th>Status</th>
+            <th>Notes</th>
+        </tr>
+        <tr>
+            <td>Google Analytics 4 Page View Tracking</td>
+            <td><span class="status pass">PASS</span></td>
+            <td>GA4 successfully sends page_view events to google-analytics.com</td>
+        </tr>
+        <tr>
+            <td>Internal/Legacy Page View Tracking (LogPageView API)</td>
+            <td><span class="status fail">FAIL</span></td>
+            <td>dnn.analytics JavaScript not loaded; LogPageView API not called</td>
+        </tr>
+        <tr>
+            <td>Tracking Variables Set Correctly</td>
+            <td><span class="status pass">PASS</span></td>
+            <td>evoq_TabId, evoq_ContentItemId, evoq_UrlReferrer, evoq_UrlPath are set</td>
+        </tr>
+        <tr>
+            <td>Referrer Information Capture</td>
+            <td><span class="status pass">PASS</span></td>
+            <td>urlReferrer correctly captures the previous page URL</td>
+        </tr>
+        <tr>
+            <td>Page Language/Culture Tracking</td>
+            <td><span class="status fail">FAIL</span></td>
+            <td>pageLanguage variable doesn't update when navigating to different language pages</td>
+        </tr>
+        <tr>
+            <td>Analytics Cookies</td>
+            <td><span class="status pass">PASS</span></td>
+            <td>GA4 cookies (_ga, _gid) are set; Legacy DNN cookies not present (by design)</td>
+        </tr>
+    </table>
+
+    <h2>Detailed Test Results</h2>
+
+    <!-- Test 1: GA4 Configuration -->
+    <div class="test-scenario pass">
+        <h3>Test 1: Google Analytics 4 Configuration</h3>
+        <span class="status pass">PASS</span>
+
+        <p><strong>Objective:</strong> Verify Google Analytics 4 connector is configured and tracking page views.</p>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Logged in as SuperUser Account</li>
+                <li>Navigated to Settings > Connectors</li>
+                <li>Verified Google Analytics 4 connector configuration</li>
+                <li>Checked network requests for GA4 tracking calls</li>
+            </ol>
+        </div>
+
+        <p><strong>Evidence:</strong></p>
+        <img src="Page View Tracking_step01_ga4_config.png" alt="GA4 Configuration" class="screenshot">
+
+        <p><strong>Results:</strong></p>
+        <ul>
+            <li>Google Analytics 4 connector is configured with Measurement ID: G-ABC123DEF4</li>
+            <li>"Track for Administrators" option is available (unchecked)</li>
+            <li>Network requests show POST to google-analytics.com/g/collect with page_view and user_engagement events</li>
+        </ul>
+
+        <div class="code-block">Network Request Example:
+POST https://www.google-analytics.com/g/collect?v=2&tid=G-ABC123DEF4&...&en=page_view
+Response: 204 (Success)</div>
+    </div>
+
+    <!-- Test 2: Page Analytics Warning -->
+    <div class="test-scenario fail">
+        <h3>Test 2: Page Analytics Dashboard</h3>
+        <span class="status fail">FAIL</span>
+
+        <p><strong>Objective:</strong> Verify Page Analytics dashboard shows tracking data.</p>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Clicked on Page Analytics icon in persona bar</li>
+                <li>Observed warning message about analytics not being enabled</li>
+            </ol>
+        </div>
+
+        <p><strong>Evidence:</strong></p>
+        <img src="Page View Tracking_step02_analytics_warning.png" alt="Analytics Warning" class="screenshot">
+
+        <div class="issue">
+            <strong>Issue Found:</strong> Warning message displayed: "Analytics is not currently enabled. Ensure you have correctly setup the Google Analytics Connector and that the DNN Google Analytics application is still authorized on your Google Account settings."
+        </div>
+
+        <p><strong>Analysis:</strong> While GA4 basic page view tracking works, the full analytics integration with Google requires OAuth authorization which is not completed in this test environment.</p>
+    </div>
+
+    <!-- Test 3: Standard Page View Tracking Variables -->
+    <div class="test-scenario pass">
+        <h3>Test 3: Tracking Variables on Page Load</h3>
+        <span class="status pass">PASS</span>
+
+        <p><strong>Objective:</strong> Verify page tracking JavaScript variables are set correctly.</p>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Navigated to Home page</li>
+                <li>Evaluated JavaScript variables using browser console</li>
+                <li>Verified tracking data is captured</li>
+            </ol>
+        </div>
+
+        <p><strong>Evidence:</strong></p>
+        <img src="Page View Tracking_step03_tracking_variables.png" alt="Tracking Variables" class="screenshot">
+
+        <p><strong>JavaScript Evaluation Results (Home Page):</strong></p>
+        <div class="code-block">{
+  "disableAnalytics": "False",
+  "tabId": "21",
+  "pageLanguage": "en-US",
+  "contentItemId": "-1",
+  "urlReferrer": "http://localhost:8081/DesktopModules/admin/Dnn.PersonaBar/index.html",
+  "analyticsExists": false
+}</div>
+
+        <p><strong>Analysis:</strong></p>
+        <ul>
+            <li><strong>evoq_DisableAnalytics: "False"</strong> - Analytics tracking is enabled</li>
+            <li><strong>evoq_TabId: "21"</strong> - Current page tab ID is tracked</li>
+            <li><strong>evoq_PageLanguage: "en-US"</strong> - Page language is captured</li>
+            <li><strong>evoq_ContentItemId: "-1"</strong> - No specific content item (expected for home page)</li>
+            <li><strong>analyticsExists: false</strong> - dnn.analytics JavaScript is NOT loaded (legacy tracking disabled)</li>
+        </ul>
+    </div>
+
+    <!-- Test 4: Referrer Information Capture -->
+    <div class="test-scenario pass">
+        <h3>Test 4: Referrer Information Capture</h3>
+        <span class="status pass">PASS</span>
+
+        <p><strong>Objective:</strong> Verify referrer URL is captured when navigating between pages.</p>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Navigated from Home page to Our Products page</li>
+                <li>Evaluated JavaScript variables to check urlReferrer</li>
+            </ol>
+        </div>
+
+        <p><strong>Evidence:</strong></p>
+        <img src="Page View Tracking_step04_our_products_tracking.png" alt="Our Products Tracking" class="screenshot">
+
+        <p><strong>JavaScript Evaluation Results (Our Products Page):</strong></p>
+        <div class="code-block">{
+  "disableAnalytics": "False",
+  "tabId": "22",
+  "pageLanguage": "en-US",
+  "contentItemId": "-1",
+  "urlReferrer": "http://localhost:8081/en-us/",
+  "urlPath": "http%3a%2f%2flocalhost%3a8081%2fen-us%2fOur-Products"
+}</div>
+
+        <p><strong>Analysis:</strong></p>
+        <ul>
+            <li><strong>tabId changed from "21" to "22"</strong> - Different page correctly identified</li>
+            <li><strong>urlReferrer: "http://localhost:8081/en-us/"</strong> - Previous page URL correctly captured</li>
+            <li><strong>urlPath</strong> - Current page path is URL-encoded and tracked</li>
+        </ul>
+    </div>
+
+    <!-- Test 5: Language/Culture Tracking -->
+    <div class="test-scenario fail">
+        <h3>Test 5: Page Language/Culture Tracking</h3>
+        <span class="status fail">FAIL</span>
+
+        <p><strong>Objective:</strong> Verify page language updates when navigating to different language versions.</p>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>From Our Products page (en-us), clicked French language selector</li>
+                <li>Verified URL changed to fr-fr/Our-Products</li>
+                <li>Evaluated JavaScript tracking variables</li>
+            </ol>
+        </div>
+
+        <p><strong>Evidence:</strong></p>
+        <img src="Page View Tracking_step05_french_language.png" alt="French Language Page" class="screenshot">
+
+        <p><strong>JavaScript Evaluation Results (French Page):</strong></p>
+        <div class="code-block">{
+  "disableAnalytics": "False",
+  "tabId": "22",
+  "pageLanguage": "en-US",  // Expected: "fr-FR"
+  "contentItemId": "-1",
+  "urlReferrer": "http://localhost:8081/en-us/Our-Products"
+}</div>
+
+        <div class="issue">
+            <strong>Issue Found:</strong> The <code>evoq_PageLanguage</code> variable still shows "en-US" even though the page URL is <code>http://localhost:8081/fr-fr/Our-Products</code>. The language tracking variable does not update when navigating to different language versions of pages.
+        </div>
+    </div>
+
+    <!-- Test 6: Analytics Cookies -->
+    <div class="test-scenario pass">
+        <h3>Test 6: Analytics Cookies</h3>
+        <span class="status pass">PASS</span>
+
+        <p><strong>Objective:</strong> Verify analytics cookies are set for tracking visitors.</p>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Evaluated document.cookie in browser console</li>
+                <li>Checked for GA4 and legacy DNN analytics cookies</li>
+            </ol>
+        </div>
+
+        <p><strong>Cookie Values Found:</strong></p>
+        <div class="code-block">_ga=GA1.1.1864371918.1767716573
+_gid=GA1.1.2089203129.1767716573
+_ga_ABC123DEF4=GS2.1.s1767716578$o1$g0$t1767716586$j52$l0$h0</div>
+
+        <p><strong>Analysis:</strong></p>
+        <ul>
+            <li><strong>_ga</strong> - Google Analytics client ID cookie (present)</li>
+            <li><strong>_gid</strong> - Google Analytics session cookie (present)</li>
+            <li><strong>_ga_ABC123DEF4</strong> - GA4 measurement-specific cookie (present)</li>
+            <li><strong>Analytics_VisitorId</strong> - Legacy DNN visitor cookie (NOT present - legacy tracking disabled)</li>
+            <li><strong>Analytics</strong> - Legacy DNN session cookie (NOT present - legacy tracking disabled)</li>
+        </ul>
+    </div>
+
+    <div class="observations">
+        <h2>Observations</h2>
+        <ul>
+            <li><strong>Legacy Analytics Disabled:</strong> The internal DNN page view tracking (via LogPageView API) is not active. The code shows this is controlled by the <code>EnableLegacyAnalyticsCookies</code> web.config setting and <code>AreLegacyAnalyticsCookiesEnabled()</code> function. The <code>dnn.analytics.Injected.js</code> script is not loaded on pages.</li>
+            <li><strong>GA4 Integration Working:</strong> Google Analytics 4 is successfully tracking page views via the connector. The measurement ID (G-ABC123DEF4) is configured and network requests show successful tracking.</li>
+            <li><strong>OAuth Authorization Required:</strong> For full Page Analytics dashboard functionality, Google OAuth authorization is required but not completed in the test environment.</li>
+            <li><strong>Code Infrastructure Present:</strong> The server-side tracking infrastructure (AnalyticsServiceController.cs, AnalyticsController.cs, AnalyticsProvider.cs) is present and tracking variables are being set, but the client-side JavaScript to send data to the LogPageView API is not loaded.</li>
+            <li><strong>Session Timeout Configuration:</strong> Code shows max time on page defaults to 300 seconds (5 minutes) via <code>Analytics_MaxSecondsTimeOnPageKey</code> portal setting.</li>
+            <li><strong>Excluded Tabs Feature:</strong> Code supports excluding tabs from tracking via <code>ContentItemUrlProvider_ExcludeTabIds</code> portal setting, but this could not be tested via UI as no configuration interface was found.</li>
+        </ul>
+    </div>
+
+    <h2>Recommendations</h2>
+    <ol>
+        <li><strong>Fix Language Tracking Bug:</strong> The <code>evoq_PageLanguage</code> variable should update when navigating to different language versions of pages.</li>
+        <li><strong>Complete Google OAuth Setup:</strong> For full analytics dashboard functionality, complete the Google OAuth authorization process.</li>
+        <li><strong>Document Legacy Analytics:</strong> Clarify whether legacy internal analytics (LogPageView API) is intentionally disabled or should be enabled via <code>EnableLegacyAnalyticsCookies</code> setting.</li>
+        <li><strong>Add Excluded Tabs UI:</strong> Consider adding a UI interface to configure excluded tabs for analytics tracking.</li>
+    </ol>
+
+    <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; color: #7f8c8d; text-align: center;">
+        <p>Test Report Generated by Claude Code Automated Testing</p>
+        <p>Evoq.GoogleAnalyticsConnector - Page View Tracking Feature</p>
+    </footer>
+</body>
+</html>

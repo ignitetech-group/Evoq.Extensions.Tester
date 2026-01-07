@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Drag and Drop - Test Report</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+        }
+        .header p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        .test-case {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-case h2 {
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .status.fail {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        .status.pass {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        .steps {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin: 8px 0;
+        }
+        .screenshot {
+            margin: 15px 0;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .screenshot figcaption {
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .issue {
+            background: #fef3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .issue h4 {
+            margin: 0 0 10px 0;
+            color: #856404;
+        }
+        .observations {
+            background: #e7f3ff;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .observations h3 {
+            margin: 0 0 10px 0;
+            color: #0066cc;
+        }
+        .summary {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .summary table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .summary th, .summary td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .summary th {
+            background: #f8f9fa;
+        }
+        code {
+            background: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Template Drag and Drop - Test Report</h1>
+        <p><strong>Extension:</strong> Evoq.PersonaBar.Templates (PersonaBar Module)</p>
+        <p><strong>Feature:</strong> Template Drag and Drop</p>
+        <p><strong>Description:</strong> Reorder templates in hierarchy by dragging and dropping them to new positions</p>
+        <p><strong>Priority:</strong> Low (SMOKE Testing)</p>
+        <p><strong>Test Date:</strong> January 6, 2026</p>
+        <p><strong>UI Location:</strong> Admin &gt; Manage &gt; Templates &gt; Drag handle on template items</p>
+    </div>
+
+    <div class="test-case">
+        <h2>Test 1: Access Templates Feature <span class="status fail">FAIL</span></h2>
+        <p><strong>Objective:</strong> Verify the Templates feature loads and displays the template list</p>
+
+        <div class="steps">
+            <h4>Steps Taken:</h4>
+            <ol>
+                <li>Logged in as superuser (host/Pass123456)</li>
+                <li>Navigated to PersonaBar &gt; Manage &gt; Templates</li>
+                <li>Waited for template list to load</li>
+                <li>Observed error messages</li>
+            </ol>
+        </div>
+
+        <div class="screenshot">
+            <figure>
+                <img src="Template Drag and Drop_step00_login_confirmed.png" alt="Login confirmed">
+                <figcaption>Step 1: Successfully logged in as SuperUser, PersonaBar visible</figcaption>
+            </figure>
+        </div>
+
+        <div class="screenshot">
+            <figure>
+                <img src="Template Drag and Drop_step01_templates_error.png" alt="Templates page error">
+                <figcaption>Step 2: Navigated to Templates - Error displayed</figcaption>
+            </figure>
+        </div>
+
+        <div class="screenshot">
+            <figure>
+                <img src="Template Drag and Drop_step02_templates_500_error.png" alt="500 server error">
+                <figcaption>Step 3: Persistent 500 Internal Server Error when loading templates</figcaption>
+            </figure>
+        </div>
+
+        <div class="issue">
+            <h4>Issue Found:</h4>
+            <p>The Templates page loads the UI shell (header, search box, "Add Template" button) but fails to retrieve the template list. Multiple <code>500 Internal Server Error</code> responses are returned from the server when the <code>GetPageTemplates</code> API endpoint is called.</p>
+            <p><strong>Error Message:</strong> "There was an error retrieving your content. Please check your internet connection."</p>
+            <p><strong>Root Cause:</strong> Server-side API failure (HTTP 500 errors from backend)</p>
+        </div>
+
+        <p><strong>Result:</strong> <span class="status fail">FAIL</span> - Templates list does not load due to backend 500 errors.</p>
+    </div>
+
+    <div class="test-case">
+        <h2>Test 2: Drag Template to New Position <span class="status fail">FAIL</span></h2>
+        <p><strong>Objective:</strong> Verify templates can be reordered by dragging them to new positions</p>
+
+        <div class="steps">
+            <h4>Steps Attempted:</h4>
+            <ol>
+                <li>Navigate to Templates page</li>
+                <li>Locate a template item with drag handle</li>
+                <li>Drag template to new position</li>
+                <li>Verify hierarchy updates after drop</li>
+            </ol>
+        </div>
+
+        <div class="screenshot">
+            <figure>
+                <img src="Template Drag and Drop_step03_final_error_state.png" alt="Final error state">
+                <figcaption>No templates visible to test drag and drop functionality</figcaption>
+            </figure>
+        </div>
+
+        <div class="issue">
+            <h4>Issue Found:</h4>
+            <p>Cannot test drag and drop functionality because no templates are displayed. The template list fails to load due to server errors, preventing any drag interaction.</p>
+        </div>
+
+        <p><strong>Result:</strong> <span class="status fail">FAIL</span> - Cannot test; no templates displayed.</p>
+    </div>
+
+    <div class="test-case">
+        <h2>Test 3: Drag Visual Feedback <span class="status fail">FAIL</span></h2>
+        <p><strong>Objective:</strong> Verify drag operation shows visual feedback (helper element, placeholder)</p>
+
+        <p><strong>Expected Behavior (from code review):</strong></p>
+        <ul>
+            <li>A <code>page-drag-helper</code> element should appear when dragging</li>
+            <li>A <code>page-drag-target</code> placeholder should mark drop position</li>
+            <li>The drag handle is <code>span.drag-area</code> on each template item</li>
+        </ul>
+
+        <div class="issue">
+            <h4>Issue Found:</h4>
+            <p>Cannot verify visual feedback because no templates are available to drag.</p>
+        </div>
+
+        <p><strong>Result:</strong> <span class="status fail">FAIL</span> - Cannot test; no templates displayed.</p>
+    </div>
+
+    <div class="test-case">
+        <h2>Test 4: Drag Disabled During Search <span class="status fail">FAIL</span></h2>
+        <p><strong>Objective:</strong> Verify drag handles are hidden when a search is active</p>
+
+        <p><strong>Expected Behavior (from code review):</strong></p>
+        <p>According to <code>Templates.html</code> line 93: <code>visible: $root.searchKeyword() == ''</code> - the drag-area should be hidden when searchKeyword is not empty.</p>
+
+        <div class="issue">
+            <h4>Issue Found:</h4>
+            <p>Cannot verify this behavior because no templates are displayed to show drag handles.</p>
+        </div>
+
+        <p><strong>Result:</strong> <span class="status fail">FAIL</span> - Cannot test; no templates displayed.</p>
+    </div>
+
+    <div class="observations">
+        <h3>Observations</h3>
+        <ul>
+            <li><strong>Code Review Findings:</strong> The drag and drop functionality is implemented in <code>templatesHierarchy.js</code> using jQuery UI sortable and droppable. The code appears complete with:
+                <ul>
+                    <li>Sortable initialization with <code>handle: 'span.drag-area'</code></li>
+                    <li>Droppable functionality for dropping on other templates</li>
+                    <li><code>MovePage</code> API calls to persist hierarchy changes</li>
+                    <li>Visual feedback via helper and placeholder classes</li>
+                    <li>Drag cancellation and error handling</li>
+                </ul>
+            </li>
+            <li><strong>API Issue:</strong> The <code>GetPageTemplates</code> API endpoint returns HTTP 500 errors consistently, indicating a server-side issue that is blocking all template-related functionality.</li>
+            <li><strong>UI Partially Works:</strong> The Templates page UI shell loads correctly (header, search box, "Add Template" button), demonstrating the frontend is functioning but cannot retrieve data from the backend.</li>
+        </ul>
+    </div>
+
+    <div class="summary">
+        <h2>Test Summary</h2>
+        <table>
+            <tr>
+                <th>Test Scenario</th>
+                <th>Status</th>
+                <th>Notes</th>
+            </tr>
+            <tr>
+                <td>Access Templates Feature</td>
+                <td><span class="status fail">FAIL</span></td>
+                <td>500 Internal Server Error from GetPageTemplates API</td>
+            </tr>
+            <tr>
+                <td>Drag Template to New Position</td>
+                <td><span class="status fail">FAIL</span></td>
+                <td>Cannot test - no templates displayed</td>
+            </tr>
+            <tr>
+                <td>Drag Visual Feedback</td>
+                <td><span class="status fail">FAIL</span></td>
+                <td>Cannot test - no templates displayed</td>
+            </tr>
+            <tr>
+                <td>Drag Disabled During Search</td>
+                <td><span class="status fail">FAIL</span></td>
+                <td>Cannot test - no templates displayed</td>
+            </tr>
+        </table>
+
+        <h3>Overall Result: <span class="status fail">FAIL</span></h3>
+        <p>The Template Drag and Drop feature cannot be tested because the Templates page fails to load any templates due to persistent HTTP 500 Internal Server Errors from the backend API. The frontend UI components load correctly, but the backend is returning errors when fetching template data.</p>
+
+        <h4>Recommended Actions:</h4>
+        <ol>
+            <li>Investigate the <code>GetPageTemplates</code> API endpoint for server-side errors</li>
+            <li>Check database connectivity and permissions for template data</li>
+            <li>Review server logs for detailed error information</li>
+            <li>Re-test after backend issues are resolved</li>
+        </ol>
+    </div>
+</body>
+</html>

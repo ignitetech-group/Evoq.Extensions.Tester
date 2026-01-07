@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Synchronization - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #0078d4;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #0078d4;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #555;
+        }
+        .feature-info {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .test-scenario {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .pass {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .fail {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status-pass {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-fail {
+            background-color: #dc3545;
+            color: white;
+        }
+        .screenshot {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .steps {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .code-ref {
+            font-family: 'Consolas', monospace;
+            background-color: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .observations {
+            background-color: #fff3cd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 30px;
+            border-left: 4px solid #ffc107;
+        }
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #0078d4;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Report: User Profile Synchronization</h1>
+
+    <div class="feature-info">
+        <h3>Feature Information</h3>
+        <table>
+            <tr><th>Extension</th><td>DNNPro_ActiveDirectoryAuthentication</td></tr>
+            <tr><th>Feature Name</th><td>User Profile Synchronization</td></tr>
+            <tr><th>Feature Priority</th><td>High</td></tr>
+            <tr><th>Description</th><td>Synchronizes user profile information from Active Directory to DNN user profiles</td></tr>
+            <tr><th>UI Location</th><td>Automatic - occurs during authentication</td></tr>
+            <tr><th>Testing Environment</th><td>http://localhost:8081</td></tr>
+            <tr><th>Test Date</th><td>January 6, 2026</td></tr>
+        </table>
+    </div>
+
+    <h2>Feature Analysis Summary</h2>
+    <div class="test-scenario">
+        <p><strong>Key Finding:</strong> User Profile Synchronization is an <em>automatic</em> feature that occurs during Active Directory authentication. There is no dedicated UI for configuring profile synchronization settings - it happens automatically when enabled.</p>
+
+        <h3>Code Implementation</h3>
+        <p>The profile synchronization logic is implemented in:</p>
+        <ul>
+            <li><span class="code-ref">AuthenticationController.cs:344-437</span> - <code>UpdateDNNUser()</code> method</li>
+            <li><span class="code-ref">UserController.cs:205-210</span> - <code>UpdateDnnUser()</code> method</li>
+        </ul>
+
+        <h3>Synchronized Profile Fields</h3>
+        <table>
+            <tr><th>Field Category</th><th>Fields Synchronized</th></tr>
+            <tr><td>Basic Info</td><td>DisplayName, Email, FirstName, LastName</td></tr>
+            <tr><td>Address</td><td>Street, City, Region, PostalCode, Country</td></tr>
+            <tr><td>Contact</td><td>Telephone, Fax, Cell, Website</td></tr>
+        </table>
+
+        <h3>Empty Value Protection</h3>
+        <p>The code includes protection against overwriting existing DNN profile values with empty AD values. Each field is only updated if the AD value is NOT empty:</p>
+        <div class="code-block">
+if (!(objAuthUser.DisplayName == ""))
+{
+    objReturnUser.DisplayName = objAuthUser.DisplayName;
+}
+        </div>
+    </div>
+
+    <h2>Test Scenarios</h2>
+
+    <!-- Test 1: First Name Synchronization -->
+    <div class="test-scenario">
+        <h3>Test 1: Verify First Name Synchronization from AD <span class="status-badge status-fail">FAIL</span></h3>
+        <p><strong>What was tested:</strong> Verification that first name from Active Directory is synchronized to DNN user profile during AD login.</p>
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Reviewed code implementation in AuthenticationController.cs</li>
+                <li>Verified UpdateDNNUser() method handles FirstName sync (lines 356-359, 371-374)</li>
+                <li>Attempted to test via AD login</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> <span class="fail">FAIL</span> - Cannot verify actual synchronization without a connected Active Directory server. The test environment's AD connection is not functional (IIS Windows Authentication configuration error observed).</p>
+        <p><strong>Code Evidence:</strong> Code correctly implements first name sync at lines 356-359 and 371-374.</p>
+    </div>
+
+    <!-- Test 2: Last Name Synchronization -->
+    <div class="test-scenario">
+        <h3>Test 2: Verify Last Name Synchronization from AD <span class="status-badge status-fail">FAIL</span></h3>
+        <p><strong>What was tested:</strong> Verification that last name from Active Directory is synchronized to DNN user profile during AD login.</p>
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Reviewed code implementation in AuthenticationController.cs</li>
+                <li>Verified UpdateDNNUser() method handles LastName sync (lines 366-369, 376-379)</li>
+                <li>Attempted to test via AD login</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> <span class="fail">FAIL</span> - Cannot verify actual synchronization without a connected Active Directory server.</p>
+        <p><strong>Code Evidence:</strong> Code correctly implements last name sync at lines 366-369 and 376-379.</p>
+    </div>
+
+    <!-- Test 3: Email Synchronization -->
+    <div class="test-scenario">
+        <h3>Test 3: Verify Email Synchronization from AD <span class="status-badge status-fail">FAIL</span></h3>
+        <p><strong>What was tested:</strong> Verification that email from Active Directory is synchronized to DNN user profile during AD login.</p>
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Reviewed code implementation in AuthenticationController.cs</li>
+                <li>Verified UpdateDNNUser() method handles Email sync (lines 351-354)</li>
+                <li>Attempted to test via AD login</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> <span class="fail">FAIL</span> - Cannot verify actual synchronization without a connected Active Directory server.</p>
+        <p><strong>Code Evidence:</strong> Code correctly implements email sync at lines 351-354.</p>
+    </div>
+
+    <!-- Test 4: Display Name Updates -->
+    <div class="test-scenario">
+        <h3>Test 4: Test Display Name Updates <span class="status-badge status-fail">FAIL</span></h3>
+        <p><strong>What was tested:</strong> Verification that display name from Active Directory is synchronized to DNN user profile during AD login.</p>
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Reviewed code implementation in AuthenticationController.cs</li>
+                <li>Verified UpdateDNNUser() method handles DisplayName sync (lines 346-349)</li>
+                <li>Attempted to test via AD login</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> <span class="fail">FAIL</span> - Cannot verify actual synchronization without a connected Active Directory server.</p>
+        <p><strong>Code Evidence:</strong> Code correctly implements display name sync at lines 346-349.</p>
+    </div>
+
+    <!-- Test 5: Address Fields Synchronization -->
+    <div class="test-scenario">
+        <h3>Test 5: Verify Address Fields Synchronization <span class="status-badge status-fail">FAIL</span></h3>
+        <p><strong>What was tested:</strong> Verification that address fields (street, city, region, postal code, country) from Active Directory are synchronized to DNN user profile during AD login.</p>
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Reviewed code implementation in AuthenticationController.cs</li>
+                <li>Verified UpdateDNNUser() method handles address field sync:
+                    <ul>
+                        <li>Street: lines 381-384</li>
+                        <li>City: lines 386-389</li>
+                        <li>Region: lines 391-394</li>
+                        <li>PostalCode: lines 396-399</li>
+                        <li>Country: lines 401-404</li>
+                    </ul>
+                </li>
+                <li>Attempted to test via AD login</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> <span class="fail">FAIL</span> - Cannot verify actual synchronization without a connected Active Directory server.</p>
+        <p><strong>Code Evidence:</strong> Code correctly implements all address field synchronization.</p>
+    </div>
+
+    <!-- Test 6: Phone Number Synchronization -->
+    <div class="test-scenario">
+        <h3>Test 6: Test Phone Number Synchronization <span class="status-badge status-fail">FAIL</span></h3>
+        <p><strong>What was tested:</strong> Verification that phone numbers (telephone, fax, cell) from Active Directory are synchronized to DNN user profile during AD login.</p>
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Reviewed code implementation in AuthenticationController.cs</li>
+                <li>Verified UpdateDNNUser() method handles phone sync:
+                    <ul>
+                        <li>Telephone: lines 406-409</li>
+                        <li>Fax: lines 411-414 and 421-424</li>
+                        <li>Cell: lines 416-419</li>
+                    </ul>
+                </li>
+                <li>Attempted to test via AD login</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> <span class="fail">FAIL</span> - Cannot verify actual synchronization without a connected Active Directory server.</p>
+        <p><strong>Code Evidence:</strong> Code correctly implements all phone field synchronization.</p>
+    </div>
+
+    <!-- Test 7: Empty Value Protection -->
+    <div class="test-scenario">
+        <h3>Test 7: Verify Profile Updates Don't Overwrite with Empty Values <span class="status-badge status-fail">FAIL</span></h3>
+        <p><strong>What was tested:</strong> Verification that existing DNN profile values are NOT overwritten when corresponding AD values are empty.</p>
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Reviewed code implementation in AuthenticationController.cs</li>
+                <li>Verified all field updates check for non-empty values before updating</li>
+                <li>Attempted to test via AD login</li>
+            </ol>
+        </div>
+        <p><strong>Result:</strong> <span class="fail">FAIL</span> - Cannot verify actual behavior without a connected Active Directory server.</p>
+        <p><strong>Code Evidence:</strong> Code correctly implements empty value protection using pattern: <code>if (!(objAuthUser.Property == ""))</code></p>
+    </div>
+
+    <h2>Screenshots</h2>
+
+    <div class="test-scenario">
+        <h3>Login Confirmation (Setup)</h3>
+        <p>Successfully logged in as SuperUser Account:</p>
+        <img src="User Profile Synchronization_step00_login_confirmed.png" alt="Login Confirmed" class="screenshot">
+    </div>
+
+    <div class="test-scenario">
+        <h3>Security > Authentication Settings</h3>
+        <p>Security settings showing Default Authentication Provider dropdown:</p>
+        <img src="User Profile Synchronization_step01_security_auth_settings.png" alt="Security Auth Settings" class="screenshot">
+    </div>
+
+    <div class="test-scenario">
+        <h3>Authentication Providers Available</h3>
+        <p>Dropdown showing available authentication providers including DNNPro_ActiveDirectory:</p>
+        <img src="User Profile Synchronization_step02_auth_providers_dropdown.png" alt="Auth Providers Dropdown" class="screenshot">
+    </div>
+
+    <div class="test-scenario">
+        <h3>Authentication Systems List</h3>
+        <p>Extensions list showing installed Authentication Systems:</p>
+        <img src="User Profile Synchronization_step03_auth_systems_list.png" alt="Auth Systems List" class="screenshot">
+    </div>
+
+    <div class="test-scenario">
+        <h3>AD Authentication Extension Settings</h3>
+        <p>DNNPro_ActiveDirectoryAuthentication extension package information:</p>
+        <img src="User Profile Synchronization_step04_ad_extension_settings.png" alt="AD Extension Settings" class="screenshot">
+    </div>
+
+    <div class="test-scenario">
+        <h3>AD Site Settings</h3>
+        <p>Active Directory authentication site configuration showing enabled features:</p>
+        <img src="User Profile Synchronization_step05_ad_site_settings.png" alt="AD Site Settings" class="screenshot">
+    </div>
+
+    <h2 class="observations">Observations</h2>
+    <div class="observations">
+        <h3>Key Observations</h3>
+        <ol>
+            <li><strong>No Dedicated UI for Profile Sync:</strong> User Profile Synchronization is an automatic feature with no dedicated settings UI. It occurs automatically during AD authentication when AD authentication is enabled.</li>
+
+            <li><strong>Code Implementation Verified:</strong> The synchronization logic exists in <code>AuthenticationController.cs:UpdateDNNUser()</code> method (lines 344-437). The code properly handles:
+                <ul>
+                    <li>All specified profile fields (name, email, address, phone)</li>
+                    <li>Empty value protection (doesn't overwrite with null/empty)</li>
+                </ul>
+            </li>
+
+            <li><strong>AD Configuration Present:</strong> The test environment has AD authentication configured with:
+                <ul>
+                    <li>Root Domain: newdomain.corp</li>
+                    <li>User Name: testuser@testdomain.local</li>
+                    <li>Synchronize Role: Enabled</li>
+                    <li>Auto-create Users: Enabled</li>
+                </ul>
+            </li>
+
+            <li><strong>Testing Limitation:</strong> All test scenarios marked as FAIL because actual profile synchronization cannot be verified without:
+                <ul>
+                    <li>A functional Active Directory server connection</li>
+                    <li>AD user accounts with populated profile attributes</li>
+                    <li>Ability to authenticate via Windows/AD login</li>
+                </ul>
+                The WindowsSignin.aspx page shows a 500.19 IIS configuration error, indicating Windows Authentication is not properly configured at the IIS level.
+            </li>
+
+            <li><strong>Recommendation:</strong> To properly test this feature:
+                <ul>
+                    <li>Configure IIS Windows Authentication correctly</li>
+                    <li>Ensure AD server connectivity</li>
+                    <li>Create test AD users with various profile attributes populated</li>
+                    <li>Test login via AD and verify DNN profile population</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <h2>Test Summary</h2>
+    <table>
+        <tr>
+            <th>Test Scenario</th>
+            <th>Status</th>
+            <th>Reason</th>
+        </tr>
+        <tr>
+            <td>First Name Synchronization</td>
+            <td class="fail">FAIL</td>
+            <td>Cannot verify - no AD connection</td>
+        </tr>
+        <tr>
+            <td>Last Name Synchronization</td>
+            <td class="fail">FAIL</td>
+            <td>Cannot verify - no AD connection</td>
+        </tr>
+        <tr>
+            <td>Email Synchronization</td>
+            <td class="fail">FAIL</td>
+            <td>Cannot verify - no AD connection</td>
+        </tr>
+        <tr>
+            <td>Display Name Updates</td>
+            <td class="fail">FAIL</td>
+            <td>Cannot verify - no AD connection</td>
+        </tr>
+        <tr>
+            <td>Address Fields Synchronization</td>
+            <td class="fail">FAIL</td>
+            <td>Cannot verify - no AD connection</td>
+        </tr>
+        <tr>
+            <td>Phone Number Synchronization</td>
+            <td class="fail">FAIL</td>
+            <td>Cannot verify - no AD connection</td>
+        </tr>
+        <tr>
+            <td>Empty Value Protection</td>
+            <td class="fail">FAIL</td>
+            <td>Cannot verify - no AD connection</td>
+        </tr>
+    </table>
+
+    <p><strong>Total Tests:</strong> 7 | <strong>Passed:</strong> 0 | <strong>Failed:</strong> 7</p>
+    <p><em>Note: All tests failed due to inability to perform actual AD authentication in the test environment. Code review confirms the feature is properly implemented.</em></p>
+
+</body>
+</html>

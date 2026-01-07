@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Mentions - Test Report</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+        }
+        .header p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        .summary {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .summary h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-box {
+            padding: 15px 25px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 100px;
+        }
+        .stat-box.pass {
+            background: #d4edda;
+            color: #155724;
+        }
+        .stat-box.fail {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .stat-box.total {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+        .stat-box .number {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .test-case {
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .test-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .test-header.pass {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+        }
+        .test-header.fail {
+            background: #f8d7da;
+            border-left: 5px solid #dc3545;
+        }
+        .test-header h3 {
+            margin: 0;
+            color: #333;
+        }
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .status-badge.pass {
+            background: #28a745;
+            color: white;
+        }
+        .status-badge.fail {
+            background: #dc3545;
+            color: white;
+        }
+        .test-content {
+            padding: 20px;
+        }
+        .test-content h4 {
+            margin-top: 0;
+            color: #666;
+        }
+        .steps {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .steps li {
+            margin-bottom: 8px;
+        }
+        .screenshots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .screenshot {
+            flex: 1;
+            min-width: 300px;
+            max-width: 100%;
+        }
+        .screenshot img {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .screenshot img:hover {
+            transform: scale(1.02);
+        }
+        .screenshot p {
+            margin: 5px 0 0 0;
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+        }
+        .observations {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .observations h2 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .observations ul {
+            margin-bottom: 0;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>User Mentions - Test Report</h1>
+        <p><strong>Extension:</strong> Evoq.Social.ActivityStream (Module)</p>
+        <p><strong>Feature:</strong> User Mentions - Mention users in posts and comments using @ symbol</p>
+        <p><strong>Priority:</strong> High</p>
+        <p><strong>Test Date:</strong> January 6, 2026</p>
+        <p><strong>UI Location:</strong> Activity Stream > Create Post > @ Mention</p>
+    </div>
+
+    <div class="summary">
+        <h2>Test Summary</h2>
+        <div class="stats">
+            <div class="stat-box total">
+                <div class="number">7</div>
+                <div>Total Tests</div>
+            </div>
+            <div class="stat-box pass">
+                <div class="number">6</div>
+                <div>Passed</div>
+            </div>
+            <div class="stat-box fail">
+                <div class="number">1</div>
+                <div>Failed</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case 1: Single User Mention -->
+    <div class="test-case">
+        <div class="test-header pass">
+            <h3>Test 1: Mention Single User in Post</h3>
+            <span class="status-badge pass">PASS</span>
+        </div>
+        <div class="test-content">
+            <h4>Description</h4>
+            <p>Verify that a user can mention a single user in a post using the @ symbol and that the mention is rendered as a clickable link.</p>
+
+            <h4>Steps Taken</h4>
+            <div class="steps">
+                <ol>
+                    <li>Navigated to Community page with Activity Stream</li>
+                    <li>Clicked on "Tell the world something..." input field</li>
+                    <li>Typed "Hello @Test"</li>
+                    <li>Observed autocomplete dropdown appeared with matching users</li>
+                    <li>Selected "Test Admin" from the dropdown</li>
+                    <li>Clicked Post button to submit</li>
+                    <li>Verified the post appeared with "Test Admin" as a clickable link</li>
+                </ol>
+            </div>
+
+            <h4>Result</h4>
+            <p>The mention was successfully created. When typing "@Test", an autocomplete dropdown appeared showing matching users. After selecting "Test Admin" and posting, the mention appeared as a clickable link pointing to the user's Activity Feed profile.</p>
+
+            <h4>Screenshots</h4>
+            <div class="screenshots">
+                <div class="screenshot">
+                    <img src="User Mentions_step01_autocomplete_dropdown.png" alt="Autocomplete dropdown">
+                    <p>Autocomplete dropdown showing matching users</p>
+                </div>
+                <div class="screenshot">
+                    <img src="User Mentions_step02_user_selected.png" alt="User selected">
+                    <p>User selected from dropdown</p>
+                </div>
+                <div class="screenshot">
+                    <img src="User Mentions_step03_single_mention_posted.png" alt="Single mention posted">
+                    <p>Post with single user mention published</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case 2: Multiple Users Mention -->
+    <div class="test-case">
+        <div class="test-header pass">
+            <h3>Test 2: Mention Multiple Users in Post</h3>
+            <span class="status-badge pass">PASS</span>
+        </div>
+        <div class="test-content">
+            <h4>Description</h4>
+            <p>Verify that a user can mention multiple users in a single post.</p>
+
+            <h4>Steps Taken</h4>
+            <div class="steps">
+                <ol>
+                    <li>Created a new post in the Activity Stream</li>
+                    <li>Typed "Testing multiple mentions: @Test"</li>
+                    <li>Selected "Test User1" from autocomplete dropdown</li>
+                    <li>Continued typing " and @Test"</li>
+                    <li>Selected "Test Editor" from autocomplete dropdown</li>
+                    <li>Posted the message</li>
+                    <li>Verified both mentions appeared as clickable links</li>
+                </ol>
+            </div>
+
+            <h4>Result</h4>
+            <p>Both user mentions were successfully created and rendered as separate clickable links. The post displayed "Testing multiple mentions: Test User1 and Test Editor" with both names as links to their respective profiles.</p>
+
+            <h4>Screenshots</h4>
+            <div class="screenshots">
+                <div class="screenshot">
+                    <img src="User Mentions_step04_multiple_mentions_typed.png" alt="Multiple mentions typed">
+                    <p>Multiple mentions being composed</p>
+                </div>
+                <div class="screenshot">
+                    <img src="User Mentions_step05_multiple_mentions_posted.png" alt="Multiple mentions posted">
+                    <p>Post with multiple user mentions published</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case 3: Mention User in Comment -->
+    <div class="test-case">
+        <div class="test-header pass">
+            <h3>Test 3: Mention User in Comment</h3>
+            <span class="status-badge pass">PASS</span>
+        </div>
+        <div class="test-content">
+            <h4>Description</h4>
+            <p>Verify that a user can mention another user in a comment on a post.</p>
+
+            <h4>Steps Taken</h4>
+            <div class="steps">
+                <ol>
+                    <li>Located a post in the Activity Stream</li>
+                    <li>Clicked the "Comment" button</li>
+                    <li>Typed "Great post @Test" in the comment field</li>
+                    <li>Selected "Test User1" from autocomplete dropdown</li>
+                    <li>Clicked Reply to submit the comment</li>
+                    <li>Verified the mention appeared as a clickable link in the comment</li>
+                </ol>
+            </div>
+
+            <h4>Result</h4>
+            <p>The mention in the comment was successfully created. The comment displayed "Great post Test User1" with "Test User1" as a clickable link to their profile.</p>
+
+            <h4>Screenshots</h4>
+            <div class="screenshots">
+                <div class="screenshot">
+                    <img src="User Mentions_step06_comment_mention_autocomplete.png" alt="Comment mention autocomplete">
+                    <p>Autocomplete dropdown in comment</p>
+                </div>
+                <div class="screenshot">
+                    <img src="User Mentions_step07_comment_mention_posted.png" alt="Comment mention posted">
+                    <p>Comment with user mention published</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case 4: Auto-complete User Mention -->
+    <div class="test-case">
+        <div class="test-header pass">
+            <h3>Test 4: Auto-complete User Mention</h3>
+            <span class="status-badge pass">PASS</span>
+        </div>
+        <div class="test-content">
+            <h4>Description</h4>
+            <p>Verify that typing @ followed by characters triggers an autocomplete dropdown with matching users.</p>
+
+            <h4>Steps Taken</h4>
+            <div class="steps">
+                <ol>
+                    <li>Clicked on the post input field</li>
+                    <li>Typed "@Test"</li>
+                    <li>Observed the autocomplete dropdown behavior</li>
+                    <li>Verified matching users appeared in the dropdown</li>
+                </ol>
+            </div>
+
+            <h4>Result</h4>
+            <p>The autocomplete dropdown appeared immediately when typing "@" followed by characters. The dropdown displayed a list of users whose names matched the typed text (e.g., "Test Admin", "Test User1", "Test Editor", etc.). Users could be selected by clicking on them.</p>
+
+            <h4>Screenshots</h4>
+            <div class="screenshots">
+                <div class="screenshot">
+                    <img src="User Mentions_step01_autocomplete_dropdown.png" alt="Autocomplete dropdown">
+                    <p>Autocomplete dropdown showing matching users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case 5: Mention Non-Existent User -->
+    <div class="test-case">
+        <div class="test-header pass">
+            <h3>Test 5: Mention Non-Existent User</h3>
+            <span class="status-badge pass">PASS</span>
+        </div>
+        <div class="test-content">
+            <h4>Description</h4>
+            <p>Verify the system behavior when attempting to mention a user that does not exist.</p>
+
+            <h4>Steps Taken</h4>
+            <div class="steps">
+                <ol>
+                    <li>Created a new post in the Activity Stream</li>
+                    <li>Typed "Trying to mention @NonExistentUser123"</li>
+                    <li>Observed no autocomplete dropdown appeared (no matching users)</li>
+                    <li>Posted the message</li>
+                    <li>Verified the @NonExistentUser123 text was posted as plain text, not as a link</li>
+                </ol>
+            </div>
+
+            <h4>Result</h4>
+            <p>The system correctly handled the non-existent user case. No autocomplete dropdown appeared when typing a username that doesn't match any users. The text "@NonExistentUser123" was posted as plain text without being converted to a mention link.</p>
+
+            <h4>Screenshots</h4>
+            <div class="screenshots">
+                <div class="screenshot">
+                    <img src="User Mentions_step08_nonexistent_user_no_dropdown.png" alt="No dropdown for non-existent user">
+                    <p>No autocomplete for non-existent user</p>
+                </div>
+                <div class="screenshot">
+                    <img src="User Mentions_step09_nonexistent_posted_as_text.png" alt="Non-existent user posted as text">
+                    <p>Non-existent user mention posted as plain text</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case 6: Click on User Mention Link -->
+    <div class="test-case">
+        <div class="test-header pass">
+            <h3>Test 6: Click on User Mention Link</h3>
+            <span class="status-badge pass">PASS</span>
+        </div>
+        <div class="test-content">
+            <h4>Description</h4>
+            <p>Verify that clicking on a user mention link navigates to the mentioned user's profile.</p>
+
+            <h4>Steps Taken</h4>
+            <div class="steps">
+                <ol>
+                    <li>Located a post with a user mention (Test User1)</li>
+                    <li>Clicked on the "Test User1" link in the post</li>
+                    <li>Observed navigation to the user's profile page</li>
+                    <li>Verified the URL changed to /Activity-Feed/userId/6</li>
+                </ol>
+            </div>
+
+            <h4>Result</h4>
+            <p>Clicking on the user mention link successfully navigated to the mentioned user's Activity Feed profile page. The URL changed to http://localhost:8081/en-us/Activity-Feed/userId/6 showing Test User1's profile with their activity feed, friends count, followers, and points.</p>
+
+            <h4>Screenshots</h4>
+            <div class="screenshots">
+                <div class="screenshot">
+                    <img src="User Mentions_step14_mention_posts_view.png" alt="Posts with mention links">
+                    <p>Posts showing clickable mention links</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Case 7: Verify Mention Notification -->
+    <div class="test-case">
+        <div class="test-header fail">
+            <h3>Test 7: Verify Mention Notification</h3>
+            <span class="status-badge fail">FAIL</span>
+        </div>
+        <div class="test-content">
+            <h4>Description</h4>
+            <p>Verify that mentioned users receive a notification when they are mentioned in a post or comment.</p>
+
+            <h4>Steps Taken</h4>
+            <div class="steps">
+                <ol>
+                    <li>Created posts with user mentions (Test Admin, Test User1, Test Editor)</li>
+                    <li>Attempted to verify notifications</li>
+                    <li>Could not log in as the mentioned users to check their notifications</li>
+                </ol>
+            </div>
+
+            <h4>Result</h4>
+            <p><strong>FAIL - Unable to verify:</strong> Testing notification delivery requires logging in as the mentioned user to check their notifications panel. Since we are logged in as the SuperUser (host) account and do not have credentials for the test users (Test Admin, Test User1, Test Editor), we cannot verify if they received mention notifications.</p>
+
+            <p><strong>Code Evidence:</strong> The code in ActivityStreamServicesController.cs contains the notification logic:</p>
+            <ul>
+                <li>Line 242-243: <code>UserMentionNotificationsController.Instance.SendUserMentionedNotification(socialContentItem, UserInfo, true, viewLinkUrl);</code></li>
+                <li>The notification is triggered after a post with mentions is successfully created</li>
+            </ul>
+
+            <h4>Screenshots</h4>
+            <p>No screenshots available - test could not be completed due to authentication requirements.</p>
+        </div>
+    </div>
+
+    <!-- Observations Section -->
+    <div class="observations">
+        <h2>Observations</h2>
+        <ul>
+            <li><strong>Notification System:</strong> Code review confirms that the <code>SendUserMentionedNotification</code> method is called when a user is mentioned (ActivityStreamServicesController.cs lines 242-243 and 567-568). However, verifying the actual notification delivery requires logging in as the mentioned user, which was not possible during this test session.</li>
+            <li><strong>User Mentions Token System:</strong> The code uses a token system where mentions are stored as <code>[UM_ID:X]</code> tokens (where X is the user ID) and then parsed to HTML links using <code>ParseUserMentionsToHtml</code> method.</li>
+            <li><strong>Autocomplete Implementation:</strong> The autocomplete feature works correctly, filtering users by display name as characters are typed after the @ symbol.</li>
+            <li><strong>Data Attribute:</strong> Mention links include a <code>data-mention</code> attribute containing the user ID, which may be used for additional functionality or styling.</li>
+            <li><strong>Anonymous Users:</strong> All posts in the test environment were created by "Anonymous" because the SuperUser account appears as Anonymous in the Activity Stream context.</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p>Test Report Generated: January 6, 2026</p>
+        <p>Extension: Evoq.Social.ActivityStream | Feature: User Mentions</p>
+    </div>
+</body>
+</html>

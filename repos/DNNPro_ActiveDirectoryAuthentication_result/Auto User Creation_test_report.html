@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto User Creation - Test Report</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #0066cc;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #444;
+        }
+        .feature-info {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .feature-info dt {
+            font-weight: bold;
+            color: #0066cc;
+        }
+        .feature-info dd {
+            margin-left: 0;
+            margin-bottom: 10px;
+        }
+        .test-case {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status-pass {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .status-fail {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .steps {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .screenshot {
+            margin: 15px 0;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            color: #666;
+            font-style: italic;
+            margin-top: 5px;
+        }
+        .observations {
+            background-color: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 4px solid #ffc107;
+        }
+        .observations h2 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .summary {
+            background-color: #d4edda;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .summary h2 {
+            color: #155724;
+            margin-top: 0;
+        }
+        .code-note {
+            background-color: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            padding: 10px 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Auto User Creation - Test Report</h1>
+
+    <div class="feature-info">
+        <dl>
+            <dt>Extension:</dt>
+            <dd>DNNPro_ActiveDirectoryAuthentication</dd>
+
+            <dt>Feature Name:</dt>
+            <dd>Auto User Creation</dd>
+
+            <dt>Description:</dt>
+            <dd>Automatically creates DNN user accounts for authenticated Active Directory users</dd>
+
+            <dt>UI Location:</dt>
+            <dd>Admin > Extensions > Authentication Systems > Active Directory > Settings > Auto Create Users</dd>
+
+            <dt>Feature Priority:</dt>
+            <dd>High</dd>
+
+            <dt>Test Date:</dt>
+            <dd>January 6, 2026</dd>
+        </dl>
+    </div>
+
+    <h2>Code Analysis</h2>
+    <div class="test-case">
+        <p>Before testing, the relevant source code was reviewed:</p>
+        <div class="code-note">
+            <strong>Settings.ascx (line 30-33):</strong> UI checkbox "chkAutoCreate" with label "Do Not Automatically Create Users?"<br><br>
+            <strong>Settings.ascx.cs (line 311):</strong> <code>chkAutoCreate.Checked = config.AutoCreateUsers;</code> - loads setting from database<br><br>
+            <strong>Settings.ascx.cs (line 201):</strong> <code>chkAutoCreate.Checked</code> passed to UpdateConfig when saving<br><br>
+            <strong>AuthenticationController.cs (line 287):</strong> <code>if (!_config.AutoCreateUsers)</code> - Note: The logic is INVERTED. When AutoCreateUsers is FALSE, users ARE automatically created. The UI label "Do Not Automatically Create Users?" aligns with this inverted logic.
+        </div>
+    </div>
+
+    <h2>Test Results</h2>
+
+    <!-- Test 1: Access Settings -->
+    <div class="test-case">
+        <h3>Test 1: Access Auto User Creation Settings</h3>
+        <span class="status-pass">PASS</span>
+
+        <p><strong>What was tested:</strong> Navigate to the Auto User Creation setting in the DNN admin interface.</p>
+
+        <div class="steps">
+            <strong>Steps taken:</strong>
+            <ol>
+                <li>Logged in as host user</li>
+                <li>Navigated to Settings > Extensions</li>
+                <li>Filtered by "Authentication Systems"</li>
+                <li>Clicked Edit on DNNPro_ActiveDirectoryAuthentication</li>
+                <li>Selected "Site Settings" tab to access the configuration</li>
+            </ol>
+        </div>
+
+        <div class="screenshot">
+            <img src="Auto_User_Creation_step02_settings_page.png" alt="Settings Page">
+            <div class="screenshot-caption">Figure 1: Active Directory Authentication settings page showing the "Do Not Automatically Create Users?" checkbox</div>
+        </div>
+
+        <p><strong>Result:</strong> Successfully navigated to the Auto User Creation setting. The checkbox labeled "Do Not Automatically Create Users?" is visible and accessible.</p>
+    </div>
+
+    <!-- Test 2: Disable Auto Creation -->
+    <div class="test-case">
+        <h3>Test 2: Disable Auto User Creation</h3>
+        <span class="status-pass">PASS</span>
+
+        <p><strong>What was tested:</strong> Check the "Do Not Automatically Create Users?" checkbox to disable automatic user creation.</p>
+
+        <div class="steps">
+            <strong>Steps taken:</strong>
+            <ol>
+                <li>Located the "Do Not Automatically Create Users?" checkbox (initially unchecked)</li>
+                <li>Clicked to check the checkbox</li>
+                <li>Clicked "Update Authentication Settings" to save</li>
+                <li>Verified the setting persisted after page reload</li>
+            </ol>
+        </div>
+
+        <div class="screenshot">
+            <img src="Auto_User_Creation_step03_checkbox_checked.png" alt="Checkbox Checked">
+            <div class="screenshot-caption">Figure 2: Checkbox checked (auto-creation disabled)</div>
+        </div>
+
+        <div class="screenshot">
+            <img src="Auto_User_Creation_step04_settings_saved.png" alt="Settings Saved">
+            <div class="screenshot-caption">Figure 3: Settings saved - checkbox remains checked, AD status messages displayed (failures expected without real AD)</div>
+        </div>
+
+        <p><strong>Result:</strong> The checkbox was successfully checked and the setting persisted after saving. The AD connection status messages show failures as expected (no real Active Directory in test environment).</p>
+    </div>
+
+    <!-- Test 3: Enable Auto Creation -->
+    <div class="test-case">
+        <h3>Test 3: Enable Auto User Creation</h3>
+        <span class="status-pass">PASS</span>
+
+        <p><strong>What was tested:</strong> Uncheck the "Do Not Automatically Create Users?" checkbox to enable automatic user creation.</p>
+
+        <div class="steps">
+            <strong>Steps taken:</strong>
+            <ol>
+                <li>Located the currently checked "Do Not Automatically Create Users?" checkbox</li>
+                <li>Clicked to uncheck the checkbox</li>
+                <li>Clicked "Update Authentication Settings" to save</li>
+                <li>Verified the setting persisted after save</li>
+            </ol>
+        </div>
+
+        <div class="screenshot">
+            <img src="Auto_User_Creation_step05_checkbox_unchecked.png" alt="Checkbox Unchecked">
+            <div class="screenshot-caption">Figure 4: Checkbox unchecked (auto-creation enabled)</div>
+        </div>
+
+        <div class="screenshot">
+            <img src="Auto_User_Creation_step06_enabled_saved.png" alt="Enabled State Saved">
+            <div class="screenshot-caption">Figure 5: Settings saved - checkbox remains unchecked (auto-creation enabled)</div>
+        </div>
+
+        <p><strong>Result:</strong> The checkbox was successfully unchecked and the setting persisted after saving. Auto user creation is now enabled.</p>
+    </div>
+
+    <!-- Test 4: Setting Persistence -->
+    <div class="test-case">
+        <h3>Test 4: Setting Persistence Verification</h3>
+        <span class="status-pass">PASS</span>
+
+        <p><strong>What was tested:</strong> Verify that both enabled and disabled states persist correctly after saving.</p>
+
+        <div class="steps">
+            <strong>Steps taken:</strong>
+            <ol>
+                <li>Tested disabled state (checkbox checked) - saved and verified persistence</li>
+                <li>Tested enabled state (checkbox unchecked) - saved and verified persistence</li>
+                <li>Confirmed settings update correctly in both directions</li>
+            </ol>
+        </div>
+
+        <p><strong>Result:</strong> Both states (enabled and disabled) persist correctly after saving. The toggle functionality works bidirectionally.</p>
+    </div>
+
+    <!-- Observations Section -->
+    <div class="observations">
+        <h2>Observations</h2>
+        <p>The following test scenarios from the suggested list could not be tested via UI because they require a real Active Directory environment:</p>
+        <ul>
+            <li><strong>Login with AD user not in DNN:</strong> Requires actual AD authentication - cannot test without AD infrastructure</li>
+            <li><strong>Verify user account is created:</strong> Requires successful AD login to trigger auto-creation logic</li>
+            <li><strong>Verify proper user profile population:</strong> Requires AD user attributes to be mapped to DNN profile fields</li>
+            <li><strong>Test user creation across multiple portals:</strong> Requires AD authentication across different portal contexts</li>
+            <li><strong>Verify deleted users can be re-created:</strong> Requires full AD authentication workflow to test re-creation scenario</li>
+        </ul>
+        <p><strong>Note:</strong> The AD connection status messages in the UI show "FAIL" for Global Catalog, Root Domain, and LDAP access. This is expected behavior in a test environment without Active Directory infrastructure.</p>
+        <p><strong>Code Observation:</strong> The logic in AuthenticationController.cs uses inverted boolean logic - when <code>AutoCreateUsers</code> is <code>false</code>, users ARE automatically created. The UI label "Do Not Automatically Create Users?" correctly reflects this inverted logic, making the UI behavior intuitive despite the code implementation detail.</p>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary">
+        <h2>Test Summary</h2>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="background-color: #c3e6cb;">
+                <th style="padding: 10px; text-align: left; border: 1px solid #b1dfbb;">Test Case</th>
+                <th style="padding: 10px; text-align: center; border: 1px solid #b1dfbb;">Status</th>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">Access Auto User Creation Settings</td>
+                <td style="padding: 10px; text-align: center; border: 1px solid #ddd;"><span class="status-pass">PASS</span></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">Disable Auto User Creation (check checkbox)</td>
+                <td style="padding: 10px; text-align: center; border: 1px solid #ddd;"><span class="status-pass">PASS</span></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">Enable Auto User Creation (uncheck checkbox)</td>
+                <td style="padding: 10px; text-align: center; border: 1px solid #ddd;"><span class="status-pass">PASS</span></td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;">Setting Persistence Verification</td>
+                <td style="padding: 10px; text-align: center; border: 1px solid #ddd;"><span class="status-pass">PASS</span></td>
+            </tr>
+        </table>
+        <p style="margin-top: 15px;"><strong>Overall Result:</strong> All UI-testable scenarios passed. The Auto User Creation setting can be toggled on/off and persists correctly. AD-dependent scenarios require real Active Directory infrastructure to test.</p>
+    </div>
+
+</body>
+</html>

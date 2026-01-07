@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Template in Page Editor - Test Report</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #0078d4;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #444;
+            margin-top: 30px;
+        }
+        h3 {
+            color: #555;
+        }
+        .feature-info {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-case {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-pass {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-fail {
+            background-color: #dc3545;
+            color: white;
+        }
+        .screenshot {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .steps {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .steps ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .issue {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+            padding: 10px 15px;
+            margin: 10px 0;
+        }
+        .observations {
+            background: #e7f3ff;
+            border-left: 4px solid #0078d4;
+            padding: 15px;
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .summary h2 {
+            color: white;
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Report: Edit Template in Page Editor</h1>
+
+    <div class="summary">
+        <h2>Test Summary</h2>
+        <table style="color: white; border-color: rgba(255,255,255,0.3);">
+            <tr>
+                <th style="background: rgba(255,255,255,0.1); color: white;">Total Tests</th>
+                <th style="background: rgba(255,255,255,0.1); color: white;">Passed</th>
+                <th style="background: rgba(255,255,255,0.1); color: white;">Failed</th>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>0</td>
+                <td>5</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="feature-info">
+        <h2>Feature Information</h2>
+        <table>
+            <tr><th>Feature Name</th><td>Edit Template in Page Editor</td></tr>
+            <tr><th>Extension</th><td>Evoq.PersonaBar.Templates (PersonaBar Module)</td></tr>
+            <tr><th>Repository</th><td>Dnn.AdminExperience.Evoq.Basic</td></tr>
+            <tr><th>Priority</th><td>High</td></tr>
+            <tr><th>Description</th><td>Switch to edit mode to modify template content and layout in the page editor</td></tr>
+            <tr><th>UI Location</th><td>Admin > Manage > Templates > Template Item > Edit button</td></tr>
+            <tr><th>Relevant Files</th><td>Services/TemplatesController.cs, admin/personaBar/scripts/templatesHierarchy.js</td></tr>
+            <tr><th>Test Date</th><td>2026-01-06</td></tr>
+        </table>
+    </div>
+
+    <div class="feature-info">
+        <h2>Code Analysis</h2>
+        <p>The Edit Template feature works as follows based on code review:</p>
+        <ul>
+            <li><strong>TemplatesController.cs (Lines 224-239)</strong>: The <code>EditModeForPage</code> API endpoint:
+                <ul>
+                    <li>Sets a "LastPageId" cookie with format <code>{PortalId}:{TabId}</code></li>
+                    <li>If user is not in Edit mode, updates personalization profile to set <code>Usability:UserMode{PortalId}</code> = "EDIT"</li>
+                    <li>Returns success response</li>
+                </ul>
+            </li>
+            <li><strong>templatesHierarchy.js (Lines 252-268)</strong>: The <code>_editPageClickHandler</code> function:
+                <ul>
+                    <li>Calls <code>_enterEditMode(pageData)</code></li>
+                    <li>Posts to <code>EditModeForPage?id={pageId}</code> API</li>
+                    <li>Closes PersonaBar and redirects to template page URL</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <h2>Test Results</h2>
+
+    <!-- Test Case 1 -->
+    <div class="test-case">
+        <h3>Test 1: Click edit to enter edit mode</h3>
+        <span class="status status-fail">FAIL</span>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Logged in as SuperUser (host/Pass123456)</li>
+                <li>Navigated to Admin > Manage > Templates</li>
+                <li>Attempted to view template list</li>
+            </ol>
+        </div>
+
+        <div class="error">
+            <strong>Error:</strong> GetPageTemplates API returned HTTP 500 Internal Server Error. Templates list could not be loaded, preventing access to the Edit button.
+        </div>
+
+        <p><strong>Expected:</strong> Template list should display with Edit buttons visible for each template.</p>
+        <p><strong>Actual:</strong> Templates page shows empty content area due to server error.</p>
+
+        <p><strong>Screenshot - Templates Page (Empty):</strong></p>
+        <img src="Edit_Template_in_Page_Editor_step01_templates_page.png" alt="Templates page with empty content" class="screenshot">
+    </div>
+
+    <!-- Test Case 2 -->
+    <div class="test-case">
+        <h3>Test 2: Verify redirect to template page in edit mode</h3>
+        <span class="status status-fail">FAIL</span>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Attempted to access Templates page multiple times</li>
+                <li>API consistently returned 500 error</li>
+                <li>Unable to click Edit button as templates were not visible</li>
+            </ol>
+        </div>
+
+        <div class="error">
+            <strong>Error:</strong> Cannot verify redirect functionality because templates cannot be loaded. The GetPageTemplates API consistently returns HTTP 500 Internal Server Error.
+        </div>
+
+        <p><strong>Expected:</strong> Clicking Edit should redirect to the template page in edit mode.</p>
+        <p><strong>Actual:</strong> Could not test - templates not accessible due to server error.</p>
+    </div>
+
+    <!-- Test Case 3 -->
+    <div class="test-case">
+        <h3>Test 3: Set last page cookie</h3>
+        <span class="status status-fail">FAIL</span>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Code analysis confirms EditModeForPage API sets "LastPageId" cookie</li>
+                <li>Cookie format: {PortalId}:{TabId}</li>
+                <li>Could not verify actual cookie setting due to inability to invoke the API through UI</li>
+            </ol>
+        </div>
+
+        <div class="error">
+            <strong>Error:</strong> Cannot verify cookie functionality because the EditModeForPage API cannot be invoked through the UI - templates are not accessible.
+        </div>
+
+        <p><strong>Expected:</strong> LastPageId cookie should be set when entering edit mode.</p>
+        <p><strong>Actual:</strong> Could not test - templates not accessible due to server error.</p>
+    </div>
+
+    <!-- Test Case 4 -->
+    <div class="test-case">
+        <h3>Test 4: Update user personalization for edit mode</h3>
+        <span class="status status-fail">FAIL</span>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Code analysis confirms EditModeForPage API updates personalization:</li>
+                <li>Sets "Usability:UserMode{PortalId}" = "EDIT" in user profile</li>
+                <li>Could not verify actual personalization update due to inability to invoke the API through UI</li>
+            </ol>
+        </div>
+
+        <div class="error">
+            <strong>Error:</strong> Cannot verify personalization update because the EditModeForPage API cannot be invoked through the UI - templates are not accessible.
+        </div>
+
+        <p><strong>Expected:</strong> User personalization should be updated to Edit mode.</p>
+        <p><strong>Actual:</strong> Could not test - templates not accessible due to server error.</p>
+    </div>
+
+    <!-- Test Case 5 -->
+    <div class="test-case">
+        <h3>Test 5: Handle edit for templates with special characters in URL</h3>
+        <span class="status status-fail">FAIL</span>
+
+        <div class="steps">
+            <strong>Steps Taken:</strong>
+            <ol>
+                <li>Attempted to create a template from "Test & &lt;Special&gt; Page!" page</li>
+                <li>Tried using "Save Page Template" from Pages panel</li>
+                <li>SavePageTemplate API returned HTTP 400 Bad Request</li>
+            </ol>
+        </div>
+
+        <div class="error">
+            <strong>Error:</strong> Cannot test special character handling because:
+            <ul>
+                <li>GetPageTemplates API returns 500 error - cannot see existing templates</li>
+                <li>SavePageTemplate API returns 400 error - cannot create new templates</li>
+            </ul>
+        </div>
+
+        <p><strong>Screenshot - Save Template Dialog:</strong></p>
+        <img src="Edit_Template_in_Page_Editor_step02_save_template_dialog.png" alt="Save template dialog" class="screenshot">
+
+        <p><strong>Expected:</strong> Templates with special characters in URL should be editable.</p>
+        <p><strong>Actual:</strong> Could not test - template creation fails with 400 error and listing fails with 500 error.</p>
+    </div>
+
+    <h2>Additional Screenshots</h2>
+
+    <div class="test-case">
+        <h3>Setup Verification - Login Confirmed</h3>
+        <p>Successfully logged in as SuperUser Account and accessed Persona Bar.</p>
+        <img src="Edit_Template_in_Page_Editor_step00_login_confirmed.png" alt="Login confirmed" class="screenshot">
+    </div>
+
+    <div class="test-case">
+        <h3>Pages Panel - Where Templates are Saved From</h3>
+        <p>The Pages panel where "Save Page Template" option is available.</p>
+        <img src="Edit_Template_in_Page_Editor_step03_pages_panel.png" alt="Pages panel" class="screenshot">
+    </div>
+
+    <div class="observations">
+        <h2>Observations</h2>
+        <ul>
+            <li><strong>Server-Side Issues:</strong> The Templates feature has critical server-side issues:
+                <ul>
+                    <li><code>GetPageTemplates</code> API returns HTTP 500 Internal Server Error</li>
+                    <li><code>SavePageTemplate</code> API returns HTTP 400 Bad Request</li>
+                </ul>
+            </li>
+            <li><strong>Code Exists:</strong> The Edit Template functionality code exists in both:
+                <ul>
+                    <li><code>TemplatesController.cs</code> - Backend API endpoint <code>EditModeForPage</code></li>
+                    <li><code>templatesHierarchy.js</code> - Frontend handler <code>_editPageClickHandler</code></li>
+                </ul>
+            </li>
+            <li><strong>Feature Design:</strong> Based on code analysis, the Edit button should:
+                <ol>
+                    <li>Call <code>EditModeForPage?id={templateId}</code> API</li>
+                    <li>Set "LastPageId" cookie</li>
+                    <li>Update user personalization to Edit mode</li>
+                    <li>Close PersonaBar and redirect to template page URL</li>
+                </ol>
+            </li>
+            <li><strong>Root Cause:</strong> The 500 errors on GetPageTemplates suggest a backend configuration or database issue preventing template retrieval. The 400 error on SavePageTemplate suggests validation or configuration issues with template creation.</li>
+            <li><strong>Recommendation:</strong> Investigate server logs for the root cause of the 500 and 400 errors. Check database connectivity, configuration settings, and ensure the Templates module is properly installed and configured.</li>
+        </ul>
+    </div>
+
+    <div class="feature-info">
+        <h2>Conclusion</h2>
+        <p><strong>Overall Status: <span class="status status-fail">FAIL</span></strong></p>
+        <p>The "Edit Template in Page Editor" feature could not be tested due to critical server-side errors affecting the entire Templates module. Both viewing existing templates (500 error) and creating new templates (400 error) fail, completely blocking access to the Edit functionality.</p>
+        <p>The code implementation appears correct based on analysis, but the server-side issues prevent the feature from being accessible through the UI.</p>
+    </div>
+
+</body>
+</html>

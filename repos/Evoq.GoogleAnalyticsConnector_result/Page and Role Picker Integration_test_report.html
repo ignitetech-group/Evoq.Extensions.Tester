@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Report: Page and Role Picker Integration</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: white;
+            margin: 0 0 10px 0;
+        }
+        .header p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+        .info-box {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .info-box h3 {
+            margin-top: 0;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .observation {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .observation h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .screenshot {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .code-analysis {
+            background: #e8f4fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .code-analysis h3 {
+            color: #1565C0;
+            margin-top: 0;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #667eea;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .status-na {
+            color: #6c757d;
+            font-weight: bold;
+        }
+        .finding {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .step-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Test Report: Page and Role Picker Integration</h1>
+        <p><strong>Extension:</strong> Evoq.GoogleAnalyticsConnector</p>
+        <p><strong>Feature Priority:</strong> Medium</p>
+        <p><strong>Test Date:</strong> January 6, 2026</p>
+        <p><strong>UI Location:</strong> Admin > Settings > Connectors > Google Analytics > Advanced Settings > Rules</p>
+    </div>
+
+    <div class="info-box">
+        <h3>Feature Description</h3>
+        <p>Integration with DNN page picker and role selector for configuring tracking rules. This feature allows administrators to create segmentation rules that apply Google Analytics tracking to specific pages and/or user roles.</p>
+
+        <h4>Planned Test Scenarios</h4>
+        <ul>
+            <li>Load page picker dropdown</li>
+            <li>Search for specific pages</li>
+            <li>Select 'Any Page' option</li>
+            <li>Load all available roles</li>
+            <li>Select specific role</li>
+            <li>Select 'All Users' role</li>
+            <li>Test page tree navigation</li>
+            <li>Verify role sorting (alphabetical)</li>
+        </ul>
+    </div>
+
+    <div class="observation">
+        <h3>Critical Observation: Feature UI Not Accessible</h3>
+        <p><strong>The Page and Role Picker Integration feature exists in the codebase but is NOT accessible via the current UI.</strong></p>
+        <p>The website has a "Google Analytics 4" connector installed which uses a simplified interface that does not include the "Advanced Settings" panel where the Page and Role Picker functionality resides.</p>
+        <p>Per testing philosophy: "Feature exists in code but not visible in UI? Do NOT create a test for it. Add a note in the report under 'Observations'."</p>
+    </div>
+
+    <div class="code-analysis">
+        <h3>Code Analysis: Feature Implementation Exists</h3>
+        <p>The following code files confirm the Page and Role Picker feature is fully implemented:</p>
+
+        <h4>1. ServicesController.cs</h4>
+        <p>Contains API endpoints for page picker and role loading:</p>
+        <pre>
+// GetPagePickerOptions() - Returns dropdown configuration
+dropdownOptions.Services.GetTreeMethod = "ItemListService/GetPages";
+dropdownOptions.Services.SearchTreeMethod = "ItemListService/SearchPages";
+dropdownOptions.ItemList.FirstItem = new SerializableKeyValuePair("", "Any Page");
+
+// GetRoles() - Returns roles sorted alphabetically
+data.Add(new { RoleId = glbRoleAllUsers, RoleName = "All Users" });
+foreach (RoleInfo role in RoleController.Instance.GetRoles(PortalId).OrderBy(r => r.RoleName))
+        </pre>
+
+        <h4>2. connector.js</h4>
+        <p>Contains UI logic for page picker and role dropdown:</p>
+        <pre>
+// Creates page picker using DNN DropDownList component
+var dd = new dnn.DropDownList(null, pagePickerOptions);
+pagesDropDowns.push(dd);
+
+// Creates role dropdown from roleData array
+advancedViewModel.roleData.push(allRoles[i]);
+        </pre>
+
+        <h4>3. advanced.htm</h4>
+        <p>Contains the Advanced Settings UI template with page/role pickers:</p>
+        <pre>
+&lt;div class="pagesDropDown -1"&gt;&lt;/div&gt;
+&lt;select id="gaAddRolesDropDown" data-bind="options: roleData,
+    optionsText: 'RoleName', optionsValue: 'RoleId'"&gt;&lt;/select&gt;
+        </pre>
+
+        <h4>4. connector.htm</h4>
+        <p>Contains the Advanced Settings link (not rendered in GA4 connector):</p>
+        <pre>
+&lt;a class="advancedSetting" href="#" data-bind="attr: {title: resx.AdvancedSettings}"&gt;&lt;/a&gt;
+        </pre>
+    </div>
+
+    <div class="step-container">
+        <h3>Investigation Steps</h3>
+
+        <h4>Step 1: Login and Navigate to Connectors</h4>
+        <p>Logged in as SuperUser Account and navigated to Settings > Connectors.</p>
+        <img src="Page_and_Role_Picker_Integration_step00_login_confirmed.png" alt="Login Confirmed" class="screenshot">
+
+        <h4>Step 2: Access Google Analytics 4 Connector</h4>
+        <p>Located and clicked Edit on the "Google Analytics 4" connector.</p>
+        <img src="Page_and_Role_Picker_Integration_step01_ga_settings.png" alt="GA Settings" class="screenshot">
+
+        <h4>Step 3: Examined GA4 Connector Interface</h4>
+        <p>The GA4 connector shows only two fields:</p>
+        <ul>
+            <li>Measurement ID (configured as G-TESTFINAL123)</li>
+            <li>Track for Administrators (checkbox)</li>
+        </ul>
+        <p><strong>No "Advanced Settings" link or icon is present.</strong></p>
+        <img src="Page_and_Role_Picker_Integration_step02_ga4_settings_expanded.png" alt="GA4 Settings Expanded" class="screenshot">
+
+        <h4>Step 4: Tested with Universal Analytics ID</h4>
+        <p>Changed Measurement ID to "UA-12345678-1" (Universal Analytics format) to test if Advanced Settings would appear. The interface remained unchanged - still no Advanced Settings available.</p>
+        <img src="Page_and_Role_Picker_Integration_step03_ua_tracking_id.png" alt="UA Tracking ID Test" class="screenshot">
+    </div>
+
+    <div class="info-box">
+        <h3>Test Results Summary</h3>
+        <table>
+            <tr>
+                <th>Test Scenario</th>
+                <th>Status</th>
+                <th>Notes</th>
+            </tr>
+            <tr>
+                <td>Load page picker dropdown</td>
+                <td class="status-na">N/A - UI Not Available</td>
+                <td>Advanced Settings panel not accessible in GA4 connector</td>
+            </tr>
+            <tr>
+                <td>Search for specific pages</td>
+                <td class="status-na">N/A - UI Not Available</td>
+                <td>Advanced Settings panel not accessible in GA4 connector</td>
+            </tr>
+            <tr>
+                <td>Select 'Any Page' option</td>
+                <td class="status-na">N/A - UI Not Available</td>
+                <td>Advanced Settings panel not accessible in GA4 connector</td>
+            </tr>
+            <tr>
+                <td>Load all available roles</td>
+                <td class="status-na">N/A - UI Not Available</td>
+                <td>Advanced Settings panel not accessible in GA4 connector</td>
+            </tr>
+            <tr>
+                <td>Select specific role</td>
+                <td class="status-na">N/A - UI Not Available</td>
+                <td>Advanced Settings panel not accessible in GA4 connector</td>
+            </tr>
+            <tr>
+                <td>Select 'All Users' role</td>
+                <td class="status-na">N/A - UI Not Available</td>
+                <td>Advanced Settings panel not accessible in GA4 connector</td>
+            </tr>
+            <tr>
+                <td>Test page tree navigation</td>
+                <td class="status-na">N/A - UI Not Available</td>
+                <td>Advanced Settings panel not accessible in GA4 connector</td>
+            </tr>
+            <tr>
+                <td>Verify role sorting (alphabetical)</td>
+                <td class="status-na">N/A - UI Not Available</td>
+                <td>Code confirms OrderBy(r => r.RoleName) but cannot verify in UI</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="observation">
+        <h3>Observations</h3>
+        <ol>
+            <li><strong>Code suggests Page and Role Picker feature exists</strong>, but no UI element found to test it. The feature code is present in:
+                <ul>
+                    <li><code>ServicesController.cs</code> - GetPagePickerOptions() and GetRoles() APIs</li>
+                    <li><code>connector.js</code> - Page picker and role dropdown logic</li>
+                    <li><code>advanced.htm</code> - Advanced Settings UI template</li>
+                    <li><code>connector.htm</code> - Contains advancedSetting link element</li>
+                </ul>
+            </li>
+            <li><strong>The "Google Analytics 4" connector</strong> appears to use a different, simplified UI template that does not include the Advanced Settings functionality.</li>
+            <li><strong>Changing from GA4 (G-) to Universal Analytics (UA-) tracking ID</strong> did not change the connector interface or enable Advanced Settings.</li>
+            <li><strong>The original "Google Analytics" connector</strong> (with full Advanced Settings support) does not appear to be installed or available in the current environment.</li>
+        </ol>
+    </div>
+
+    <div class="finding">
+        <h3>Recommendations</h3>
+        <ol>
+            <li><strong>Verify connector installation:</strong> Check if the original Google Analytics connector (with Advanced Settings) needs to be installed separately from the GA4 connector.</li>
+            <li><strong>Review connector configuration:</strong> The Display Name in code is "Google Analytics" but UI shows "Google Analytics 4" - investigate if there's a configuration mismatch.</li>
+            <li><strong>Test with original connector:</strong> If the original Google Analytics connector can be installed, re-run these tests to verify Page and Role Picker functionality.</li>
+        </ol>
+    </div>
+
+    <footer style="text-align: center; margin-top: 40px; color: #666;">
+        <p>Test Report Generated: January 6, 2026</p>
+        <p>Tester: Claude Code (Automated Testing)</p>
+    </footer>
+</body>
+</html>
