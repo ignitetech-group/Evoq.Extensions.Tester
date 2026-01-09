@@ -313,19 +313,54 @@ This verification step ensures test evidence is valid and complete!
 - Remember: Screenshots without verification are INVALID evidence
 
 ## Output
-Create an HTML report in the folder: `{extension_name}_result/`
+Create a JSON file in the folder: `{extension_name}_result/`
 
-The HTML should include:
-1. Feature name and description
-2. Each test scenario with:
-   - What was tested
-   - Steps taken
-   - Screenshots (using `<img>` tags - copy from .playwright-mcp/ to {extension_name}_result/)
-   - **PASS** or **FAIL** status (no other status allowed)
-   - Any issues found
-3. **Observations section** (at the end): For anything discovered but not testable via UI (e.g., "Code suggests feature X exists but no UI element found")
+Copy all screenshots from `.playwright-mcp/` to `{extension_name}_result/` so they are stored alongside the JSON.
 
-Name the HTML file: `{sanitized_feature_name}_test_report.html`
+The JSON MUST follow this EXACT structure:
+
+```json
+{{{{
+  "metadata": {{{{
+    "extension_name": "{extension_name}",
+    "extension_type": "{extension_type}",
+    "feature_name": "{feature_name}",
+    "feature_description": "{feature_description}",
+    "feature_priority": "{feature_priority}",
+    "test_date": "<ISO 8601 timestamp>",
+    "tester": "Claude"
+  }}}},
+  "test_scenarios": [
+    {{{{
+      "scenario_name": "<name of the test scenario>",
+      "status": "PASS or FAIL",
+      "steps": [
+        {{{{
+          "step_number": 1,
+          "action": "<what action was taken>",
+          "expected": "<what was expected to happen>",
+          "actual": "<what actually happened>",
+          "screenshot": "<filename.png>"
+        }}}}
+      ],
+      "issues": ["<any issues found, empty array if none>"]
+    }}}}
+  ],
+  "observations": [
+    "<anything discovered but not testable via UI, e.g., 'Code suggests feature X exists but no UI element found'>"
+  ],
+  "summary": {{{{
+    "total_scenarios": <number>,
+    "passed": <number>,
+    "failed": <number>,
+    "pass_rate": "<percentage as string, e.g., '80%'>"
+  }}}}
+}}}}
+```
+
+Name the JSON file: `{sanitized_feature_name}_test_result.json`
+
+IMPORTANT: The JSON file must be valid JSON. Do not include markdown formatting, code fences, or any text outside the JSON object in the file.
 
 ## Summary Checklist
 - [ ] Browser resized to 1280x720
@@ -334,7 +369,8 @@ Name the HTML file: `{sanitized_feature_name}_test_report.html`
 - [ ] Each test scenario executed independently (PASS/FAIL only)
 - [ ] Screenshot taken for each step
 - [ ] Each screenshot VERIFIED using Read tool
-- [ ] HTML report created with all screenshots and Observations section
+- [ ] Screenshots copied to {extension_name}_result/ folder
+- [ ] JSON result file created with all test data and Observations
 
 ULTRATHINK about the test approach before starting!
 """

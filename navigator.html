@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evoq Extensions Test Navigator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --bg-card: #16161f;
+            --border-color: #2a2a3a;
+            --text-primary: #e8e8ed;
+            --text-secondary: #9898a8;
+            --text-muted: #5a5a6a;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-teal: #14b8a6;
+            --priority-high: #ef4444;
+            --priority-medium: #f59e0b;
+            --priority-low: #6b7280;
+            --shadow-glow: 0 0 40px rgba(139, 92, 246, 0.15);
+            --status-approved: #22c55e;
+            --status-retry: #f59e0b;
+            --status-pending: #6b7280;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(20, 184, 166, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .container { max-width: 1600px; margin: 0 auto; padding: 2rem; }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 2rem;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-glow);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #e8e8ed 0%, #8b5cf6 50%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .subtitle { color: var(--text-secondary); font-size: 1.1rem; font-weight: 300; }
+        .folder-name { font-family: 'JetBrains Mono', monospace; color: var(--accent-teal); }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .stat { text-align: center; }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-purple);
+        }
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .search-box { flex: 1; min-width: 300px; position: relative; }
+        .search-box input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+        }
+        
+        .filter-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .filter-pill {
+            padding: 0.5rem 1rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            color: var(--text-secondary);
+        }
+        .filter-pill:hover { border-color: var(--accent-purple); color: var(--text-primary); }
+        .filter-pill.active { background: var(--accent-purple); border-color: var(--accent-purple); color: white; }
+        
+        .refresh-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--accent-teal);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .refresh-btn:hover { background: #0d9488; transform: translateY(-1px); }
+        .refresh-btn.loading { opacity: 0.7; pointer-events: none; }
+        .refresh-btn.loading .refresh-icon { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        
+        .repository { margin-bottom: 2.5rem; }
+        .repo-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .repo-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent-teal);
+        }
+        .repo-count {
+            background: var(--bg-tertiary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .type-group { margin-bottom: 1.5rem; }
+        .type-header {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .type-icon { font-size: 1.2rem; }
+        
+        .extensions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1rem;
+        }
+        
+        .extension-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .extension-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-purple);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-header {
+            padding: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .card-info { flex: 1; }
+        .extension-name {
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 0.25rem;
+            word-break: break-word;
+        }
+        .extension-desc { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.5rem; }
+        .card-meta { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        
+        .badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .badge-priority { background: rgba(255, 255, 255, 0.1); }
+        .badge-priority.high { color: var(--priority-high); border: 1px solid var(--priority-high); }
+        .badge-priority.medium { color: var(--priority-medium); border: 1px solid var(--priority-medium); }
+        .badge-priority.low { color: var(--priority-low); border: 1px solid var(--priority-low); }
+        .badge-count { background: var(--bg-tertiary); color: var(--text-muted); }
+        
+        .expand-icon { font-size: 1.5rem; color: var(--text-muted); transition: transform 0.3s ease; }
+        .extension-card.expanded .expand-icon { transform: rotate(180deg); }
+        
+        .card-content { display: none; border-top: 1px solid var(--border-color); }
+        .extension-card.expanded .card-content { display: block; }
+        
+        .test-item { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); }
+        .test-item:last-child { border-bottom: none; }
+        .test-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+        .test-name { font-weight: 500; font-size: 0.95rem; }
+        .test-actions { display: flex; gap: 0.5rem; }
+        .test-link {
+            padding: 0.4rem 0.8rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+        }
+        .test-link:hover { background: var(--accent-purple); color: white; }
+        
+        /* Status buttons and indicators */
+        .status-buttons { display: flex; gap: 0.5rem; margin-left: auto; }
+        .status-btn {
+            padding: 0.35rem 0.7rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+        }
+        .status-btn:hover { transform: scale(1.05); }
+        .status-btn.approve:hover, .status-btn.approve.active { 
+            background: var(--status-approved); 
+            border-color: var(--status-approved); 
+            color: white; 
+        }
+        .status-btn.retry:hover, .status-btn.retry.active { 
+            background: var(--status-retry); 
+            border-color: var(--status-retry); 
+            color: white; 
+        }
+        
+        .test-status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 0.5rem;
+        }
+        .test-status-indicator.approved { background: rgba(34, 197, 94, 0.2); color: var(--status-approved); }
+        .test-status-indicator.retry { background: rgba(245, 158, 11, 0.2); color: var(--status-retry); }
+        
+        /* Review summary panel */
+        .review-panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .review-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .review-panel-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .review-panel-actions { display: flex; gap: 0.5rem; }
+        .review-panel-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-family: 'Outfit', sans-serif;
+        }
+        .review-panel-btn:hover { background: var(--accent-purple); color: white; border-color: var(--accent-purple); }
+        .review-panel-btn.danger:hover { background: var(--priority-high); border-color: var(--priority-high); }
+        
+        .review-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .review-stat {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .review-stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .review-stat-value.approved { color: var(--status-approved); }
+        .review-stat-value.retry { color: var(--status-retry); }
+        .review-stat-value.pending { color: var(--status-pending); }
+        .review-stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+        
+        .review-progress {
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+        }
+        .review-progress-bar {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+        .review-progress-bar.approved { background: var(--status-approved); }
+        .review-progress-bar.retry { background: var(--status-retry); }
+        
+        .review-list { margin-top: 1rem; }
+        .review-list-header {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .review-list-tab {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            border: none;
+            font-family: 'Outfit', sans-serif;
+        }
+        .review-list-tab:hover { color: var(--text-primary); }
+        .review-list-tab.active { background: var(--accent-purple); color: white; }
+        .review-list-content {
+            max-height: 300px;
+            overflow-y: auto;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+        .review-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            transition: background 0.2s ease;
+        }
+        .review-list-item:hover { background: var(--bg-card); }
+        .review-list-item-name { 
+            font-family: 'JetBrains Mono', monospace; 
+            color: var(--text-secondary);
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .review-list-item-ext {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+        .review-list-empty {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+        
+        /* Card status indicator */
+        .card-status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .card-status-dot.all-approved { background: var(--status-approved); }
+        .card-status-dot.has-retry { background: var(--status-retry); }
+        .card-status-dot.partial { background: linear-gradient(135deg, var(--status-approved) 50%, var(--status-pending) 50%); }
+        
+        .screenshots { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .screenshot-thumb {
+            width: 60px;
+            height: 45px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg-tertiary);
+        }
+        .screenshot-thumb:hover { border-color: var(--accent-blue); transform: scale(1.1); }
+        .screenshot-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .more-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 45px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 2rem;
+        }
+        .lightbox.active { display: flex; }
+        .lightbox-content { max-width: 95%; max-height: 85vh; position: relative; }
+        .lightbox-content img { max-width: 100%; max-height: 85vh; border-radius: 12px; box-shadow: 0 0 60px rgba(0, 0, 0, 0.5); }
+        .lightbox-close {
+            position: absolute;
+            top: 1rem; right: 1rem;
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--text-primary);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+        }
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 1rem;
+            pointer-events: none;
+        }
+        .lightbox-nav button {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            transition: all 0.2s ease;
+            pointer-events: auto;
+        }
+        .lightbox-nav button:hover { background: var(--accent-purple); border-color: var(--accent-purple); }
+        .lightbox-caption {
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* Report Modal */
+        .report-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            padding: 1.5rem;
+        }
+        .report-modal.active { display: flex; flex-direction: column; }
+        .report-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: var(--bg-secondary);
+            border-radius: 12px 12px 0 0;
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+        }
+        .report-modal-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: calc(100% - 120px);
+        }
+        .report-modal-actions { display: flex; gap: 0.5rem; }
+        .report-modal-btn {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+        .report-modal-btn:hover { background: var(--accent-purple); color: white; border-color: var(--accent-purple); }
+        .report-modal-btn.close-btn { background: var(--priority-high); border-color: var(--priority-high); color: white; }
+        .report-modal-btn.close-btn:hover { background: #dc2626; }
+        .report-modal-content {
+            flex: 1;
+            background: white;
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            border-top: none;
+        }
+        .report-modal-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .loading-state { text-align: center; padding: 4rem 2rem; color: var(--text-secondary); }
+        .loading-spinner { font-size: 3rem; animation: spin 1s linear infinite; display: inline-block; margin-bottom: 1rem; }
+        
+        .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--priority-high);
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+        .error-state h3 { margin-bottom: 1rem; }
+        .error-state code {
+            display: block;
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            h1 { font-size: 1.8rem; }
+            .stats-bar { gap: 1.5rem; }
+            .stat-value { font-size: 1.5rem; }
+            .extensions-grid { grid-template-columns: 1fr; }
+            .controls { flex-direction: column; }
+            .search-box { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Evoq Extensions Test Navigator</h1>
+            <p class="subtitle">Browsing: <span class="folder-name" id="folder-name">...</span></p>
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-value" id="stat-extensions">-</div>
+                    <div class="stat-label">Extensions</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="stat-reports">-</div>
+                    <div class="stat-label">Test Reports</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="stat-screenshots">-</div>
+                    <div class="stat-label">Screenshots</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search extensions...">
+            </div>
+            <div class="filter-pills">
+                <span class="filter-pill active" data-priority="all">All</span>
+                <span class="filter-pill" data-priority="High">🔴 High</span>
+                <span class="filter-pill" data-priority="Medium">🟡 Medium</span>
+                <span class="filter-pill" data-priority="Low">⚪ Low</span>
+                <span style="width: 1px; background: var(--border-color); margin: 0 0.5rem;"></span>
+                <span class="filter-pill" data-status="pending">⏳ Pending</span>
+                <span class="filter-pill" data-status="retry">🔄 Retry</span>
+                <span class="filter-pill" data-status="approved">✅ Approved</span>
+            </div>
+            <button class="refresh-btn" onclick="loadData()">
+                <span class="refresh-icon">🔄</span> Refresh
+            </button>
+        </div>
+        
+        <!-- Review Summary Panel -->
+        <div class="review-panel" id="reviewPanel">
+            <div class="review-panel-header">
+                <span class="review-panel-title">📋 Review Progress</span>
+                <div class="review-panel-actions">
+                    <button class="review-panel-btn" onclick="exportReviewStatus()">📥 Export</button>
+                    <button class="review-panel-btn" onclick="importReviewStatus()">📤 Import</button>
+                    <button class="review-panel-btn danger" onclick="clearAllStatus()">🗑️ Clear All</button>
+                </div>
+            </div>
+            <div class="review-stats">
+                <div class="review-stat">
+                    <div class="review-stat-value approved" id="review-approved">0</div>
+                    <div class="review-stat-label">✅ Approved</div>
+                </div>
+                <div class="review-stat">
+                    <div class="review-stat-value retry" id="review-retry">0</div>
+                    <div class="review-stat-label">🔄 Needs Retry</div>
+                </div>
+                <div class="review-stat">
+                    <div class="review-stat-value pending" id="review-pending">0</div>
+                    <div class="review-stat-label">⏳ Pending</div>
+                </div>
+            </div>
+            <div class="review-progress">
+                <div class="review-progress-bar approved" id="progress-approved" style="width: 0%"></div>
+                <div class="review-progress-bar retry" id="progress-retry" style="width: 0%"></div>
+            </div>
+            <div class="review-list">
+                <div class="review-list-header">
+                    <button class="review-list-tab active" data-list="retry" onclick="showReviewList('retry')">🔄 Needs Retry</button>
+                    <button class="review-list-tab" data-list="approved" onclick="showReviewList('approved')">✅ Approved</button>
+                </div>
+                <div class="review-list-content" id="review-list-content">
+                    <div class="review-list-empty">No items to display</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="content">
+            <div class="loading-state">
+                <div class="loading-spinner">⚡</div>
+                <p>Loading test results...</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">×</button>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+        </div>
+        <div class="lightbox-nav">
+            <button onclick="navigateLightbox(-1)">←</button>
+            <button onclick="navigateLightbox(1)">→</button>
+        </div>
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+    
+    <div class="report-modal" id="reportModal">
+        <div class="report-modal-header">
+            <span class="report-modal-title" id="reportModalTitle">Test Report</span>
+            <div class="report-modal-actions">
+                <button class="report-modal-btn" onclick="openReportNewTab()">↗ Open in Tab</button>
+                <button class="report-modal-btn close-btn" onclick="closeReportModal()">✕ Close</button>
+            </div>
+        </div>
+        <div class="report-modal-content">
+            <iframe id="reportIframe" src=""></iframe>
+        </div>
+    </div>
+    
+    <script>
+        // Extension metadata from CSV
+        const EXTENSIONS_META = {
+            'DotNetNuke.Professional': { repository: 'Dnn.Evoq.Basic', type: 'Core Library', description: 'DotNetNuke Professional', priority: 'N/A' },
+            'Evoq.Library': { repository: 'Dnn.Evoq.Basic', type: 'Core Library', description: 'Evoq Library', priority: 'N/A' },
+            'Evoq.Content.Library': { repository: 'Dnn.Evoq.Basic', type: 'Core Library', description: 'Evoq Content Library', priority: 'N/A' },
+            'Evoq.Social.Mechanics': { repository: 'Dnn.Evoq.Basic', type: 'Core Library', description: 'Mechanics', priority: 'N/A' },
+            'Evoq.PortableService.Library': { repository: 'Dnn.Evoq.Basic', type: 'Core Library', description: 'Evoq.PortableService.Library', priority: 'N/A' },
+            'DotNetNuke.Telerik.Web.Design': { repository: 'Dnn.Evoq.Basic', type: 'Core Library', description: 'DotNetNuke Telerik Web Design Components', priority: 'N/A' },
+            'DNN_HTML': { repository: 'Dnn.Evoq.Basic', type: 'Module', description: 'HTML Pro', priority: 'High' },
+            'ContentLayout': { repository: 'Dnn.Evoq.Basic', type: 'Module', description: 'ContentLayout', priority: 'High' },
+            'DotNetNuke.Professional.SearchCrawler': { repository: 'Dnn.Evoq.Basic', type: 'Module', description: 'Search Crawler Admin', priority: 'High' },
+            'Evoq.GoogleAnalyticsConnector': { repository: 'Dnn.Evoq.Basic', type: 'Connector', description: 'Evoq Google Analytics Connector', priority: 'High' },
+            'Evoq.AmazonS3Connector': { repository: 'Dnn.Evoq.Basic', type: 'Connector', description: 'Evoq AmazonS3 Connector', priority: 'Low' },
+            'Evoq.UNCConnector': { repository: 'Dnn.Evoq.Basic', type: 'Connector', description: 'Evoq UNC Connector', priority: 'Low' },
+            'Evoq.KayakoMessengerConnector': { repository: 'Dnn.Evoq.Basic', type: 'Connector', description: 'Kayako Messenger Connector', priority: 'Medium' },
+            'DNNPro_ActiveDirectoryAuthentication': { repository: 'Dnn.Evoq.Basic', type: 'Authentication Provider', description: 'Active Directory Authentication', priority: 'High' },
+            'DotNetNuke.Professional.FolderProviders': { repository: 'Dnn.Evoq.Basic', type: 'Folder Provider', description: 'Professional Folder Providers (S3, Azure, UNC)', priority: 'Medium' },
+            'DotNetNuke.Providers.IFilterServiceClientProvider': { repository: 'Dnn.Evoq.Basic', type: 'Other Provider', description: 'IFilter Service Client Provider', priority: 'Medium' },
+            'Provider.BigSitemapProvider': { repository: 'Dnn.Evoq.Basic', type: 'Other Provider', description: 'Big Sitemap Provider', priority: 'Low' },
+            'd3': { repository: 'Dnn.Evoq.Basic', type: 'JavaScript Library', description: 'D3 JavaScript Library', priority: 'Low' },
+            'Cavalier': { repository: 'Dnn.Evoq.Basic', type: 'Skin', description: 'Cavalier Skin', priority: 'Low' },
+            'DotNetNuke.Enterprise': { repository: 'Dnn.Evoq.Content', type: 'Core Library', description: 'DotNetNuke Enterprise', priority: 'N/A' },
+            'DotNetNuke.Enterprise.ContentPersonalization': { repository: 'Dnn.Evoq.Content', type: 'Core Library', description: 'Content Personalization', priority: 'N/A' },
+            'Evoq.Revisions': { repository: 'Dnn.Evoq.Content', type: 'Core Library', description: 'Revisions API', priority: 'N/A' },
+            'Publisher': { repository: 'Dnn.Evoq.Content', type: 'Module', description: 'Publisher (Blog/Content Publishing)', priority: 'High' },
+            'DotNetNuke.Enterprise.HubspotForms': { repository: 'Dnn.Evoq.Content', type: 'Module', description: 'HubSpot Forms', priority: 'Low' },
+            'DotNetNuke.Enterprise.MarketoForms': { repository: 'Dnn.Evoq.Content', type: 'Module', description: 'Marketo Forms', priority: 'Low' },
+            'Evoq.BoxConnector': { repository: 'Dnn.Evoq.Content', type: 'Connector', description: 'Evoq Box Connector', priority: 'Low' },
+            'Evoq.DisqusConnector': { repository: 'Dnn.Evoq.Content', type: 'Connector', description: 'Evoq Disqus Connector', priority: 'Low' },
+            'Evoq.DropboxConnector': { repository: 'Dnn.Evoq.Content', type: 'Connector', description: 'Evoq Dropbox Connector', priority: 'Low' },
+            'Evoq.Content.GoogleAnalyticsConnector': { repository: 'Dnn.Evoq.Content', type: 'Connector', description: 'Evoq Content Google Analytics Connector', priority: 'High' },
+            'Evoq.GoogleTagManagerConnector': { repository: 'Dnn.Evoq.Content', type: 'Connector', description: 'Evoq Google Tag Manager Connector', priority: 'High' },
+            'Evoq.HubspotConnector': { repository: 'Dnn.Evoq.Content', type: 'Connector', description: 'Evoq HubSpot Connector', priority: 'Low' },
+            'Evoq.MarketoConnector': { repository: 'Dnn.Evoq.Content', type: 'Connector', description: 'Evoq Marketo Connector', priority: 'Low' },
+            'Evoq.OptimizelyConnector': { repository: 'Dnn.Evoq.Content', type: 'Connector', description: 'Optimizely Connector', priority: 'Low' },
+            'DotNetNuke.Enterprise.FolderProviders': { repository: 'Dnn.Evoq.Content', type: 'Folder Provider', description: 'Enterprise Folder Providers (Box, Dropbox)', priority: 'Low' },
+            'Evoq.Social.SocialLibrary': { repository: 'Dnn.Evoq.Social', type: 'Core Library', description: 'SocialLibrary API', priority: 'N/A' },
+            'Evoq.Social.SocialSolution': { repository: 'Dnn.Evoq.Social', type: 'Core Library', description: 'SocialSolution Library', priority: 'N/A' },
+            'Evoq.Social.Analytics': { repository: 'Dnn.Evoq.Social', type: 'Core Library', description: 'Analytics Library', priority: 'N/A' },
+            'Evoq.Social.Revisions': { repository: 'Dnn.Evoq.Social', type: 'Core Library', description: 'Social Revisions', priority: 'N/A' },
+            'Evoq.Social.Activities': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Activities (User Badges)', priority: 'Medium' },
+            'Evoq.Social.ActivityStream': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Activity Stream', priority: 'High' },
+            'Evoq.Social.Answers': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Answers (Q&A)', priority: 'Medium' },
+            'Evoq.Social.Blogs': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Blogs', priority: 'Medium' },
+            'Evoq.Social.Discussions': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Discussions (Forums)', priority: 'Medium' },
+            'Evoq.Social.Ideas': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Ideas', priority: 'Medium' },
+            'Evoq.Social.Wiki': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Wiki', priority: 'High' },
+            'Evoq.Social.ProfileDashboard': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Profile Dashboard (Community Dashboard)', priority: 'Medium' },
+            'Evoq.Social.Leaderboard': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Leaderboard', priority: 'Medium' },
+            'Evoq.Social.MechanicsAdmin': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Mechanics Management', priority: 'Medium' },
+            'DotNetNuke.Professional.GameCenter': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'GameCenter', priority: 'Low' },
+            'Evoq.Social.GroupSpaces': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Group Spaces', priority: 'Medium' },
+            'Evoq.Social.GroupDirectory': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Group Directory', priority: 'Medium' },
+            'Evoq.Social.MyStatus': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'My Status', priority: 'Medium' },
+            'Evoq.Social.RelatedContent': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Related Content', priority: 'Medium' },
+            'Evoq.Social.SocialEvents': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Social Events', priority: 'Medium' },
+            'Evoq.Social.SocialShare': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Social Share', priority: 'Medium' },
+            'Evoq.Social.Boards': { repository: 'Dnn.Evoq.Social', type: 'Module', description: 'Boards', priority: 'Medium' },
+            'Evoq.Social.FacebookConnector': { repository: 'Dnn.Evoq.Social', type: 'Connector', description: 'Facebook Connector', priority: 'Low' },
+            'Evoq.Social.LinkedInConnector': { repository: 'Dnn.Evoq.Social', type: 'Connector', description: 'LinkedIn Connector', priority: 'Low' },
+            'Evoq.Social.TwitterConnector': { repository: 'Dnn.Evoq.Social', type: 'Connector', description: 'Twitter Connector', priority: 'Low' },
+            'Evoq.Engage.ZendeskConnector': { repository: 'Dnn.Evoq.Social', type: 'Connector', description: 'Zendesk Connector', priority: 'Low' },
+            'Evoq.Engage.ZendeskTickets': { repository: 'Dnn.Evoq.Social', type: 'Support Module', description: 'Zendesk Tickets', priority: 'Low' },
+            'Evoq.PersonaBar.Library': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'Core Library', description: 'Evoq PersonaBar Library', priority: 'N/A' },
+            'Evoq.PersonaBar.UI': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'Evoq PersonaBar UI', priority: 'High' },
+            'Evoq.PersonaBar.AccountSettings': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'Account Settings', priority: 'High' },
+            'Evoq.PersonaBar.Assets': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'Assets Management', priority: 'High' },
+            'Evoq.PersonaBar.PageAnalytics': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'Page Analytics', priority: 'Medium' },
+            'Evoq.PersonaBar.Pages': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'Pages Management (Enhanced)', priority: 'High' },
+            'Evoq.PersonaBar.Recyclebin': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'Recycle Bin (Enhanced)', priority: 'Medium' },
+            'Evoq.PersonaBar.Servers': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'Servers Management', priority: 'Medium' },
+            'Evoq.PersonaBar.Sites': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'Sites Management', priority: 'Medium' },
+            'Evoq.PersonaBar.SiteSettings': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'Site Settings', priority: 'High' },
+            'Evoq.PersonaBar.Templates': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'Templates Management', priority: 'High' },
+            'Evoq.PersonaBar.UrlManagement': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'URL Management', priority: 'High' },
+            'Evoq.PersonaBar.Users': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'Users Management (Enhanced)', priority: 'High' },
+            'Evoq.PersonaBar.Workflow': { repository: 'Dnn.AdminExperience.Evoq.Basic', type: 'PersonaBar Module', description: 'Workflow Management', priority: 'High' },
+            'Evoq.PersonaBar.CommunityAnalytics': { repository: 'Dnn.AdminExperience.Evoq.Engage', type: 'PersonaBar Module', description: 'Community Analytics', priority: 'High' },
+            'Evoq.PersonaBar.CommunitySettings': { repository: 'Dnn.AdminExperience.Evoq.Engage', type: 'PersonaBar Module', description: 'Community Settings', priority: 'High' },
+            'Evoq.PersonaBar.Gamification': { repository: 'Dnn.AdminExperience.Evoq.Engage', type: 'PersonaBar Module', description: 'Gamification Management', priority: 'Medium' }
+        };
+        
+        const TYPE_ICONS = {
+            'Module': '📦', 'Connector': '🔌', 'PersonaBar Module': '🎛️', 'Core Library': '📚',
+            'Folder Provider': '📁', 'Authentication Provider': '🔐', 'Other Provider': '⚙️',
+            'Skin': '🎨', 'JavaScript Library': '📜', 'Support Module': '🛠️'
+        };
+        
+        let currentData = null;
+        let outputFolder = '';
+        let currentLightboxImages = [];
+        let currentLightboxIndex = 0;
+        
+        function loadData() {
+            const btn = document.querySelector('.refresh-btn');
+            btn.classList.add('loading');
+            
+            const oldScript = document.getElementById('manifest-script');
+            if (oldScript) oldScript.remove();
+            
+            const script = document.createElement('script');
+            script.id = 'manifest-script';
+            script.src = 'manifest.js?t=' + Date.now();
+            
+            script.onload = () => {
+                btn.classList.remove('loading');
+                if (window.MANIFEST_DATA) {
+                    currentData = window.MANIFEST_DATA;
+                    outputFolder = currentData.outputFolder || 'Output 1';
+                    document.getElementById('folder-name').textContent = outputFolder;
+                    renderContent(currentData);
+                } else {
+                    showError();
+                }
+            };
+            
+            script.onerror = () => {
+                btn.classList.remove('loading');
+                showError();
+            };
+            
+            document.head.appendChild(script);
+        }
+        
+        function showError() {
+            document.getElementById('content').innerHTML = `
+                <div class="error-state">
+                    <h3>⚠️ Could not load manifest.js</h3>
+                    <p>Run this command to generate it:</p>
+                    <code>python3 update_manifest.py</code>
+                    <p style="margin-top: 1rem; color: var(--text-secondary);">Then refresh this page.</p>
+                </div>
+            `;
+        }
+        
+        function renderContent(data) {
+            document.getElementById('stat-extensions').textContent = data.stats.extensions;
+            document.getElementById('stat-reports').textContent = data.stats.reports;
+            document.getElementById('stat-screenshots').textContent = data.stats.screenshots;
+            
+            const grouped = {};
+            for (const [extName, result] of Object.entries(data.results)) {
+                const meta = EXTENSIONS_META[extName] || {
+                    repository: 'Unknown', type: 'Unknown', description: extName, priority: 'N/A'
+                };
+                if (!grouped[meta.repository]) grouped[meta.repository] = {};
+                if (!grouped[meta.repository][meta.type]) grouped[meta.repository][meta.type] = [];
+                grouped[meta.repository][meta.type].push({ name: extName, meta, result });
+            }
+            
+            const priorityOrder = { 'High': 0, 'Medium': 1, 'Low': 2, 'N/A': 3 };
+            for (const repo of Object.keys(grouped)) {
+                for (const type of Object.keys(grouped[repo])) {
+                    grouped[repo][type].sort((a, b) => {
+                        const pa = priorityOrder[a.meta.priority] ?? 4;
+                        const pb = priorityOrder[b.meta.priority] ?? 4;
+                        return pa - pb || a.name.localeCompare(b.name);
+                    });
+                }
+            }
+            
+            let html = '';
+            for (const repo of Object.keys(grouped).sort()) {
+                const repoData = grouped[repo];
+                const totalCount = Object.values(repoData).reduce((sum, arr) => sum + arr.length, 0);
+                
+                html += `<div class="repository" data-repo="${repo}">
+                    <div class="repo-header">
+                        <span class="repo-name">${repo}</span>
+                        <span class="repo-count">${totalCount} extensions</span>
+                    </div>`;
+                
+                for (const type of Object.keys(repoData).sort()) {
+                    const extensions = repoData[type];
+                    const icon = TYPE_ICONS[type] || '📄';
+                    
+                    html += `<div class="type-group">
+                        <div class="type-header"><span class="type-icon">${icon}</span><span>${type}</span></div>
+                        <div class="extensions-grid">`;
+                    
+                    for (const ext of extensions) {
+                        html += renderExtensionCard(ext);
+                    }
+                    
+                    html += `</div></div>`;
+                }
+                html += '</div>';
+            }
+            
+            document.getElementById('content').innerHTML = html;
+            filterExtensions();
+            updateReviewPanel();
+        }
+        
+        // ==================== STATUS MANAGEMENT ====================
+        const STORAGE_KEY = 'evoq_test_status';
+        let currentReviewTab = 'retry';
+        
+        function generateTestId(extName, testName) {
+            return `${extName}::${testName}`.replace(/[^a-zA-Z0-9:]/g, '_');
+        }
+        
+        function getAllStatus() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            } catch {
+                return {};
+            }
+        }
+        
+        function saveAllStatus(status) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(status));
+        }
+        
+        function getTestStatus(testId) {
+            return getAllStatus()[testId]?.status || null;
+        }
+        
+        function setTestStatus(testId, status, extName, testName) {
+            const allStatus = getAllStatus();
+            
+            if (allStatus[testId]?.status === status) {
+                // Toggle off if clicking the same status
+                delete allStatus[testId];
+            } else {
+                allStatus[testId] = { status, extName, testName, timestamp: Date.now() };
+            }
+            
+            saveAllStatus(allStatus);
+            updateTestItemUI(testId);
+            updateReviewPanel();
+        }
+        
+        function updateTestItemUI(testId) {
+            const testItem = document.querySelector(`[data-test-id="${testId}"]`);
+            if (!testItem) return;
+            
+            const status = getTestStatus(testId);
+            const approveBtn = testItem.querySelector('.status-btn.approve');
+            const retryBtn = testItem.querySelector('.status-btn.retry');
+            const testNameEl = testItem.querySelector('.test-name');
+            
+            // Update buttons
+            approveBtn.classList.toggle('active', status === 'approved');
+            retryBtn.classList.toggle('active', status === 'retry');
+            
+            // Update status indicator
+            let indicator = testNameEl.querySelector('.test-status-indicator');
+            if (status) {
+                if (!indicator) {
+                    indicator = document.createElement('span');
+                    indicator.className = 'test-status-indicator';
+                    testNameEl.appendChild(indicator);
+                }
+                indicator.className = `test-status-indicator ${status}`;
+                indicator.textContent = status === 'approved' ? '✅ Approved' : '🔄 Retry';
+            } else if (indicator) {
+                indicator.remove();
+            }
+            
+            // Update card status dot
+            const card = testItem.closest('.extension-card');
+            if (card) {
+                const testIds = Array.from(card.querySelectorAll('[data-test-id]')).map(el => el.dataset.testId);
+                const cardStatus = getCardStatus(testIds);
+                let dot = card.querySelector('.card-status-dot');
+                const extNameEl = card.querySelector('.extension-name');
+                
+                if (cardStatus) {
+                    if (!dot) {
+                        dot = document.createElement('span');
+                        dot.className = 'card-status-dot';
+                        extNameEl.insertBefore(dot, extNameEl.firstChild);
+                    }
+                    dot.className = `card-status-dot ${cardStatus}`;
+                } else if (dot) {
+                    dot.remove();
+                }
+            }
+        }
+        
+        function getCardStatus(testIds) {
+            const statuses = testIds.map(id => getTestStatus(id));
+            const hasApproved = statuses.some(s => s === 'approved');
+            const hasRetry = statuses.some(s => s === 'retry');
+            const hasPending = statuses.some(s => !s);
+            
+            if (hasRetry) return 'has-retry';
+            if (hasApproved && hasPending) return 'partial';
+            if (hasApproved && !hasPending) return 'all-approved';
+            return null;
+        }
+        
+        function updateReviewPanel() {
+            const allStatus = getAllStatus();
+            const entries = Object.entries(allStatus);
+            
+            const approved = entries.filter(([_, v]) => v.status === 'approved');
+            const retry = entries.filter(([_, v]) => v.status === 'retry');
+            
+            // Count total tests from current data
+            let totalTests = 0;
+            if (currentData?.results) {
+                for (const result of Object.values(currentData.results)) {
+                    totalTests += Object.keys(result.tests).length;
+                }
+            }
+            
+            const pending = totalTests - approved.length - retry.length;
+            
+            // Update stats
+            document.getElementById('review-approved').textContent = approved.length;
+            document.getElementById('review-retry').textContent = retry.length;
+            document.getElementById('review-pending').textContent = Math.max(0, pending);
+            
+            // Update progress bar
+            const total = Math.max(totalTests, 1);
+            document.getElementById('progress-approved').style.width = `${(approved.length / total) * 100}%`;
+            document.getElementById('progress-retry').style.width = `${(retry.length / total) * 100}%`;
+            
+            // Update list
+            showReviewList(currentReviewTab);
+        }
+        
+        function showReviewList(listType) {
+            currentReviewTab = listType;
+            
+            // Update tabs
+            document.querySelectorAll('.review-list-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.list === listType);
+            });
+            
+            const allStatus = getAllStatus();
+            const items = Object.entries(allStatus)
+                .filter(([_, v]) => v.status === listType)
+                .sort((a, b) => b[1].timestamp - a[1].timestamp);
+            
+            const container = document.getElementById('review-list-content');
+            
+            if (items.length === 0) {
+                container.innerHTML = `<div class="review-list-empty">No ${listType === 'retry' ? 'items needing retry' : 'approved items'}</div>`;
+                return;
+            }
+            
+            container.innerHTML = items.map(([id, data]) => `
+                <div class="review-list-item" onclick="scrollToTest('${id}')">
+                    <span class="review-list-item-name">${data.testName}</span>
+                    <span class="review-list-item-ext">${data.extName}</span>
+                </div>
+            `).join('');
+        }
+        
+        function scrollToTest(testId) {
+            const testItem = document.querySelector(`[data-test-id="${testId}"]`);
+            if (!testItem) return;
+            
+            // Expand the card if collapsed
+            const card = testItem.closest('.extension-card');
+            if (card && !card.classList.contains('expanded')) {
+                card.classList.add('expanded');
+            }
+            
+            // Scroll to the test item
+            testItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            testItem.style.background = 'rgba(139, 92, 246, 0.2)';
+            setTimeout(() => { testItem.style.background = ''; }, 2000);
+        }
+        
+        function clearAllStatus() {
+            if (confirm('Are you sure you want to clear all review status? This cannot be undone.')) {
+                localStorage.removeItem(STORAGE_KEY);
+                loadData(); // Re-render everything
+            }
+        }
+        
+        function exportReviewStatus() {
+            const allStatus = getAllStatus();
+            const entries = Object.entries(allStatus);
+            
+            // Organize by status type
+            const approved = entries
+                .filter(([_, v]) => v.status === 'approved')
+                .map(([_, v]) => ({ extension: v.extName, test: v.testName }));
+            
+            const needsRetry = entries
+                .filter(([_, v]) => v.status === 'retry')
+                .map(([_, v]) => ({ extension: v.extName, test: v.testName }));
+            
+            // Group by extension for cleaner output
+            const groupByExtension = (items) => {
+                const grouped = {};
+                items.forEach(({ extension, test }) => {
+                    if (!grouped[extension]) grouped[extension] = [];
+                    grouped[extension].push(test);
+                });
+                return grouped;
+            };
+            
+            const exportData = {
+                exportDate: new Date().toISOString(),
+                outputFolder: outputFolder,
+                summary: {
+                    totalApproved: approved.length,
+                    totalNeedsRetry: needsRetry.length
+                },
+                approved: groupByExtension(approved),
+                needsRetry: groupByExtension(needsRetry),
+                // Also include raw data for re-import
+                _rawStatus: allStatus
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `evoq-review-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        function importReviewStatus() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        const current = getAllStatus();
+                        // Check if it's the new format with _rawStatus
+                        const importData = data._rawStatus || data;
+                        // Merge imported data with current
+                        saveAllStatus({ ...current, ...importData });
+                        loadData(); // Re-render everything
+                        alert('Review status imported successfully!');
+                    } catch (err) {
+                        alert('Failed to import: Invalid JSON file');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+        // ==================== END STATUS MANAGEMENT ====================
+        
+        function renderExtensionCard(ext) {
+            const { name, meta, result } = ext;
+            const priorityClass = ['high', 'medium', 'low'].includes(meta.priority.toLowerCase()) ? meta.priority.toLowerCase() : 'na';
+            
+            let testsHtml = '';
+            let testIds = [];
+            
+            for (const [testName, testData] of Object.entries(result.tests)) {
+                const testId = generateTestId(name, testName);
+                testIds.push(testId);
+                const currentStatus = getTestStatus(testId);
+                
+                const screenshotsHtml = testData.screenshots.slice(0, 8).map((img, idx) => `
+                    <div class="screenshot-thumb" onclick="openLightbox('${result.folder}', ${JSON.stringify(testData.screenshots)}, ${idx})">
+                        <img src="${outputFolder}/${result.folder}/${img}" alt="${img}" loading="lazy">
+                    </div>
+                `).join('');
+                
+                const moreCount = testData.screenshots.length - 8;
+                const moreHtml = moreCount > 0 ? `<div class="more-badge">+${moreCount}</div>` : '';
+                
+                const reportLink = testData.report 
+                    ? `<button class="test-link" onclick="event.stopPropagation(); openReportModal('${outputFolder}/${result.folder}/${testData.report}', '${testName.replace(/'/g, "\\'")}')">📄 Report</button>`
+                    : '';
+                
+                const statusIndicator = currentStatus 
+                    ? `<span class="test-status-indicator ${currentStatus}">${currentStatus === 'approved' ? '✅ Approved' : '🔄 Retry'}</span>`
+                    : '';
+                
+                const approveActive = currentStatus === 'approved' ? 'active' : '';
+                const retryActive = currentStatus === 'retry' ? 'active' : '';
+                
+                testsHtml += `<div class="test-item" data-test-id="${testId}">
+                    <div class="test-header">
+                        <span class="test-name">${testName}${statusIndicator}</span>
+                        <div class="test-actions">
+                            ${reportLink}
+                            <div class="status-buttons">
+                                <button class="status-btn approve ${approveActive}" onclick="event.stopPropagation(); setTestStatus('${testId}', 'approved', '${name.replace(/'/g, "\\'")}', '${testName.replace(/'/g, "\\'")}')">✅</button>
+                                <button class="status-btn retry ${retryActive}" onclick="event.stopPropagation(); setTestStatus('${testId}', 'retry', '${name.replace(/'/g, "\\'")}', '${testName.replace(/'/g, "\\'")}')">🔄</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="screenshots">${screenshotsHtml}${moreHtml}</div>
+                </div>`;
+            }
+            
+            // Calculate card status
+            const cardStatus = getCardStatus(testIds);
+            const statusDot = cardStatus ? `<span class="card-status-dot ${cardStatus}"></span>` : '';
+            
+            return `<div class="extension-card" data-name="${name.toLowerCase()}" data-priority="${meta.priority}" data-ext-name="${name}">
+                <div class="card-header" onclick="toggleCard(this)">
+                    <div class="card-info">
+                        <div class="extension-name">${statusDot}${name}</div>
+                        <div class="extension-desc">${meta.description}</div>
+                        <div class="card-meta">
+                            <span class="badge badge-priority ${priorityClass}">${meta.priority}</span>
+                            <span class="badge badge-count">📸 ${result.total_screenshots}</span>
+                            <span class="badge badge-count">📄 ${result.total_reports}</span>
+                        </div>
+                    </div>
+                    <span class="expand-icon">▼</span>
+                </div>
+                <div class="card-content">${testsHtml}</div>
+            </div>`;
+        }
+        
+        function toggleCard(header) {
+            header.closest('.extension-card').classList.toggle('expanded');
+        }
+        
+        function openLightbox(folder, images, index) {
+            currentLightboxImages = images.map(img => `${outputFolder}/${folder}/${img}`);
+            currentLightboxIndex = index;
+            updateLightbox();
+            document.getElementById('lightbox').classList.add('active');
+        }
+        
+        function updateLightbox() {
+            document.getElementById('lightbox-img').src = currentLightboxImages[currentLightboxIndex];
+            document.getElementById('lightbox-caption').textContent = 
+                `${currentLightboxIndex + 1} / ${currentLightboxImages.length} — ${currentLightboxImages[currentLightboxIndex].split('/').pop()}`;
+        }
+        
+        function navigateLightbox(delta) {
+            currentLightboxIndex = (currentLightboxIndex + delta + currentLightboxImages.length) % currentLightboxImages.length;
+            updateLightbox();
+        }
+        
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+        
+        // Report Modal
+        let currentReportUrl = '';
+        
+        function openReportModal(url, testName) {
+            currentReportUrl = url;
+            document.getElementById('reportModalTitle').textContent = testName + ' - Test Report';
+            document.getElementById('reportIframe').src = url;
+            document.getElementById('reportModal').classList.add('active');
+        }
+        
+        function closeReportModal() {
+            document.getElementById('reportModal').classList.remove('active');
+            document.getElementById('reportIframe').src = '';
+        }
+        
+        function openReportNewTab() {
+            window.open(currentReportUrl, '_blank');
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('reportModal').classList.contains('active')) {
+                    closeReportModal();
+                } else if (document.getElementById('lightbox').classList.contains('active')) {
+                    closeLightbox();
+                }
+            }
+            if (document.getElementById('lightbox').classList.contains('active')) {
+                if (e.key === 'ArrowLeft') navigateLightbox(-1);
+                if (e.key === 'ArrowRight') navigateLightbox(1);
+            }
+        });
+        
+        document.getElementById('lightbox').addEventListener('click', (e) => {
+            if (e.target.id === 'lightbox') closeLightbox();
+        });
+        
+        document.getElementById('reportModal').addEventListener('click', (e) => {
+            if (e.target.id === 'reportModal') closeReportModal();
+        });
+        
+        document.getElementById('searchInput').addEventListener('input', filterExtensions);
+        
+        document.querySelectorAll('.filter-pill[data-priority]').forEach(pill => {
+            pill.addEventListener('click', () => {
+                document.querySelectorAll('.filter-pill[data-priority]').forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+                filterExtensions();
+            });
+        });
+        
+        document.querySelectorAll('.filter-pill[data-status]').forEach(pill => {
+            pill.addEventListener('click', () => {
+                if (pill.classList.contains('active')) {
+                    pill.classList.remove('active');
+                } else {
+                    document.querySelectorAll('.filter-pill[data-status]').forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                }
+                filterExtensions();
+            });
+        });
+        
+        function filterExtensions() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const activePriorityPill = document.querySelector('.filter-pill[data-priority].active');
+            const activeStatusPill = document.querySelector('.filter-pill[data-status].active');
+            const priority = activePriorityPill?.dataset.priority || 'all';
+            const statusFilter = activeStatusPill?.dataset.status || null;
+            
+            document.querySelectorAll('.extension-card').forEach(card => {
+                const name = card.dataset.name;
+                const cardPriority = card.dataset.priority;
+                const matchesSearch = name.includes(query);
+                const matchesPriority = priority === 'all' || cardPriority === priority;
+                
+                // Check status filter
+                let matchesStatus = true;
+                if (statusFilter) {
+                    const testItems = card.querySelectorAll('[data-test-id]');
+                    const testIds = Array.from(testItems).map(el => el.dataset.testId);
+                    
+                    if (statusFilter === 'pending') {
+                        matchesStatus = testIds.some(id => !getTestStatus(id));
+                    } else if (statusFilter === 'approved') {
+                        matchesStatus = testIds.some(id => getTestStatus(id) === 'approved');
+                    } else if (statusFilter === 'retry') {
+                        matchesStatus = testIds.some(id => getTestStatus(id) === 'retry');
+                    }
+                }
+                
+                card.style.display = matchesSearch && matchesPriority && matchesStatus ? '' : 'none';
+            });
+            
+            document.querySelectorAll('.type-group').forEach(group => {
+                const hasVisible = Array.from(group.querySelectorAll('.extension-card')).some(card => card.style.display !== 'none');
+                group.style.display = hasVisible ? '' : 'none';
+            });
+            
+            document.querySelectorAll('.repository').forEach(repo => {
+                const hasVisible = Array.from(repo.querySelectorAll('.extension-card')).some(card => card.style.display !== 'none');
+                repo.style.display = hasVisible ? '' : 'none';
+            });
+        }
+        
+        loadData();
+    </script>
+</body>
+</html>
