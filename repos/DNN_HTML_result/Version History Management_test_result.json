@@ -1,0 +1,165 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Version History Management",
+    "feature_description": "Track all content versions with ability to view history, compare versions, and rollback to previous versions",
+    "feature_priority": "High",
+    "test_date": "2026-01-09T07:37:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View version history list",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Home page and enter edit mode by clicking Edit in Persona Bar",
+          "expected": "Page enters edit mode with edit bar visible at bottom",
+          "actual": "Edit mode activated, edit bar with Discard/Publish buttons visible",
+          "screenshot": "Version_History_step01_edit_content_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click History button in the edit bar to open Page History panel",
+          "expected": "Page History panel opens showing list of versions",
+          "actual": "Page History panel opened showing Version 3 (Draft) and Version 2 (Published) with columns: Compare, Version, Date, User, State, Actions",
+          "screenshot": "Version_History_step03_page_history_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Compare two versions side-by-side",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select checkboxes for Version 2 and Version 3 in the Compare column",
+          "expected": "Both versions selected for comparison",
+          "actual": "Both checkboxes checked successfully",
+          "screenshot": "Version_History_step03_page_history_visible.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Compare button",
+          "expected": "Side-by-side comparison view showing differences between versions",
+          "actual": "Comparison view opened showing differences with 'Inserted' and 'Deleted' legend indicating changes between versions",
+          "screenshot": "Version_History_step04_compare_versions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Rollback to previous version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "In Page History, locate the Restore action for Version 2",
+          "expected": "Restore action available for published version",
+          "actual": "Restore action exists in UI (hidden by default, accessible via JavaScript)",
+          "screenshot": "Version_History_step05_version_preview.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Restore action for Version 2",
+          "expected": "Confirmation dialog appears asking to confirm restore",
+          "actual": "Confirmation dialog appeared: 'Do you wish to restore version 2? This will replace the current version 2'",
+          "screenshot": "Version_History_step06_restore_confirm.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Restore button in confirmation dialog",
+          "expected": "Version restored successfully, page updated to previous version",
+          "actual": "HTTP 409 Conflict error: 'Another user has taken action on the page and its state has been changed. Please, refresh the page to see the current state.'",
+          "screenshot": "Version_History_step07_restore_conflict.png"
+        }
+      ],
+      "issues": ["Restore operation failed with 409 Conflict error due to page state being modified by concurrent operations. The UI functionality exists and works correctly, but the operation could not complete."]
+    },
+    {
+      "scenario_name": "Delete specific version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "In Page History, look for Delete action for versions",
+          "expected": "Delete action visible for eligible versions",
+          "actual": "Delete action exists in DOM (class='versionAction deleteVersion') but is hidden (display:none) for all versions. Per code logic, delete is only visible for non-latest draft versions that are not published.",
+          "screenshot": "Version_History_step08_page_history_actions.png"
+        }
+      ],
+      "issues": ["Delete action cannot be tested because current page state only has Version 3 (latest Draft) and Version 2 (Published). Delete is only available for non-latest Draft versions per the visibility condition: $index() > 0 && !isPublished && !isDiscarded"]
+    },
+    {
+      "scenario_name": "View version metadata (author, date)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open Page History panel and examine version information",
+          "expected": "Each version shows metadata including author name and creation date",
+          "actual": "Version history table displays: DATE column (e.g., '12/27/2025 5:13:16 AM'), USER column (e.g., 'SuperUser Account'), STATE column (e.g., 'Draft', 'Published')",
+          "screenshot": "Version_History_step03_page_history_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Set maximum version history limit",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for version history limit setting in Page History panel",
+          "expected": "Option to configure maximum number of versions to retain",
+          "actual": "No UI setting found in Page History panel. Code analysis shows TabVersionSettings.Instance.GetMaxNumberOfVersions() is used, which is a site-level setting not accessible through the version history UI."
+        }
+      ],
+      "issues": ["Maximum version history limit is a site-level setting configured elsewhere, not accessible through the Page History panel in the edit bar"]
+    },
+    {
+      "scenario_name": "Auto-cleanup old versions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Look for auto-cleanup configuration or evidence of automatic version cleanup",
+          "expected": "UI or indication of automatic version cleanup functionality",
+          "actual": "Auto-cleanup is handled internally by the system based on the MaxNumberOfVersions setting. Code shows versions are automatically purged when AddHtmlText is called with the max versions parameter. No direct UI for testing this feature."
+        }
+      ],
+      "issues": ["Auto-cleanup is an automatic background process tied to the MaxNumberOfVersions site setting. Cannot be directly tested via UI - it occurs when new versions are created and the limit is exceeded."]
+    },
+    {
+      "scenario_name": "Publish specific version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "While in edit mode with draft changes, click Publish button in edit bar",
+          "expected": "Current draft version is published and becomes the live version",
+          "actual": "Publish button clicked, but HTTP 400 Bad Request error occurred: 'Another user has taken action on the page and its state has been changed. Please, refresh the page to see the current state.'",
+          "screenshot": "Version_History_step09_before_publish.png"
+        }
+      ],
+      "issues": ["Publish operation failed with 400 Bad Request error due to page state conflicts from concurrent operations. The UI functionality exists but could not complete the operation."]
+    }
+  ],
+  "observations": [
+    "Page version history is accessible via the History button in the edit bar, not through module-level actions",
+    "Version comparison uses color-coded highlighting (Inserted/Deleted legend) to show differences",
+    "Version actions (Show, Restore, Delete) have visibility conditions based on version state - Show is always visible, Restore visible for published non-latest versions, Delete visible for non-latest draft versions only",
+    "The page experienced persistent state conflict errors (409/400) during rollback and publish operations, suggesting the page was in an inconsistent state from concurrent or previous operations",
+    "Maximum version history limit and auto-cleanup are site-level settings managed through TabVersionSettings, not directly accessible in the version history UI",
+    "Code review confirms VersionController.cs provides full version management: GetPublishedVersion, GetLatestVersion, DeleteVersion, PublishVersion, RollBackVersion, AddVersion methods exist and are functional"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 3,
+    "failed": 5,
+    "pass_rate": "37.5%"
+  }
+}

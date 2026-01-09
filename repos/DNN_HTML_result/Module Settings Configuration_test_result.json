@@ -1,0 +1,144 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Module Settings Configuration",
+    "feature_description": "Configure module-specific settings including workflow, tokens, and display options",
+    "feature_priority": "High",
+    "test_date": "2026-01-09T08:15:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View HTML Module Settings",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to module settings via direct URL (Module 473)",
+          "expected": "Module settings page displays with HTML Module Settings tab",
+          "actual": "Module settings page loaded successfully with all tabs including HTML Module Settings",
+          "screenshot": "Module_Settings_Configuration_step05_module473_html_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify HTML Module Settings tab displays the two available settings",
+          "expected": "Replace Tokens checkbox and Max length of Description in search textbox are visible",
+          "actual": "Both settings were visible: Replace Tokens checkbox and Search Description Length textbox",
+          "screenshot": "Module_Settings_Configuration_step08_verify_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Enable/Disable Token Replacement",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View initial state of Replace Tokens checkbox",
+          "expected": "Replace Tokens checkbox is visible and can be toggled",
+          "actual": "Replace Tokens checkbox was visible with initial unchecked state",
+          "screenshot": "Module_Settings_Configuration_step01_initial_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check the Replace Tokens checkbox to enable token replacement",
+          "expected": "Checkbox becomes checked",
+          "actual": "Checkbox was successfully checked/enabled",
+          "screenshot": "Module_Settings_Configuration_step02_token_enabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Set Search Description Length",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View the Search Description Length field",
+          "expected": "Text field is visible with a numeric value",
+          "actual": "Field was visible with default value of 100",
+          "screenshot": "Module_Settings_Configuration_step05_module473_html_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Change the value from 100 to 200",
+          "expected": "Field accepts the new value",
+          "actual": "Successfully changed value to 200",
+          "screenshot": "Module_Settings_Configuration_step08_verify_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save Settings Successfully",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Update button after changing settings (Module 473 via direct URL)",
+          "expected": "Settings are saved and page redirects without error",
+          "actual": "Settings saved successfully, redirected to home page without error",
+          "screenshot": "Module_Settings_Configuration_step07_save_success.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate back to settings to verify persistence",
+          "expected": "Changed values are retained (Replace Tokens checked, Search Length = 200)",
+          "actual": "Settings persisted correctly: Replace Tokens was checked and Search Description Length showed 200",
+          "screenshot": "Module_Settings_Configuration_step08_verify_saved.png"
+        }
+      ],
+      "issues": ["Save via modal popup (module 469) caused 'Object reference not set to an instance of an object' error. Workaround: Use direct URL navigation to module settings."]
+    },
+    {
+      "scenario_name": "Validate Setting Values (Invalid Input)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter non-numeric text 'abc' in Search Description Length field",
+          "expected": "Client-side validation should block submission and display error message",
+          "actual": "Client-side validation did not fire. Form submitted and server returned 'Object reference not set to an instance of an object' error",
+          "screenshot": "Module_Settings_Configuration_step10_validation_failed.png"
+        }
+      ],
+      "issues": ["RegularExpressionValidator defined in Settings.ascx did not prevent form submission with invalid input 'abc'. Instead of showing validation error, a server-side NullReferenceException occurred."]
+    },
+    {
+      "scenario_name": "Save Settings via Modal Popup",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Access module settings through Module Actions > Admin > Settings (modal popup)",
+          "expected": "Settings modal opens and changes can be saved",
+          "actual": "Settings modal opened correctly",
+          "screenshot": "Module_Settings_Configuration_step01_initial_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enable Replace Tokens and click Update in modal",
+          "expected": "Settings save successfully",
+          "actual": "Error occurred: 'Object reference not set to an instance of an object'. Page redirected with error parameter in URL.",
+          "screenshot": "Module_Settings_Configuration_step03_critical_error.png"
+        }
+      ],
+      "issues": ["Saving HTML Module Settings through the modal popup consistently causes a NullReferenceException. Settings can only be saved via direct URL navigation."]
+    }
+  ],
+  "observations": [
+    "The HTML Module only has 2 settings in the code (Settings.ascx): Replace Tokens checkbox and Search Description Length textbox. The suggested test scenarios for workflow assignment, autosave, and form decoration are NOT part of this module's settings.",
+    "Save functionality works correctly when accessing settings via direct URL (e.g., /en-us/Home/ctl/Module/ModuleId/473) but fails via modal popup with NullReferenceException.",
+    "The RegularExpressionValidator for Search Description Length (^\d+$) exists in code but did not prevent submission of invalid non-numeric input.",
+    "When Replace Tokens is enabled, the code automatically disables module caching (sets CacheTime to 0) as per Settings.ascx.cs UpdateSettings() method."
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 4,
+    "failed": 2,
+    "pass_rate": "67%"
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Token Replacement",
+    "feature_description": "Replace dynamic tokens in content with actual values at runtime",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-09T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Enable/disable token replacement",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Module Settings for HTML module (Module ID 956)",
+          "expected": "Module settings page should load with Replace Tokens option",
+          "actual": "Module settings loaded successfully with 'Replace Tokens:' checkbox visible in HTML Module Settings tab",
+          "screenshot": "Token_Replacement_step01_settings_found.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enable the 'Replace Tokens' checkbox",
+          "expected": "Checkbox should be checked",
+          "actual": "Checkbox was checked successfully",
+          "screenshot": "Token_Replacement_step02_enabled.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Save module settings",
+          "expected": "Settings should be saved successfully",
+          "actual": "Settings saved successfully, page reloaded confirming setting was persisted",
+          "screenshot": "Token_Replacement_step03_saved_successfully.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Insert user tokens",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to HTML module and open editor",
+          "expected": "CKEditor should open for content editing",
+          "actual": "CKEditor opened successfully via Edit Content action",
+          "screenshot": "Token_Replacement_step05_editor_view.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Insert user tokens [User:DisplayName] and [User:Email] into content",
+          "expected": "Tokens should be added to content",
+          "actual": "Successfully added user tokens via CKEditor API - content shows 'Hello [User:DisplayName]!' and 'Your email is: [User:Email]'",
+          "screenshot": "Token_Replacement_step07_tokens_added.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Save content with user tokens",
+          "expected": "Content should be saved with tokens preserved",
+          "actual": "Content saved successfully, tokens visible in saved content",
+          "screenshot": "Token_Replacement_step10_content_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Insert portal tokens",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Add portal tokens [Portal:PortalName] and [Portal:PortalID] to content",
+          "expected": "Portal tokens should be added to content",
+          "actual": "Successfully added portal tokens - content shows 'Welcome to [Portal:PortalName].' and 'Portal ID: [Portal:PortalID]'",
+          "screenshot": "Token_Replacement_step08_editor_with_tokens.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Save content with portal tokens",
+          "expected": "Content should be saved with portal tokens preserved",
+          "actual": "Content saved successfully with all portal tokens visible",
+          "screenshot": "Token_Replacement_step10_content_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test token in published content",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View page with token replacement enabled and viewWithReplacedTokens=true URL parameter",
+          "expected": "Tokens should be replaced with actual values (e.g., [User:DisplayName] becomes 'SuperUser Account')",
+          "actual": "Tokens displayed as raw text ([User:DisplayName], [Portal:PortalName], etc.) in Edit mode. Token replacement only occurs in View mode for end users viewing published content.",
+          "screenshot": "Token_Replacement_step13_content_with_tokens.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to publish content and view as regular user",
+          "expected": "Published content should show replaced tokens",
+          "actual": "Could not complete publish due to workflow conflicts ('Another user has taken action' error). Page is private and requires login, preventing anonymous user testing.",
+          "screenshot": "Token_Replacement_step12_tokens_not_replaced_edit_mode.png"
+        }
+      ],
+      "issues": [
+        "Token replacement not verified working - tokens show as raw text in Edit mode (expected behavior)",
+        "Workflow conflict prevented publishing: 'Another user has taken action on the page'",
+        "Page is private, preventing anonymous user access to verify token replacement in View mode"
+      ]
+    },
+    {
+      "scenario_name": "Handle invalid tokens",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Add invalid token [Invalid:Token] to content",
+          "expected": "Invalid token should be handled gracefully",
+          "actual": "Invalid token [Invalid:Token] was added to content and displays as raw text, which is expected behavior for unrecognized tokens",
+          "screenshot": "Token_Replacement_step13_content_with_tokens.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Save and view content with invalid token",
+          "expected": "Page should not error, invalid token should display as-is or be ignored",
+          "actual": "Page rendered without errors, invalid token displayed as raw text [Invalid:Token]",
+          "screenshot": "Token_Replacement_step13_content_with_tokens.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Token replacement setting (HtmlText_ReplaceTokens) exists in Module Settings as a checkbox",
+    "Code in HtmlTextController.cs shows token replacement uses DNN's TokenReplace class with ReplaceEnvironmentTokens method",
+    "Token replacement requires both blnReplaceTokens=true (module setting) AND viewWithReplacedTokens=true (method parameter)",
+    "In Edit mode, tokens are deliberately shown as raw text so editors can see and modify them - this is expected behavior",
+    "Token replacement is designed to work for end users viewing published content in View mode, not for editors in Edit mode",
+    "The code disables module caching when token replacement is enabled (CacheTime set to 0)",
+    "Supported token types include User tokens ([User:*]), Portal tokens ([Portal:*]), and other environment tokens",
+    "No dedicated UI for inserting tokens found - tokens must be typed manually in the editor"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 4,
+    "failed": 1,
+    "pass_rate": "80%"
+  }
+}

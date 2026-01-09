@@ -1,0 +1,160 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Content Preview",
+    "feature_description": "Preview content before publishing with token replacement and formatting applied",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-09T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Preview current draft",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to a page with HTML module in edit mode",
+          "expected": "Page loads in edit mode with HTML module visible",
+          "actual": "Page loaded successfully in edit mode with HTML module content visible",
+          "screenshot": "Content Preview_step01_edit_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Open Edit Content dialog and click CKEditor Preview button",
+          "expected": "Preview window opens showing current draft content",
+          "actual": "CKEditor Preview button opened a popup window displaying the current content with formatting",
+          "screenshot": "Content Preview_step02_preview_draft.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Preview with tokens replaced",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page with HTML module containing DNN tokens",
+          "expected": "Module with tokens like [User:DisplayName] visible",
+          "actual": "Found Token Replacement Test Module on Home page with raw tokens visible in edit mode",
+          "screenshot": "Content Preview_step03_tokens_raw.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Open Edit Content dialog and use Preview to view content with tokens",
+          "expected": "Preview should show tokens replaced with actual values",
+          "actual": "CKEditor Preview shows raw tokens without replacement. Token replacement is a server-side feature controlled by HtmlText_ReplaceTokens setting and only occurs when content is rendered, not in the client-side CKEditor Preview",
+          "screenshot": "Content Preview_step04_token_module.png"
+        }
+      ],
+      "issues": ["CKEditor Preview is client-side only and does not process DNN tokens. Token replacement requires server-side rendering with the FormatHtmlText method and viewWithReplacedTokens parameter."]
+    },
+    {
+      "scenario_name": "Preview different versions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Version Test Page and access HTML module Admin menu",
+          "expected": "Version history or preview options available",
+          "actual": "Admin menu shows Settings, Export Content, Import Content, Help, Develop, Delete, Refresh - no Version History option",
+          "screenshot": "Content Preview_step05_admin_menu.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check Pages panel for versioning settings",
+          "expected": "Page versioning enabled with version preview options",
+          "actual": "Pages panel shows Versioning: Off for the test page",
+          "screenshot": "Content Preview_step06_page_versioning_off.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Open Edit Content dialog to look for version tabs",
+          "expected": "Version history tab or version preview functionality available",
+          "actual": "Edit Content dialog shows only CKEditor with no version history tabs. Code shows currentContent and masterContent tabs exist but no version preview tab in UI",
+          "screenshot": "Content Preview_step07_edit_dialog_no_version_tabs.png"
+        }
+      ],
+      "issues": ["No UI element exists for previewing different content versions. Version management methods exist in HtmlTextController.cs (GetLatestVersion, GetPublishedVersion, RollBackVersion) but are not exposed in the Content Preview UI."]
+    },
+    {
+      "scenario_name": "Preview mobile view",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Locate VIEW SITE options in the edit bar at bottom of page",
+          "expected": "Device preview options available",
+          "actual": "VIEW SITE menu shows Preview, Tablet, and Phone options",
+          "screenshot": "Content Preview_step08_editbar_bottom.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Phone option to enable mobile preview",
+          "expected": "Page displays in mobile device simulation",
+          "actual": "Phone preview mode activated successfully - page displayed in phone device frame with Portrait/Landscape options available",
+          "screenshot": "Content Preview_step09_phone_preview.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Preview as different user role",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Locate user role preview option in edit bar",
+          "expected": "Option to preview page as different user role (Anonymous, Registered User, etc.)",
+          "actual": "Found 'View Personalized Pages' icon showing count of 0",
+          "screenshot": "Content Preview_step10_personalized_pages.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click View Personalized Pages to access role preview",
+          "expected": "Role selection for preview as different users",
+          "actual": "Personalized Pages dialog opened showing 'No Personalized Pages Have Been Created Yet'. This feature is for content personalization (showing different content to user segments), NOT for previewing as different user roles.",
+          "screenshot": "Content Preview_step10_personalized_pages.png"
+        }
+      ],
+      "issues": ["Preview as different user role feature does not exist in the HTML module Content Preview UI. The Personalized Pages feature serves a different purpose - it's for creating personalized content variants, not for role-based preview."]
+    },
+    {
+      "scenario_name": "Compare preview with live",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enable Preview mode from VIEW SITE options",
+          "expected": "Preview mode shows draft content with comparison to live version",
+          "actual": "Preview mode activated successfully, shows page content without edit controls",
+          "screenshot": "Content Preview_step11_preview_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Look for side-by-side comparison or diff view option",
+          "expected": "Visual comparison between preview/draft and published/live content",
+          "actual": "No side-by-side comparison feature exists. Preview mode shows one view at a time. Users must manually compare by switching between Preview mode and Edit mode.",
+          "screenshot": "Content Preview_step11_preview_mode.png"
+        }
+      ],
+      "issues": ["No dedicated 'Compare preview with live' feature exists. Preview mode displays the page without edit controls but does not provide side-by-side comparison or diff view functionality."]
+    }
+  ],
+  "observations": [
+    "The Content Preview feature primarily relies on CKEditor's built-in Preview button which provides client-side HTML rendering only.",
+    "Token replacement is implemented server-side in HtmlTextController.FormatHtmlText() and requires the HtmlText_ReplaceTokens module setting to be enabled.",
+    "Version management code exists (GetLatestVersion, GetPublishedVersion, RollBackVersion) but is not exposed through a Preview UI.",
+    "Mobile/device preview works well through the VIEW SITE menu in the edit bar.",
+    "EditHtml.ascx shows tabs for currentContent and masterContent but no version preview tab.",
+    "The Personalized Pages feature is for content personalization, not role-based preview simulation."
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 2,
+    "failed": 4,
+    "pass_rate": "33%"
+  }
+}

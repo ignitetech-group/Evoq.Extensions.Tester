@@ -1,0 +1,125 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Master Content Template",
+    "feature_description": "Set content as master template for reuse across multiple module instances",
+    "feature_priority": "Low",
+    "test_date": "2026-01-09T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Set content as master",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged into DNN as SuperUser and entered Edit Mode",
+          "expected": "Page enters edit mode with module action menus available",
+          "actual": "Successfully entered edit mode, module boundaries and actions visible",
+          "screenshot": "Master_Content_Template_step01_edit_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Examined Module Actions menu for HTML module (module 469)",
+          "expected": "Module Actions menu should contain 'Make Master' option as described in UI Location",
+          "actual": "Module Actions menu contains: Settings, Export Content, Import Content, Help, Develop, Delete, Refresh - NO 'Make Master' option present",
+          "screenshot": "Master_Content_Template_step03_module_actions_no_make_master.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Searched entire page for 'Make Master' or 'Master' related UI elements",
+          "expected": "Find a 'Make Master' option somewhere in the UI",
+          "actual": "No 'Make Master' UI elements found. Code analysis reveals feature only appears for orphaned shared modules",
+          "screenshot": "Master_Content_Template_step03_module_actions_no_make_master.png"
+        }
+      ],
+      "issues": [
+        "UI Location 'Module Actions > Make Master' does not match actual implementation",
+        "Make Master link only appears when a shared module has lost its master page (orphaned scenario)",
+        "Feature cannot be accessed through normal module workflow"
+      ]
+    },
+    {
+      "scenario_name": "Link module to master content",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to find UI for linking module to master content",
+          "expected": "Find option to link a module to existing master content",
+          "actual": "No such UI option found. Code analysis shows linking is done through DNN's module sharing feature, not Master Content Template",
+          "screenshot": "Master_Content_Template_step03_module_actions_no_make_master.png"
+        }
+      ],
+      "issues": [
+        "Feature not accessible - requires module sharing setup first",
+        "No dedicated UI for linking to master content found"
+      ]
+    },
+    {
+      "scenario_name": "Update master content and propagate changes",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to test master content update propagation",
+          "expected": "Find master module to update and verify propagation to linked modules",
+          "actual": "Cannot test - no master content template could be created due to inaccessible 'Make Master' feature",
+          "screenshot": "Master_Content_Template_step03_module_actions_no_make_master.png"
+        }
+      ],
+      "issues": [
+        "Dependent on 'Set content as master' which could not be performed"
+      ]
+    },
+    {
+      "scenario_name": "Break link to master",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for UI option to break link to master content",
+          "expected": "Find option to disconnect module from master template",
+          "actual": "No UI element found for breaking master link. Feature may exist through module settings but no direct 'break link' option identified",
+          "screenshot": "Master_Content_Template_step03_module_actions_no_make_master.png"
+        }
+      ],
+      "issues": [
+        "No explicit 'break link' UI found in module actions or settings"
+      ]
+    },
+    {
+      "scenario_name": "View master content usage",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for UI to view which modules are using master content",
+          "expected": "Find a view showing all modules linked to a master template",
+          "actual": "No UI found for viewing master content usage across modules",
+          "screenshot": "Master_Content_Template_step03_module_actions_no_make_master.png"
+        }
+      ],
+      "issues": [
+        "No master content usage view found in UI"
+      ]
+    }
+  ],
+  "observations": [
+    "CRITICAL: The documented UI Location 'Module Actions > Make Master' does not exist in the current implementation",
+    "Code analysis (HtmlModule.ascx.cs) reveals 'Make Master' is NOT a standard module action - it only appears as a warning message link when a shared module becomes orphaned (its master page is deleted)",
+    "The MakeMasterPage.js and HtmlTextProController.cs implement a 'Make Master' API endpoint, but it's only triggered through the orphaned module warning message",
+    "The localization file (HtmlModule.ascx.resx) shows the message: 'This module does not belong to the page, but its master page is not found. Make this page as master?'",
+    "The feature appears to be a RECOVERY mechanism for orphaned shared modules, not a general 'create master template' feature as described",
+    "Module sharing in DNN uses a different mechanism (sharing modules across pages) which is separate from this 'Master Content Template' feature",
+    "To properly test this feature would require: 1) Creating a shared module, 2) Deleting the original master page, 3) Then the 'Make Master' link would appear on pages with the orphaned module"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 0,
+    "failed": 5,
+    "pass_rate": "0%"
+  }
+}

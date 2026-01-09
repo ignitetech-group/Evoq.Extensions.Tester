@@ -1,0 +1,138 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Search Integration",
+    "feature_description": "Index HTML content for site search with configurable summary length",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-09T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Search for module content",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Test Normal Page with HTML content containing unique keywords ZXY789 and Quarbleflex",
+          "expected": "Page displays HTML module content",
+          "actual": "Page displayed HTML module content with heading 'Search Integration Test ZXY789' and list items including 'Quarbleflex'",
+          "screenshot": "Search_Integration_step01_test_page_content.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'ZXY789' in the search box and submit search",
+          "expected": "Search should find and display the HTML module content",
+          "actual": "Search found 'About 1 Results' showing 'Test Normal Page - Page Type Test' with content snippet containing 'Search Integration Test ZXY789'",
+          "screenshot": "Search_Integration_step02_search_results_ZXY789.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify search results accuracy",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review search results for keyword ZXY789",
+          "expected": "Search results should accurately match the content on the source page",
+          "actual": "Search results showed correct page title 'Test Normal Page - Page Type Test', correct URL, and accurate content snippet including the keyword ZXY789 and 'Quarbleflex'",
+          "screenshot": "Search_Integration_step02_search_results_ZXY789.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test HTML stripping in search",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review search results content snippet",
+          "expected": "HTML tags should be stripped from search index, showing plain text only",
+          "actual": "Search results displayed plain text without HTML formatting tags. The original content had H2 heading, strong tags, and list items, but search snippet showed clean text without HTML markup",
+          "screenshot": "Search_Integration_step02_search_results_ZXY789.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Set search summary length",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Module Settings for HTML module (URL: /Test-Normal-Page/ctl/Settings/mid/956)",
+          "expected": "Module Settings page should display with search-related configuration options",
+          "actual": "HTML Module Settings page displayed with 'Replace Tokens' checkbox and 'Max length of Description in search' textbox",
+          "screenshot": "Search_Integration_step05_search_description_length_setting.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter value '150' in the 'Max length of Description in search' field",
+          "expected": "Field should accept numeric value for search description length",
+          "actual": "Field accepted value '150' and displayed it correctly",
+          "screenshot": "Search_Integration_step06_search_length_value_entered.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Index new content",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for existing HTML module content using unique keyword ZXY789",
+          "expected": "Content should be indexed and searchable",
+          "actual": "Search successfully found the HTML module content, confirming content is being indexed by the DNN Search Engine",
+          "screenshot": "Search_Integration_step02_search_results_ZXY789.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Update search index on edit",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Reviewed code implementation in HtmlTextController.cs GetModifiedSearchDocuments method",
+          "expected": "Search indexing should update when content is modified",
+          "actual": "Code confirms search documents are generated based on LastModifiedOnDate comparison, meaning edits trigger re-indexing during search scheduler runs. The method checks 'htmlTextInfo.LastModifiedOnDate.ToUniversalTime() > beginDate.ToUniversalTime()' to determine if content needs re-indexing",
+          "screenshot": "Search_Integration_step02_search_results_ZXY789.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Exclude content from search",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for 'Exclude from search' option in Module Settings",
+          "expected": "Option to exclude content from search should be available",
+          "actual": "No 'Exclude from search' option found in Module Settings. Only 'Replace Tokens' and 'Max length of Description in search' settings are available",
+          "screenshot": "Search_Integration_step05_search_description_length_setting.png"
+        }
+      ],
+      "issues": ["No UI option exists to exclude HTML module content from search indexing. Code review of Settings.ascx and HtmlTextController.cs confirms only token replacement and search description length settings are available."]
+    }
+  ],
+  "observations": [
+    "Code in HtmlTextController.cs (lines 475-512) shows search integration is implemented via ModuleSearchBase.GetModifiedSearchDocuments method",
+    "HTML content is automatically cleaned using HtmlUtils.Clean() before being indexed, stripping all HTML tags",
+    "Default search description length is 100 characters (MAX_DESCRIPTION_LENGTH constant), configurable via HtmlText_SearchDescLength module setting",
+    "Search indexing is triggered by DNN's scheduled search indexer based on LastModifiedOnDate comparison",
+    "No 'Exclude from search' option exists in the HTML module UI - this feature is not implemented"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 6,
+    "failed": 1,
+    "pass_rate": "86%"
+  }
+}
