@@ -294,15 +294,17 @@
             font-family: 'Outfit', sans-serif;
         }
         .status-btn:hover { transform: scale(1.05); }
-        .status-btn.approve:hover, .status-btn.approve.active { 
-            background: var(--status-approved); 
-            border-color: var(--status-approved); 
+        .status-btn.discard:hover, .status-btn.discard.active { 
+            background: var(--text-muted); 
+            border-color: var(--text-muted); 
             color: white; 
         }
-        .status-btn.retry:hover, .status-btn.retry.active { 
-            background: var(--status-retry); 
-            border-color: var(--status-retry); 
-            color: white; 
+        
+        .test-item.discarded {
+            opacity: 0.5;
+        }
+        .test-item.discarded .test-name {
+            text-decoration: line-through;
         }
         
         .test-status-indicator {
@@ -316,8 +318,7 @@
             text-transform: uppercase;
             margin-left: 0.5rem;
         }
-        .test-status-indicator.approved { background: rgba(34, 197, 94, 0.2); color: var(--status-approved); }
-        .test-status-indicator.retry { background: rgba(245, 158, 11, 0.2); color: var(--status-retry); }
+        .test-status-indicator.discarded { background: rgba(90, 90, 106, 0.2); color: var(--text-muted); }
         
         /* Review summary panel */
         .review-panel {
@@ -451,11 +452,84 @@
             border-radius: 50%;
             margin-right: 0.5rem;
         }
-        .card-status-dot.all-approved { background: var(--status-approved); }
-        .card-status-dot.has-retry { background: var(--status-retry); }
-        .card-status-dot.partial { background: linear-gradient(135deg, var(--status-approved) 50%, var(--status-pending) 50%); }
+        .card-status-dot.all-discarded { background: var(--text-muted); }
+        .card-status-dot.has-discarded { background: linear-gradient(135deg, var(--text-muted) 50%, transparent 50%); }
         
-        .screenshots { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        /* Scenario list styles */
+        .scenarios-list {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .scenario-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 0.5rem;
+            border-radius: 6px;
+            margin-bottom: 0.25rem;
+            font-size: 0.85rem;
+        }
+        .scenario-item.pass { background: rgba(34, 197, 94, 0.1); }
+        .scenario-item.fail { background: rgba(239, 68, 68, 0.1); }
+        .scenario-item.discarded { 
+            opacity: 0.5; 
+            background: rgba(90, 90, 106, 0.1);
+        }
+        .scenario-item.discarded .scenario-name {
+            text-decoration: line-through;
+        }
+        .scenario-status { font-size: 0.9rem; }
+        .scenario-name { flex: 1; color: var(--text-primary); }
+        .scenario-steps { font-size: 0.75rem; color: var(--text-muted); }
+        .scenario-discard-btn {
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            opacity: 0.5;
+        }
+        .scenario-item:hover .scenario-discard-btn {
+            opacity: 1;
+        }
+        .scenario-discard-btn:hover, .scenario-discard-btn.active { 
+            background: var(--text-muted); 
+            border-color: var(--text-muted); 
+            opacity: 1;
+        }
+        .discarded-badge {
+            font-size: 0.7rem;
+        }
+        .scenario-issues {
+            padding: 0.25rem 0.5rem 0.25rem 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .issue-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            color: var(--priority-medium);
+            background: rgba(245, 158, 11, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        /* Pass/Fail badges */
+        .badge-pass {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--status-approved);
+            border: 1px solid var(--status-approved);
+        }
+        .badge-fail {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--priority-high);
+            border: 1px solid var(--priority-high);
+        }
+        
+        .screenshots { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
         .screenshot-thumb {
             width: 60px;
             height: 45px;
@@ -485,7 +559,7 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
+            z-index: 2000;
             justify-content: center;
             align-items: center;
             flex-direction: column;
@@ -507,7 +581,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1001;
+            z-index: 2001;
         }
         .lightbox-nav {
             position: absolute;
@@ -586,17 +660,170 @@
         .report-modal-btn.close-btn:hover { background: #dc2626; }
         .report-modal-content {
             flex: 1;
-            background: white;
+            background: var(--bg-secondary);
             border-radius: 0 0 12px 12px;
-            overflow: hidden;
+            overflow-y: auto;
             border: 1px solid var(--border-color);
             border-top: none;
+            padding: 1.5rem;
         }
-        .report-modal-content iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+        
+        /* JSON Detail Styles */
+        .json-detail { color: var(--text-primary); }
+        .json-meta { margin-bottom: 1.5rem; }
+        .json-meta h2 { font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--text-primary); }
+        .json-meta p { color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .json-meta-row { display: flex; gap: 2rem; flex-wrap: wrap; font-size: 0.9rem; color: var(--text-muted); }
+        .json-meta-row strong { color: var(--text-secondary); }
+        
+        .json-summary {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
+        .summary-stat {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 12px;
+            background: var(--bg-tertiary);
+        }
+        .summary-stat .num { display: block; font-size: 2rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+        .summary-stat .label { font-size: 0.85rem; color: var(--text-muted); }
+        .summary-stat.pass .num { color: var(--status-approved); }
+        .summary-stat.fail .num { color: var(--priority-high); }
+        .summary-stat.total .num { color: var(--accent-purple); }
+        
+        .json-scenarios h3, .json-observations h3 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-primary); }
+        
+        .json-scenario {
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .json-scenario.pass { border-left: 4px solid var(--status-approved); }
+        .json-scenario.fail { border-left: 4px solid var(--priority-high); }
+        
+        .scenario-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+        }
+        .scenario-header .status-icon { font-size: 1.2rem; }
+        .scenario-header .scenario-title { flex: 1; font-weight: 500; }
+        .scenario-header .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-badge.pass { background: rgba(34, 197, 94, 0.2); color: var(--status-approved); }
+        .status-badge.fail { background: rgba(239, 68, 68, 0.2); color: var(--priority-high); }
+        
+        .detail-discard-btn {
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+            margin-left: auto;
+            margin-right: 0.5rem;
+        }
+        .detail-discard-btn:hover {
+            background: var(--text-muted);
+            color: white;
+            border-color: var(--text-muted);
+        }
+        .detail-discard-btn.active {
+            background: var(--accent-teal);
+            color: white;
+            border-color: var(--accent-teal);
+        }
+        
+        .json-scenario.discarded {
+            opacity: 0.5;
+        }
+        .json-scenario.discarded .scenario-title {
+            text-decoration: line-through;
+        }
+        
+        .scenario-steps { padding: 1rem; }
+        .step {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .step-num {
+            width: 28px;
+            height: 28px;
+            background: var(--accent-purple);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .step-content { flex: 1; font-size: 0.9rem; }
+        .step-content > div { margin-bottom: 0.4rem; }
+        .step-content strong { color: var(--text-muted); }
+        .step-action { color: var(--text-primary); }
+        .step-expected { color: var(--accent-teal); }
+        .step-actual { color: var(--text-secondary); }
+        .step-screenshot-container {
+            margin-top: 0.75rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+        .step-screenshot-img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid var(--border-color);
+        }
+        .step-screenshot-img:hover {
+            border-color: var(--accent-purple);
+            transform: scale(1.02);
+        }
+        .step-screenshot-name { 
+            display: block;
+            font-family: 'JetBrains Mono', monospace; 
+            font-size: 0.75rem; 
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+        
+        .scenario-issues {
+            padding: 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-top: 1px solid var(--border-color);
+        }
+        .scenario-issues ul { margin: 0.5rem 0 0 1.5rem; }
+        .scenario-issues li { color: var(--priority-medium); margin-bottom: 0.25rem; }
+        
+        .json-observations {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+        }
+        .json-observations ul { margin: 0.5rem 0 0 1.5rem; }
+        .json-observations li { color: var(--text-secondary); margin-bottom: 0.5rem; }
         
         .loading-state { text-align: center; padding: 4rem 2rem; color: var(--text-secondary); }
         .loading-spinner { font-size: 3rem; animation: spin 1s linear infinite; display: inline-block; margin-bottom: 1rem; }
@@ -643,12 +870,24 @@
                     <div class="stat-label">Extensions</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="stat-reports">-</div>
-                    <div class="stat-label">Test Reports</div>
+                    <div class="stat-value" id="stat-features">-</div>
+                    <div class="stat-label">Features</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="stat-screenshots">-</div>
-                    <div class="stat-label">Screenshots</div>
+                    <div class="stat-value" id="stat-scenarios">-</div>
+                    <div class="stat-label">Scenarios</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="stat-passed" style="color: var(--status-approved);">-</div>
+                    <div class="stat-label">Passed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="stat-failed" style="color: var(--priority-high);">-</div>
+                    <div class="stat-label">Failed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="stat-passrate">-</div>
+                    <div class="stat-label">Pass Rate</div>
                 </div>
             </div>
         </header>
@@ -663,9 +902,8 @@
                 <span class="filter-pill" data-priority="Medium">🟡 Medium</span>
                 <span class="filter-pill" data-priority="Low">⚪ Low</span>
                 <span style="width: 1px; background: var(--border-color); margin: 0 0.5rem;"></span>
-                <span class="filter-pill" data-status="pending">⏳ Pending</span>
-                <span class="filter-pill" data-status="retry">🔄 Retry</span>
-                <span class="filter-pill" data-status="approved">✅ Approved</span>
+                <span class="filter-pill" data-status="active">📋 Active</span>
+                <span class="filter-pill" data-status="discarded">🗑️ Discarded</span>
             </div>
             <button class="refresh-btn" onclick="loadData()">
                 <span class="refresh-icon">🔄</span> Refresh
@@ -684,29 +922,28 @@
             </div>
             <div class="review-stats">
                 <div class="review-stat">
-                    <div class="review-stat-value approved" id="review-approved">0</div>
-                    <div class="review-stat-label">✅ Approved</div>
+                    <div class="review-stat-value" style="color: var(--status-approved);" id="review-passed">0</div>
+                    <div class="review-stat-label">✅ Passed</div>
                 </div>
                 <div class="review-stat">
-                    <div class="review-stat-value retry" id="review-retry">0</div>
-                    <div class="review-stat-label">🔄 Needs Retry</div>
+                    <div class="review-stat-value" style="color: var(--priority-high);" id="review-failed">0</div>
+                    <div class="review-stat-label">❌ Failed</div>
                 </div>
                 <div class="review-stat">
-                    <div class="review-stat-value pending" id="review-pending">0</div>
-                    <div class="review-stat-label">⏳ Pending</div>
+                    <div class="review-stat-value pending" id="review-discarded">0</div>
+                    <div class="review-stat-label">🗑️ Discarded</div>
                 </div>
             </div>
             <div class="review-progress">
-                <div class="review-progress-bar approved" id="progress-approved" style="width: 0%"></div>
-                <div class="review-progress-bar retry" id="progress-retry" style="width: 0%"></div>
+                <div class="review-progress-bar approved" id="progress-passed" style="width: 0%"></div>
+                <div class="review-progress-bar retry" id="progress-failed" style="width: 0%"></div>
             </div>
             <div class="review-list">
                 <div class="review-list-header">
-                    <button class="review-list-tab active" data-list="retry" onclick="showReviewList('retry')">🔄 Needs Retry</button>
-                    <button class="review-list-tab" data-list="approved" onclick="showReviewList('approved')">✅ Approved</button>
+                    <button class="review-list-tab active" data-list="discarded" onclick="showReviewList('discarded')">🗑️ Discarded</button>
                 </div>
                 <div class="review-list-content" id="review-list-content">
-                    <div class="review-list-empty">No items to display</div>
+                    <div class="review-list-empty">No discarded items</div>
                 </div>
             </div>
         </div>
@@ -739,8 +976,8 @@
                 <button class="report-modal-btn close-btn" onclick="closeReportModal()">✕ Close</button>
             </div>
         </div>
-        <div class="report-modal-content">
-            <iframe id="reportIframe" src=""></iframe>
+        <div class="report-modal-content" id="reportModalContent">
+            <!-- JSON detail content will be rendered here -->
         </div>
     </div>
     
@@ -882,8 +1119,11 @@
         
         function renderContent(data) {
             document.getElementById('stat-extensions').textContent = data.stats.extensions;
-            document.getElementById('stat-reports').textContent = data.stats.reports;
-            document.getElementById('stat-screenshots').textContent = data.stats.screenshots;
+            document.getElementById('stat-features').textContent = data.stats.features || 0;
+            document.getElementById('stat-scenarios').textContent = data.stats.scenarios || 0;
+            document.getElementById('stat-passed').textContent = data.stats.passed || 0;
+            document.getElementById('stat-failed').textContent = data.stats.failed || 0;
+            document.getElementById('stat-passrate').textContent = data.stats.pass_rate || '0%';
             
             const grouped = {};
             for (const [extName, result] of Object.entries(data.results)) {
@@ -941,10 +1181,14 @@
         
         // ==================== STATUS MANAGEMENT ====================
         const STORAGE_KEY = 'evoq_test_status';
-        let currentReviewTab = 'retry';
+        let currentReviewTab = 'discarded';
         
         function generateTestId(extName, testName) {
             return `${extName}::${testName}`.replace(/[^a-zA-Z0-9:]/g, '_');
+        }
+        
+        function generateScenarioId(extName, featureName, scenarioName) {
+            return `${extName}::${featureName}::${scenarioName}`.replace(/[^a-zA-Z0-9:]/g, '_');
         }
         
         function getAllStatus() {
@@ -963,19 +1207,46 @@
             return getAllStatus()[testId]?.status || null;
         }
         
-        function setTestStatus(testId, status, extName, testName) {
+        function toggleScenarioDiscard(scenarioId, extName, featureName, scenarioName) {
             const allStatus = getAllStatus();
             
-            if (allStatus[testId]?.status === status) {
-                // Toggle off if clicking the same status
-                delete allStatus[testId];
+            if (allStatus[scenarioId]?.status === 'discarded') {
+                // Toggle off - restore the scenario
+                delete allStatus[scenarioId];
             } else {
-                allStatus[testId] = { status, extName, testName, timestamp: Date.now() };
+                allStatus[scenarioId] = { status: 'discarded', extName, featureName, scenarioName, timestamp: Date.now() };
             }
             
             saveAllStatus(allStatus);
-            updateTestItemUI(testId);
+            updateScenarioUI(scenarioId);
             updateReviewPanel();
+        }
+        
+        function updateScenarioUI(scenarioId) {
+            const scenarioItem = document.querySelector(`[data-scenario-id="${scenarioId}"]`);
+            if (!scenarioItem) return;
+            
+            const isDiscarded = getTestStatus(scenarioId) === 'discarded';
+            const btn = scenarioItem.querySelector('.scenario-discard-btn');
+            const nameEl = scenarioItem.querySelector('.scenario-name');
+            
+            // Update item style
+            scenarioItem.classList.toggle('discarded', isDiscarded);
+            
+            // Update button
+            if (btn) {
+                btn.classList.toggle('active', isDiscarded);
+                btn.textContent = isDiscarded ? '↩️' : '🗑️';
+                btn.title = isDiscarded ? 'Restore' : 'Discard';
+            }
+            
+            // Update discarded badge
+            let badge = nameEl.querySelector('.discarded-badge');
+            if (isDiscarded && !badge) {
+                nameEl.insertAdjacentHTML('beforeend', ' <span class="discarded-badge">🗑️</span>');
+            } else if (!isDiscarded && badge) {
+                badge.remove();
+            }
         }
         
         function updateTestItemUI(testId) {
@@ -983,24 +1254,29 @@
             if (!testItem) return;
             
             const status = getTestStatus(testId);
-            const approveBtn = testItem.querySelector('.status-btn.approve');
-            const retryBtn = testItem.querySelector('.status-btn.retry');
+            const discardBtn = testItem.querySelector('.status-btn.discard');
             const testNameEl = testItem.querySelector('.test-name');
             
-            // Update buttons
-            approveBtn.classList.toggle('active', status === 'approved');
-            retryBtn.classList.toggle('active', status === 'retry');
+            // Update discard button
+            if (discardBtn) {
+                discardBtn.classList.toggle('active', status === 'discarded');
+                discardBtn.textContent = status === 'discarded' ? '↩️' : '🗑️';
+                discardBtn.title = status === 'discarded' ? 'Restore' : 'Discard';
+            }
+            
+            // Update test item style
+            testItem.classList.toggle('discarded', status === 'discarded');
             
             // Update status indicator
             let indicator = testNameEl.querySelector('.test-status-indicator');
-            if (status) {
+            if (status === 'discarded') {
                 if (!indicator) {
                     indicator = document.createElement('span');
                     indicator.className = 'test-status-indicator';
                     testNameEl.appendChild(indicator);
                 }
-                indicator.className = `test-status-indicator ${status}`;
-                indicator.textContent = status === 'approved' ? '✅ Approved' : '🔄 Retry';
+                indicator.className = 'test-status-indicator discarded';
+                indicator.textContent = '🗑️ Discarded';
             } else if (indicator) {
                 indicator.remove();
             }
@@ -1028,42 +1304,56 @@
         
         function getCardStatus(testIds) {
             const statuses = testIds.map(id => getTestStatus(id));
-            const hasApproved = statuses.some(s => s === 'approved');
-            const hasRetry = statuses.some(s => s === 'retry');
-            const hasPending = statuses.some(s => !s);
+            const hasDiscarded = statuses.some(s => s === 'discarded');
+            const allDiscarded = statuses.every(s => s === 'discarded');
             
-            if (hasRetry) return 'has-retry';
-            if (hasApproved && hasPending) return 'partial';
-            if (hasApproved && !hasPending) return 'all-approved';
+            if (allDiscarded && testIds.length > 0) return 'all-discarded';
+            if (hasDiscarded) return 'has-discarded';
             return null;
         }
         
         function updateReviewPanel() {
             const allStatus = getAllStatus();
-            const entries = Object.entries(allStatus);
             
-            const approved = entries.filter(([_, v]) => v.status === 'approved');
-            const retry = entries.filter(([_, v]) => v.status === 'retry');
+            // Calculate passed/failed from JSON data at scenario level, excluding discarded
+            let totalPassed = 0;
+            let totalFailed = 0;
+            let discardedCount = 0;
             
-            // Count total tests from current data
-            let totalTests = 0;
             if (currentData?.results) {
-                for (const result of Object.values(currentData.results)) {
-                    totalTests += Object.keys(result.tests).length;
+                for (const [extName, result] of Object.entries(currentData.results)) {
+                    for (const [featureName, featureData] of Object.entries(result.features || {})) {
+                        const scenarios = featureData.scenarios || [];
+                        for (const scenario of scenarios) {
+                            const scenarioId = generateScenarioId(extName, featureName, scenario.name);
+                            if (allStatus[scenarioId]?.status === 'discarded') {
+                                discardedCount++;
+                            } else {
+                                if (scenario.status === 'PASS') totalPassed++;
+                                else totalFailed++;
+                            }
+                        }
+                    }
                 }
             }
             
-            const pending = totalTests - approved.length - retry.length;
-            
             // Update stats
-            document.getElementById('review-approved').textContent = approved.length;
-            document.getElementById('review-retry').textContent = retry.length;
-            document.getElementById('review-pending').textContent = Math.max(0, pending);
+            document.getElementById('review-passed').textContent = totalPassed;
+            document.getElementById('review-failed').textContent = totalFailed;
+            document.getElementById('review-discarded').textContent = discardedCount;
             
             // Update progress bar
-            const total = Math.max(totalTests, 1);
-            document.getElementById('progress-approved').style.width = `${(approved.length / total) * 100}%`;
-            document.getElementById('progress-retry').style.width = `${(retry.length / total) * 100}%`;
+            const total = Math.max(totalPassed + totalFailed, 1);
+            document.getElementById('progress-passed').style.width = `${(totalPassed / total) * 100}%`;
+            document.getElementById('progress-failed').style.width = `${(totalFailed / total) * 100}%`;
+            
+            // Update header stats too
+            document.getElementById('stat-passed').textContent = totalPassed;
+            document.getElementById('stat-failed').textContent = totalFailed;
+            const passRate = totalPassed + totalFailed > 0 
+                ? `${Math.round(totalPassed / (totalPassed + totalFailed) * 100)}%` 
+                : '0%';
+            document.getElementById('stat-passrate').textContent = passRate;
             
             // Update list
             showReviewList(currentReviewTab);
@@ -1079,22 +1369,38 @@
             
             const allStatus = getAllStatus();
             const items = Object.entries(allStatus)
-                .filter(([_, v]) => v.status === listType)
+                .filter(([_, v]) => v.status === 'discarded')
                 .sort((a, b) => b[1].timestamp - a[1].timestamp);
             
             const container = document.getElementById('review-list-content');
             
             if (items.length === 0) {
-                container.innerHTML = `<div class="review-list-empty">No ${listType === 'retry' ? 'items needing retry' : 'approved items'}</div>`;
+                container.innerHTML = `<div class="review-list-empty">No discarded scenarios</div>`;
                 return;
             }
             
             container.innerHTML = items.map(([id, data]) => `
-                <div class="review-list-item" onclick="scrollToTest('${id}')">
-                    <span class="review-list-item-name">${data.testName}</span>
-                    <span class="review-list-item-ext">${data.extName}</span>
+                <div class="review-list-item" onclick="scrollToScenario('${id}')">
+                    <span class="review-list-item-name">${data.scenarioName || data.featureName}</span>
+                    <span class="review-list-item-ext">${data.extName} › ${data.featureName}</span>
                 </div>
             `).join('');
+        }
+        
+        function scrollToScenario(scenarioId) {
+            const scenarioItem = document.querySelector(`[data-scenario-id="${scenarioId}"]`);
+            if (!scenarioItem) return;
+            
+            // Expand the card if collapsed
+            const card = scenarioItem.closest('.extension-card');
+            if (card && !card.classList.contains('expanded')) {
+                card.classList.add('expanded');
+            }
+            
+            // Scroll to the scenario item
+            scenarioItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            scenarioItem.style.boxShadow = '0 0 0 2px var(--accent-purple)';
+            setTimeout(() => { scenarioItem.style.boxShadow = ''; }, 2000);
         }
         
         function scrollToTest(testId) {
@@ -1202,45 +1508,81 @@
             const { name, meta, result } = ext;
             const priorityClass = ['high', 'medium', 'low'].includes(meta.priority.toLowerCase()) ? meta.priority.toLowerCase() : 'na';
             
-            let testsHtml = '';
+            let featuresHtml = '';
             let testIds = [];
             
-            for (const [testName, testData] of Object.entries(result.tests)) {
-                const testId = generateTestId(name, testName);
+            // Use features structure from JSON
+            const features = result.features || {};
+            
+            for (const [featureName, featureData] of Object.entries(features)) {
+                const testId = generateTestId(name, featureName);
                 testIds.push(testId);
                 const currentStatus = getTestStatus(testId);
                 
-                const screenshotsHtml = testData.screenshots.slice(0, 8).map((img, idx) => `
-                    <div class="screenshot-thumb" onclick="openLightbox('${result.folder}', ${JSON.stringify(testData.screenshots)}, ${idx})">
+                const screenshots = featureData.screenshots || [];
+                const screenshotsHtml = screenshots.slice(0, 8).map((img, idx) => `
+                    <div class="screenshot-thumb" onclick="openLightbox('${result.folder}', ${JSON.stringify(screenshots)}, ${idx})">
                         <img src="${outputFolder}/${result.folder}/${img}" alt="${img}" loading="lazy">
                     </div>
                 `).join('');
                 
-                const moreCount = testData.screenshots.length - 8;
+                const moreCount = screenshots.length - 8;
                 const moreHtml = moreCount > 0 ? `<div class="more-badge">+${moreCount}</div>` : '';
                 
-                const reportLink = testData.report 
-                    ? `<button class="test-link" onclick="event.stopPropagation(); openReportModal('${outputFolder}/${result.folder}/${testData.report}', '${testName.replace(/'/g, "\\'")}')">📄 Report</button>`
+                // JSON detail button - pass extension and feature name to use embedded data
+                const detailBtn = featureData.json_file 
+                    ? `<button class="test-link" onclick="event.stopPropagation(); openJsonDetail('${name.replace(/'/g, "\\'")}', '${featureName.replace(/'/g, "\\'")}')">📋 Details</button>`
                     : '';
                 
-                const statusIndicator = currentStatus 
-                    ? `<span class="test-status-indicator ${currentStatus}">${currentStatus === 'approved' ? '✅ Approved' : '🔄 Retry'}</span>`
-                    : '';
+                // Get scenarios for this feature
+                const scenarios = featureData.scenarios || [];
                 
-                const approveActive = currentStatus === 'approved' ? 'active' : '';
-                const retryActive = currentStatus === 'retry' ? 'active' : '';
+                // Calculate active (non-discarded) scenario counts
+                let activePassed = 0;
+                let activeFailed = 0;
+                scenarios.forEach(s => {
+                    const scenarioId = generateScenarioId(name, featureName, s.name);
+                    if (getTestStatus(scenarioId) !== 'discarded') {
+                        if (s.status === 'PASS') activePassed++;
+                        else activeFailed++;
+                    }
+                });
                 
-                testsHtml += `<div class="test-item" data-test-id="${testId}">
+                let scenariosHtml = '';
+                if (scenarios.length > 0) {
+                    scenariosHtml = `<div class="scenarios-list">
+                        ${scenarios.map((s, idx) => {
+                            const scenarioId = generateScenarioId(name, featureName, s.name);
+                            const isDiscarded = getTestStatus(scenarioId) === 'discarded';
+                            const statusClass = s.status === 'PASS' ? 'pass' : 'fail';
+                            const statusIcon = s.status === 'PASS' ? '✅' : '❌';
+                            const discardBtnText = isDiscarded ? '↩️' : '🗑️';
+                            const discardBtnTitle = isDiscarded ? 'Restore' : 'Discard';
+                            const issuesHtml = s.issues && s.issues.length > 0 
+                                ? `<div class="scenario-issues">${s.issues.map(i => `<span class="issue-tag">⚠️ ${i}</span>`).join('')}</div>` 
+                                : '';
+                            return `<div class="scenario-item ${statusClass} ${isDiscarded ? 'discarded' : ''}" data-scenario-id="${scenarioId}">
+                                <span class="scenario-status">${statusIcon}</span>
+                                <span class="scenario-name">${s.name}${isDiscarded ? ' <span class="discarded-badge">🗑️</span>' : ''}</span>
+                                <span class="scenario-steps">${s.step_count} steps</span>
+                                <button class="scenario-discard-btn ${isDiscarded ? 'active' : ''}" title="${discardBtnTitle}" onclick="event.stopPropagation(); toggleScenarioDiscard('${scenarioId}', '${name.replace(/'/g, "\\'")}', '${featureName.replace(/'/g, "\\'")}', '${s.name.replace(/'/g, "\\'")}');">${discardBtnText}</button>
+                            </div>${issuesHtml}`;
+                        }).join('')}
+                    </div>`;
+                }
+                
+                // Feature summary badge (dynamic based on non-discarded scenarios)
+                const featureSummary = `<span class="badge ${activePassed > 0 && activeFailed === 0 ? 'badge-pass' : activeFailed > 0 ? 'badge-fail' : 'badge-count'}">${activePassed}✓ ${activeFailed}✗</span>`;
+                
+                featuresHtml += `<div class="test-item" data-test-id="${testId}">
                     <div class="test-header">
-                        <span class="test-name">${testName}${statusIndicator}</span>
+                        <span class="test-name">${featureName}</span>
                         <div class="test-actions">
-                            ${reportLink}
-                            <div class="status-buttons">
-                                <button class="status-btn approve ${approveActive}" onclick="event.stopPropagation(); setTestStatus('${testId}', 'approved', '${name.replace(/'/g, "\\'")}', '${testName.replace(/'/g, "\\'")}')">✅</button>
-                                <button class="status-btn retry ${retryActive}" onclick="event.stopPropagation(); setTestStatus('${testId}', 'retry', '${name.replace(/'/g, "\\'")}', '${testName.replace(/'/g, "\\'")}')">🔄</button>
-                            </div>
+                            ${featureSummary}
+                            ${detailBtn}
                         </div>
                     </div>
+                    ${scenariosHtml}
                     <div class="screenshots">${screenshotsHtml}${moreHtml}</div>
                 </div>`;
             }
@@ -1249,6 +1591,25 @@
             const cardStatus = getCardStatus(testIds);
             const statusDot = cardStatus ? `<span class="card-status-dot ${cardStatus}"></span>` : '';
             
+            // Calculate extension-level pass/fail from non-discarded scenarios
+            let extPassed = 0;
+            let extFailed = 0;
+            for (const [fn, fd] of Object.entries(features)) {
+                const scenarios = fd.scenarios || [];
+                for (const s of scenarios) {
+                    const scenarioId = generateScenarioId(name, fn, s.name);
+                    if (getTestStatus(scenarioId) !== 'discarded') {
+                        if (s.status === 'PASS') extPassed++;
+                        else extFailed++;
+                    }
+                }
+            }
+            const extTotal = extPassed + extFailed;
+            const extPassRate = extTotal > 0 ? `${Math.round(extPassed / extTotal * 100)}%` : '0%';
+            const passFailBadge = extTotal > 0 
+                ? `<span class="badge ${extFailed === 0 ? 'badge-pass' : 'badge-fail'}">${extPassRate}</span>` 
+                : '';
+            
             return `<div class="extension-card" data-name="${name.toLowerCase()}" data-priority="${meta.priority}" data-ext-name="${name}">
                 <div class="card-header" onclick="toggleCard(this)">
                     <div class="card-info">
@@ -1256,13 +1617,14 @@
                         <div class="extension-desc">${meta.description}</div>
                         <div class="card-meta">
                             <span class="badge badge-priority ${priorityClass}">${meta.priority}</span>
-                            <span class="badge badge-count">📸 ${result.total_screenshots}</span>
-                            <span class="badge badge-count">📄 ${result.total_reports}</span>
+                            ${passFailBadge}
+                            <span class="badge badge-count">🧪 ${result.total_features || 0} features</span>
+                            <span class="badge badge-count">📸 ${result.total_screenshots || 0}</span>
                         </div>
                     </div>
                     <span class="expand-icon">▼</span>
                 </div>
-                <div class="card-content">${testsHtml}</div>
+                <div class="card-content">${featuresHtml}</div>
             </div>`;
         }
         
@@ -1292,23 +1654,245 @@
             document.getElementById('lightbox').classList.remove('active');
         }
         
-        // Report Modal
-        let currentReportUrl = '';
+        // JSON Detail Modal
+        let currentJsonUrl = '';
+        let currentJsonData = null;
+        let currentDetailFolder = '';
+        let currentDetailExtName = '';
+        let currentDetailFeatureName = '';
         
-        function openReportModal(url, testName) {
-            currentReportUrl = url;
-            document.getElementById('reportModalTitle').textContent = testName + ' - Test Report';
-            document.getElementById('reportIframe').src = url;
-            document.getElementById('reportModal').classList.add('active');
+        function openJsonDetail(extName, featureName) {
+            document.getElementById('reportModalTitle').textContent = featureName + ' - Test Results';
+            
+            // Get data directly from manifest (embedded)
+            const extData = currentData?.results?.[extName];
+            const featureData = extData?.features?.[featureName];
+            
+            if (featureData?.full_data) {
+                currentJsonData = featureData.full_data;
+                currentJsonUrl = `${outputFolder}/${extData.folder}/${featureData.json_file}`;
+                currentDetailFolder = `${outputFolder}/${extData.folder}`;
+                currentDetailExtName = extName;
+                currentDetailFeatureName = featureName;
+                renderJsonDetail(currentJsonData, currentDetailFolder);
+                document.getElementById('reportModal').classList.add('active');
+            } else {
+                document.getElementById('reportModalContent').innerHTML = `
+                    <div style="padding: 2rem; color: var(--priority-high);">
+                        Test data not available. Re-run update_manifest.py to embed data.
+                    </div>
+                `;
+                document.getElementById('reportModal').classList.add('active');
+            }
+        }
+        
+        function renderJsonDetail(data, folderPath) {
+            const meta = data.metadata || {};
+            const scenarios = data.test_scenarios || [];
+            const observations = data.observations || [];
+            const summary = data.summary || {};
+            
+            // Store context for discard buttons
+            currentDetailExtName = meta.extension_name || '';
+            currentDetailFeatureName = meta.feature_name || '';
+            currentDetailFolder = folderPath;
+            
+            // Collect all screenshots for lightbox navigation
+            const allScreenshots = [];
+            scenarios.forEach(s => {
+                (s.steps || []).forEach(step => {
+                    if (step.screenshot) allScreenshots.push(step.screenshot);
+                });
+            });
+            
+            // Calculate active stats (excluding discarded)
+            let activePassed = 0;
+            let activeFailed = 0;
+            scenarios.forEach(s => {
+                const scenarioId = generateScenarioId(currentDetailExtName, currentDetailFeatureName, s.scenario_name);
+                if (getTestStatus(scenarioId) !== 'discarded') {
+                    if (s.status === 'PASS') activePassed++;
+                    else activeFailed++;
+                }
+            });
+            const activeTotal = activePassed + activeFailed;
+            const activePassRate = activeTotal > 0 ? `${Math.round(activePassed / activeTotal * 100)}%` : '0%';
+            
+            let html = `
+                <div class="json-detail">
+                    <div class="json-meta">
+                        <h2>${meta.feature_name || 'Unknown Feature'}</h2>
+                        <p>${meta.feature_description || ''}</p>
+                        <div class="json-meta-row">
+                            <span>Extension: <strong>${meta.extension_name}</strong></span>
+                            <span>Priority: <strong>${meta.feature_priority}</strong></span>
+                            <span>Test Date: <strong>${meta.test_date ? new Date(meta.test_date).toLocaleString() : 'N/A'}</strong></span>
+                        </div>
+                    </div>
+                    
+                    <div class="json-summary">
+                        <div class="summary-stat pass"><span class="num">${activePassed}</span><span class="label">Passed</span></div>
+                        <div class="summary-stat fail"><span class="num">${activeFailed}</span><span class="label">Failed</span></div>
+                        <div class="summary-stat total"><span class="num">${activePassRate}</span><span class="label">Pass Rate</span></div>
+                    </div>
+                    
+                    <div class="json-scenarios">
+                        <h3>Test Scenarios</h3>
+                        ${scenarios.map((s, idx) => {
+                            const scenarioId = generateScenarioId(currentDetailExtName, currentDetailFeatureName, s.scenario_name);
+                            const isDiscarded = getTestStatus(scenarioId) === 'discarded';
+                            const discardBtnText = isDiscarded ? '↩️ Restore' : '🗑️ Discard';
+                            const escapedScenarioName = s.scenario_name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                            
+                            return `
+                            <div class="json-scenario ${s.status === 'PASS' ? 'pass' : 'fail'} ${isDiscarded ? 'discarded' : ''}" data-detail-scenario-id="${scenarioId}">
+                                <div class="scenario-header">
+                                    <span class="status-icon">${s.status === 'PASS' ? '✅' : '❌'}</span>
+                                    <span class="scenario-title">${s.scenario_name}${isDiscarded ? ' <span class="discarded-badge">🗑️</span>' : ''}</span>
+                                    <button class="detail-discard-btn ${isDiscarded ? 'active' : ''}" onclick="toggleDetailScenarioDiscard('${scenarioId}', '${escapedScenarioName}')">${discardBtnText}</button>
+                                    <span class="status-badge ${s.status.toLowerCase()}">${s.status}</span>
+                                </div>
+                                <div class="scenario-steps">
+                                    ${(s.steps || []).map(step => {
+                                        const screenshotIdx = step.screenshot ? allScreenshots.indexOf(step.screenshot) : -1;
+                                        const screenshotJson = JSON.stringify(allScreenshots).replace(/"/g, '&quot;');
+                                        const screenshotHtml = step.screenshot ? `
+                                            <div class="step-screenshot-container">
+                                                <img src="${folderPath}/${step.screenshot}" 
+                                                     alt="${step.screenshot}" 
+                                                     class="step-screenshot-img"
+                                                     onclick="openDetailLightbox('${folderPath}', ${screenshotJson}, ${screenshotIdx})"
+                                                     loading="lazy">
+                                                <span class="step-screenshot-name">📸 ${step.screenshot}</span>
+                                            </div>
+                                        ` : '';
+                                        return `
+                                            <div class="step">
+                                                <div class="step-num">${step.step_number}</div>
+                                                <div class="step-content">
+                                                    <div class="step-action"><strong>Action:</strong> ${step.action}</div>
+                                                    <div class="step-expected"><strong>Expected:</strong> ${step.expected}</div>
+                                                    <div class="step-actual"><strong>Actual:</strong> ${step.actual}</div>
+                                                    ${screenshotHtml}
+                                                </div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                                ${s.issues && s.issues.length > 0 ? `
+                                    <div class="scenario-issues">
+                                        <strong>Issues:</strong>
+                                        <ul>${s.issues.map(i => `<li>${i}</li>`).join('')}</ul>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `}).join('')}
+                    </div>
+                    
+                    ${observations.length > 0 ? `
+                        <div class="json-observations">
+                            <h3>Observations</h3>
+                            <ul>${observations.map(o => `<li>${o}</li>`).join('')}</ul>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            document.getElementById('reportModalContent').innerHTML = html;
+        }
+        
+        function toggleDetailScenarioDiscard(scenarioId, scenarioName) {
+            const allStatus = getAllStatus();
+            
+            if (allStatus[scenarioId]?.status === 'discarded') {
+                delete allStatus[scenarioId];
+            } else {
+                allStatus[scenarioId] = { 
+                    status: 'discarded', 
+                    extName: currentDetailExtName, 
+                    featureName: currentDetailFeatureName, 
+                    scenarioName: scenarioName, 
+                    timestamp: Date.now() 
+                };
+            }
+            
+            saveAllStatus(allStatus);
+            
+            // Update the detail modal UI
+            const scenarioEl = document.querySelector(`[data-detail-scenario-id="${scenarioId}"]`);
+            if (scenarioEl) {
+                const isDiscarded = allStatus[scenarioId]?.status === 'discarded';
+                scenarioEl.classList.toggle('discarded', isDiscarded);
+                
+                const btn = scenarioEl.querySelector('.detail-discard-btn');
+                if (btn) {
+                    btn.classList.toggle('active', isDiscarded);
+                    btn.textContent = isDiscarded ? '↩️ Restore' : '🗑️ Discard';
+                }
+                
+                const title = scenarioEl.querySelector('.scenario-title');
+                let badge = title.querySelector('.discarded-badge');
+                if (isDiscarded && !badge) {
+                    title.insertAdjacentHTML('beforeend', ' <span class="discarded-badge">🗑️</span>');
+                } else if (!isDiscarded && badge) {
+                    badge.remove();
+                }
+            }
+            
+            // Update summary stats in the detail modal
+            updateDetailSummary();
+            
+            // Also update the main page
+            updateScenarioUI(scenarioId);
+            updateReviewPanel();
+        }
+        
+        function updateDetailSummary() {
+            if (!currentJsonData) return;
+            
+            const scenarios = currentJsonData.test_scenarios || [];
+            let activePassed = 0;
+            let activeFailed = 0;
+            
+            scenarios.forEach(s => {
+                const scenarioId = generateScenarioId(currentDetailExtName, currentDetailFeatureName, s.scenario_name);
+                if (getTestStatus(scenarioId) !== 'discarded') {
+                    if (s.status === 'PASS') activePassed++;
+                    else activeFailed++;
+                }
+            });
+            
+            const activeTotal = activePassed + activeFailed;
+            const activePassRate = activeTotal > 0 ? `${Math.round(activePassed / activeTotal * 100)}%` : '0%';
+            
+            // Update the summary stats
+            const passedEl = document.querySelector('.json-detail .summary-stat.pass .num');
+            const failedEl = document.querySelector('.json-detail .summary-stat.fail .num');
+            const rateEl = document.querySelector('.json-detail .summary-stat.total .num');
+            
+            if (passedEl) passedEl.textContent = activePassed;
+            if (failedEl) failedEl.textContent = activeFailed;
+            if (rateEl) rateEl.textContent = activePassRate;
+        }
+        
+        function openDetailLightbox(folder, images, index) {
+            // Don't close the modal - just open lightbox on top
+            currentLightboxImages = images.map(img => `${folder}/${img}`);
+            currentLightboxIndex = index;
+            updateLightbox();
+            document.getElementById('lightbox').classList.add('active');
         }
         
         function closeReportModal() {
             document.getElementById('reportModal').classList.remove('active');
-            document.getElementById('reportIframe').src = '';
+            document.getElementById('reportModalContent').innerHTML = '';
+            currentJsonData = null;
         }
         
         function openReportNewTab() {
-            window.open(currentReportUrl, '_blank');
+            if (currentJsonUrl) {
+                window.open(currentJsonUrl, '_blank');
+            }
         }
         
         document.addEventListener('keydown', (e) => {
@@ -1374,12 +1958,10 @@
                     const testItems = card.querySelectorAll('[data-test-id]');
                     const testIds = Array.from(testItems).map(el => el.dataset.testId);
                     
-                    if (statusFilter === 'pending') {
-                        matchesStatus = testIds.some(id => !getTestStatus(id));
-                    } else if (statusFilter === 'approved') {
-                        matchesStatus = testIds.some(id => getTestStatus(id) === 'approved');
-                    } else if (statusFilter === 'retry') {
-                        matchesStatus = testIds.some(id => getTestStatus(id) === 'retry');
+                    if (statusFilter === 'active') {
+                        matchesStatus = testIds.some(id => getTestStatus(id) !== 'discarded');
+                    } else if (statusFilter === 'discarded') {
+                        matchesStatus = testIds.some(id => getTestStatus(id) === 'discarded');
                     }
                 }
                 
