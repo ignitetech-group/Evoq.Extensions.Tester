@@ -62,15 +62,21 @@ def scan():
                         feature_name = test_data.get('metadata', {}).get('feature_name', file.stem.replace('_test_result', ''))
                         feature_key = feature_name.replace(' ', '_').replace('_', ' ')  # Normalize for matching
                         
-                        # Extract summary
+                        # Extract summary (handle case where summary might be a string)
                         summary = test_data.get('summary', {})
+                        if not isinstance(summary, dict):
+                            summary = {}
                         passed = summary.get('passed', 0)
                         failed = summary.get('failed', 0)
                         
                         # Collect all screenshots from steps
                         screenshots = []
                         for scenario in test_data.get('test_scenarios', []):
+                            if not isinstance(scenario, dict):
+                                continue
                             for step in scenario.get('steps', []):
+                                if not isinstance(step, dict):
+                                    continue
                                 if step.get('screenshot'):
                                     screenshots.append(step['screenshot'])
                         
@@ -88,14 +94,15 @@ def scan():
                                 {
                                     'name': s.get('scenario_name', 'Unknown'),
                                     'status': s.get('status', 'UNKNOWN'),
-                                    'issues': s.get('issues', []),
-                                    'step_count': len(s.get('steps', []))
+                                    'issues': s.get('issues', []) if isinstance(s.get('issues'), list) else [],
+                                    'step_count': len(s.get('steps', [])) if isinstance(s.get('steps'), list) else 0
                                 }
                                 for s in test_data.get('test_scenarios', [])
+                                if isinstance(s, dict)
                             ],
-                            'observations': test_data.get('observations', []),
+                            'observations': test_data.get('observations', []) if isinstance(test_data.get('observations'), list) else [],
                             'summary': summary,
-                            'metadata': test_data.get('metadata', {}),
+                            'metadata': test_data.get('metadata', {}) if isinstance(test_data.get('metadata'), dict) else {},
                             # Embed full test data to avoid fetch issues with local files
                             'full_data': test_data
                         }
