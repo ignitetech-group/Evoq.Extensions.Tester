@@ -258,6 +258,45 @@ If you cannot test something:
 - **Feature exists in code but not visible in UI?** → Do NOT create a test for it. Add a note in the report under "Observations": "Code suggests X feature exists, but no UI element found to test it."
 - **Previous test failed?** → That does NOT block subsequent tests. Each test is independent. Reset state if needed and continue.
 
+### CRITICAL: No Retroactive Test Creation (READ THIS!)
+
+**DO NOT rationalize unexpected behavior as "expected."**
+
+If you encounter an unexpected error, warning dialog, or failure during a planned test:
+1. **PAUSE** - Do not immediately assume it's "working correctly"
+2. **RESEARCH** - Examine the code to understand if this behavior is intentional
+3. **DECIDE** - Based on evidence, determine if this is a bug or expected behavior
+
+**Bad Example (DO NOT DO THIS):**
+```
+You're testing "Publish content" and an error dialog appears saying "Another user has changed the page state."
+WRONG: Create a new test "Handle publish conflicts" → status: PASS → "System correctly detected conflict"
+```
+This is WRONG because:
+1. You didn't plan to test conflict handling
+2. You assumed the error was expected without researching
+3. You retrofitted a test scenario to justify the error
+
+**Correct Approach:**
+```
+You're testing "Publish content" and an unexpected error dialog appears.
+
+STEP 1: Research the code
+- Look at the controller/service handling publish
+- Check if this error is intentionally thrown under specific conditions
+- Determine: Was this error SUPPOSED to happen in this context?
+
+STEP 2: Make an informed decision
+- If code shows this error is a BUG or shouldn't occur in your test context:
+  → Mark "Publish content" as FAIL → actual: "Unexpected error: [message]" → issue: "Publish failed with error that should not occur in this context"
+
+- If code CONFIRMS this is intentional behavior for your exact scenario:
+  → Mark "Publish content" as FAIL → actual: "Error dialog appeared: [message]" → Add to Observations: "Code confirms [error] is intentional when [condition]. Consider adding explicit test scenario for this in future."
+  → Do NOT create a new PASS test for it. Note it, but the original test still failed its objective.
+```
+
+**The Rule:** Never assume unexpected behavior is correct. Always research first. Even if research confirms the behavior is intentional, do NOT create retroactive test scenarios to inflate pass rates. Document findings in Observations instead.
+
 ### No Cascading Failures
 If Test A fails, Tests B/C/D are still tested independently. Do NOT mark tests as blocked because a prior test had issues. Find another path, reset the page, or start fresh. Every test gets a genuine attempt.
 
@@ -277,7 +316,7 @@ This ensures all screenshots are large and readable. DO NOT SKIP THIS STEP!
 2. **Login (Setup, NOT a test)** - Log in using the provided credentials. Take ONE screenshot to confirm login succeeded. This is setup, not a test - do not include it in test results.
 3. **Review the Code**: Examine the relevant files to understand exactly how this feature works
 4. **Navigate to Feature**: Use Playwright MCP to navigate to the feature's location in the UI
-5. **Execute Test Scenarios**: Test each scenario systematically. Each test is independent.
+5. **Explore and Execute Tests**: Based on the suggested scenarios, code review, AND what you observe in the UI, execute appropriate tests. Each test is independent.
 6. **Take Screenshots**: Capture EVERY step - before, during, and after each action
 7. **VERIFY Screenshots**: After EACH screenshot, use the Read tool to VIEW the image and confirm it captured the correct content
 8. **Document Results**: Note what worked, what failed, any issues found
