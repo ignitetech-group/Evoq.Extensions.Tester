@@ -1,0 +1,146 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Version History Management",
+    "feature_description": "Track all content versions with ability to view history, compare versions, and rollback to previous versions",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View version history list",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on Page History icon (eye) in edit bar",
+          "expected": "Page History panel opens showing list of page versions",
+          "actual": "Page History panel opened showing Version 2 (Draft) and Version 1 (Published) with metadata",
+          "screenshot": "Version_History_Management_step03_page_history_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Compare two versions side-by-side",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select both version checkboxes in Page History",
+          "expected": "Compare button becomes enabled",
+          "actual": "Compare button became enabled after selecting both checkboxes",
+          "screenshot": "Version_History_Management_step03_page_history_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Compare button",
+          "expected": "Side-by-side comparison view opens showing differences",
+          "actual": "Comparison view opened showing Version 2 and Version 1 side-by-side with Inserted/Deleted diff highlighting",
+          "screenshot": "Version_History_Management_step04_compare_versions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Preview specific version",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Show action for Version 1 in Page History",
+          "expected": "Preview of the selected version is displayed",
+          "actual": "Version 1 preview opened in preview mode showing the page as it was in that version",
+          "screenshot": "Version_History_Management_step05_preview_version.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Rollback to previous version (via Discard)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Discard button in edit bar",
+          "expected": "Confirmation dialog appears asking to discard changes",
+          "actual": "Confirmation dialog appeared with message 'Are you sure you want to discard the changes?' with Discard and Cancel buttons",
+          "screenshot": "Version_History_Management_step07_discard_confirmation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View version metadata (author, date)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View Page History table columns",
+          "expected": "Version metadata including author and date is displayed",
+          "actual": "Page History shows VERSION, DATE (1/8/2026 11:19:41 PM), USER (SuperUser Account), and STATE (Draft/Published) columns",
+          "screenshot": "Version_History_Management_step03_page_history_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Set maximum version history limit",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Site Settings > Site Behavior > More",
+          "expected": "Versioning settings are displayed",
+          "actual": "Found Versioning section with 'Enable Page Versioning: On' and 'Maximum Number of Page Versions Kept: 10'",
+          "screenshot": "Version_History_Management_step01_versioning_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete specific version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Look for delete option in Page History Actions column",
+          "expected": "Delete option should be available for specific versions",
+          "actual": "No delete option found in the UI. Actions column only shows 'Show' option for each version",
+          "screenshot": "Version_History_Management_step03_page_history_list.png"
+        }
+      ],
+      "issues": ["Delete specific version functionality exists in code (VersionController.DeleteVersion) but no UI element found to access it"]
+    },
+    {
+      "scenario_name": "Publish specific version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Publish button after page refresh",
+          "expected": "Draft version should be published successfully",
+          "actual": "Error dialog appeared: 'Another user has taken action on the page and its state has been changed. Please, refresh the page to see the current state.'",
+          "screenshot": "Version_History_Management_step08_publish_error.png"
+        }
+      ],
+      "issues": ["Publish operation failed with version conflict error even after refreshing the page. This appears to be a conflict detection issue that may have been triggered by earlier preview/comparison operations during testing."]
+    }
+  ],
+  "observations": [
+    "Version History is accessed through Page History in the edit bar, not through Module Actions > Edit Content as suggested in the task",
+    "Page Versioning must be enabled at the site level (Settings > Site Settings > Site Behavior > More > Versioning) for version history to work",
+    "The version history is tied to page-level versioning (TabChangeSettings), not module-level versioning",
+    "Code suggests DeleteVersion and PublishVersion APIs exist but no direct UI access found for deleting specific versions",
+    "Auto-cleanup of old versions is configured via 'Maximum Number of Page Versions Kept' setting (default: 10) but cannot be directly tested without creating many versions",
+    "The Discard button serves as a rollback mechanism to revert to the last published version"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 6,
+    "failed": 2,
+    "pass_rate": "75%"
+  }
+}

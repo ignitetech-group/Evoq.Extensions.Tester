@@ -1,0 +1,160 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Cookie Management for Analytics",
+    "feature_description": "Manages visitor ID and session cookies for tracking unique visitors and sessions across the site.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Create new visitor ID cookie",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enable EnableLegacyAnalyticsCookies in web.config and navigate to page",
+          "expected": "Analytics_VisitorId cookie should be created with a GUID value",
+          "actual": "Analytics_VisitorId cookie created with value '3582209a-4b5a-4406-8337-427a6bbc4b92' (GUID format)",
+          "screenshot": "Cookie_Management_for_Analytics_step03_cookies_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create new session cookie",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page with EnableLegacyAnalyticsCookies enabled",
+          "expected": "Analytics cookie should be created with SessionId, TabId, and ContentItemId",
+          "actual": "Analytics cookie created with value 'SessionId=afcb0ab8-2d97-4279-b691-4067b612607d&TabId=22&ContentItemId=-1'",
+          "screenshot": "Cookie_Management_for_Analytics_step03_cookies_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Update existing session cookie",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate from Our Products page (TabId=22) to News page",
+          "expected": "Analytics cookie TabId should update to reflect new page",
+          "actual": "Analytics cookie updated: TabId changed from 22 to 24, SessionId remained same (afcb0ab8-2d97-4279-b691-4067b612607d)",
+          "screenshot": "Cookie_Management_for_Analytics_step04_session_cookie_updated.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle cookie expiration (30 days for visitor)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check expiration time of Analytics_VisitorId cookie",
+          "expected": "Cookie should expire in approximately 30 days",
+          "actual": "Cookie expiration timestamp 1771163897 corresponds to ~30 days from creation time (verified via browser context API)",
+          "screenshot": "Cookie_Management_for_Analytics_step03_cookies_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle cookie expiration (configurable for session)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check expiration time of Analytics session cookie",
+          "expected": "Cookie should expire based on Analytics_SessionTimeOut setting (default 60 minutes)",
+          "actual": "Cookie expiration timestamp 1768575497 corresponds to ~60 minutes from creation time (default session timeout)",
+          "screenshot": "Cookie_Management_for_Analytics_step03_cookies_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test legacy analytics cookies enabled/disabled",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Set EnableLegacyAnalyticsCookies to false in web.config",
+          "expected": "Analytics cookies should not be created or should be immediately expired",
+          "actual": "When disabled, no Analytics_VisitorId or Analytics cookies are present (verified via browser context API returning empty array)",
+          "screenshot": "Cookie_Management_for_Analytics_step05_cookies_removed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Set EnableLegacyAnalyticsCookies to true in web.config",
+          "expected": "Analytics cookies should be created on page view",
+          "actual": "Cookies created successfully with proper values and expiration times",
+          "screenshot": "Cookie_Management_for_Analytics_step03_cookies_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify cookie paths are set correctly",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check path attribute of Analytics cookies",
+          "expected": "Cookie path should be set to application path or '/'",
+          "actual": "Both Analytics_VisitorId and Analytics cookies have path='/' as verified via browser context API",
+          "screenshot": "Cookie_Management_for_Analytics_step03_cookies_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test cookie removal when analytics disabled",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Disable EnableLegacyAnalyticsCookies and navigate to page",
+          "expected": "Existing analytics cookies should be expired/removed",
+          "actual": "After disabling and navigating, browser context API returned empty array for Analytics cookies - cookies successfully removed",
+          "screenshot": "Cookie_Management_for_Analytics_step05_cookies_removed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate session timeout configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review code for session timeout configuration",
+          "expected": "Session timeout should be configurable via portal settings",
+          "actual": "Code confirmed: PortalController.GetPortalSettingAsInteger('Analytics_SessionTimeOut', portalId, 60) - default 60 minutes, configurable per portal",
+          "screenshot": "Cookie_Management_for_Analytics_step03_cookies_created.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Cookies are HttpOnly by default - not accessible via JavaScript document.cookie API, only via browser context/developer tools",
+    "EnableLegacyAnalyticsCookies is not present in web.config by default, meaning legacy analytics cookies are disabled out-of-the-box",
+    "When legacy analytics is disabled, cookies are set with expiration DateTime.Now.AddMinutes(-1) which immediately expires them",
+    "Session timeout configuration requires portal-level settings access (Analytics_SessionTimeOut) - not tested via UI as no direct UI exists",
+    "The Analytics cookie uses multi-value format: SessionId=guid&TabId=int&ContentItemId=int",
+    "Cookie domain is set to 'localhost' in test environment, would be site domain in production"
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 9,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

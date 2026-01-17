@@ -1,0 +1,98 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Layout Versioning",
+    "feature_description": "Tracks changes to layouts and maintains version history for rollback and publishing workflows.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T10:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Publish version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Version Test Page in edit mode",
+          "expected": "Page opens in edit mode with Publish/Discard buttons visible",
+          "actual": "Page opened in edit mode with content 'Version 1 - Initial Content' and Publish/Discard buttons visible at bottom",
+          "screenshot": "Layout_Versioning_step05_version_test_page_edit.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Publish button to publish current version",
+          "expected": "Page version should be published successfully",
+          "actual": "Error dialog appeared: 'Another user has taken action on the page and its state has been changed. Please, refresh the page to see the current state.'",
+          "screenshot": "Layout_Versioning_step06_publish_conflict_error.png"
+        }
+      ],
+      "issues": ["Publish operation fails with page state conflict error - indicates versioning conflict detection but prevents normal publish workflow"]
+    },
+    {
+      "scenario_name": "Discard changes",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Discard button on Version Test Page",
+          "expected": "Confirmation dialog should appear asking to confirm discard",
+          "actual": "Confirmation dialog appeared: 'Are you sure you want to discard the changes?' with Cancel and Discard buttons",
+          "screenshot": "Layout_Versioning_step07_discard_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Confirm discard by clicking Discard button in dialog",
+          "expected": "Changes should be discarded and page should return to published state",
+          "actual": "Error dialog appeared: 'Another user has taken action on the page and its state has been changed. Please, refresh the page to see the current state.'",
+          "screenshot": "Layout_Versioning_step08_discard_conflict_error.png"
+        }
+      ],
+      "issues": ["Discard operation fails with same page state conflict error as Publish - both versioning operations blocked"]
+    },
+    {
+      "scenario_name": "Verify page versioning is enabled",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Site Settings > Site Behavior > More to check page versioning settings",
+          "expected": "Page versioning settings should be visible and configurable",
+          "actual": "Page Versioning settings found - Enable Page Versioning: ON, Max Versions: 10",
+          "screenshot": "Layout_Versioning_step02_versioning_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Access Version History UI",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter page edit mode and look for Version History option in Content Layout module",
+          "expected": "Version History UI should be accessible from Content Layout module as indicated in feature documentation",
+          "actual": "No Version History UI found in Content Layout module. Edit mode shows panes with Add Module options but no version history access. Code review confirms versioning is backend-only integrated with page workflow.",
+          "screenshot": "Layout_Versioning_step03_edit_mode_content_layout.png"
+        }
+      ],
+      "issues": ["Feature documentation indicates 'Page Edit Mode > Content Layout Module > Version History' but no such UI element exists - Layout Versioning is a backend feature only"]
+    }
+  ],
+  "observations": [
+    "Layout Versioning is a BACKEND feature integrated with DNN's page versioning system, not a standalone UI accessible from Content Layout module",
+    "Code review of VersionController.cs confirms versioning methods exist: TrackModuleChange, PublishVersion, RollBackVersion, DeleteVersion, GetLatestVersion, GetPublishedVersion, GetVersion (with caching)",
+    "The UI Location 'Page Edit Mode > Content Layout Module > Version History' mentioned in feature documentation does NOT exist as a visible UI element",
+    "Version operations (Publish/Discard) are controlled through page-level workflow buttons, not module-specific controls",
+    "Persistent page state conflict error prevents testing of actual versioning operations - both Publish and Discard fail with 'Another user has taken action' error",
+    "Test scenarios for 'Rollback to previous version', 'Delete version', 'Get latest version', 'Get published version', and 'Test version caching' could not be tested via UI as no direct UI access exists for these operations",
+    "The VersionRepository.cs uses stored procedures: ContentLayout_Versions_GetAll, ContentLayout_Versions_Get, ContentLayout_Versions_Delete, ContentLayout_Versions_Update, ContentLayout_Versions_Add"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 1,
+    "failed": 3,
+    "pass_rate": "25%"
+  }
+}

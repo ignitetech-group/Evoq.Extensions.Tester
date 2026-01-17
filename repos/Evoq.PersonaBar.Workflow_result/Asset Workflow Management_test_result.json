@@ -1,0 +1,172 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Workflow",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Asset Workflow Management",
+    "feature_description": "Apply workflows to files and assets, managing their approval process through workflow states.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T19:55:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Configure folder workflow setting",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Content > Assets and select My Website portal",
+          "expected": "Assets panel opens showing folders and files",
+          "actual": "Assets panel opened successfully showing folders and files",
+          "screenshot": "Asset_Workflow_Management_step01_folder_workflow_config.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click edit on WorkflowTestFolder to open folder settings",
+          "expected": "Folder settings panel opens with Details and Permissions tabs",
+          "actual": "Folder settings panel opened but showed error: 'Could not load type Dnn.PersonaBar.Library.Dto.Permissions'",
+          "screenshot": "Asset_Workflow_Management_step02_folder_save_error.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Select 'Content Approval' from Workflow dropdown and click Save",
+          "expected": "Folder workflow configuration saves successfully",
+          "actual": "JavaScript error: 'TypeError: Cannot read properties of undefined (reading getPermissions)' - Save failed",
+          "screenshot": "Asset_Workflow_Management_step03_new_folder_settings.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Create new folder 'WorkflowTest2026' and attempt to configure workflow",
+          "expected": "New folder workflow configuration saves successfully",
+          "actual": "Same JavaScript error occurred - folder workflow configuration cannot be saved due to permissions loading failure",
+          "screenshot": "Asset_Workflow_Management_step04_save_error_js.png"
+        }
+      ],
+      "issues": [
+        "Critical Bug: Cannot save folder workflow settings due to JavaScript error 'Cannot read properties of undefined (reading getPermissions)'",
+        "Permissions data fails to load when opening folder settings panel",
+        "Error message displayed: 'Could not load type Dnn.PersonaBar.Library.Dto.Permissions' from assembly",
+        "This bug blocks all Asset Workflow Management functionality"
+      ]
+    },
+    {
+      "scenario_name": "Apply workflow to new file upload",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to configure folder workflow before uploading file",
+          "expected": "Folder workflow configuration succeeds, allowing workflow to be applied to uploaded files",
+          "actual": "Unable to configure folder workflow due to permissions loading bug - cannot test file workflow application",
+          "screenshot": "Asset_Workflow_Management_step04_save_error_js.png"
+        }
+      ],
+      "issues": [
+        "Cannot test - blocked by folder workflow configuration bug",
+        "Files uploaded to folders with 'Direct Publish' workflow bypass approval process entirely"
+      ]
+    },
+    {
+      "scenario_name": "Complete workflow state for file",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access file with active workflow to test CompleteWorkflowState",
+          "expected": "File with workflow shows Workflow tab with Approve button",
+          "actual": "Cannot test - no files have workflow applied because folder workflow configuration fails",
+          "screenshot": "Asset_Workflow_Management_step04_save_error_js.png"
+        }
+      ],
+      "issues": [
+        "Cannot test - blocked by folder workflow configuration bug",
+        "Code review confirms CompleteWorkflowState API endpoint exists in AssetsWorkflowController.cs",
+        "Workflow tab only visible when file has active workflow (workflowTabVisible computed property)"
+      ]
+    },
+    {
+      "scenario_name": "Discard workflow state for file",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access file with active workflow to test DiscardWorkflowState",
+          "expected": "File with workflow shows Workflow tab with Discard button",
+          "actual": "Cannot test - no files have workflow applied because folder workflow configuration fails",
+          "screenshot": "Asset_Workflow_Management_step04_save_error_js.png"
+        }
+      ],
+      "issues": [
+        "Cannot test - blocked by folder workflow configuration bug",
+        "Code review confirms DiscardWorkflowState API endpoint exists in AssetsWorkflowController.cs"
+      ]
+    },
+    {
+      "scenario_name": "Discard draft file - verify deletion",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to test draft file discard behavior",
+          "expected": "Discarding a draft file that has never been published should delete the file",
+          "actual": "Cannot test - folder workflow configuration bug prevents creating draft files",
+          "screenshot": "Asset_Workflow_Management_step04_save_error_js.png"
+        }
+      ],
+      "issues": [
+        "Cannot test - blocked by folder workflow configuration bug",
+        "Code review confirms: If file.HasBeenPublished is false and workflow is discarded, file is deleted (fileHasBeenDeletedOnDiscard = true)"
+      ]
+    },
+    {
+      "scenario_name": "Add workflow note/comment to file",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to test adding workflow comment during state change",
+          "expected": "User can add message/comment when approving or discarding workflow",
+          "actual": "Cannot test - no files have workflow applied",
+          "screenshot": "Asset_Workflow_Management_step04_save_error_js.png"
+        }
+      ],
+      "issues": [
+        "Cannot test - blocked by folder workflow configuration bug",
+        "Code review confirms UserMessage parameter exists in WorkflowStateChangeRequest DTO"
+      ]
+    },
+    {
+      "scenario_name": "Check workflow history for file",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to view workflow history for file",
+          "expected": "Workflow tab shows history of state changes with timestamps and user info",
+          "actual": "Cannot test - Workflow tab not visible on files without active workflow or history",
+          "screenshot": "Asset_Workflow_Management_step04_save_error_js.png"
+        }
+      ],
+      "issues": [
+        "Cannot test - blocked by folder workflow configuration bug",
+        "Code review confirms workflowHistory property exists and is displayed in Workflow tab"
+      ]
+    }
+  ],
+  "observations": [
+    "Critical Bug Found: Folder settings cannot be saved due to permissions loading failure. Error: 'Cannot read properties of undefined (reading getPermissions)' occurs when clicking Save.",
+    "Additional Error: 'Could not load type Dnn.PersonaBar.Library.Dto.Permissions' from assembly 'Dnn.PersonaBar.Library, Version=10.1.1.0' - indicates a type loading issue in the backend.",
+    "The folder settings UI loads correctly and shows the Workflow dropdown with all available workflows (Direct Publish, Save Draft, Content Approval, etc.).",
+    "Created folder 'WorkflowTest2026' successfully, but cannot configure its workflow settings.",
+    "Code review confirms all workflow functionality exists: AssetsWorkflowController.cs has CompleteWorkflowState and DiscardWorkflowState endpoints.",
+    "WorkflowActions (WorkflowStartFileAction, WorkflowCompleteFileAction, WorkflowDiscardFileAction) are properly implemented.",
+    "The Workflow tab in file details only appears when workflowTabVisible() returns true - requires active workflow or workflow history.",
+    "This permissions loading bug appears to be a systemic issue affecting all folder editing operations in the Assets module."
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 0,
+    "failed": 7,
+    "pass_rate": "0%"
+  }
+}

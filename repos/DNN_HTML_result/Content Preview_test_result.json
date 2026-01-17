@@ -1,0 +1,131 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Content Preview",
+    "feature_description": "Preview content before publishing with token replacement and formatting applied",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T05:01:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Preview current draft",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Home page and enable edit mode",
+          "expected": "Edit mode enabled with module panes visible",
+          "actual": "Edit mode enabled successfully, module panes and Actions links visible",
+          "screenshot": "Content Preview_step01_edit_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click VIEW SITE dropdown in bottom toolbar and select Preview",
+          "expected": "Preview mode opens showing draft content",
+          "actual": "Preview mode opened successfully with page content displayed in preview iframe",
+          "screenshot": "Content Preview_step05_preview_mode_tokens_replaced.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Preview with tokens replaced",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View Token Replacement Test Module in edit mode",
+          "expected": "Module displays raw tokens like [User:DisplayName], [Portal:PortalName]",
+          "actual": "Module correctly shows raw token placeholders in edit mode",
+          "screenshot": "Content Preview_step12_token_module_edit_view.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Open Preview mode via VIEW SITE dropdown",
+          "expected": "Tokens should be replaced with actual values",
+          "actual": "All tokens correctly replaced: [User:DisplayName] became 'SuperUser Account', [User:Email] became 'chetan.verma@ignitetech.com', [Portal:PortalName] became 'My Website', [DateTime:Now] became '1/16/2026 5:00 AM'",
+          "screenshot": "Content Preview_step05_preview_mode_tokens_replaced.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Preview different versions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Pages panel in Persona Bar to find version history",
+          "expected": "Version history should be accessible for previewing different versions",
+          "actual": "Page shows 'Versioning: Off' - versioning is disabled on this page, no UI element available to access version history or preview different versions",
+          "screenshot": "Content Preview_step08_edit_mode_live_view.png"
+        }
+      ],
+      "issues": ["Versioning is disabled on the Home page. Code suggests version preview exists via DnnTabVersion URL parameter, but no UI element found to select and preview different versions when versioning is disabled."]
+    },
+    {
+      "scenario_name": "Preview mobile view - Tablet",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "In Preview mode, click VIEW SITE dropdown and select Tablet",
+          "expected": "Page should display in tablet-sized viewport with responsive layout",
+          "actual": "Tablet preview mode activated successfully - page displayed in narrower viewport with hamburger Menu button, responsive layout applied",
+          "screenshot": "Content Preview_step06_tablet_preview.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Preview mobile view - Phone",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "In Preview mode, click VIEW SITE dropdown and select Phone",
+          "expected": "Page should display in phone-sized viewport with mobile layout",
+          "actual": "Phone preview mode activated successfully - page displayed in narrow phone viewport with device frame, mobile-responsive layout with Menu button",
+          "screenshot": "Content Preview_step07_phone_preview.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Compare preview with live",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View Token Replacement Test Module in edit mode (live view)",
+          "expected": "Module shows raw tokens as stored in content",
+          "actual": "Edit mode displays raw tokens: [User:DisplayName], [User:Email], [Portal:PortalName], [Tab:TabName], [DateTime:Now], etc.",
+          "screenshot": "Content Preview_step12_token_module_edit_view.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Compare with Preview mode view",
+          "expected": "Preview mode shows tokens replaced with actual runtime values",
+          "actual": "Preview mode correctly replaces all tokens with actual values. Clear difference visible between edit mode (raw tokens) and preview mode (replaced values)",
+          "screenshot": "Content Preview_step05_preview_mode_tokens_replaced.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code suggests version preview feature exists (EditHtml.ascx has VersionPreview button functionality, preview URL uses DnnTabVersion parameter), but no UI element found to test version preview when page versioning is disabled",
+    "CKEditor's built-in Preview button opens content in a new tab showing raw HTML without token replacement - this is expected behavior as it's a CKEditor feature, not DNN preview",
+    "Page-level Preview mode (VIEW SITE > Preview) correctly applies token replacement using FormatHtmlText method in HtmlTextController.cs",
+    "Portrait/Landscape toggle options available in mobile preview modes (Tablet/Phone)",
+    "Invalid tokens like [Invalid:Token] display error messages in preview: 'Error accessing [Invalid:Token], Invalid is an unknown datasource'"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 5,
+    "failed": 1,
+    "pass_rate": "83%"
+  }
+}

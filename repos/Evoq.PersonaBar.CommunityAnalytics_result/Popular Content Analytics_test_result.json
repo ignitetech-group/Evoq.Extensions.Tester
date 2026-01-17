@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.CommunityAnalytics",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Popular Content Analytics",
+    "feature_description": "Shows most popular content across the community with view counts and engagement metrics",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Community Analytics Module",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login as SuperUser (host/Pass123456)",
+          "expected": "User successfully logged in with access to PersonaBar",
+          "actual": "User successfully logged in. PersonaBar visible with Dashboard, Content, Manage, Settings options.",
+          "screenshot": "Popular_Content_Analytics_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to PersonaBar > Dashboard and hover to reveal submenu",
+          "expected": "Dashboard submenu shows Site Analytics and Community Analytics options",
+          "actual": "Dashboard submenu expanded showing 'Site Analytics' and 'Community Analytics' menu items",
+          "screenshot": "Popular_Content_Analytics_step01_dashboard_menu.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click on Community Analytics to open the module",
+          "expected": "Community Analytics dashboard loads with Popular Content section visible",
+          "actual": "Community Analytics panel is completely blank/white. Module fails to load due to JavaScript error: 'TypeError: utility.serializeCustomDate is not a function' in social-dashboard-combined-instance.js:1025",
+          "screenshot": "Popular_Content_Analytics_step02_community_analytics.png"
+        }
+      ],
+      "issues": [
+        "CRITICAL BUG: Community Analytics module fails to initialize due to JavaScript error",
+        "Error: TypeError: utility.serializeCustomDate is not a function",
+        "Error location: dashboardClass.init() in social-dashboard-combined-instance.js:1025",
+        "The utility object does not have the serializeCustomDate method available when the module initializes",
+        "This prevents ALL Community Analytics functionality including Popular Content Analytics from being accessible"
+      ]
+    },
+    {
+      "scenario_name": "View popular content for different time periods",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access Popular Content section in Community Analytics",
+          "expected": "Popular Content section visible with time period options (Day/Week/Month/Year/Custom)",
+          "actual": "Unable to test - Community Analytics module fails to load due to JavaScript error",
+          "screenshot": "Popular_Content_Analytics_step02_community_analytics.png"
+        }
+      ],
+      "issues": ["Blocked by critical bug preventing Community Analytics module from loading"]
+    },
+    {
+      "scenario_name": "Navigate through paginated content results",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access Popular Content pagination controls",
+          "expected": "Pagination controls (prev/next) visible for navigating content results",
+          "actual": "Unable to test - Community Analytics module fails to load due to JavaScript error",
+          "screenshot": "Popular_Content_Analytics_step02_community_analytics.png"
+        }
+      ],
+      "issues": ["Blocked by critical bug preventing Community Analytics module from loading"]
+    },
+    {
+      "scenario_name": "Test content sorting by popularity",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to view popular content sorted by engagement metrics",
+          "expected": "Content items displayed with engagement percentages, sorted by popularity",
+          "actual": "Unable to test - Community Analytics module fails to load due to JavaScript error",
+          "screenshot": "Popular_Content_Analytics_step02_community_analytics.png"
+        }
+      ],
+      "issues": ["Blocked by critical bug preventing Community Analytics module from loading"]
+    },
+    {
+      "scenario_name": "Test empty data state",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to view Popular Content section with no data available",
+          "expected": "Message 'No Popular Content' displayed when no data available",
+          "actual": "Unable to test - Community Analytics module fails to load due to JavaScript error",
+          "screenshot": "Popular_Content_Analytics_step02_community_analytics.png"
+        }
+      ],
+      "issues": ["Blocked by critical bug preventing Community Analytics module from loading"]
+    }
+  ],
+  "observations": [
+    "CRITICAL: The Community Analytics module has a JavaScript initialization error that prevents it from loading entirely",
+    "The error 'TypeError: utility.serializeCustomDate is not a function' occurs in social-dashboard-combined-instance.js at line 1025",
+    "Code review shows the analytics.js file calls utility.serializeCustomDate() during initialization, but this method is not available on the utility object",
+    "The Popular Content section is defined in social-dashboard.html with a 'popularContent' Knockout.js binding that displays content items with engagement percentages",
+    "The backend API (CommunityAnalyticsController.cs) has GetPopularContent and GetModulePopularContent endpoints that appear to be correctly implemented",
+    "This is a frontend JavaScript dependency issue, not a backend API issue",
+    "All planned test scenarios for Popular Content Analytics are blocked by this critical bug"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 0,
+    "failed": 5,
+    "pass_rate": "0%"
+  }
+}

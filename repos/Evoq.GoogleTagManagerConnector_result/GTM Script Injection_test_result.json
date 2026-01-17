@@ -1,0 +1,145 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleTagManagerConnector",
+    "extension_type": "Connector",
+    "feature_name": "GTM Script Injection",
+    "feature_description": "Injects Google Tag Manager JavaScript code into page headers for tracking and analytics",
+    "feature_priority": "Top",
+    "test_date": "2026-01-16T14:56:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify no script injection when container ID is empty",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to DNN website and login as superuser",
+          "expected": "Login successful, Connectors panel accessible",
+          "actual": "Successfully logged in as SuperUser Account, Connectors panel opened showing GTM with 'Connect' button (not configured)",
+          "screenshot": "GTM_Script_Injection_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check page source for GTM script before configuration",
+          "expected": "No GTM script should be present in page head when container ID is empty",
+          "actual": "Verified using browser evaluate: hasGTMInHead=false, gtmScriptCount=0 - no GTM script present",
+          "screenshot": "GTM_Script_Injection_step01_no_gtm_before_config.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify GTM script appears in page head when container configured",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Configure GTM container ID in database (bypassing UI validation for testing)",
+          "expected": "Container ID 'GTM-TEST123' should be set in PortalSettings",
+          "actual": "Successfully inserted GTMContainerId='GTM-TEST123' into PortalSettings table via direct SQL",
+          "screenshot": "GTM_Script_Injection_step02_gtm_config_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Recycle IIS app pool and refresh page",
+          "expected": "GTM script should appear in page head",
+          "actual": "After app pool recycle, verified GTM script injection: hasGTMInHead=true, gtmContainerIdFound='GTM-TEST123'",
+          "screenshot": "GTM_Script_Injection_step04_gtm_script_injected.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify container ID is correctly substituted in script",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examine injected GTM script for container ID substitution",
+          "expected": "Container ID 'GTM-TEST123' should be present in script src URL",
+          "actual": "Verified using regex match: gtmContainerIdFound='GTM-TEST123', script URL contains 'googletagmanager.com/gtm.js?id=GTM-TEST123'",
+          "screenshot": "GTM_Script_Injection_step04_gtm_script_injected.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify dataLayer initialization",
+          "expected": "dataLayer should be initialized with GTM configuration",
+          "actual": "Confirmed hasDataLayer=true, dataLayer is properly initialized with GTM configuration",
+          "screenshot": "GTM_Script_Injection_step04_gtm_script_injected.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify script injects on CDefault pages",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check GTM script presence on public page (Default.aspx)",
+          "expected": "GTM script should be present on CDefault pages",
+          "actual": "GTM script is present on Default.aspx (public page): hasGTMInHead=true, hasContainerId=true",
+          "screenshot": "GTM_Script_Injection_step04_gtm_script_injected.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check GTM script presence on admin page (/Admin/Extensions)",
+          "expected": "GTM script should also be present on admin pages (they also use CDefault)",
+          "actual": "GTM script IS present on Admin/Extensions page: hasGTMInHead=true, hasContainerId=true. Note: In DNN, both public and admin portal pages use CDefault class, so GTM injects on all portal pages as designed.",
+          "screenshot": "GTM_Script_Injection_step05_admin_page_with_gtm.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test script injection after configuration changes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Change container ID from 'GTM-TEST123' to 'GTM-CHANGED99' in database",
+          "expected": "New container ID should be reflected in injected script after cache clear",
+          "actual": "Updated PortalSettings to GTMContainerId='GTM-CHANGED99'",
+          "screenshot": "GTM_Script_Injection_step06_config_change.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Recycle IIS app pool and verify new container ID",
+          "expected": "Script should use new container ID 'GTM-CHANGED99'",
+          "actual": "Verified configuration change: hasOldContainerId=false (GTM-TEST123 NOT present), hasNewContainerId=true (GTM-CHANGED99 IS present), currentContainerId='GTM-CHANGED99'",
+          "screenshot": "GTM_Script_Injection_step06_config_change.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Container ID validation rejects invalid IDs",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to save invalid container ID 'GTM-XXXXXX' via UI",
+          "expected": "Validation error should be displayed for invalid container ID",
+          "actual": "Error displayed: 'The Container Id is invalid or container hasn't been published yet.' - Validation correctly rejects non-existent container IDs",
+          "screenshot": "GTM_Script_Injection_step03_validation_error.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "UI validation requires an actual published GTM container ID that exists on Google's servers. The validation calls https://www.googletagmanager.com/gtm.js?id={containerId} and expects HTTP 200 response.",
+    "Script injection was tested by directly setting the portal setting in the database to bypass UI validation, which is a valid testing approach for verifying the injection functionality.",
+    "Both public pages and admin pages in DNN use the CDefault page class, so GTM script is injected on all portal pages (both public and admin). This is by design - the code checks 'if (!(page is CDefault)) return;' which excludes non-DNN handlers like static files and API endpoints.",
+    "Configuration changes require an IIS app pool recycle to take effect due to DNN's portal settings caching.",
+    "The GTM script template is also cached with key 'GoogleTagManagerScript' and uses file-based cache dependency on GoogleTagManager.config"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

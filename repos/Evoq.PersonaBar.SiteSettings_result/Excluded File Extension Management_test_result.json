@@ -1,0 +1,138 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.SiteSettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Excluded File Extension Management",
+    "feature_description": "Manages file extensions that should be excluded from indexing and crawling",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View list of all excluded extensions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Site Settings > Search > File Extensions tab",
+          "expected": "File Extensions page should display with Excluded File Extensions section",
+          "actual": "File Extensions page displayed correctly with both Included and Excluded sections",
+          "screenshot": "Excluded_File_Extension_Management_step02_view_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Viewed the Excluded File Extensions list",
+          "expected": "List should display all excluded extensions with delete buttons",
+          "actual": "List displayed 8 extensions: .htmtemplate, .ico, .template, .ttf, .woff, .xml, .xsd, .xsl with trash icons for deletion",
+          "screenshot": "Excluded_File_Extension_Management_step10_delete_confirmation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with empty extension value",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked Add File Type button in Excluded File Extensions section",
+          "expected": "Add form should open with File Extension input field",
+          "actual": "Add form opened with File Extension input, Cancel and Save buttons",
+          "screenshot": "Excluded_File_Extension_Management_step06_excluded_form_visible.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Save with empty input field",
+          "expected": "Validation error should appear preventing save",
+          "actual": "Validation error displayed - red border and error icon on empty field, save prevented",
+          "screenshot": "Excluded_File_Extension_Management_step07_empty_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add extension without leading dot (tmp)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Entered 'tmp' (without leading dot) in File Extension field",
+          "expected": "Validation should reject extension without leading dot",
+          "actual": "Validation correctly rejected - red border and error icon displayed",
+          "screenshot": "Excluded_File_Extension_Management_step08_no_dot_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add extension with leading dot (.tmp)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Entered '.tmp' (with leading dot) in File Extension field",
+          "expected": "Frontend validation should pass for valid format",
+          "actual": "Frontend validation passed - no red border or error icon",
+          "screenshot": "Excluded_File_Extension_Management_step09_save_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Save button to add .tmp extension",
+          "expected": "Extension should be added to the excluded list",
+          "actual": "Server returned 500 Internal Server Error - extension was NOT added",
+          "screenshot": "Excluded_File_Extension_Management_step09_save_error.png"
+        }
+      ],
+      "issues": ["500 Internal Server Error when attempting to save new excluded extension. The SearchCrawler module dependency may not be properly configured."]
+    },
+    {
+      "scenario_name": "Add duplicate excluded extension",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to add a new extension to test duplicate handling",
+          "expected": "Should be able to add extension first, then test duplicate",
+          "actual": "Could not test duplicate scenario because add functionality fails with 500 error",
+          "screenshot": "Excluded_File_Extension_Management_step09_save_error.png"
+        }
+      ],
+      "issues": ["Unable to test duplicate extension validation because the add functionality fails with 500 Internal Server Error. The duplicate validation logic exists in code but cannot be verified via UI."]
+    },
+    {
+      "scenario_name": "Delete excluded file extension",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked delete (trash) icon for .xsl extension",
+          "expected": "Confirmation dialog should appear",
+          "actual": "Confirmation dialog appeared with message 'Are you sure you want to delete .xsl?' with No and Yes buttons",
+          "screenshot": "Excluded_File_Extension_Management_step10_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Yes to confirm deletion",
+          "expected": ".xsl should be removed from the excluded extensions list",
+          "actual": ".xsl was successfully removed - list now shows 7 extensions",
+          "screenshot": "Excluded_File_Extension_Management_step11_delete_success.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The SearchCrawler module dependency (DotNetNuke.Professional.SearchCrawler.FileCrawling) appears to not be properly configured, causing 500 Internal Server Error when adding new excluded extensions.",
+    "Frontend validation works correctly - rejects empty values and extensions without leading dot.",
+    "Delete functionality works correctly with confirmation dialog.",
+    "Code shows duplicate extension handling returns 'errorDuplicateFileExtension' error, but this could not be verified via UI due to add functionality failure.",
+    "The validateExtension() function in frontend requires extensions to start with '.' and contain only letters (A-Za-z) after the dot."
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 4,
+    "failed": 2,
+    "pass_rate": "67%"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Users",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "User Activity Redux State Management",
+    "feature_description": "Manage user activity data in Redux store with proper state updates",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T12:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify RETRIEVED_USER_ACTIVITY_DETAILS updates state",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Users panel in PersonaBar",
+          "expected": "Users list should be displayed",
+          "actual": "Users list displayed with 21 entries showing Name, Email, and Joined columns",
+          "screenshot": "User_Activity_Redux_State_Management_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click User Activity button for user 'Claude TestCreate'",
+          "expected": "User activity details should load and display",
+          "actual": "User activity panel expanded showing: Last Active (4 minutes ago), Rank (14), Reputation (5), Experience (5), Engagement (0), Influence (0), Total Contributions (0), and Recent Activity (Joined Site 4 minutes ago - Evoq Content Library)",
+          "screenshot": "User_Activity_Redux_State_Management_step01_activity_details_loaded.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify state cleanup on user change",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "With Claude TestCreate activity panel open, click User Activity for 'Test Regular User'",
+          "expected": "State should update with new user's activity data",
+          "actual": "Activity panel updated to show Test Regular User's data: Last Active (1 minute ago), Rank (5), Reputation (10), Experience (22), Engagement (0), Influence (3), Total Contributions (0), Recent Activity (Joined Site 56 minutes ago - Evoq Content Library). Previous user's data was properly replaced.",
+          "screenshot": "User_Activity_Redux_State_Management_step02_state_update_on_user_change.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Redux state management for user activity follows standard patterns - the reducer handles RETRIEVED_USER_ACTIVITY_DETAILS and RETRIEVED_USER__RECENT_ACTIVITIES action types",
+    "State structure matches expected shape with userActivityDetails object containing rank, reputation, experience, engagement, influence, contributions, and recentActivities",
+    "Component re-renders properly when Redux state is updated, as evidenced by UI displaying correct data for each user",
+    "State persistence during tab switches could not be directly tested via UI as it requires observing internal Redux store state, but the fact that activity data loads correctly each time suggests proper state management"
+  ],
+  "summary": {
+    "total_scenarios": 2,
+    "passed": 2,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

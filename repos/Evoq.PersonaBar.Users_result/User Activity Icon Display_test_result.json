@@ -1,0 +1,67 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Users",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "User Activity Icon Display",
+    "feature_description": "Show activity indicator icon for users with viewable activities",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Display activity icon for regular users",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Users panel in PersonaBar",
+          "expected": "User list should display with activity icons visible for regular users",
+          "actual": "User list displayed correctly with activity icons (running person icon) visible for all regular users including EmptyTest User, Test Regular User, Test NewUser, Regular TestUser, Claude TestUser, etc.",
+          "screenshot": "User_Activity_Icon_Display_step01_users_panel_with_activity_icons.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Hide activity icon for SuperUsers",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for 'host' to find SuperUser Account",
+          "expected": "SuperUser should NOT have activity icon displayed",
+          "actual": "SuperUser Account (host) displayed with only Profile Settings, Account Settings, and menu icons - NO activity icon was shown, confirming the code logic that returns false for isSuperUser",
+          "screenshot": "User_Activity_Icon_Display_step02_superuser_no_activity_icon.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify icon click opens activity tab",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked on User Activity icon for Claude TestCreate user",
+          "expected": "User Activity details panel should open showing activity information",
+          "actual": "User Activity panel expanded showing: Last Active (1 minute ago), Rank (14), Reputation (5), Experience (5), Edit Points button, Engagement (0), Influence (0), Total Contributions (0), and Recent Activity (Joined Site 1 minute ago - EVOQ CONTENT LIBRARY)",
+          "screenshot": "User_Activity_Icon_Display_step03_activity_tab_opened.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code in permissionHelpers.js:20-22 shows showUserActivity() returns false when user.isSuperUser is true, which matches observed behavior",
+    "Activity icon uses SvgIcons.ActivityIcon from dnn-react-common library",
+    "UserActivityDetails component renders the full activity panel with Last Active, Rank, Reputation, Experience, Engagement, Influence, Total Contributions, and Recent Activity",
+    "SHOW_USER_ACTIVITY permission is required for non-admin users to see activity icons (not tested as logged in as admin)"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

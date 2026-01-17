@@ -1,0 +1,132 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.CommunityAnalytics",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Comparative Analytics",
+    "feature_description": "Compare analytics data between two different time periods to identify trends",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Community Analytics Module",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login to DNN site as SuperUser",
+          "expected": "Login successful and PersonaBar visible",
+          "actual": "Login successful, PersonaBar visible with Dashboard menu",
+          "screenshot": "Comparative_Analytics_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Dashboard > Community Analytics in PersonaBar",
+          "expected": "Community Analytics panel should open showing analytics dashboard with period selectors and comparison options",
+          "actual": "Community Analytics menu item highlighted but panel content area remained empty/blank. JavaScript error occurred: TypeError: utility.serializeCustomDate is not a function at social-dashboard-combined-instance.js:1025",
+          "screenshot": "Comparative_Analytics_step02_panel_state.png"
+        }
+      ],
+      "issues": [
+        "Critical JavaScript error prevents Community Analytics module from loading: 'TypeError: utility.serializeCustomDate is not a function'",
+        "The error occurs in social-dashboard-combined-instance.js at line 1025 during module initialization",
+        "The utility.serializeCustomDate function is expected but not available in the PersonaBar utility object"
+      ]
+    },
+    {
+      "scenario_name": "Compare current vs previous period",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to navigate to Community Analytics to test period comparison",
+          "expected": "Should be able to select a time period and view comparison with previous period",
+          "actual": "Cannot test - Community Analytics module fails to load due to JavaScript error",
+          "screenshot": "Comparative_Analytics_step02_panel_state.png"
+        }
+      ],
+      "issues": [
+        "Test cannot be executed - Community Analytics module does not render due to JavaScript initialization error"
+      ]
+    },
+    {
+      "scenario_name": "View percentage changes",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access analytics dashboard to view percentage changes between periods",
+          "expected": "Should display percentage changes showing increase/decrease from previous period",
+          "actual": "Cannot test - Community Analytics module fails to load due to JavaScript error",
+          "screenshot": "Comparative_Analytics_step02_panel_state.png"
+        }
+      ],
+      "issues": [
+        "Test cannot be executed - Community Analytics module does not render due to JavaScript initialization error"
+      ]
+    },
+    {
+      "scenario_name": "Test trend indicators (up/down)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access analytics dashboard to verify trend indicators",
+          "expected": "Should display up/down trend indicators based on comparison data",
+          "actual": "Cannot test - Community Analytics module fails to load due to JavaScript error",
+          "screenshot": "Comparative_Analytics_step02_panel_state.png"
+        }
+      ],
+      "issues": [
+        "Test cannot be executed - Community Analytics module does not render due to JavaScript initialization error"
+      ]
+    },
+    {
+      "scenario_name": "Test with no previous data",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access analytics dashboard to test behavior with no previous data",
+          "expected": "Should handle gracefully when no previous period data exists",
+          "actual": "Cannot test - Community Analytics module fails to load due to JavaScript error",
+          "screenshot": "Comparative_Analytics_step02_panel_state.png"
+        }
+      ],
+      "issues": [
+        "Test cannot be executed - Community Analytics module does not render due to JavaScript initialization error"
+      ]
+    },
+    {
+      "scenario_name": "Compare across different period types",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access analytics dashboard to test different period types (Year/Month/Week/Day)",
+          "expected": "Should be able to switch between Year, Month, Week, Day periods and see comparative data",
+          "actual": "Cannot test - Community Analytics module fails to load due to JavaScript error",
+          "screenshot": "Comparative_Analytics_step02_panel_state.png"
+        }
+      ],
+      "issues": [
+        "Test cannot be executed - Community Analytics module does not render due to JavaScript initialization error"
+      ]
+    }
+  ],
+  "observations": [
+    "Critical Bug: The Community Analytics module fails to initialize due to a missing utility function. The error 'TypeError: utility.serializeCustomDate is not a function' occurs at social-dashboard-combined-instance.js:1025",
+    "Code review shows the serializeCustomDate function is called extensively in analytics.js, social-dashboard-instance.js, and social-dashboard-combined-instance.js to handle date serialization for the comparative analytics feature",
+    "The utility object is provided by the PersonaBar framework but appears to be missing the serializeCustomDate method at runtime",
+    "The API endpoints in CommunityAnalyticsController.cs support comparative analytics with 'comparativeTerm' parameter supporting values like '1 y', '1 m', '1 w', '1 d' for comparing periods",
+    "The feature code exists and is designed to allow Year, Month, Week, Day period comparisons with custom date range support, but cannot be tested due to the initialization failure",
+    "All planned test scenarios for Comparative Analytics feature cannot be executed because the UI does not render"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 0,
+    "failed": 6,
+    "pass_rate": "0%"
+  }
+}

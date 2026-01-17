@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "Post Pinning",
+    "feature_description": "Pin important posts to the top of the activity stream (moderator feature)",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T15:42:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Pin a post as moderator",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Community page with Activity Stream",
+          "expected": "Activity Stream module is visible with posts",
+          "actual": "Activity Stream module loaded with multiple posts visible",
+          "screenshot": "Post_Pinning_step01_activity_stream_overview.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Identify a post with Pin option (Test text-only post - January 16, 2026)",
+          "expected": "Post shows Pin link for moderator user",
+          "actual": "Post displayed with Pin link available in the actions row",
+          "screenshot": "Post_Pinning_step03_before_pinning_post.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Pin link on the selected post",
+          "expected": "Post is pinned and Pin link changes to Unpin",
+          "actual": "Post was pinned successfully, Pin link changed to Unpin link",
+          "screenshot": "Post_Pinning_step04_post_pinned_shows_unpin.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify pinned post appears at top",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After pinning the post, observe the Activity Stream order",
+          "expected": "Pinned post should move to the top of the activity stream",
+          "actual": "The pinned post moved to the first position in the activity stream with Unpin link visible",
+          "screenshot": "Post_Pinning_step05_pinned_post_at_top.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify the pinned post displays Unpin option",
+          "expected": "Pinned post shows Unpin link instead of Pin",
+          "actual": "Post correctly displays Unpin link, confirming pinned status",
+          "screenshot": "Post_Pinning_step06_pinned_post_visible_with_unpin.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Unpin a previously pinned post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Unpin link on the pinned post",
+          "expected": "Post is unpinned and returns to its natural chronological position",
+          "actual": "Post was unpinned, Unpin link changed back to Pin link, and post moved back to its natural position in the stream",
+          "screenshot": "Post_Pinning_step07_post_unpinned.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify pin status across page refresh",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Refresh the page using browser navigation",
+          "expected": "Page reloads and pin status is preserved",
+          "actual": "Page reloaded successfully",
+          "screenshot": "Post_Pinning_step08_pin_status_after_refresh.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify pinned posts still show Unpin link and remain at top",
+          "expected": "Pinned posts retain their pinned status after refresh",
+          "actual": "Pinned posts (Test post from Claude automated testing - January 9, 2026) still displayed at top with Unpin link; previously unpinned post (Test text-only post - January 16, 2026) remained unpinned with Pin link",
+          "screenshot": "Post_Pinning_step08_pin_status_persisted.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The TogglePin API endpoint in ActivityStreamServicesController.cs requires DnnAuthorize and ValidateAntiForgeryToken attributes for security",
+    "Pin functionality uses ActivityModuleSecurity.CanModerate permission check to restrict pinning to moderators only",
+    "The UpdatePinStatus method in ActivityStreamController.cs toggles the pin status in the database via stored procedure ActivityStream_Toggle_Pin",
+    "UI uses .actStr_pinLink class for the pin/unpin button and adds journal-row-pinned CSS class when a post is pinned",
+    "Multiple posts can be pinned simultaneously - they all appear at the top of the stream"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

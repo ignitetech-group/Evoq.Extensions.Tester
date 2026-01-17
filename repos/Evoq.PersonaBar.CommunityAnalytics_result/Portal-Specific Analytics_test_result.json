@@ -1,0 +1,146 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.CommunityAnalytics",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Portal-Specific Analytics",
+    "feature_description": "Isolation of analytics data per portal in multi-portal installations",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Host User Access to Community Analytics",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login as host user (SuperUser Account)",
+          "expected": "Successfully logged in with host credentials",
+          "actual": "Successfully logged in as SuperUser Account",
+          "screenshot": "Portal-Specific_Analytics_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Hover over Dashboard menu in PersonaBar",
+          "expected": "Dashboard submenu appears with Community Analytics option",
+          "actual": "Dashboard submenu appeared showing Site Analytics and Community Analytics options",
+          "screenshot": "Portal-Specific_Analytics_step02_community_analytics_attempt.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify Community Analytics menu item is visible and accessible to host user",
+          "expected": "Community Analytics option is visible and clickable for host user",
+          "actual": "Community Analytics menu item is visible and clickable in Dashboard submenu",
+          "screenshot": "Portal-Specific_Analytics_step02_community_analytics_attempt.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Community Analytics Panel Loading",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on Community Analytics menu option",
+          "expected": "Community Analytics panel loads with analytics dashboard interface",
+          "actual": "Panel content area is blank/empty - panel fails to load",
+          "screenshot": "Portal-Specific_Analytics_step01_js_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check browser console for errors",
+          "expected": "No JavaScript errors",
+          "actual": "JavaScript error: TypeError: utility.serializeCustomDate is not a function at dashboardClass.init",
+          "screenshot": "Portal-Specific_Analytics_step02_community_analytics_attempt.png"
+        }
+      ],
+      "issues": [
+        "Critical JavaScript error prevents Community Analytics panel from loading: 'utility.serializeCustomDate is not a function'",
+        "Panel content area remains blank after clicking Community Analytics menu option",
+        "This bug blocks all UI-based testing of Portal-Specific Analytics functionality"
+      ]
+    },
+    {
+      "scenario_name": "Verify Portal Data Isolation",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to view Community Analytics data to verify portal isolation",
+          "expected": "Analytics data displayed should be filtered by current portal ID",
+          "actual": "Cannot verify - Community Analytics panel fails to load due to JavaScript error",
+          "screenshot": "Portal-Specific_Analytics_step02_community_analytics_attempt.png"
+        }
+      ],
+      "issues": [
+        "Cannot test portal data isolation through UI due to panel load failure",
+        "Code review confirms backend implements portal isolation via EffectivePortalId property"
+      ]
+    },
+    {
+      "scenario_name": "Test Cross-Portal Data Prevention",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access analytics data from another portal",
+          "expected": "Data from other portals should not be accessible",
+          "actual": "Cannot verify - Single portal environment and Community Analytics panel fails to load",
+          "screenshot": "Portal-Specific_Analytics_step02_community_analytics_attempt.png"
+        }
+      ],
+      "issues": [
+        "Cannot test cross-portal data prevention: (1) Single portal test environment, (2) Panel load failure",
+        "Code review shows API endpoints use EffectivePortalId which should prevent cross-portal access"
+      ]
+    },
+    {
+      "scenario_name": "Validate Portal ID Handling",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify portal ID is correctly passed in API requests",
+          "expected": "API calls include correct portal ID parameter",
+          "actual": "Cannot verify API calls - Community Analytics panel fails to load, no API calls are made",
+          "screenshot": "Portal-Specific_Analytics_step01_js_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot observe API calls due to panel load failure",
+        "Code review confirms all API methods pass EffectivePortalId: GetDashboardInfo, GetTagStats, GetPopularContent, GetModuleDashboardInfo, GetModuleContextData, GetModuleTagStats, GetModulePopularContent"
+      ]
+    },
+    {
+      "scenario_name": "Comparison Test - Site Analytics Panel",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on Site Analytics menu option",
+          "expected": "Site Analytics panel loads successfully",
+          "actual": "Site Analytics panel loads correctly with Insights and Top Fives sections, date range selector, and Summary/Traffic tabs",
+          "screenshot": "Portal-Specific_Analytics_step03_site_analytics_works.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review of Services/CommunityAnalyticsController.cs confirms portal isolation is implemented at the backend level using EffectivePortalId property",
+    "All API methods (GetDashboardInfo, GetTagStats, GetPopularContent, GetModuleDashboardInfo, GetModuleContextData, GetModuleTagStats, GetModulePopularContent) pass EffectivePortalId to filter data by portal",
+    "The EffectivePortalId property uses ActiveModule.OwnerPortalID if available, otherwise falls back to PortalController.GetEffectivePortalId(PortalSettings.PortalId)",
+    "Components/CommunityAnalyticsController.cs shows role-based access control checking for Host, Admin, CommunityManager, ContentManager, and ContentEditor roles",
+    "Site Analytics panel loads successfully, confirming the JavaScript error is specific to Community Analytics initialization",
+    "The JavaScript error 'utility.serializeCustomDate is not a function' suggests a missing or incompatible utility module dependency in the Community Analytics dashboard",
+    "Testing environment has only a single portal, which limits ability to test cross-portal data isolation scenarios even if the panel were functional"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 2,
+    "failed": 4,
+    "pass_rate": "33%"
+  }
+}

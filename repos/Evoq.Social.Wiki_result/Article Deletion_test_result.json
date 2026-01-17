@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Article Deletion",
+    "feature_description": "Delete wiki articles with proper cleanup of related data",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T08:55:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Delete confirmation dialog",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to wiki article 'Draft Test Article - Jan 16 2026'",
+          "expected": "Article page loads with Delete button visible",
+          "actual": "Article page loaded successfully with Delete link in the article toolbar",
+          "screenshot": "Article Deletion_step01_navigate_to_wiki_article.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Delete link",
+          "expected": "Confirmation dialog appears asking 'Are you sure to delete this article?'",
+          "actual": "Confirmation dialog appeared with 'Delete this article?' title, 'Are you sure to delete this article?' message, and Yes/No buttons",
+          "screenshot": "Article Deletion_step02_delete_confirmation_dialog.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Clicked 'No' to cancel deletion",
+          "expected": "Dialog closes and article remains intact",
+          "actual": "Dialog closed and article remained on the page unchanged",
+          "screenshot": "Article Deletion_step03_cancel_confirmed_article_remains.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete article with cascading deletes (comments)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "On article 'Draft Test Article - Jan 16 2026' which has 1 comment, clicked Delete link",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog appeared as expected",
+          "screenshot": "Article Deletion_step02_delete_confirmation_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked 'Yes' to confirm deletion",
+          "expected": "Article is deleted along with its comment, redirected to Community page",
+          "actual": "Article was deleted successfully, redirected to Community page",
+          "screenshot": "Article Deletion_step04_article_deleted_redirected.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Navigated to deleted article URL directly",
+          "expected": "404 error page indicating article no longer exists",
+          "actual": "404 Error Page displayed with message 'Sorry, the page you are looking for cannot be found and might have been removed'",
+          "screenshot": "Article Deletion_step05_deleted_article_404.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete published article",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to published article 'Published Test Article - Jan 16 2026'",
+          "expected": "Published article page loads with Delete button visible",
+          "actual": "Published article page loaded with full content (Introduction, Main Section, Subsection One, Subsection Two, Nested Details, Conclusion) and Delete link visible",
+          "screenshot": "Article Deletion_step06_published_article_view.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Delete link and confirmed with 'Yes'",
+          "expected": "Published article is deleted, redirected to Wiki list page",
+          "actual": "Article was deleted successfully, redirected to Wiki list page showing 29 articles (reduced from before)",
+          "screenshot": "Article Deletion_step07_published_article_deleted.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review confirms deletion is permanent - there is no 'Restore deleted article' functionality in the codebase. The ArticleController.Delete() method permanently removes: notifications, revisions, journal entries, comments, subscriptions, and the article itself.",
+    "Delete from notification functionality exists in code (NotificationServiceController.DeleteArticle) but requires receiving a pending approval notification first, which was not testable in this session.",
+    "Permissions are handled through ModuleSecurity - as SuperUser, all delete operations were permitted. Testing with restricted users would require a different test setup."
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

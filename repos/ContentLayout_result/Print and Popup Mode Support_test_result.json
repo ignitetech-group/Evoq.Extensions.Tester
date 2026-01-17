@@ -1,0 +1,61 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Print and Popup Mode Support",
+    "feature_description": "Handles special rendering modes for print view and popup windows.",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T04:40:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Print mode rendering",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Entered Edit mode on Home page to observe normal edit controls",
+          "expected": "Edit mode shows admin sidebar, pane names, Actions links, Add Existing Module links, and Discard/Publish buttons",
+          "actual": "Edit mode displayed with admin sidebar, ContentLayout pane names (F30A_Pane1, F30A_Pane2, 9977_Pane1, etc.), Actions links, Add Existing Module links, and Discard/Publish buttons visible",
+          "screenshot": "Print and Popup Mode Support_step01_edit_mode_controls.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigated to Home page with ?dnnprintmode=true query parameter",
+          "expected": "Page renders without ContentLayout edit controls, admin sidebar hidden, content displayed cleanly",
+          "actual": "Page rendered in print mode with URL http://localhost:8081/en-us/Home/dnnprintmode/true. No admin sidebar visible, no pane names, no Actions links, no Add Existing Module links. Content displayed cleanly without edit controls. Layout preserved correctly.",
+          "screenshot": "Print and Popup Mode Support_step02_print_mode.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Popup mode rendering",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Home page with ?popUp=true query parameter",
+          "expected": "Page renders in simplified popup format without full navigation, ContentLayout edit scripts not loaded",
+          "actual": "Page rendered in popup mode with URL http://localhost:8081/en-us/?popUp=true. Page title changed to 'My Website > Home (Trial)' indicating popup mode. No admin sidebar visible, no full navigation header. Content modules displayed. Layout preserved with ContentLayout modules (LAPTOPS, etc.) visible. Code confirms ContentLayout's LayoutEditor.js and LayoutEditor.css are not loaded when IsSpecialPageMode is true.",
+          "screenshot": "Print and Popup Mode Support_step03_popup_mode.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "ContentLayout uses IsSpecialPageMode property (View.ascx.cs:78-84) to detect print mode (dnnprintmode=true) or popup mode (popUp=true) query parameters",
+    "When IsSpecialPageMode is true and user is in Edit mode, ContentLayout does NOT load LayoutEditor.js and LayoutEditor.css (View.ascx.cs:247-254)",
+    "When IsSpecialPageMode is true, the EditorScript is NOT made visible (View.ascx.cs:256-259)",
+    "Standard DNN module action menus are separate from ContentLayout's specific edit controls and may still appear in popup mode",
+    "LoadLayout method (View.ascx.cs:202-221) uses published layout instead of latest version when in special page mode, ensuring consistent content display"
+  ],
+  "summary": {
+    "total_scenarios": 2,
+    "passed": 2,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

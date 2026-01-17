@@ -1,0 +1,173 @@
+{
+  "extension_name": "Evoq.PersonaBar.Assets",
+  "feature_tested": "Search and Navigation",
+  "test_date": "2026-01-16",
+  "tester": "Claude AI",
+  "overall_result": "PASS",
+  "environment": {
+    "browser": "Chromium (Playwright)",
+    "resolution": "1280x720",
+    "url": "http://localhost:8081",
+    "user": "host (SuperUser)"
+  },
+  "code_files_reviewed": [
+    "Dnn.AdminExperience.Evoq.Basic/src/Modules/Evoq.PersonaBar.Assets/Services/AssetsController.cs",
+    "Dnn.AdminExperience.Evoq.Basic/src/Modules/Evoq.PersonaBar.Assets/Components/AssetsController.cs",
+    "Dnn.AdminExperience.Evoq.Basic/src/Modules/Evoq.PersonaBar.Assets/admin/personaBar/scripts/Assets.js"
+  ],
+  "test_summary": {
+    "total_tests": 8,
+    "passed": 8,
+    "failed": 0,
+    "skipped": 0
+  },
+  "test_cases": [
+    {
+      "test_id": "SN-001",
+      "test_name": "Search Files by Name",
+      "description": "Test searching for files using full file name",
+      "steps": [
+        "Navigate to Assets panel",
+        "Enter 'cavalier' in search box",
+        "Press Enter to execute search"
+      ],
+      "expected_result": "Files containing 'cavalier' in name should be displayed with matching text highlighted",
+      "actual_result": "Search returned 4 files (cavalier-tv.png variants) with 'cavalier' highlighted in yellow",
+      "status": "PASS",
+      "screenshot": "Search and Navigation_step02_search_cavalier_results.png",
+      "notes": "Search includes full-text search within folder content, breadcrumb updated to show 'SEARCH CAVALIER'"
+    },
+    {
+      "test_id": "SN-002",
+      "test_name": "Partial Text Search",
+      "description": "Test searching for files using partial text match",
+      "steps": [
+        "Enter 'bat' in search box (partial match for 'batch_image')",
+        "Press Enter to execute search"
+      ],
+      "expected_result": "Files containing 'bat' substring should be displayed",
+      "actual_result": "Search returned batch_image_3.png with 'bat' portion highlighted",
+      "status": "PASS",
+      "screenshot": "Search and Navigation_step03_partial_search_bat.png",
+      "notes": "Minimum 3 characters required for search, search has 400ms throttle"
+    },
+    {
+      "test_id": "SN-003",
+      "test_name": "Sort by Last Modified",
+      "description": "Test sorting files by last modified date",
+      "steps": [
+        "Click on Sort dropdown",
+        "Select 'Last Modified' option"
+      ],
+      "expected_result": "Files and folders should be reordered by last modified date",
+      "actual_result": "Content reordered with Templates, PermissionsTestFolder, Groups appearing first (most recently modified)",
+      "status": "PASS",
+      "screenshot": "Search and Navigation_step04_sort_last_modified.png",
+      "notes": "Sort order changed from Alphabetical (Badges, Groups, Images...) to Last Modified (Templates, PermissionsTestFolder...)"
+    },
+    {
+      "test_id": "SN-004",
+      "test_name": "Sort by Date Uploaded",
+      "description": "Test sorting files by upload date",
+      "steps": [
+        "Click on Sort dropdown",
+        "Select 'Date Uploaded' option"
+      ],
+      "expected_result": "Files and folders should be reordered by upload date",
+      "actual_result": "Content reordered with Images, Templates, Users, Badges appearing first",
+      "status": "PASS",
+      "screenshot": "Search and Navigation_step05_sort_date_uploaded.png",
+      "notes": "Order differs from Last Modified, showing different date criteria are applied"
+    },
+    {
+      "test_id": "SN-005",
+      "test_name": "Sort Alphabetical",
+      "description": "Test sorting files alphabetically (A-Z)",
+      "steps": [
+        "Click on Sort dropdown",
+        "Select 'Alphabetical' option"
+      ],
+      "expected_result": "Files and folders should be sorted A-Z",
+      "actual_result": "Content sorted alphabetically: Badges, Groups, Images, PermissionsTestFolder, Templates, Users, WorkflowTestFolder",
+      "status": "PASS",
+      "screenshot": "Search and Navigation_step06_sort_alphabetical.png",
+      "notes": "Folders appear first in alphabetical order, followed by files in alphabetical order"
+    },
+    {
+      "test_id": "SN-006",
+      "test_name": "Navigate Folder Hierarchy",
+      "description": "Test navigating into folders and using breadcrumb navigation",
+      "steps": [
+        "Click on 'Images' folder to navigate into it",
+        "Verify breadcrumb updates",
+        "Click 'Home' in breadcrumb to navigate back"
+      ],
+      "expected_result": "Should be able to navigate into folders and use breadcrumb to navigate back",
+      "actual_result": "Successfully navigated into Images folder (breadcrumb showed HOME > IMAGES), saw subfolders (MoveTestFolder, Publisher, SecureFolderTest2026) and files. Clicking Home breadcrumb returned to root folder.",
+      "status": "PASS",
+      "screenshot": "Search and Navigation_step07_folder_navigation_images.png",
+      "notes": "SecureFolderTest2026 displayed with lock icon indicating secure folder type"
+    },
+    {
+      "test_id": "SN-007",
+      "test_name": "Search with Special Characters",
+      "description": "Test searching for files with special characters in name",
+      "steps": [
+        "Enter '(special)' in search box",
+        "Press Enter to execute search"
+      ],
+      "expected_result": "Files with special characters should be found",
+      "actual_result": "Search found 'test file (special) #1.txt' with 'special' highlighted",
+      "status": "PASS",
+      "screenshot": "Search and Navigation_step08_special_char_search.png",
+      "notes": "Parentheses and other special characters handled correctly in search"
+    },
+    {
+      "test_id": "SN-008",
+      "test_name": "No Results Search",
+      "description": "Test search behavior when no matches found",
+      "steps": [
+        "Enter 'xyznonexistent123' in search box",
+        "Press Enter to execute search"
+      ],
+      "expected_result": "Should display appropriate 'no results' message",
+      "actual_result": "Displayed 'Your Search Produced No Results' message with search icon",
+      "status": "PASS",
+      "screenshot": "Search and Navigation_step09_no_results.png",
+      "notes": "Clear user feedback when no matches found"
+    }
+  ],
+  "feature_observations": {
+    "search_functionality": {
+      "throttle_delay": "400ms",
+      "minimum_characters": 3,
+      "full_text_search": true,
+      "highlight_matches": true,
+      "special_characters_supported": true
+    },
+    "sort_options": [
+      "Last Modified",
+      "Date Uploaded",
+      "Alphabetical"
+    ],
+    "navigation": {
+      "breadcrumb_navigation": true,
+      "folder_drill_down": true,
+      "folder_picker_dropdown": true
+    }
+  },
+  "issues_found": [],
+  "recommendations": [],
+  "screenshots": [
+    "Search and Navigation_step00_login_confirmed.png",
+    "Search and Navigation_step01_assets_panel.png",
+    "Search and Navigation_step02_search_cavalier_results.png",
+    "Search and Navigation_step03_partial_search_bat.png",
+    "Search and Navigation_step04_sort_last_modified.png",
+    "Search and Navigation_step05_sort_date_uploaded.png",
+    "Search and Navigation_step06_sort_alphabetical.png",
+    "Search and Navigation_step07_folder_navigation_images.png",
+    "Search and Navigation_step08_special_char_search.png",
+    "Search and Navigation_step09_no_results.png"
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Pages",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Page Validation",
+    "feature_description": "Validate page data before saving including name, URL, and settings",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Validate page name requirements - empty name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Content > Pages panel",
+          "expected": "Pages panel should load",
+          "actual": "Pages panel loaded successfully showing list of existing pages",
+          "screenshot": "Page_Validation_step01_pages_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Add Page button",
+          "expected": "Add Page form should open",
+          "actual": "Add Page form opened with empty Name field",
+          "screenshot": "Page_Validation_step02_add_page_form.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Attempt to click Add Page with empty name field",
+          "expected": "Add Page button should be disabled or show validation error",
+          "actual": "Add Page button is disabled when Name field is empty - UI-level validation prevents submission",
+          "screenshot": "Page_Validation_step03_empty_name_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test duplicate page name detection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter duplicate page name 'Home' in the Name field",
+          "expected": "Duplicate name should be detected",
+          "actual": "Entered 'Home' which exists as an existing page",
+          "screenshot": "Page_Validation_step04_duplicate_name_home.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select template and click Add Page",
+          "expected": "Validation error for duplicate page name/path",
+          "actual": "TabExistsException: 'Page Exists in portal: 0, path:' - system detected duplicate page path",
+          "screenshot": "Page_Validation_step05_duplicate_name_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test special characters in page name - script tags",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter script tag '<script>alert('XSS')</script>' in Name field",
+          "expected": "Script tag validation should trigger with 'hasScript' error message",
+          "actual": "Script tag was entered in the Name field",
+          "screenshot": "Page_Validation_step06_script_tag_input.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select template and click Add Page",
+          "expected": "PageValidationException with field='hasScript' and appropriate error message",
+          "actual": "TabExistsException with empty path - script tags appear to be stripped by Clean() method resulting in empty name/path which then fails duplicate path validation. The expected 'hasScript' validation from ValidateNoScriptInName() was not triggered.",
+          "screenshot": "Page_Validation_step07_script_tag_error.png"
+        }
+      ],
+      "issues": ["Script tag validation exists in code (ValidateNoScriptInName method) but is not being triggered before the Clean() method strips the script content, resulting in incorrect error message"]
+    },
+    {
+      "scenario_name": "Test URL path validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to create page with name that generates duplicate URL path",
+          "expected": "URL path validation should prevent duplicate paths",
+          "actual": "URL path validation is inherent in the duplicate page name detection - when a page name is entered that would generate a duplicate URL path, the system correctly detects it via IsValidTabPath() and throws TabExistsException",
+          "screenshot": "Page_Validation_step05_duplicate_name_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test required fields validation - template requirement",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter valid page name 'RequiredFieldTest2026' without selecting a template",
+          "expected": "Validation error requiring template selection for standard pages",
+          "actual": "Page was created successfully WITHOUT selecting a template - template is not a required field",
+          "screenshot": "Page_Validation_step08_no_template_success.png"
+        }
+      ],
+      "issues": ["Code suggests templates should be required for certain page types (ValidatePageSettingsData checks for template requirement), but the validation was not enforced - pages can be created without selecting a template"]
+    },
+    {
+      "scenario_name": "Test field length limits",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observe existing page with extremely long name in the navigation",
+          "expected": "Field length limits should prevent extremely long page names",
+          "actual": "A page with 200+ character name exists and displays in navigation: 'ThisIsAnExtremelyLongPageNameThatExceedsNormalLengthLimitsAndShouldTriggerValidationErrorsIfThereAreAnyFieldLengthRestrictionsInPlaceForPageNamesInTheDNNEvoqSystemTestingFieldLengthValidation123456789'",
+          "screenshot": "Page_Validation_step09_long_page_name_visible.png"
+        }
+      ],
+      "issues": ["No field length validation is enforced for page names - extremely long names (200+ characters) are accepted without any validation error"]
+    }
+  ],
+  "observations": [
+    "Code in ValidateNoScriptInName() method exists to detect script tags using regex pattern '<[\\/]?[ ]{0,}[\\t]{0,}script\\b', but this validation is not reached before the Clean() method processes the input",
+    "The error handling returns generic TabExistsException for various validation failures rather than descriptive PageValidationException messages",
+    "Template requirement validation exists in code but is not consistently enforced through the UI",
+    "No maximum length validation is implemented for page name fields in the observed codebase",
+    "Existing page with script tag in name ('<script>alert('XSS')</script>') exists in the system, indicating the validation may have been bypassed previously"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 3,
+    "failed": 3,
+    "pass_rate": "50%"
+  }
+}

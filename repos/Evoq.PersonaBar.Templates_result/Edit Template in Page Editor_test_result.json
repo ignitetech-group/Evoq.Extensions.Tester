@@ -1,0 +1,86 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Templates",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Edit Template in Page Editor",
+    "feature_description": "Switch to edit mode to modify template content and layout in the page editor",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T00:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Click edit to enter edit mode",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Manage > Templates",
+          "expected": "Templates list should load with available templates",
+          "actual": "Templates section shows empty with loading indicator. GetPageTemplates API returns 500 Internal Server Error. Error message displayed: 'There was an error retrieving your content. Please check your internet connection.'",
+          "screenshot": "Edit_Template_in_Page_Editor_step01_templates_loading_issue.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempted workaround: Create template via Pages > Save Page Template",
+          "expected": "New template should be created to test Edit functionality",
+          "actual": "SavePageTemplate API returns 400 Bad Request. Unable to create new template.",
+          "screenshot": "Edit_Template_in_Page_Editor_step02_template_save_attempt.png"
+        }
+      ],
+      "issues": [
+        "GetPageTemplates API returns 500 Internal Server Error preventing templates list from loading",
+        "SavePageTemplate API returns 400 Bad Request preventing template creation",
+        "Cannot test Edit button because no templates are accessible"
+      ]
+    },
+    {
+      "scenario_name": "Verify redirect to template page in edit mode",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access Templates section to find a template to edit",
+          "expected": "Should be able to select a template and click Edit to verify redirect behavior",
+          "actual": "Templates list fails to load due to 500 server error. Cannot access any templates to test redirect functionality.",
+          "screenshot": "Edit_Template_in_Page_Editor_step01_templates_loading_issue.png"
+        }
+      ],
+      "issues": [
+        "Cannot test redirect behavior because Templates list returns 500 error",
+        "No templates available to click Edit button on"
+      ]
+    },
+    {
+      "scenario_name": "Handle edit for templates with special characters in URL",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access Templates section to find or create a template with special characters",
+          "expected": "Should be able to create/access a template with special characters in name/URL and test Edit functionality",
+          "actual": "Cannot access templates due to GetPageTemplates API 500 error. Cannot create templates due to SavePageTemplate API 400 error.",
+          "screenshot": "Edit_Template_in_Page_Editor_step01_templates_loading_issue.png"
+        }
+      ],
+      "issues": [
+        "Cannot test special character handling because no templates are accessible",
+        "Both template listing and creation APIs are returning server errors"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review shows EditModeForPage endpoint (TemplatesController.cs:224-239) sets LastPageId cookie and updates user personalization to EDIT mode",
+    "Client-side code in templatesHierarchy.js shows _enterEditMode function calls EditModeForPage API and redirects to template URL",
+    "GetPageTemplates API endpoint exists but returns 500 Internal Server Error - suggests server-side configuration or database issue",
+    "SavePageTemplate functionality also fails with 400 Bad Request - may indicate related backend issues",
+    "The Edit Template feature cannot be tested via UI due to these server-side API failures",
+    "Feature implementation appears correct based on code review, but server environment prevents functional testing"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 0,
+    "failed": 3,
+    "pass_rate": "0%"
+  }
+}

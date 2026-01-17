@@ -1,0 +1,172 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Article Editing and Updates",
+    "feature_description": "Edit existing wiki articles with version tracking and approval workflow",
+    "feature_priority": "Top",
+    "test_date": "2026-01-16T16:19:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Edit article content",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki module in Test Activity Group",
+          "expected": "Wiki module displays with list of articles",
+          "actual": "Wiki module displayed with 7 articles including Welcome to the Wiki primary article",
+          "screenshot": "Article Editing and Updates_step01_wiki_module_found.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Group Wiki Test Article to view details",
+          "expected": "Article detail page opens",
+          "actual": "Article detail page displayed with content, tags, and Edit button",
+          "screenshot": "Article Editing and Updates_step02_article_detail_page.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Edit button to open edit dialog",
+          "expected": "Edit dialog opens with article fields",
+          "actual": "Edit dialog opened with Title, Article Type, TOC checkbox, Content editor, Approved checkbox, and Tags fields",
+          "screenshot": "Article Editing and Updates_step03_edit_dialog_opened.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Edit content in the rich text editor",
+          "expected": "Content can be edited",
+          "actual": "Content editor allows text editing with Redactor WYSIWYG editor",
+          "screenshot": "Article Editing and Updates_step04_content_edited.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit article title",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "In the edit dialog, modify the Title field",
+          "expected": "Title field is editable",
+          "actual": "Title changed from 'Group Wiki Test Article - Title Edited' to 'Group Wiki Test Article - Updated Title Jan 16'",
+          "screenshot": "Article Editing and Updates_step05_title_edited.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit article metadata (tags)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Add a new tag 'new-test-tag' to the Tags field",
+          "expected": "New tag is added to the article",
+          "actual": "New tag 'new-test-tag' was added successfully, now showing 4 tags: group-wiki, testing, edited-tag, new-test-tag",
+          "screenshot": "Article Editing and Updates_step06_tag_added.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save as draft vs publish",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Uncheck the Approved checkbox",
+          "expected": "Approved checkbox becomes unchecked",
+          "actual": "Approved checkbox was unchecked successfully",
+          "screenshot": "Article Editing and Updates_step07_approved_unchecked.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Publish button with Approved unchecked",
+          "expected": "Article is saved as draft (pending) instead of published",
+          "actual": "Article was saved. Tags were immediately visible on the article page, confirming save worked. Title changes remain pending as draft.",
+          "screenshot": "Article Editing and Updates_step08_draft_saved.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify article page shows saved tags",
+          "expected": "New tag should be visible on article",
+          "actual": "Article page displays all 4 tags including the newly added 'new-test-tag'",
+          "screenshot": "Article Editing and Updates_step09_draft_result_with_tags.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit primary article",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Edit button on the primary article 'Welcome to the Wiki'",
+          "expected": "Edit dialog opens with simplified UI for primary article",
+          "actual": "Edit dialog opened with only Content field visible. Title, Article Type, TOC, and Tags fields are hidden for primary articles. Delete button is available for moderators.",
+          "screenshot": "Article Editing and Updates_step10_primary_article_edit_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Edit the primary article content",
+          "expected": "Content can be edited",
+          "actual": "Content was editable. Test text was entered to verify editing works.",
+          "screenshot": "Article Editing and Updates_step11_primary_article_content_edited.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Cancel to discard changes",
+          "expected": "Changes are discarded, original content preserved",
+          "actual": "Cancel button worked correctly, original primary article content was preserved"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Empty title validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open edit dialog for a regular article",
+          "expected": "Edit dialog opens",
+          "actual": "Edit dialog opened for Group Wiki Test Article"
+        },
+        {
+          "step_number": 2,
+          "action": "Clear the Title field completely",
+          "expected": "Title field becomes empty",
+          "actual": "Title field was cleared using Ctrl+A and Backspace",
+          "screenshot": "Article Editing and Updates_step12_empty_title.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Publish button with empty title",
+          "expected": "Validation error prevents saving",
+          "actual": "Validation triggered - 'Text is required' error message displayed below the Title field. Publish was blocked.",
+          "screenshot": "Article Editing and Updates_step14_validation_error_visible.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Primary article editing has a simplified UI that only shows the Content field - Title, Article Type, TOC checkbox, and Tags are hidden",
+    "The Approved checkbox controls whether changes are published immediately or saved as draft (pending approval)",
+    "Tags are saved immediately even when saving as draft, while title/content changes go to pending state",
+    "Article Type field is disabled for existing articles - cannot be changed after creation",
+    "The rich text editor uses Redactor WYSIWYG with formatting toolbar including Bold, Italic, Lists, Links, HTML, and Image insertion",
+    "Form validation prevents saving with empty required fields (Title, Content, Tags)"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

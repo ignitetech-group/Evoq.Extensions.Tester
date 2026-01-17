@@ -1,0 +1,111 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Admin Role Mapping",
+    "feature_description": "Map Active Directory groups to DNN administrator role",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T14:40:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Navigate to Admin Role Mapping settings",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Extensions",
+          "expected": "Extensions page loads",
+          "actual": "Extensions page loaded successfully",
+          "screenshot": "Admin Role Mapping_step01_navigate_to_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Filter by Authentication Systems and select DNNPro_ActiveDirectoryAuthentication",
+          "expected": "AD Authentication extension settings page opens",
+          "actual": "Extension settings page opened with Package Information, Extension Settings, Site Settings tabs",
+          "screenshot": "Admin Role Mapping_step01_navigate_to_settings.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click on Site Settings tab",
+          "expected": "Site Settings with Admin Role Mapping field is displayed",
+          "actual": "Site Settings loaded showing Administrators Role Mapping field along with other AD settings",
+          "screenshot": "Admin Role Mapping_step02_admin_role_mapping_field.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure AD group for admin mapping",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'Domain Admins' in the Administrators Role Mapping field",
+          "expected": "Value is accepted in the text field",
+          "actual": "Value 'Domain Admins' was entered successfully",
+          "screenshot": "Admin Role Mapping_step03_entered_domain_admins.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Update Authentication Settings' button",
+          "expected": "Settings are saved",
+          "actual": "Settings saved successfully. LDAP connection error displayed (expected - no AD server configured in test environment)",
+          "screenshot": "Admin Role Mapping_step03_entered_domain_admins.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save empty Admin Role Mapping value",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the Administrators Role Mapping field",
+          "expected": "Field is cleared",
+          "actual": "Field was cleared successfully",
+          "screenshot": "Admin Role Mapping_step04_saved_empty_value.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Update Authentication Settings' button",
+          "expected": "Empty value is saved without validation errors",
+          "actual": "Empty value saved successfully - field remains empty after save",
+          "screenshot": "Admin Role Mapping_step04_saved_empty_value.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify field help text",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on the Help icon next to Administrators Role Mapping label",
+          "expected": "Help tooltip is displayed with description of the feature",
+          "actual": "Help tooltip displayed: 'If you set the administrators role mapping, users which joined this specific AD group will add into Administrators role, this only works when synchronize roles set to true.'",
+          "screenshot": "Admin Role Mapping_step05_help_text_displayed.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Admin Role Mapping feature stores a single AD group name (not multiple groups) based on code review of Configuration.cs line 74 and UserController.cs lines 182-186",
+    "The actual role assignment/removal happens during AD login via ManageAdminRoleMapping() function in UserController.cs lines 212-230",
+    "Testing actual AD integration (login with admin-mapped user, verify role assignment, verify role removal) requires a configured Active Directory environment which is not available in the test setup",
+    "The help text mentions that this feature 'only works when synchronize roles set to true' - this is an important prerequisite",
+    "Code shows that super user permissions are preserved as the ManageAdminRoleMapping function only modifies non-super users",
+    "LDAP connection errors are expected in the test environment since no Active Directory server is configured"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

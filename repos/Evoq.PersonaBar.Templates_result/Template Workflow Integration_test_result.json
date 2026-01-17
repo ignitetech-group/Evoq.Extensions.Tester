@@ -1,0 +1,92 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Templates",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Template Workflow Integration",
+    "feature_description": "Applies content workflow settings to templates for approval processes",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T12:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Retrieve available workflows",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Content > Pages in PersonaBar",
+          "expected": "Pages panel should open with page list",
+          "actual": "Pages panel opened successfully with list of all pages",
+          "screenshot": "Template_Workflow_Integration_step02_pages_with_workflow.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Selected Home page and clicked on Workflow dropdown",
+          "expected": "Workflow dropdown should display available workflows",
+          "actual": "Workflow dropdown displayed 10 available workflows including Direct Publish, Save Draft, Content Approval, Test Approval Workflow, QA Test Workflow, and more",
+          "screenshot": "Template_Workflow_Integration_step07_workflows_retrieved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Access Template Creation Form",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked Save Page Template button dropdown",
+          "expected": "Dropdown should show template save options",
+          "actual": "Dropdown displayed two options: Evoq Page Template and Export as XML",
+          "screenshot": "Template_Workflow_Integration_step03_save_template_dropdown.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Selected Evoq Page Template option",
+          "expected": "Template creation form should appear",
+          "actual": "Template creation form appeared with Template Name and Description fields",
+          "screenshot": "Template_Workflow_Integration_step04_template_creation_form.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Apply default workflow to new template",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Entered template name 'WorkflowTestTemplate_Jan16' in Template Name field",
+          "expected": "Template name should be accepted and Save button enabled",
+          "actual": "Template name was accepted and Save button became enabled",
+          "screenshot": "Template_Workflow_Integration_step05_template_name_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Save button to create template with automatic workflow assignment",
+          "expected": "Template should be created with default workflow automatically assigned",
+          "actual": "500 Internal Server Error occurred. Error message displayed: 'There was an error retrieving your content. Please check your internet connection.'",
+          "screenshot": "Template_Workflow_Integration_step06_save_error.png"
+        }
+      ],
+      "issues": [
+        "Template creation failed with 500 Internal Server Error when attempting to save page as Evoq Page Template",
+        "Cannot verify workflow assignment to templates due to underlying template creation failure"
+      ]
+    }
+  ],
+  "observations": [
+    "Code analysis shows workflow integration is automatic: when saving a template, the default workflow is assigned via 'viewModel.page.workflowId = defaultWorkflow.WorkflowId' in templatesCreateManager.js:261",
+    "No explicit workflow selector UI is visible in the template creation form - the workflow is applied automatically behind the scenes",
+    "The GetWorkflows API endpoint (TemplatesController.cs:87-90) successfully retrieves and displays all available workflows in the page details workflow dropdown",
+    "Template creation form only shows Template Name and Description fields - workflow settings are handled programmatically",
+    "The suggested test scenarios 'Set workflow for template' and 'Verify workflow completion status' cannot be tested via UI because template creation fails with server error"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 2,
+    "failed": 1,
+    "pass_rate": "67%"
+  }
+}

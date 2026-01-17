@@ -1,0 +1,93 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "AutoSave Functionality",
+    "feature_description": "Automatically save content drafts while editing to prevent data loss",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T10:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "AutoSave on Dialog Close",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page and enter edit mode",
+          "expected": "Page enters edit mode with module action menus visible",
+          "actual": "Page entered edit mode successfully, module action menus visible",
+          "screenshot": "AutoSave Functionality_step01_edit_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on HTML module to open inline editor",
+          "expected": "Inline editor toolbar appears",
+          "actual": "Inline editor with formatting toolbar appeared",
+          "screenshot": "AutoSave Functionality_step02_inline_editor.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Advanced Editor button to open full editor",
+          "expected": "Advanced Editor dialog opens with CKEditor",
+          "actual": "Advanced Editor dialog opened showing CKEditor with full toolbar",
+          "screenshot": "AutoSave Functionality_step03_advanced_editor_opened.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Edit content by adding text '- AUTOSAVE TEST'",
+          "expected": "Content changes and word count updates",
+          "actual": "Content updated to '- NEW INLINE TEST TEXT ADDED - AUTOSAVE TEST', word count changed from 6 to 9",
+          "screenshot": "AutoSave Functionality_step05_content_changed.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Close the editor dialog using the Close button",
+          "expected": "Content is automatically saved before dialog closes",
+          "actual": "POST request to /en-us/API/HtmlPro/HtmlTextPro/Save returned 200 OK - content was saved on close",
+          "screenshot": "AutoSave Functionality_step06_after_close.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "AutoSave Interval Trigger (5 seconds)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open Advanced Editor and make content changes",
+          "expected": "Content changes detected",
+          "actual": "Content changed successfully - added '- AUTOSAVE TEST' text",
+          "screenshot": "AutoSave Functionality_step05_content_changed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Wait for 6+ seconds for autosave interval to trigger",
+          "expected": "Autosave should trigger automatically after 5 seconds (TIME_TO_AUTOSAVE = 5000 in code)",
+          "actual": "No POST request to HtmlTextPro/Save observed during waiting period. The interval-based autosave did not trigger.",
+          "screenshot": "AutoSave Functionality_step05_content_changed.png"
+        }
+      ],
+      "issues": [
+        "The interval-based autosave does not trigger when using CKEditor. Code review shows the addOnChangeEvent() function uses $find() which is for Telerik RadEditor, not CKEditor. When CKEditor is used, the onChange/onKeydown event handlers are never attached, so autoSaveEnabled is never set to true."
+      ]
+    }
+  ],
+  "observations": [
+    "Code suggests 'Enable AutoSave' toggle should be in Module Settings, but Settings.ascx only contains 'Replace Tokens' and 'Search Description Length' options - no autosave toggle exists in the UI",
+    "Code suggests autosave interval can be configured, but TIME_TO_AUTOSAVE is hardcoded to 5000ms (5 seconds) in EditHtml.ascx with no UI to change it",
+    "No visual autosave indicator is present in the UI - users cannot see when autosave is active or when content was last saved",
+    "No 'Recover autosaved content' button or UI element exists - the autosave saves directly to the module, not to a separate draft storage",
+    "No 'Clear autosaved drafts' functionality is visible in the UI",
+    "The autosave code appears to have a bug: when CKEditor is defined, the setInitialValues() function does not call addOnChangeEvent(), which means the event handlers for enabling autosave on content change are never attached",
+    "The save-on-close functionality works correctly - content is saved when the dialog is closed even without manual save action"
+  ],
+  "summary": {
+    "total_scenarios": 2,
+    "passed": 1,
+    "failed": 1,
+    "pass_rate": "50%"
+  }
+}

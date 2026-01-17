@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Assets",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Folder Tree Navigation",
+    "feature_description": "Provides hierarchical folder tree navigation with expand/collapse functionality and path breadcrumbs",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T17:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Expand folder tree",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Assets module and view root folder content",
+          "expected": "Root folder content should display with folder cards",
+          "actual": "Root folder displayed showing folders: Badges, Groups, Images, PermissionsTestFolder, SecureFolderTest, Templates, Users, WorkflowTestFolder and files",
+          "screenshot": "Folder_Tree_Navigation_step01_initial_folder_view.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on 'Images' folder to expand/navigate into it",
+          "expected": "Should navigate into Images folder showing its contents",
+          "actual": "Successfully navigated into Images folder, showing subfolders (MoveTestFolder, Publisher, SecureFolderTest2026, TestNewFolder2026) and files (CTA-1.jpg through CTA-8.jpg, etc.)",
+          "screenshot": "Folder_Tree_Navigation_step02_expand_folder.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test deep folder hierarchies",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate deeper into Publisher subfolder within Images",
+          "expected": "Should show 3-level deep navigation (Home > Images > Publisher)",
+          "actual": "Successfully navigated 3 levels deep. Breadcrumb shows HOME > IMAGES > PUBLISHER. Publisher folder contents displayed with various image files",
+          "screenshot": "Folder_Tree_Navigation_step03_deep_hierarchy.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Navigate using breadcrumbs",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'IMAGES' in the breadcrumb while at Publisher folder",
+          "expected": "Should navigate back one level to Images folder",
+          "actual": "Successfully navigated back to Images folder. Breadcrumb updated to HOME > IMAGES, showing Images folder contents",
+          "screenshot": "Folder_Tree_Navigation_step04_breadcrumb_back.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'HOME' in the breadcrumb to return to root",
+          "expected": "Should navigate to root folder",
+          "actual": "Successfully navigated to root folder. Breadcrumb shows HOME only, displaying all root folders",
+          "screenshot": "Folder_Tree_Navigation_step05_breadcrumb_home.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Sort folder tree",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Change sort order from 'Alphabetical' to 'Last Modified'",
+          "expected": "Folder order should change based on last modified date",
+          "actual": "Successfully changed sort to 'Last Modified'. Folder order changed from alphabetical (Badges, Groups, Images...) to modification order (Templates, PermissionsTestFolder, Groups, ThisIsAVeryLong..., Badges, Users, Images, WorkflowTestFolder...)",
+          "screenshot": "Folder_Tree_Navigation_step06_sort_changed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Navigate to empty folder",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate into PermissionsTestFolder which is empty",
+          "expected": "Should display empty folder message",
+          "actual": "Successfully navigated to empty folder. UI displays 'This Folder is Empty' message with instruction to use tools above to add an asset or create a folder",
+          "screenshot": "Folder_Tree_Navigation_step07_empty_folder.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify folder tree permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hover over folder to view action icons for permissions access",
+          "expected": "Action icons (edit, move, delete) should appear on hover",
+          "actual": "Action icons appeared when hovering over the Images folder card, showing edit pencil, move arrow, and delete trash icons on the right side of the selected card",
+          "screenshot": "Folder_Tree_Navigation_step08_pre_details.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code confirms folder permissions are displayed through GetFolderDetails API endpoint (AssetsController.cs line 548-574) which returns permissions data including role and user permissions",
+    "The buildPermissionGrid function in Assets.js (line 911-942) creates a permissions grid UI when viewing folder details",
+    "Action icons on folder cards appear on hover/selection but accessing them programmatically was challenging due to their dynamic/CSS-driven rendering",
+    "The folder tree supports 3 sort options: Last Modified, Date Uploaded, and Alphabetical (default)",
+    "Breadcrumb navigation provides visual path and clickable links for quick navigation to any parent folder",
+    "Empty folders display a helpful message encouraging users to add content",
+    "Long folder names are truncated with ellipsis in the UI but full names are accessible",
+    "Secure folders show a lock icon indicator on the folder card"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

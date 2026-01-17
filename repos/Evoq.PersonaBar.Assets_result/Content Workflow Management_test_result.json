@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Assets",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Content Workflow Management",
+    "feature_description": "Manages content workflows including draft, submit, approve, publish, and reject states with history tracking",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T17:20:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View Workflow Configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Workflow in PersonaBar",
+          "expected": "Workflow configuration page should open showing available workflows",
+          "actual": "Workflow configuration page opened successfully showing multiple workflows including Direct Publish, Save Draft, Content Approval, and custom workflows",
+          "screenshot": "Content_Workflow_Management_step05_workflows_config.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View Workflow States and Types",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examine workflow types in Settings > Workflow",
+          "expected": "Should see workflows with different states (Draft, Review, Published)",
+          "actual": "Found multiple workflow types: Direct Publish (Published only), Save Draft (Draft->Published), Content Approval (Draft->Ready For Review->Published), and custom workflows with multiple approval states",
+          "screenshot": "Content_Workflow_Management_step05_workflows_config.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Upload File and View Workflow State",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Assets > WorkflowTestFolder",
+          "expected": "Folder should open showing existing files",
+          "actual": "WorkflowTestFolder opened successfully showing test files",
+          "screenshot": "Content_Workflow_Management_step06_file_uploaded.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Upload a new test file (test_upload_file.txt)",
+          "expected": "File should be uploaded to the folder",
+          "actual": "File uploaded successfully and appeared in the folder",
+          "screenshot": "Content_Workflow_Management_step06_file_uploaded.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Open file details and check Versioning tab for workflow state",
+          "expected": "Versioning tab should show the file's workflow state",
+          "actual": "Versioning tab displayed version history with STATE column showing 'Published'. The file was directly published (Version 1, State: Published, User: SuperUser Account)",
+          "screenshot": "Content_Workflow_Management_step08_versioning_published.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View Workflow History in Versioning Tab",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open file details and navigate to Versioning tab",
+          "expected": "Versioning tab should show version history with workflow states",
+          "actual": "Versioning tab showed version history table with columns: VERSION, DATE, USER, STATE, DEFAULT. The STATE column displays workflow state (Published)",
+          "screenshot": "Content_Workflow_Management_step08_versioning_published.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Locate Workflow Tab in File Details",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open file details panel and look for Workflow Tab",
+          "expected": "Based on feature description, there should be a 'Workflow Tab' at Admin > Content > Assets > File Details > Workflow Tab",
+          "actual": "File details panel only shows two tabs: 'DETAILS' and 'VERSIONING'. There is no separate 'Workflow Tab'. Workflow state information is integrated into the VERSIONING tab's STATE column",
+          "screenshot": "Content_Workflow_Management_step02_file_details.png"
+        }
+      ],
+      "issues": ["The feature description mentions 'Admin > Content > Assets > File Details > Workflow Tab' but no separate Workflow Tab exists in the UI. Workflow states are displayed within the Versioning tab instead."]
+    },
+    {
+      "scenario_name": "Test Draft State Workflow",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Upload new file to test if it enters Draft state",
+          "expected": "File should enter Draft state if workflow is configured with Draft->Review->Publish states",
+          "actual": "File uploaded by SuperUser went directly to 'Published' state, bypassing any Draft or Review states. This may be due to SuperUser permissions or folder workflow configuration",
+          "screenshot": "Content_Workflow_Management_step08_versioning_published.png"
+        }
+      ],
+      "issues": ["Unable to observe Draft state workflow in action. Files uploaded by SuperUser are directly published. To test workflow states (Draft, Submit, Approve, Reject), a non-superuser account with appropriate permissions may be required, or folder workflow configuration needs to be set to use an approval workflow."]
+    }
+  ],
+  "observations": [
+    "Code exists for workflow management in AssetsWorkflowController.cs with CompleteWorkflowState and DiscardWorkflowState endpoints",
+    "Workflow actions include: WorkflowStartFileAction (pending submission), StateCompleteFileAction (pending approval), StateDiscardFileAction (rejection), WorkflowCompleteFileAction (publication)",
+    "The 'Workflow Tab' mentioned in feature description does not exist as a separate tab - workflow states are integrated into the Versioning tab's STATE column",
+    "Multiple workflows are configured in Settings > Workflow including Direct Publish, Save Draft, Content Approval, and custom approval workflows",
+    "The Content Approval workflow has states: Draft -> Ready For Review -> Published",
+    "SuperUser uploads appear to bypass workflow states and go directly to Published",
+    "Workflow functionality exists in the codebase but requires proper folder configuration and non-superuser accounts to fully test the Draft/Review/Approve/Reject cycle",
+    "The FolderDetails.cs class contains WorkflowId property indicating workflows are configured at folder level"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 4,
+    "failed": 2,
+    "pass_rate": "67%"
+  }
+}

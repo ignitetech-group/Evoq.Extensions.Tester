@@ -1,0 +1,69 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "URL Rewriting Support",
+    "feature_description": "Handles friendly URLs and URL rewriting during crawling operations.",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Crawling Settings Page Accessible",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Site Settings > Search > Crawling tab",
+          "expected": "Crawling settings page loads with URL Paths section visible",
+          "actual": "Crawling settings page loaded successfully showing URL Paths section with multiple configured URLs including http://localhost:8081",
+          "screenshot": "URL_Rewriting_Support_step01_crawling_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "URL Rewriting Duplicate Patterns Configured",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Scroll to view the Duplicates section in Crawling settings",
+          "expected": "Duplicates section shows regex patterns for handling URL rewriting",
+          "actual": "Duplicates section displayed with multiple regex patterns including: tabid pattern (tabid=(?<id>\\d*[^&])|tabid/(?<id>\\d*[^/])), ctl terms, ctl privacy, linkclick, dnn forum, multilanguage patterns - all handling both query string and friendly URL formats",
+          "screenshot": "URL_Rewriting_Support_step02_duplicates_patterns.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Friendly URLs Working During Navigation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to a page using friendly URL format (http://localhost:8081/en-us/Our-Products)",
+          "expected": "Page loads successfully using the friendly URL",
+          "actual": "Page loaded successfully at http://localhost:8081/en-us/Our-Products with title 'Our Products - Security Test (Trial)' and full page content visible including product listings. URL rewriting correctly translated the friendly URL to serve the appropriate page content.",
+          "screenshot": "URL_Rewriting_Support_step03_friendly_url_working.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "URL Rewriting Support is primarily a backend feature used internally by the Search Crawler during crawling operations",
+    "The UrlRewriter.cs component reads rewriter rules from SiteUrls.config and converts friendly URLs to their internal format (with TabID, ctl parameters, etc.)",
+    "The Spider.cs uses UrlRewriter.RewriteUrl() when UseFriendlyUrls host setting is enabled ('Y') to normalize URLs before adding them to the crawl queue",
+    "The Duplicates section in Crawling settings contains regex patterns that help identify duplicate content accessed via different URL formats (e.g., ?tabid=123 vs /tabid/123)",
+    "No dedicated UI exists for configuring URL rewriting rules directly - the feature leverages DNN's built-in friendly URL system and SiteUrls.config",
+    "All navigation links on the site use friendly URL format (e.g., /en-us/Our-Products, /en-us/News) confirming URL rewriting is active site-wide"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

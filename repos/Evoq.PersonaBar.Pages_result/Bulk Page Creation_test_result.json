@@ -1,0 +1,152 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Pages",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Bulk Page Creation",
+    "feature_description": "Create multiple pages at once with validation and batch processing",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Validate bulk pages before creation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Pages > Add Multiple Pages",
+          "expected": "Bulk page creation panel opens with settings and text area",
+          "actual": "Bulk page creation panel opened showing BULK PAGE SETTINGS and BULK PAGES TO ADD sections",
+          "screenshot": "Bulk_Page_Creation_step01_bulk_panel_open.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter three page names: BulkValidateTest1, BulkValidateTest2, BulkValidateTest3",
+          "expected": "Page names entered in text area, Validate button enabled",
+          "actual": "Page names entered successfully, Validate Page(s) button became enabled",
+          "screenshot": "Bulk_Page_Creation_step02_validation_success.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Validate Page(s) button",
+          "expected": "Validation succeeds with success message",
+          "actual": "Success message displayed: '3 pages were validated.'",
+          "screenshot": "Bulk_Page_Creation_step02_validation_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create multiple pages successfully",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter page names and click Add Page(s) button with Test Approval Workflow",
+          "expected": "Pages created successfully",
+          "actual": "500 Internal Server Error - 'An error has occurred.' message displayed",
+          "screenshot": "Bulk_Page_Creation_step03_add_pages_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Change workflow to Direct Publish and retry with new page names",
+          "expected": "Pages created successfully with Direct Publish workflow",
+          "actual": "500 Internal Server Error persisted even with Direct Publish workflow",
+          "screenshot": "Bulk_Page_Creation_step04_add_pages_error_direct_publish.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Try creating single page via bulk interface",
+          "expected": "Single page created successfully",
+          "actual": "500 Internal Server Error occurred even for single page creation",
+          "screenshot": "Bulk_Page_Creation_step05_single_page_error.png"
+        }
+      ],
+      "issues": [
+        "Bulk page creation fails with 500 Internal Server Error regardless of workflow type",
+        "Error occurs even when attempting to create a single page through bulk interface",
+        "Validation works correctly but actual page creation API endpoint has server-side issue",
+        "Note: Pages may have been created despite error (observed in Branch Parent dropdown later)"
+      ]
+    },
+    {
+      "scenario_name": "Duplicate page name handling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter existing page name 'Home' in bulk pages text area",
+          "expected": "System detects duplicate page name",
+          "actual": "Page name 'Home' entered in text area",
+          "screenshot": "Bulk_Page_Creation_step06_duplicate_detection.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Validate Page(s) button",
+          "expected": "Error message indicating duplicate page name",
+          "actual": "Error dialog displayed: 'Home: The Page Name you chose is already being used for another page at the same level of the page hierarchy.'",
+          "screenshot": "Bulk_Page_Creation_step06_duplicate_detection.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Empty input validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the bulk pages text area (leave it empty)",
+          "expected": "Action buttons should be disabled when no input provided",
+          "actual": "Validate Page(s) and Add Page(s) buttons are disabled when text area is empty",
+          "screenshot": "Bulk_Page_Creation_step07_empty_input_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Parent page assignment (Branch Parent)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Branch Parent dropdown to view available parent pages",
+          "expected": "Hierarchical list of pages displayed for selection",
+          "actual": "Page picker displayed with hierarchical list showing all available pages including My Website, Home, Our Products, etc.",
+          "screenshot": "Bulk_Page_Creation_step08_parent_assignment.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select 'TestParentPage' as the Branch Parent",
+          "expected": "Branch Parent changes to selected page",
+          "actual": "Branch Parent successfully changed to 'TestParentPage'",
+          "screenshot": "Bulk_Page_Creation_step08_parent_assignment.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Enter 'ChildPageUnderParent' and validate",
+          "expected": "Validation succeeds under new parent",
+          "actual": "Validation succeeded: '1 pages were validated.' - page will be created under TestParentPage",
+          "screenshot": "Bulk_Page_Creation_step09_parent_validation_success.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The PreSaveBulkPagesValidate API endpoint works correctly for validating pages before creation",
+    "The SaveBulkPages API endpoint returns 500 Internal Server Error, preventing actual page creation through the UI",
+    "Pages may have been partially created despite the error - BulkValidateTest1, BulkValidateTest2, BulkValidateTest3 appeared in the Branch Parent dropdown",
+    "The bulk page creation feature inherits settings from parent page (SkinSrc, ContainerSrc, permissions)",
+    "Evoq-specific features include TrackLinks and WorkflowId assignment for bulk pages",
+    "Code review shows proper duplicate detection within batch and against existing pages",
+    "Empty page name validation is implemented at UI level (buttons disabled) not just server level"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 4,
+    "failed": 1,
+    "pass_rate": "80%"
+  }
+}

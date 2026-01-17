@@ -1,0 +1,153 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Content.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Google Analytics Script Injection",
+    "feature_description": "Injects Google Analytics tracking scripts into website pages with configurable placement",
+    "feature_priority": "Top",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify no script injection when Track for Administrators disabled",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged in as SuperUser and navigated to Connectors panel",
+          "expected": "Google Analytics 4 connector should be visible and configured",
+          "actual": "Google Analytics 4 connector shown with green checkmark indicating it is configured with Measurement ID: G-TEST123456",
+          "screenshot": "Google Analytics Script Injection_step01_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Opened Google Analytics 4 settings and verified Track for Administrators is unchecked",
+          "expected": "Track for Administrators checkbox should be unchecked",
+          "actual": "Track for Administrators checkbox was unchecked as expected",
+          "screenshot": "Google Analytics Script Injection_step02_ga4_config.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Checked page HTML source for GA4 script presence",
+          "expected": "No Google Analytics script should be present in the page since admin tracking is disabled",
+          "actual": "No GA4 script found in page HTML - gtagScriptSrc: null, gtagConfigId: null, hasDataLayer: false. This confirms the feature correctly excludes admin users when configured.",
+          "screenshot": "Google Analytics Script Injection_step03_no_ga_script_admin_disabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify script injection when Track for Administrators enabled",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enabled Track for Administrators checkbox in Google Analytics 4 settings",
+          "expected": "Checkbox should be checked and settings should save successfully",
+          "actual": "Track for Administrators checkbox was checked successfully",
+          "screenshot": "Google Analytics Script Injection_step04_enable_track_admin.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Save button to save the configuration",
+          "expected": "Settings should save successfully with confirmation message",
+          "actual": "Settings saved successfully with 'Item successfully saved' confirmation message",
+          "screenshot": "Google Analytics Script Injection_step05_settings_saved.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Refreshed page and checked HTML source for GA4 script",
+          "expected": "Google Analytics 4 script should now be present in the page HTML",
+          "actual": "GA4 script found - gtagScriptSrc: G-TEST123456, gtagConfigId: G-TEST123456, hasDataLayer: true",
+          "screenshot": "Google Analytics Script Injection_step06_script_injected.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify script injection position (top of head)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Analyzed the position of GA4 script in the HTML head section",
+          "expected": "Script should be injected at the top of the head section as configured in GoogleAnalytics4.config (InjectTop: True)",
+          "actual": "Script position confirmed at 'top of head'. The GA4 script block appears immediately after the opening <head> tag, before any meta tags or stylesheets. Head content starts with: '<!-- Google tag (gtag.js) -->' followed by the gtag scripts.",
+          "screenshot": "Google Analytics Script Injection_step06_script_injected.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify GA4 script format and functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Extracted and analyzed the full GA4 script block from page HTML",
+          "expected": "Script should follow standard GA4 gtag.js format with dataLayer initialization",
+          "actual": "Script block contains: 1) HTML comment '<!-- Google tag (gtag.js) -->', 2) Async script loading from googletagmanager.com/gtag/js?id=G-TEST123456, 3) DataLayer initialization 'window.dataLayer = window.dataLayer || []', 4) gtag function definition, 5) gtag('js', new Date()), 6) gtag('config', 'G-TEST123456'). All components match the standard GA4 implementation.",
+          "screenshot": "Google Analytics Script Injection_step06_script_injected.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify tracking ID replacement in script template",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verified that the configured Measurement ID is correctly inserted into the script",
+          "expected": "The placeholder [GA4_ID] should be replaced with the configured Measurement ID (G-TEST123456)",
+          "actual": "Tracking ID G-TEST123456 correctly appears in both locations: 1) Script src URL: googletagmanager.com/gtag/js?id=G-TEST123456, 2) gtag config call: gtag('config', 'G-TEST123456')",
+          "screenshot": "Google Analytics Script Injection_step06_script_injected.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify script injection on different page types",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Home page and checked for GA4 script",
+          "expected": "GA4 script should be present on the Home page",
+          "actual": "GA4 script found on Home page (http://localhost:8081/en-us/) with tracking ID G-TEST123456",
+          "screenshot": "Google Analytics Script Injection_step06_script_injected.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigated to Our Products page and checked for GA4 script",
+          "expected": "GA4 script should be present on the Our Products page",
+          "actual": "GA4 script found on Our Products page (http://localhost:8081/en-us/Our-Products) with tracking ID G-TEST123456",
+          "screenshot": "Google Analytics Script Injection_step07_products_page.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Navigated to News page (Publisher module) and checked for GA4 script",
+          "expected": "GA4 script should be present on the News page",
+          "actual": "GA4 script found on News page (http://localhost:8081/en-us/News) with tracking ID G-TEST123456",
+          "screenshot": "Google Analytics Script Injection_step08_news_page.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The GA4 script injection is implemented via the GoogleAnalytics4Engine class in DNN Platform which reads configuration from GoogleAnalytics4.config",
+    "The InjectTop setting in the config file is set to True, which correctly positions the script at the very top of the <head> section",
+    "The Track for Administrators feature works correctly - when disabled, SuperUser/Admin users do not have the tracking script injected, which is useful for excluding internal traffic from analytics",
+    "The script uses the modern GA4 gtag.js implementation rather than the legacy analytics.js, following Google's current best practices",
+    "Code review confirmed that the [GA4_ID] placeholder in the script template is replaced by the RenderScript method in GoogleAnalytics4Engine.cs",
+    "The connector integrates with DNN's connector framework and stores the Measurement ID and TrackForAdmin settings in the portal/host settings"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

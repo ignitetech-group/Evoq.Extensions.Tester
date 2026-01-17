@@ -1,0 +1,105 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Templates",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Default Template Management",
+    "feature_description": "Manage which template is set as the default template for new pages",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Identify default template by useDefaultSkin property",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Manage > Templates",
+          "expected": "Templates panel opens and displays list of templates with default template indicated",
+          "actual": "Templates panel opened but displayed error: 'There was an error retrieving your content. Please check your internet connection.' API returned 500 Internal Server Error for GetPageTemplates endpoint.",
+          "screenshot": "Default_Template_Management_step02_api_error.png"
+        }
+      ],
+      "issues": [
+        "Critical API bug: /API/personaBar/Templates/GetPageTemplates returns HTTP 500 Internal Server Error",
+        "Critical API bug: /API/personaBar/Templates/GetWorkflows returns HTTP 500 Internal Server Error",
+        "Critical API bug: /API/personaBar/Templates/GetPermissionsData returns HTTP 500 Internal Server Error",
+        "Cannot verify useDefaultSkin property as no templates can be loaded"
+      ]
+    },
+    {
+      "scenario_name": "Default template auto-selected when creating new template",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Add Template' button in Templates panel",
+          "expected": "Template creation form opens with default template pre-selected",
+          "actual": "System displayed message: 'You must save an existing page as a template prior to create a new template.' No templates exist in the system due to API failures.",
+          "screenshot": "Default_Template_Management_step03_no_templates_message.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to create template via Pages > Save Page Template",
+          "expected": "Template should be saved successfully",
+          "actual": "Template creation form appeared but Save operation failed with HTTP 400 Bad Request error on /API/PersonaBar/EvoqPages/SavePageDetails",
+          "screenshot": "Default_Template_Management_step04_save_template_attempt.png"
+        }
+      ],
+      "issues": [
+        "Cannot create templates due to API bug: SavePageDetails returns HTTP 400 Bad Request",
+        "Cannot test auto-selection feature as no templates can be loaded or created"
+      ]
+    },
+    {
+      "scenario_name": "Prevent deletion of default template",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Templates and attempt to delete default template",
+          "expected": "System should prevent deletion and display error message when attempting to delete the default template",
+          "actual": "Could not test - no templates exist in the system and cannot be loaded due to API returning 500 Internal Server Error. Code review confirms UseDefaultSkin check exists in TemplatesController.cs DeletePage method (line 256-259) but cannot verify UI behavior.",
+          "screenshot": "Default_Template_Management_step02_api_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test deletion prevention as API fails to load any templates",
+        "Code confirms feature implementation in TemplatesController.cs but UI cannot be verified"
+      ]
+    },
+    {
+      "scenario_name": "Change default template",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Templates and change the default template selection",
+          "expected": "User should be able to select a different template as the default",
+          "actual": "Could not test - Templates panel shows no templates due to API 500 Internal Server Error. The feature requires templates to exist first, and neither loading existing templates nor creating new templates works.",
+          "screenshot": "Default_Template_Management_step02_api_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test changing default template as no templates are available",
+        "All template-related API endpoints return 500 Internal Server Error"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review of TemplatesController.cs confirms default template management functionality exists: UseDefaultSkin method (line 295-298) determines default template by comparing tab.SkinSrc with PortalSettings.DefaultPortalSkin",
+    "Code confirms deletion prevention in DeletePage method (line 256-259): checks UseDefaultSkin(tab) and returns 422 error with message 'PageTemplate_Cannot_Delete_Default_Template' if attempting to delete default template",
+    "Code in templatesCreateManager.js (line 123-141) shows getTemplates function checks useDefaultSkin property to identify and auto-select default template",
+    "Code in templatesCreateManager.js (line 161-173) shows addTemplate function calls getDefaultSelectedTemplate() to auto-select default template when creating new template",
+    "All test scenarios failed due to server-side API issues, not due to feature implementation bugs",
+    "The underlying feature implementation appears correct based on code review, but server configuration or dependency issues prevent the APIs from functioning",
+    "Multiple API endpoints affected: GetPageTemplates, GetWorkflows, GetPermissionsData (all return 500), SavePageDetails (returns 400)"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 0,
+    "failed": 4,
+    "pass_rate": "0%"
+  }
+}

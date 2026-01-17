@@ -1,0 +1,77 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Markdown Support",
+    "feature_description": "Process and render Markdown content in wiki articles",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T10:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Simple wiki link [[Subject]] rendering",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki module and open article 'Markdown Test Article - Jan 2026'",
+          "expected": "Article content displays with wiki-style links rendered as HTML anchor tags",
+          "actual": "Wiki links like [[Published Article Test - Jan 2026]] are correctly rendered as clickable anchor tags with dnnSocialLink class",
+          "screenshot": "Markdown Support_step03_wiki_links_working.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify the simple wiki link syntax [[Subject]] is transformed to HTML",
+          "expected": "The [[Subject]] syntax should be replaced with <a href='...' class='dnnSocialLink'>Subject</a>",
+          "actual": "Simple wiki links are correctly transformed - 'Published Article Test - Jan 2026' displays as a blue clickable link",
+          "screenshot": "Markdown Support_step04_article_content.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Complex wiki link [[Title|Subject]] rendering",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View article content with [[Title|Subject]] style links",
+          "expected": "Wiki links with custom titles should display the title text while linking to the subject",
+          "actual": "The link [[Click here for XSS Article|XSS Sanitization Test Article]] correctly displays as 'Click here for XSS Article' text linking to the XSS article",
+          "screenshot": "Markdown Support_step03_wiki_links_working.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Wiki link navigation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on a wiki link rendered in article content",
+          "expected": "Navigation to the linked article or subject search page",
+          "actual": "Clicking on 'Published Article Test - Jan 2026' link navigated to /en-us/Community/Wiki/subject/Published%20Article%20Test%20-%20Jan%202026",
+          "screenshot": "Markdown Support_step05_wiki_link_navigation_result.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "IMPORTANT: The 'Markdown Support' feature in this Wiki module is NOT standard CommonMark/GitHub-flavored Markdown. It specifically processes Wiki-style link syntax only.",
+    "Code review of MarkdownProcessor.cs (lines 40-44) confirms only two regex patterns are processed: [[Subject]] (SimpleTransform) and [[Title|Subject]] (ComplexTransform).",
+    "Standard Markdown syntax (# headers, **bold**, *italic*, - lists, ``` code blocks, | tables) is NOT processed by this module - these display as raw text.",
+    "The test article 'Markdown Test Article - Jan 2026' clearly demonstrates this: wiki-style links render correctly, while standard Markdown syntax like '# Header 1 Test' and '**bold text**' display as unprocessed text.",
+    "The EditorMode.cs file shows only Plaintext and Richtext modes exist - there is no dedicated 'Markdown mode' as suggested in the feature location.",
+    "The feature name 'Markdown Support' appears to be a misnomer - a more accurate name would be 'Wiki Link Processing' or 'Wiki-style Link Syntax'.",
+    "Links to non-existent articles are rendered with 'wiki-nonexistent-article' CSS class to visually distinguish them from existing article links."
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

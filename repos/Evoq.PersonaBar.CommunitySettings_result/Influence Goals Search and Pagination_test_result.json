@@ -1,0 +1,133 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.CommunitySettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Influence Goals Search and Pagination",
+    "feature_description": "Search, sort, and paginate through influence goals with configurable page sizes and multi-column sorting.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Search by goal type/title keyword",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Community Settings > Influence tab",
+          "expected": "Influence goals table displayed with search box",
+          "actual": "Influence goals table displayed with search box showing 13 items",
+          "screenshot": "Influence_Goals_Search_and_Pagination_step01_initial_state.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'logins' in the search/filter box",
+          "expected": "Table filters to show only goals containing 'logins' (should show 'Number of logins' only)",
+          "actual": "Table still shows all 13 items - no filtering applied despite search term being entered",
+          "screenshot": "Influence_Goals_Search_and_Pagination_step02_search_logins.png"
+        }
+      ],
+      "issues": ["Search/filter functionality does not filter the influence goals table. Entering search terms has no effect on displayed results."]
+    },
+    {
+      "scenario_name": "Verify empty search results message",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'xyznonexistent123' in the search/filter box",
+          "expected": "Table shows empty state with message indicating no matching results",
+          "actual": "Table still shows all 13 items - search does not filter results",
+          "screenshot": "Influence_Goals_Search_and_Pagination_step08_search_no_filter.png"
+        }
+      ],
+      "issues": ["Cannot test empty search results because search functionality does not filter data at all"]
+    },
+    {
+      "scenario_name": "Sort by Weight ascending",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on Weight column header",
+          "expected": "Table sorted by Weight in ascending order",
+          "actual": "Table sorted by Weight ascending: 1, 1, 1, 1, 1, 2, 2, 4, 8, 10. Sort indicator arrow shown on Weight column.",
+          "screenshot": "Influence_Goals_Search_and_Pagination_step03_sort_weight_asc.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Sort by Weight descending",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on Weight column header again",
+          "expected": "Table sorted by Weight in descending order",
+          "actual": "Table sorted by Weight descending: 30, 20, 10, 10, 8, 4, 2, 2, 1, 1. Sort indicator arrow shown pointing down.",
+          "screenshot": "Influence_Goals_Search_and_Pagination_step04_sort_weight_desc.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Sort by Value ascending",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on Value column header",
+          "expected": "Table sorted by Value in ascending order",
+          "actual": "Table sorted by Value ascending: 1, 1, 1, 2, 3, 5, 10, 10, 50, 100. Sort indicator arrow shown on Value column.",
+          "screenshot": "Influence_Goals_Search_and_Pagination_step05_sort_value_asc.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Navigate to next page",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Next pagination button",
+          "expected": "Navigate to page 2, showing items 11-13",
+          "actual": "Successfully navigated to page 2. Shows 'Showing 11-13 of 13 items' and 'Page 2 of 2'. Three remaining items displayed.",
+          "screenshot": "Influence_Goals_Search_and_Pagination_step06_page2.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Navigate to previous page",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Prev pagination button",
+          "expected": "Navigate back to page 1, showing items 1-10",
+          "actual": "Successfully navigated back to page 1. Shows 'Showing 1-10 of 13 items' and 'Page 1 of 2'. Ten items displayed.",
+          "screenshot": "Influence_Goals_Search_and_Pagination_step07_prev_back_to_page1.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The search/filter functionality in the Influence tab does not work - entering any search term does not filter the displayed goals",
+    "The search appears to be wired up (500ms throttle delay exists in code) but the filtering does not take effect on the displayed data",
+    "It is possible the search filters on an internal GoalType field rather than the visible Title/description, but this could not be verified",
+    "Sorting functionality works correctly for Weight and Value columns with proper ascending/descending toggle",
+    "Pagination works correctly with Next/Prev buttons and proper display of item counts and page numbers",
+    "The code shows support for sorting by GoalType, Weight, Value, MinValue, and MaxValue columns, but UI only shows GoalType, Weight, and Value columns",
+    "Page size configuration (5, 10, 25, 50 items) exists in Miscellaneous Community Settings section, not directly in the Influence goals grid"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 5,
+    "failed": 2,
+    "pass_rate": "71%"
+  }
+}

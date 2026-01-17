@@ -1,0 +1,98 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "Notification System",
+    "feature_description": "Receive notifications for various activity stream events",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T08:05:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View existing notifications",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to User Profile > Messages > Notifications tab",
+          "expected": "Notifications panel displays with list of notifications",
+          "actual": "Notifications panel displayed showing 3 notifications (1 Comment Reported, 2 Wiki privilege notifications)",
+          "screenshot": "Notification System_step05_notifications_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Mark notification as read (Dismiss single notification)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Dismiss link on a Wiki privilege notification",
+          "expected": "Notification should be dismissed and count should decrease",
+          "actual": "Notification was dismissed successfully. Count changed from 3 to 2. Success message displayed: 'The action has been performed successfully.'",
+          "screenshot": "Notification System_step06_dismiss_single_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Clear all notifications",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Dismiss All Notifications' link",
+          "expected": "Confirmation dialog should appear",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to dismiss all 2 notification(s)?'",
+          "screenshot": "Notification System_step07_dismiss_all_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Yes' to confirm dismissal",
+          "expected": "All notifications should be cleared",
+          "actual": "All notifications were cleared. Notifications tab now shows 'Notifications' without count badge, and panel shows '0-0 of 0'",
+          "screenshot": "Notification System_step09_all_notifications_cleared.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure notification preferences",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Edit Profile > Communications tab",
+          "expected": "Notification/subscription preferences should be available",
+          "actual": "Communications tab displayed with 'Manage Subscriptions' section showing 164 subscriptions and 'Email Delivery Schedule' section",
+          "screenshot": "Notification System_step10_notification_preferences.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View subscription management table",
+          "expected": "Should display list of subscriptions with ability to unsubscribe",
+          "actual": "Table displayed with columns: Item, Subscription Type, Action. Each subscription has an Unsubscribe option. Subscription types include: Ideas Subscriptions, Wiki Subscriptions",
+          "screenshot": "Notification System_step11_subscriptions_table.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review confirmed notification system supports: NewPostNotifications, NewCommentNotifications for Activity Stream events",
+    "Notification types include: PostNotificationTypeName, CommentNotificationTypeName as defined in ActivityStreamNotifications.cs",
+    "Users are automatically subscribed to posts when they comment (confirmed in code: _subscriptionController.SubscribeToPost is called in NewCommentNotifications method)",
+    "Notification preferences are managed via the Communications tab in Edit Profile, not through a dedicated Activity Stream notification settings page",
+    "The following suggested test scenarios require multi-user interaction and were not directly testable in single-user session: Receive notification for post comment, Receive notification for post like, Receive notification for user mention, Receive notification for subscribed post activity. Code confirms these features exist.",
+    "Subscription controller supports: SubscribeToPost, UnsubscribeFromPost, SubscribeToWall, UnsubscribeFromWall, SubscribeToUserWall, SubscribeToGroup, SubscribeToActivityStream (confirmed in SubscriptionsController.cs)",
+    "Test notification delivery methods was not testable - would require email server configuration verification"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

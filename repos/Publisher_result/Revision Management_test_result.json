@@ -1,0 +1,72 @@
+{
+  "metadata": {
+    "extension_name": "Publisher",
+    "extension_type": "Module",
+    "feature_name": "Revision Management",
+    "feature_description": "Track and manage content revisions with version history and rollback capabilities",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Revision History UI",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged into the site as SuperUser (host)",
+          "expected": "Successfully logged in",
+          "actual": "Successfully logged in as SuperUser Account",
+          "screenshot": "Revision Management_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigated to News page and found Publisher posts",
+          "expected": "Publisher posts visible",
+          "actual": "Found multiple Publisher posts including 'Publisher Test Post'",
+          "screenshot": "Revision Management_step01_post_editor.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Opened the post editor for 'Publisher Test Post'",
+          "expected": "Post editor opens with Revision History option",
+          "actual": "Post editor opened but only shows 3 options: Delete, Edit Post Details, Change Author. No Revision History button/tab found.",
+          "screenshot": "Revision Management_step02_post_editor_clean.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Searched all available menus and panels for Revision History",
+          "expected": "Find Revision History UI somewhere in the post editor",
+          "actual": "Thoroughly searched all UI elements. Edit bar only contains: Delete icon, Edit Post Details icon, Change Author icon, and Close button. No Revision History or Version Tracking option exists.",
+          "screenshot": "Revision Management_step03_no_revision_history_ui.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Reviewed source code for Revision History UI components",
+          "expected": "Find JavaScript or HTML files for Revision History UI",
+          "actual": "Code review confirmed: RevisionManager.cs and RevisionController.cs exist with backend revision management capabilities (GetAllChangesets, Compare, Rollback methods), but NO UI components exist. EditBarManager.js only defines panels for Settings, UnpublishedPosts, EditPostDetails, and ChangeAuthor - no RevisionHistory panel.",
+          "screenshot": "Revision Management_step03_no_revision_history_ui.png"
+        }
+      ],
+      "issues": [
+        "Revision History UI is not implemented in the Publisher module. The backend code (RevisionManager.cs, RevisionController.cs) has full revision management capabilities, but there is no user-facing interface to access these features."
+      ]
+    }
+  ],
+  "observations": [
+    "Code suggests Revision Management feature exists at the backend level, but no UI element found to test it. Specifically:",
+    "- RevisionManager.cs (Components/Integration/) provides methods: GetPendingContent, GetLastRevision, GetLatestPendingRevision, AddPublishedRevision, AddPendingToBePublishedRevision, UpdatePendingToBePublishedRevision, DeleteLastPendingToBePublishedRevision, DeleteRevisionsByContentItemId, PublishRevision",
+    "- RevisionController.cs (Libraries/Revisions/) provides: ReviseContentItem, GetAllChangesets, StateTransition, Compare, Rollback, GetLatestRevision, HardDelete",
+    "- Revision.cs entity tracks: RevisionId, Sequence, ContentItemId, RevisionType (Revise/Rollback), State (Pending/Published/Deleted), CreatedUserId, CreatedDate, LastModifiedUserId, LastModifiedDate",
+    "- However, the Publisher module's client-side code (EditBarManager.js) only implements panels for: Settings, UnpublishedPosts, EditPostDetails, ChangeAuthor - NO RevisionHistory panel exists",
+    "- HTML Pro module has Version Tracking UI (per documentation), but Publisher module does not",
+    "The suggested test scenarios (View revision history, Compare revisions, Rollback, Delete revisions, Track author, Revision numbering, Verify timestamps) cannot be tested via UI as no interface exists"
+  ],
+  "summary": {
+    "total_scenarios": 1,
+    "passed": 0,
+    "failed": 1,
+    "pass_rate": "0%"
+  }
+}

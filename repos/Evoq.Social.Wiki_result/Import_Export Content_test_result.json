@@ -1,0 +1,61 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Import/Export Content",
+    "feature_description": "Import and export wiki articles for backup or migration",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T12:35:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Import/Export Content feature from Module Actions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki module page and enter edit mode",
+          "expected": "Wiki module displayed with Module Actions menu accessible",
+          "actual": "Wiki module displayed correctly with multiple Wiki modules (432, 433) visible in edit mode",
+          "screenshot": "Import_Export_Content_step01_admin_menu.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Actions button for Wiki module 432 and expand Admin submenu",
+          "expected": "Module Actions menu should contain Import/Export Content option",
+          "actual": "Admin menu shows: Settings, Help, Print, Develop, Delete, Refresh. NO Import/Export Content option exists.",
+          "screenshot": "Import_Export_Content_step01_admin_menu.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click on Edit submenu for Wiki module 433",
+          "expected": "Edit menu should contain Import/Export Content option",
+          "actual": "Edit menu shows only one option: 'Add Companion Modules...'. NO Import/Export Content option exists.",
+          "screenshot": "Import_Export_Content_step02_edit_menu_no_import_export.png"
+        }
+      ],
+      "issues": [
+        "Import/Export Content feature does not exist in the Wiki module UI",
+        "The feature described in test requirements (Module Actions > Import/Export Content) is not present in any module action menu",
+        "Code review confirms: ContentExchangeController.cs is for inter-module content transfer between Evoq Social modules, NOT file-based import/export",
+        "Wiki module does not implement IPortable interface (standard DNN import/export mechanism)"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review of ContentExchangeController.cs reveals it handles 'Content Exchange' between Evoq Social modules (e.g., moving content from Discussions to Wiki), which is different from traditional file-based import/export for backup/migration purposes.",
+    "The ContentExchangeController implements IContentExchangeController interface with methods like CreateDestinationItem() and CreateDestinationComment() for inter-module content transfer.",
+    "BusinessController.cs implements ModuleSearchBase and IUpgradeable for module upgrades, search indexing, and notifications - NOT import/export functionality.",
+    "Dispatch.ascx.cs only defines one ModuleAction: 'AddCompanionModules' (localized key). No Import/Export action is defined.",
+    "The Wiki module does NOT implement the IPortable interface, which is the standard DNN mechanism for module-level import/export functionality.",
+    "All Module Action menus were checked (Admin: Settings/Help/Print/Develop/Delete/Refresh; Edit: Add Companion Modules; Move: Move options) - none contain Import/Export Content.",
+    "The feature 'Import/Export Content' as described in test requirements appears to not be implemented in the Wiki module despite being listed as a feature."
+  ],
+  "summary": {
+    "total_scenarios": 1,
+    "passed": 0,
+    "failed": 1,
+    "pass_rate": "0%"
+  }
+}

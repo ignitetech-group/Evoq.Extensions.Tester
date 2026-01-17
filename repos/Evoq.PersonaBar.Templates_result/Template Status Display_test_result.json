@@ -1,0 +1,71 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Templates",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Template Status Display",
+    "feature_description": "Shows template status indicators like Hidden, Disabled, or Published",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Feature Accessibility - Page Templates Panel Loads",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Manage > Templates in PersonaBar",
+          "expected": "Page Templates panel should open",
+          "actual": "Page Templates panel opened successfully with heading, search box, and Add Template button",
+          "screenshot": "Template_Status_Display_step01_templates_panel_open.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify Page Templates UI elements are accessible",
+          "expected": "Should display template list or empty state message",
+          "actual": "Panel displayed with message 'You must save an existing page as a template prior to create a new template' indicating no templates exist",
+          "screenshot": "Template_Status_Display_step02_no_templates_message.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Display Template Status Indicators",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View template list to verify status indicators (Hidden, Disabled, Published)",
+          "expected": "Templates should display with status indicators where applicable",
+          "actual": "No templates exist in the system. Template list is empty. Status indicators cannot be verified without templates.",
+          "screenshot": "Template_Status_Display_step03_final_no_templates.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempted to create a template from existing page via Pages > Save Page Template > Evoq Page Template",
+          "expected": "Template should be created successfully to test status display",
+          "actual": "Template creation failed with HTTP 500 Internal Server Error. Error message: 'There was an error retrieving your content.'",
+          "screenshot": "Template_Status_Display_step03_final_no_templates.png"
+        }
+      ],
+      "issues": [
+        "No templates exist in the system to test status display feature",
+        "Template creation via 'Save Page Template' fails with server error (HTTP 500)"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review shows status is determined by GetTabStatus() method in PageManagementController.cs which returns: 'Disabled' (when tab.DisableLink is true), 'Hidden' (when tab.IsVisible is false), or 'Visible' (when tab.IsVisible is true)",
+    "HTML template (Templates.html line 82) shows status indicator span only becomes visible when status is 'Hidden' or 'Disabled', not for 'Visible' (Published) status",
+    "The Page Templates feature loads and is accessible through Manage > Templates menu",
+    "Templates must be created from existing pages using 'Save Page Template' functionality - no templates currently exist in the test environment",
+    "Attempting to create a template resulted in a server error (HTTP 500), preventing full testing of the status display feature"
+  ],
+  "summary": {
+    "total_scenarios": 2,
+    "passed": 1,
+    "failed": 1,
+    "pass_rate": "50%"
+  }
+}

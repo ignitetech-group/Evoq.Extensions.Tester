@@ -1,0 +1,153 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Users",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Edit User Points",
+    "feature_description": "Modify user's reputation and experience points with validation and note tracking",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Toggle Edit Mode On",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Users > Select User > Activity Tab",
+          "expected": "Activity panel opens showing user stats with Edit Points link",
+          "actual": "Activity panel opened showing RANK: 7, REPUTATION: 6, EXPERIENCE: 6, with 'EDIT POINTS' link visible",
+          "screenshot": "Edit_User_Points_step01_activity_panel_open.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Edit Points' link",
+          "expected": "Edit mode activates with editable input fields for Reputation, Experience, and Notes",
+          "actual": "Edit mode activated with input fields for Reputation (6), Experience (6), Notes textarea, and Cancel/Save buttons",
+          "screenshot": "Edit_User_Points_step02_edit_mode_active.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Cancel Changes and Verify Reset",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Change Reputation to 10 and Experience to 15 in edit mode",
+          "expected": "Values are updated in input fields",
+          "actual": "Reputation changed to 10, Experience changed to 15 in input fields",
+          "screenshot": "Edit_User_Points_step03_values_changed_before_cancel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Cancel button",
+          "expected": "Values reset to original (6, 6) and edit mode closes",
+          "actual": "Values reset to REPUTATION: 6, EXPERIENCE: 6, edit mode closed with 'EDIT POINTS' link visible again",
+          "screenshot": "Edit_User_Points_step04_cancel_reset_verified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit Points with Valid Values and Save",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter valid values - Reputation: 10, Experience: 20 (Reputation <= Experience)",
+          "expected": "Values accepted in input fields",
+          "actual": "Values entered successfully: Reputation=10, Experience=20",
+          "screenshot": "Edit_User_Points_step05_valid_values_before_save.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Changes saved, UI updates to reflect new values",
+          "actual": "Save successful. RANK recalculated to 5, REPUTATION: 10, EXPERIENCE: 20. Last Active updated to 'moments ago'",
+          "screenshot": "Edit_User_Points_step06_save_successful.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add Multiline Notes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter multiline note in Notes textarea with 3 lines",
+          "expected": "Multiline text accepted in Notes field",
+          "actual": "Multiline note entered: 'Test note for points adjustment.' / 'Line 2: Testing multiline support.' / 'Line 3: Final line of note.' - all 3 lines visible in textarea",
+          "screenshot": "Edit_User_Points_step05_valid_values_before_save.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Save with multiline note",
+          "expected": "Note saved successfully with changes",
+          "actual": "Save successful, note accepted and saved with the point changes",
+          "screenshot": "Edit_User_Points_step06_save_successful.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validation - Negative Experience",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Set Experience to -5 (negative value)",
+          "expected": "Value entered in input field",
+          "actual": "Experience field set to -5",
+          "screenshot": "Edit_User_Points_step07_negative_experience_attempt.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Validation error displayed, save blocked",
+          "actual": "Error notification displayed: 'Experience points can not be negative'. Save was blocked (500 error returned from server)",
+          "screenshot": "Edit_User_Points_step08_negative_experience_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validation - Reputation Greater Than Experience",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Set Reputation to 30 and Experience to 15 (Reputation > Experience)",
+          "expected": "Values entered in input fields",
+          "actual": "Reputation set to 30, Experience set to 15",
+          "screenshot": "Edit_User_Points_step09_reputation_greater_than_experience_attempt.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Validation error displayed, save blocked",
+          "actual": "Error notification displayed: 'Reputation points can not be more than experience'. Save was blocked (500 error returned from server)",
+          "screenshot": "Edit_User_Points_step10_reputation_greater_error.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Feature requires DNNSOCIAL SKU - Edit Points UI elements only appear when getSKU() returns 'DNNSOCIAL'",
+    "Feature requires EditPoints permission on the PersonaBar Users module",
+    "Rank is automatically recalculated when reputation/experience points are updated",
+    "The 'Last Active' timestamp updates to 'moments ago' when points are saved, indicating user activity is recorded",
+    "Error notifications appear as toast messages and auto-dismiss after approximately 5 seconds",
+    "Delta calculation is performed server-side when user has existing score (new value - current value)"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

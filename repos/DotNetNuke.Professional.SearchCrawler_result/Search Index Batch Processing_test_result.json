@@ -1,0 +1,91 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Search Index Batch Processing",
+    "feature_description": "Optimizes indexing performance through batch commits and queuing.",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T13:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Search Index Statistics Display",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Site Settings > Search > Basic Settings",
+          "expected": "Search settings page should display with Basic Settings tab",
+          "actual": "Search settings page displayed with tabs: Basic Settings, Synonyms, Ignore Words, Crawling, File Extensions",
+          "screenshot": "Search Index Batch Processing_step01_search_basic_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View Search Index section showing batch processing results",
+          "expected": "Search Index statistics should be visible showing documents indexed via batch processing",
+          "actual": "Search Index section displayed: Path: C:\\DNN\\EvoqEngageDoneDev\\App_Data\\Search, Size: 35.42 MB, Active Documents: 640, Deleted Documents: 69. Re-index and Compact Index buttons available.",
+          "screenshot": "Search Index Batch Processing_step05_search_index_stats.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify File Crawler Scheduler Task Exists",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Scheduler",
+          "expected": "Scheduler page should display with task list",
+          "actual": "Scheduler page displayed with Task Queue showing all scheduled tasks",
+          "screenshot": "Search Index Batch Processing_step03_scheduler.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Locate and view Search: File Crawler task settings",
+          "expected": "File Crawler task should exist and be viewable",
+          "actual": "Search: File Crawler task found (ID: 20), runs Every 1 Day, Retry Time Lapse: 30 Minutes. Task settings viewable with Friendly Name, Class, Frequency, and Enable Schedule options.",
+          "screenshot": "Search Index Batch Processing_step04_file_crawler_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure Batch Commit Size",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for batch commit size configuration in Site Settings > Search",
+          "expected": "Configuration option for batch commit size should be available",
+          "actual": "No batch commit size configuration found in any Search settings tab (Basic Settings, Synonyms, Ignore Words, Crawling, File Extensions)",
+          "screenshot": "Search Index Batch Processing_step02_crawling_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check File Crawler scheduler task settings for batch configuration",
+          "expected": "Batch commit size setting should be available in scheduler task settings",
+          "actual": "File Crawler task settings only expose: Friendly Name, Class, Retain History, Servers, Dependencies, Schedule timing, Frequency, Retry, Run on Event, Catch Up Tasks, Enable Schedule. No batch commit size configuration present.",
+          "screenshot": "Search Index Batch Processing_step04_file_crawler_settings.png"
+        }
+      ],
+      "issues": ["Batch commit size configuration is not exposed in the UI. Code analysis reveals it is controlled by Host Setting 'FileCrawlerBatchCommitSize' (default: 1000) which can only be modified via SQL or programmatically, not through the admin interface."]
+    }
+  ],
+  "observations": [
+    "Code analysis confirms batch processing is implemented in FileCrawlerController.cs using a queue-based system (QueueSearchDocument and ProcessSearchDocumentQueue methods).",
+    "The batch commit size is controlled by Host Setting 'FileCrawlerBatchCommitSize' with a default value of 1000, but this setting is NOT exposed in any UI.",
+    "Batch processing is a backend optimization feature - documents are queued and committed in batches when the queue reaches the configured size, improving indexing performance.",
+    "The Search Index statistics (Active Documents: 640, Index Size: 35.42 MB) represent the cumulative result of batch processing operations.",
+    "Test scenarios 'Test batch queue processing', 'Verify commit performance', 'Handle batch overflow', and 'Test partial batch commits' cannot be tested via UI as they are internal backend operations with no observable UI elements or configuration options.",
+    "The Crawling tab provides URL paths configuration, duplicate URL detection patterns, and included/excluded directories - but no batch processing settings.",
+    "To modify batch commit size, a database administrator would need to update the HostSettings table directly: UPDATE HostSettings SET SettingValue = 'desired_value' WHERE SettingName = 'FileCrawlerBatchCommitSize'"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 2,
+    "failed": 1,
+    "pass_rate": "67%"
+  }
+}

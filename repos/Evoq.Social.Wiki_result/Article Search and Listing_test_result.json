@@ -1,0 +1,153 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Article Search and Listing",
+    "feature_description": "Search wiki articles and display filtered lists with pagination",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Search by keyword",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki module at /en-us/Community/Wiki",
+          "expected": "Wiki module loads with search box and article list",
+          "actual": "Wiki module loaded successfully with search box, 'All Articles' tab selected, and 27 articles displayed",
+          "screenshot": "Article Search and Listing_step01_wiki_list_initial.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'markdown' in search box and click 'Search articles'",
+          "expected": "Search results page shows articles matching 'markdown' keyword",
+          "actual": "Redirected to Search Results page with scope=Wiki, showing 3 matching articles (Markdown Test Article - Claude Testing, Markdown Test Article - Jan 2026, Wiki Links Test Article)",
+          "screenshot": "Article Search and Listing_step02_search_by_keyword_results.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Filter by tags",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on 'toc-test' tag in the Tags sidebar",
+          "expected": "Article list filters to show only articles with 'toc-test' tag",
+          "actual": "URL changed to ?tags=toc-test, article list filtered to show 2 articles tagged with 'toc-test'",
+          "screenshot": "Article Search and Listing_step03_filter_by_tags.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View My Articles",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'My Articles' tab on the Wiki module",
+          "expected": "Article list shows only articles created by current user",
+          "actual": "My Articles tab selected, showing 27 articles created by SuperUser Account",
+          "screenshot": "Article Search and Listing_step05_my_articles_all.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View Draft articles (moderator)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki module with ?category=draftonly parameter",
+          "expected": "Article list shows only draft articles awaiting moderation",
+          "actual": "Draft articles view loaded showing 1 draft article (Test Draft Article - Jan 16 2026) with pending moderation status",
+          "screenshot": "Article Search and Listing_step06_draft_articles_view.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test pagination",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki module with ?page=1 parameter (second page)",
+          "expected": "Second page of articles displayed with pagination controls",
+          "actual": "Page 2 loaded, showing 'No articles were found' message as there are only 27 articles and page size is larger than remaining articles",
+          "screenshot": "Article Search and Listing_step07_pagination_empty_page.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Sort by date/title/views",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Sort by title' from the sort dropdown",
+          "expected": "Articles are sorted alphabetically by title",
+          "actual": "URL changed to ?sort=title, articles reordered alphabetically (Activity Journal Test Article, Article with Special Chars, Case Sensitivity Test - lowercase, etc.)",
+          "screenshot": "Article Search and Listing_step08_sort_by_title.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select 'Sort by views' from the sort dropdown",
+          "expected": "Articles are sorted by view count (most viewed first)",
+          "actual": "URL changed to ?sort=views, articles reordered by view count with most viewed articles first",
+          "screenshot": "Article Search and Listing_step09_sort_by_views_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Search with special characters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter special characters '<>&\"'@#$%' in search box and click 'Search articles'",
+          "expected": "Search handles special characters gracefully without errors",
+          "actual": "Search executed successfully, special characters URL-encoded (%3C%3E&%22%27@#$%), redirected to Search Results page showing 'No results found' - system handled special characters without crashing",
+          "screenshot": "Article Search and Listing_step10_search_special_chars.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test empty search results",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for non-existent term 'xyznonexistent12345'",
+          "expected": "Empty results message displayed appropriately",
+          "actual": "Search Results page displayed with 'No results found.' message, search term shown in input, Wiki scope filter applied correctly",
+          "screenshot": "Article Search and Listing_step11_empty_search_results.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Wiki search redirects to a global Search Results page with Scope=Wiki parameter, rather than filtering in-place on the Wiki module",
+    "Tag filtering uses URL parameter (?tags=tagname) and updates the article list dynamically",
+    "Sort options include: last active, created, title, and views - all working correctly with appropriate URL parameters",
+    "Pagination uses page parameter (0-indexed) in the URL",
+    "Draft articles view requires moderator permission and uses ?category=draftonly parameter",
+    "Special characters in search are properly URL-encoded and handled without causing errors"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 8,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

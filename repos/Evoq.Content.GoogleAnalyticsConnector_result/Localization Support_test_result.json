@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Content.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Localization Support",
+    "feature_description": "Provides multi-language support for Google Analytics connector UI and messages",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify resource string loading",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Connectors panel and open Google Analytics 4 connector",
+          "expected": "GA connector edit form should display with localized UI strings",
+          "actual": "GA connector edit form displayed with all UI strings loaded correctly: 'Measurement ID:', 'Track for Administrators:', 'Cancel', 'Save', 'Delete Connection'",
+          "screenshot": "Localization_Support_step01_ga_connector_ui.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify UI strings match resource file values",
+          "expected": "UI labels should match the values in ContentGoogleAnalytics.resx and localStorage cache",
+          "actual": "All UI strings match cached values in localStorage key 'Connections.GoogleAnalytics.en-US.Table': Ga4ID='Measurement ID:', TrackAdministrators='Track for Administrators:', btnDelete='Delete Connection'",
+          "screenshot": "Localization_Support_step02_localized_strings_en_US.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test fallback to default language (en-US)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Access site in English (en-US) locale and verify personaBarSettings.culture",
+          "expected": "Site should be in en-US locale with English strings displayed",
+          "actual": "personaBarSettings.culture confirmed as 'en-US'. All UI strings displayed in English: 'Measurement ID:', 'Track for Administrators:', 'Cancel', 'Save'",
+          "screenshot": "Localization_Support_step02_localized_strings_en_US.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify localStorage caching of localization data",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check browser localStorage for cached localization data",
+          "expected": "Localization data should be cached with culture-specific keys and timestamp",
+          "actual": "Found localStorage key 'Connections.GoogleAnalytics.en-US.Table' containing cached strings with timestamp. Cache includes: Ga4ID, TrackAdministrators, btnDelete, ConnectorName, TrackingCodeFormat.ErrorMessage",
+          "screenshot": "Localization_Support_step02_localized_strings_en_US.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Switch to Spanish (es-AR) locale and verify cache creation",
+          "expected": "New cache entry should be created for es-AR locale",
+          "actual": "Found new localStorage key 'Connections.GoogleAnalytics.es-AR.Table' with timestamp 1768573294602, confirming cache was created for Spanish locale",
+          "screenshot": "Localization_Support_step03_ga_connector_spanish.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test UI display in different language (Spanish)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Spanish (es-AR) locale and open Google Analytics connector",
+          "expected": "System should attempt to load Spanish localization and fall back to English if unavailable",
+          "actual": "personaBarSettings.culture confirmed as 'es-AR'. UI strings displayed in English (fallback) because Spanish translations do not exist. Cache entry created at 'Connections.GoogleAnalytics.es-AR.Table' with identical English values, confirming fallback mechanism works correctly",
+          "screenshot": "Localization_Support_step03_ga_connector_spanish.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify all UI strings are localized",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Compare visible UI strings against resource file and cache",
+          "expected": "All visible UI elements should have corresponding localization entries",
+          "actual": "Verified the following UI strings are localized and match cache: 'Measurement ID:' (Ga4ID), 'Track for Administrators:' (TrackAdministrators), 'Delete Connection' (btnDelete), 'Cancel', 'Save'. The resource file ContentGoogleAnalytics.resx contains additional strings for authorization flow (Authorize.Text, ConnectToGA.Text, etc.) which are loaded dynamically when needed",
+          "screenshot": "Localization_Support_step02_localized_strings_en_US.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The localization implementation uses two-tier caching: resource strings are fetched via GetLocalizedString API and cached in localStorage with culture-specific keys (e.g., 'Connections.GoogleAnalytics.en-US.Table')",
+    "Cache entries include a timestamp and expire after 1 hour (60 * 60 * 1000 ms) as defined in authorize.js line 394",
+    "Spanish (es-AR) translations for Google Analytics connector do not exist - the system correctly falls back to English (en-US) strings while still creating a culture-specific cache entry",
+    "The code in authorize.js (lines 383-422) implements a localStorageAllowed() check before caching, handling cases where localStorage is unavailable",
+    "Additional localization strings exist in ContentGoogleAnalytics.resx for the OAuth authorization flow (Sign in with Google, Authorization, Account/WebProperty/DataStream dropdowns) but these were not visible in testing as the connector was already configured"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

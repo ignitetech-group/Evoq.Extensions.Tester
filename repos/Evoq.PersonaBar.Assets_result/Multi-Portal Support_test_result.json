@@ -1,0 +1,103 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Assets",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Multi-Portal Support",
+    "feature_description": "Manages assets across multiple portals with portal-specific root folders and permissions",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access portal-specific assets",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Assets panel and click on 'My Website' portal tile",
+          "expected": "Portal-specific assets for My Website should be displayed",
+          "actual": "My Website assets displayed with folders: Badges, Groups, Images, PermissionsTestFolder, SecureFolderTest, Templates, Users, WorkflowTestFolder, and various files",
+          "screenshot": "Multi-Portal Support_step01_portal_specific_assets.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Access host-level assets",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate back to portal selection and click on 'Global Assets' tile",
+          "expected": "Host-level assets should be displayed with globe icon on folders",
+          "actual": "Global Assets displayed with system folders: Cache, Config, Containers, EventQueue, Install, Logs, Skins, Smileys, Templates, Users. All folders show globe icon indicating host-level assets",
+          "screenshot": "Multi-Portal Support_step02_host_level_assets.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Switch between portals",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate back to portal selection and click on 'Test Portal' tile",
+          "expected": "Test Portal assets should be displayed, different from My Website",
+          "actual": "Test Portal assets displayed with only 4 folders (Badges, Images, Templates, Users) and 2 files (cavalier-logo.png, GettingStarted.css) - distinctly different from My Website which had 9 folders and many more files",
+          "screenshot": "Multi-Portal Support_step03_switch_to_test_portal.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify portal isolation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on Images folder in Test Portal to view contents",
+          "expected": "Test Portal Images folder should have specific content",
+          "actual": "Test Portal Images folder contains: cavalier-tv.png, CTA-1.jpg through CTA-8.jpg, full-star.png, half-star.png, header-shadow.png, product images, products-banner.jpg - no subfolders",
+          "screenshot": "Multi-Portal Support_step04_test_portal_images_folder.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Switch to My Website and view Images folder contents",
+          "expected": "My Website Images folder should have different content from Test Portal",
+          "actual": "My Website Images folder contains 4 subfolders (MoveTestFolder, Publisher, SecureFolderTest2026, TestNewFolder2026) and additional files not present in Test Portal (batch_image_3.png, folder_upload_test.txt, test_upload_image.png, test-image.png). This confirms portal isolation - same folder name has different content per portal",
+          "screenshot": "Multi-Portal Support_step05_my_website_images_folder.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Portal-specific root folders",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Assets panel root to view portal selection",
+          "expected": "Three distinct portal root folders should be displayed with appropriate icons",
+          "actual": "Portal selection view shows three distinct root folders: 'Global Assets' (with globe icon for host-level), 'My Website' (with folder icon for portal-specific), and 'Test Portal' (with folder icon for portal-specific). Each portal has its own isolated root folder structure",
+          "screenshot": "Multi-Portal Support_step06_portal_root_folders.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Superuser account (host) has access to all portals including Global Assets, My Website, and Test Portal",
+    "Global Assets are distinguished by a globe icon on folders, while portal-specific assets use standard folder icons",
+    "Each portal maintains completely isolated asset storage - same folder names can contain different content in different portals",
+    "The code in GetPortalsRootFolder() (AssetsController.cs:1477-1500) confirms that superusers see Host folder + all portal folders, while non-superusers only see their own portal",
+    "Portal isolation is enforced through IsPortalIdValid() method which validates user access permissions"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

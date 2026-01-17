@@ -1,0 +1,102 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Content.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Deauthorization and Disconnection",
+    "feature_description": "Allows administrators to disconnect Google Analytics integration and revoke authorization",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T14:19:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Disconnect Google Analytics account",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors",
+          "expected": "Connectors page should open showing list of connectors",
+          "actual": "Connectors page opened showing all available connectors including Google Analytics 4 with Edit button (indicating connected state)",
+          "screenshot": "Deauthorization and Disconnection_step01_connectors_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit button on Google Analytics 4 connector",
+          "expected": "Configuration panel should expand showing current settings",
+          "actual": "Configuration panel expanded showing Measurement ID: G-TEST123456, Track for Administrators checkbox, and Delete Connection button",
+          "screenshot": "Deauthorization and Disconnection_step02_ga_config_before_disconnect.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Delete Connection button",
+          "expected": "Connection should be deleted and success message shown",
+          "actual": "Connection deleted successfully, success message 'Item successfully deleted' displayed, Google Analytics 4 now shows Connect button instead of Edit",
+          "screenshot": "Deauthorization and Disconnection_step03_disconnect_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify configuration is cleared on disconnection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Connect button on disconnected Google Analytics 4",
+          "expected": "Configuration form should open with empty/cleared fields",
+          "actual": "Configuration form opened with empty Measurement ID field and unchecked Track for Administrators checkbox",
+          "screenshot": "Deauthorization and Disconnection_step04_config_cleared.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test re-authorization after disconnection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter new Measurement ID 'G-NEWTEST789' and click Save",
+          "expected": "New configuration should be saved successfully",
+          "actual": "Configuration saved successfully, success message 'Item successfully saved' displayed, Google Analytics 4 now shows green checkmark and Delete Connection button",
+          "screenshot": "Deauthorization and Disconnection_step05_reauthorization_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify tracking script stops appearing after disconnection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify tracking ID present in page source when connected",
+          "expected": "Tracking ID should appear in page source when connector is configured",
+          "actual": "JavaScript evaluation confirmed tracking ID was present in page source (returned true)",
+          "screenshot": "Deauthorization and Disconnection_step05_reauthorization_success.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Delete connection and refresh page",
+          "expected": "Tracking ID should no longer appear in page source after disconnection",
+          "actual": "After disconnection and page refresh, JavaScript evaluation confirmed tracking ID was NOT present in page source (returned false)",
+          "screenshot": "Deauthorization and Disconnection_step06_final_disconnected_state.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Delete Connection action does not show a confirmation dialog - it immediately deletes the connection",
+    "The code in authorize.js suggests there should be a confirmation dialog (utility.confirm) for OAuth deauthorization, but the simple configuration-based connector deletion proceeds without confirmation",
+    "Token removal verification could not be directly tested via UI as token management is handled server-side, but the configuration clearing implies token cache is also cleared based on code review of ServicesController.cs Deauthorize() method",
+    "The OAuth authorization flow (onAuthorize/onUnAuthorize with Google account linking) appears to be separate from the simple Measurement ID configuration - the test environment only showed the basic configuration form"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.AccountSettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "PersonaBar Menu Integration",
+    "feature_description": "Tests the AccountSettings menu item appears correctly in the PersonaBar navigation",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Accounts menu item appears in PersonaBar",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to website and login as superuser",
+          "expected": "PersonaBar should be visible with menu items",
+          "actual": "PersonaBar displayed with all menu items including Accounts",
+          "screenshot": "PersonaBar Menu Integration_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Hover over the Accounts menu item in PersonaBar",
+          "expected": "Accounts menu item should be visible and interactable",
+          "actual": "Accounts menu item (user avatar icon) is visible and responds to hover",
+          "screenshot": "PersonaBar Menu Integration_step01_accounts_menu_hover.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify menu item exists via DOM inspection",
+          "expected": "Menu item with id 'Evoq.Accounts' should exist",
+          "actual": "DOM inspection confirmed element with id='Evoq.Accounts' exists in PersonaBar iframe",
+          "screenshot": "PersonaBar Menu Integration_step03_accounts_highlighted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Check menu icon displays correctly (useravatar css class)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Inspect the CSS class of the Accounts menu item via DOM evaluation",
+          "expected": "Menu item should have 'useravatar' CSS class",
+          "actual": "DOM inspection confirmed className='btn_panel useravatar' - useravatar class is present",
+          "screenshot": "PersonaBar Menu Integration_step03_accounts_highlighted.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Visually verify the user avatar icon is displayed",
+          "expected": "User avatar icon should be visible in PersonaBar",
+          "actual": "User avatar icon is visually displayed in the PersonaBar menu",
+          "screenshot": "PersonaBar Menu Integration_step01_accounts_menu_hover.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify menu order/position is 980",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review code configuration in Evoq.PersonaBar.AccountSettings.dnn",
+          "expected": "Menu order should be configured as 980",
+          "actual": "Code review confirmed <order>980</order> in the PersonaBarMenu component configuration",
+          "screenshot": "PersonaBar Menu Integration_step01_accounts_menu_hover.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify menu position in UI via DOM inspection",
+          "expected": "Menu should appear in correct position relative to other items",
+          "actual": "DOM inspection shows Evoq.Accounts at index 55, between 'showsite' (54) and 'Edit' (56), positioned after Settings menu and before Edit - consistent with order 980",
+          "screenshot": "PersonaBar Menu Integration_step03_accounts_highlighted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Menu item localization displays 'Accounts'",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review localization configuration in code",
+          "expected": "resourceKey 'nav_Accounts' should map to localized text 'Accounts'",
+          "actual": "Code mismatch found: .dnn uses resourceKey='nav_Accounts' but .resx defines 'nav_AccountSettings.Text' with value 'Accounts'",
+          "screenshot": "PersonaBar Menu Integration_step01_accounts_menu_hover.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Inspect menu item text content via DOM evaluation",
+          "expected": "Menu item text should display 'Accounts'",
+          "actual": "DOM inspection shows textContent='nav_Accounts' - the resource key is displayed instead of the localized text",
+          "screenshot": "PersonaBar Menu Integration_step03_accounts_highlighted.png"
+        }
+      ],
+      "issues": [
+        "Localization not working: Menu displays resource key 'nav_Accounts' instead of localized text 'Accounts'",
+        "Root cause: Resource key mismatch - Evoq.PersonaBar.AccountSettings.dnn defines resourceKey='nav_Accounts' but AccountSettings.resx defines key 'nav_AccountSettings.Text'"
+      ]
+    },
+    {
+      "scenario_name": "Verify menu identifier is 'Evoq.Accounts'",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review menu identifier configuration in Evoq.PersonaBar.AccountSettings.dnn",
+          "expected": "Menu identifier should be configured as 'Evoq.Accounts'",
+          "actual": "Code review confirmed <identifier>Evoq.Accounts</identifier> in PersonaBarMenu configuration",
+          "screenshot": "PersonaBar Menu Integration_step01_accounts_menu_hover.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify menu identifier in DOM via JavaScript evaluation",
+          "expected": "DOM element should have id='Evoq.Accounts'",
+          "actual": "DOM inspection confirmed id='Evoq.Accounts' - Playwright selector '[id=\"Evoq.Accounts\"]' successfully located the element",
+          "screenshot": "PersonaBar Menu Integration_step03_accounts_highlighted.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The .dnn manifest file uses resourceKey='nav_Accounts' while the .resx file defines 'nav_AccountSettings.Text' - this mismatch causes the localization failure",
+    "The menu item is functional and clickable despite the localization issue",
+    "Clicking the Accounts menu item does not open a visible panel, suggesting this may be a container menu item or requires additional sub-modules",
+    "The useravatar CSS class renders a user avatar icon in the PersonaBar, matching the expected visual design"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 4,
+    "failed": 1,
+    "pass_rate": "80%"
+  }
+}

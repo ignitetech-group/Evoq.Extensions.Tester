@@ -1,0 +1,122 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.CommunitySettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Settings Batch Save",
+    "feature_description": "Save all community settings together as a single transaction with validation and error handling.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Modify multiple settings and save all at once",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Community Settings panel in PersonaBar",
+          "expected": "Community Settings panel opens with all settings visible",
+          "actual": "Community Settings panel opened showing Influence section and Miscellaneous Community Settings",
+          "screenshot": "Settings_Batch_Save_step01_initial_state.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Documented initial settings state: Answers=unchecked, Page Size=50 items, Profanity Filtering=Prohibit Content",
+          "expected": "Settings values are visible and can be modified",
+          "actual": "All settings visible and editable in the Miscellaneous Community Settings section",
+          "screenshot": "Settings_Batch_Save_step02_settings_visible.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Modified multiple settings: Checked 'Answers' in Content Moderation, Changed Page Size to 25 items, Changed Profanity Filtering to 'Filter Content'",
+          "expected": "All three settings should change in the UI",
+          "actual": "All three settings were successfully changed in the UI",
+          "screenshot": "Settings_Batch_Save_step03_multiple_changes_made.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Clicked Save button to batch save all changes",
+          "expected": "All settings should be saved in a single transaction",
+          "actual": "Save button clicked and request sent to server",
+          "screenshot": "Settings_Batch_Save_step04_success_notification.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify success notification on save",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked Save button after modifying multiple settings",
+          "expected": "Success notification should appear indicating settings were saved",
+          "actual": "Success notification appeared with green checkmark and message 'Item successfully saved.'",
+          "screenshot": "Settings_Batch_Save_step04_success_notification.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Made another change and saved again",
+          "expected": "Success notification should appear again",
+          "actual": "Success notification 'Item successfully saved.' appeared with green checkmark",
+          "screenshot": "Settings_Batch_Save_step07_saving_state.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify settings persist after page refresh",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Saved settings with: Answers=checked, Page Size=25 items, Profanity Filtering='Filter Content'",
+          "expected": "Settings should be saved to database",
+          "actual": "Success notification was displayed",
+          "screenshot": "Settings_Batch_Save_step04_success_notification.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Refreshed the page and navigated back to Community Settings",
+          "expected": "Settings should persist: Answers=checked, Page Size=25 items, Profanity Filtering='Filter Content'",
+          "actual": "Settings did NOT persist. Found: Answers=unchecked, Page Size=50 items, Profanity Filtering='No Filtering' (different from both original and saved values)",
+          "screenshot": "Settings_Batch_Save_step06_settings_after_refresh.png"
+        }
+      ],
+      "issues": [
+        "Settings do not persist after page refresh despite showing success notification",
+        "Profanity Filtering value changed to 'No Filtering' which was neither the original value ('Prohibit Content') nor the saved value ('Filter Content')",
+        "This indicates a critical bug in the SaveSettings API - the success response is returned but data is not actually persisted to the database"
+      ]
+    },
+    {
+      "scenario_name": "Concurrent save attempt prevention",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Reviewed JavaScript code for concurrent save handling",
+          "expected": "Code should prevent multiple simultaneous save operations",
+          "actual": "Code uses 'onSaveSettings' flag to prevent concurrent saves. When Save is clicked, the flag is set to true and returns early if another save is in progress. Button text changes to 'Saving...' during save operation.",
+          "screenshot": "Settings_Batch_Save_step07_saving_state.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Anti-forgery token validation is implemented via [ValidateAntiForgeryToken] attribute on the SaveSettings endpoint in CommunitySettingsController.cs",
+    "The SaveSettings method does not have try-catch error handling - it calls CmxSettingsController.Instance.SaveCmxSettings() and returns { Success = true } unconditionally",
+    "Network failure simulation is not testable via UI automation",
+    "Testing without required permissions would require creating a non-admin user, which is outside the scope of this test",
+    "The JavaScript saveSettings function includes client-side prevention of concurrent saves via onSaveSettings flag",
+    "Critical: Despite the UI showing success notifications, settings do not persist to the database after page refresh - this is a significant bug that needs investigation"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 3,
+    "failed": 1,
+    "pass_rate": "75%"
+  }
+}

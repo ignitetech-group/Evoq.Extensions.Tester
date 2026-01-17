@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Master Content Template",
+    "feature_description": "Set content as master template for reuse across multiple module instances",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Make Master option via Module Actions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Home page with HTML modules in Edit mode",
+          "expected": "Page displays with multiple HTML modules visible",
+          "actual": "Page displayed correctly with multiple HTML modules in edit mode",
+          "screenshot": "Master Content Template_step01_edit_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Admin menu in Module Actions for an HTML module",
+          "expected": "Module Actions menu displays with 'Make Master' option",
+          "actual": "Admin menu displayed with options: Settings, Export Content, Import Content, Help, Develop, Delete, Refresh - NO 'Make Master' option found",
+          "screenshot": "Master Content Template_step02_module_actions_admin.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Settings to explore module configuration options",
+          "expected": "Module Settings dialog opens with master content options",
+          "actual": "Settings dialog opened but did not display full settings interface - only showed module content preview",
+          "screenshot": "Master Content Template_step03_module_settings.png"
+        }
+      ],
+      "issues": [
+        "The 'Make Master' option is not visible in the Module Actions menu for standard HTML modules on their native page",
+        "Code review reveals the option only appears when a module is 'orphaned' (its master page was deleted or doesn't exist)",
+        "The stated UI Location 'Module Actions > Make Master' appears to be inaccurate - the option appears as a contextual link within the module content area, not in the dropdown menu"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review confirmed Master Content Template feature exists in: MakeMasterPage.js, HtmlTextProController.cs (MakeMaster API endpoint), and HtmlModule.ascx.cs",
+    "The 'Make Master' functionality is conditional - it only appears when IsOrphanedModule() returns true (when masterTab is null or deleted)",
+    "For modules on their native page, the 'Make Master' option is intentionally hidden as they are already on their master page",
+    "To test this feature would require: (1) Creating an HTML module on Page A, (2) Sharing/copying it to Page B, (3) Deleting Page A or the module from Page A, (4) Then the 'Make Master' link would appear on Page B",
+    "The feature appears designed for recovery scenarios when modules become orphaned from their original master page, not for routine content management",
+    "The documented UI location 'Module Actions > Make Master' does not match the actual implementation - the link appears inline within the module content with the message: 'This module does not belong to the page, but its master page is not found. Make this page as master?'"
+  ],
+  "summary": {
+    "total_scenarios": 1,
+    "passed": 0,
+    "failed": 1,
+    "pass_rate": "0%"
+  }
+}

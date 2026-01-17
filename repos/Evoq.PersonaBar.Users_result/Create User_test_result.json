@@ -1,0 +1,117 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Users",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Create User",
+    "feature_description": "Add new users to the system",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T00:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Open create user form",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Users panel and click Add User button",
+          "expected": "Create user form should open with all required fields",
+          "actual": "Create user form opened with First Name, Last Name, User Name, Email Address, Authorized toggle, Random Password toggle, Password, Confirm Password fields, and Save/Cancel buttons",
+          "screenshot": "Create_User_step01_form_opened.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create user with valid data",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Fill form with valid data: First Name=Claude, Last Name=TestCreate, User Name=claudetestcreate2026, Email=claudetestcreate2026@test.com, Password=TestPass123!",
+          "expected": "Form should accept all valid input data",
+          "actual": "Form accepted all input data, password strength indicator showed 'strong'",
+          "screenshot": "Create_User_step02_form_filled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "User should be created successfully and appear in user list",
+          "actual": "Success message 'User created successfully.' appeared, new user 'Claude TestCreate' appeared at top of user list, total entries increased from 20 to 21",
+          "screenshot": "Create_User_step03_user_created_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validation - empty required fields",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open create user form and click Save without entering any data",
+          "expected": "Validation errors should appear for all required fields",
+          "actual": "Red exclamation mark error indicators appeared next to all required fields: First Name, Last Name, User Name, Email Address, Password, and Confirm Password",
+          "screenshot": "Create_User_step04_empty_field_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validation - invalid email format",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Fill form with valid data except Email Address which is set to 'invalid-email-format', then click Save",
+          "expected": "Validation error should appear for invalid email format",
+          "actual": "Red exclamation mark error indicator appeared next to the Email Address field indicating invalid format",
+          "screenshot": "Create_User_step05_invalid_email_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Duplicate username handling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Fill form with valid data but use existing username 'claudetestcreate2026', then click Save",
+          "expected": "Error message should appear indicating username already exists",
+          "actual": "Error notification appeared with message 'The username is already in use.' and user was not created",
+          "screenshot": "Create_User_step06_duplicate_username_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify ADD_USER permission requirement",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review code and verify button visibility as superuser (admin)",
+          "expected": "Add User button should be visible only to users with isAdmin=true OR ADD_USER permission",
+          "actual": "Code review confirmed canAddUser() function returns true if settings.isAdmin OR settings.permissions.ADD_USER. Button was visible and functional for superuser account",
+          "screenshot": "Create_User_step00_login_confirmed.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The canAddUser permission helper at permissionHelpers.js:4-6 checks for isAdmin OR ADD_USER permission",
+    "The Create User button at index.jsx:188-198 is conditionally rendered based on canAddUser() result",
+    "Password field includes real-time strength indicator showing weak/medium/strong",
+    "Random Password toggle can auto-generate password when enabled (not explicitly tested)",
+    "Send An Email To New User checkbox is available for notifying new users"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

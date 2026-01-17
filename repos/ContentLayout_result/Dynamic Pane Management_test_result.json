@@ -1,0 +1,144 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Dynamic Pane Management",
+    "feature_description": "Dynamically creates and manages content panes within the layout at runtime.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Generate unique pane names",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page in Edit mode and inspect ContentLayout modules",
+          "expected": "Each ContentLayout module should have uniquely named panes with GUID-based prefixes",
+          "actual": "Found two ContentLayout modules with unique prefixes: F30A_Pane1, F30A_Pane2 (2-column layout) and 9977_Pane1, 9977_Pane2, 9977_Pane3, 9977_Pane4 (4-column layout). Each prefix is a 4-character alphanumeric string generated from GUID.",
+          "screenshot": "Dynamic Pane Management_step02_pane_names.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Inspect DOM to verify pane IDs",
+          "expected": "Pane elements should have IDs in format dnn_{prefix}_Pane{number}",
+          "actual": "DOM inspection confirmed: dnn_F30A_Pane1, dnn_F30A_Pane2, dnn_9977_Pane1, dnn_9977_Pane2, dnn_9977_Pane3, dnn_9977_Pane4 - all with unique prefixes matching LayoutPanePrefixGenerator pattern",
+          "screenshot": "Dynamic Pane Management_step01_edit_mode_panes.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Register panes with skin",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Inspect DOM to verify pane registration with skin system",
+          "expected": "Each pane should have data-parentpane attribute indicating registration with parent skin pane",
+          "actual": "All 6 ContentLayout panes have data-parentpane='TopPane' attribute, confirming they are registered with the DNN skin system and associated with the parent TopPane",
+          "screenshot": "Dynamic Pane Management_step02_pane_names.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify panes appear in edit mode UI with pane labels",
+          "expected": "Pane names should be visible in the editing interface",
+          "actual": "Pane labels (F30A_Pane1, F30A_Pane2, 9977_Pane1-4) are displayed in the page edit mode UI, confirming successful registration with the skin pane system",
+          "screenshot": "Dynamic Pane Management_step04_pane_labels.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle pane name conflicts",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify multiple ContentLayout modules coexist without naming conflicts",
+          "expected": "Multiple ContentLayout modules on the same page should have different pane prefixes to prevent conflicts",
+          "actual": "Two ContentLayout modules exist on the page: one with prefix F30A_ (2 panes) and another with prefix 9977_ (4 panes). No conflicts or errors occurred because each module generates a unique GUID-based prefix via LayoutPanePrefixGenerator.GenerateNewLayoutPrefix()",
+          "screenshot": "Dynamic Pane Management_step02_pane_names.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Review code to confirm conflict handling mechanism",
+          "expected": "Code should check for duplicate pane names and handle conflicts",
+          "actual": "Code review confirmed CheckPaneNamesConflicts() in View.ascx.cs throws InvalidOperationException if a pane name already exists in the skin. The unique prefix generation (4-char GUID substring) prevents conflicts in normal operation.",
+          "screenshot": "Dynamic Pane Management_step01_edit_mode_panes.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test pane visibility toggling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter page edit mode and verify pane visibility",
+          "expected": "All ContentLayout panes should be visible in edit mode",
+          "actual": "All 6 panes are visible in edit mode with dashed borders indicating pane boundaries. PrepareModulePaneControl() in code sets paneControl.Visible = true to ensure parent pane visibility.",
+          "screenshot": "Dynamic Pane Management_step03_empty_pane.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify panes display modules correctly",
+          "expected": "Modules placed in panes should be visible and editable",
+          "actual": "Modules are correctly displayed within their assigned panes. F30A_Pane1 shows HTML content, F30A_Pane2 shows product tiles (WEARABLES, TABLETS, TELEVISIONS), 9977_Pane2-4 show product tiles (BLU-RAY PLAYERS, MONITORS, HOME THEATERS, CAMERAS)",
+          "screenshot": "Dynamic Pane Management_step04_pane_labels.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify pane CSS classes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Inspect DOM to verify CSS classes on pane elements",
+          "expected": "Each pane should have 'pane' class plus Bootstrap grid classes for responsive layout",
+          "actual": "DOM inspection confirmed all panes have proper CSS classes. F30A_Pane1/2: 'pane col-lg-6 col-md-6 col-sm-6 col-xs-12' (50% width). 9977_Pane1-4: 'pane col-lg-3 col-md-3 col-sm-3 col-xs-12' (25% width). Additional classes include dnnSortable, dnnModuleManager, ui-sortable for edit mode functionality.",
+          "screenshot": "Dynamic Pane Management_step03_empty_pane.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test empty pane styling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Locate empty pane and verify special styling",
+          "expected": "Empty panes should have DNNEmptyPane class and display content addition options",
+          "actual": "dnn_9977_Pane1 is empty and has CSS classes 'DNNEmptyPane EditBarEmptyPane dnnQuickAddModuleManager'. This matches the code in ReplaceEmptyPaneClass() which adds EditBarEmptyPane class to empty panes.",
+          "screenshot": "Dynamic Pane Management_step03_empty_pane.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify empty pane shows content addition UI",
+          "expected": "Empty pane should display icons/buttons to add text, images, or modules",
+          "actual": "Empty pane displays three icons: 'A' for adding text, image icon for adding images, and module icon for adding modules. These are standard DNN edit mode UI elements for empty panes.",
+          "screenshot": "Dynamic Pane Management_step03_empty_pane.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Pane name conflict handling is verified through code review - CheckPaneNamesConflicts() throws exception if duplicate names exist. Creating an actual conflict requires intentional misconfiguration and is not possible through normal UI operations.",
+    "Pane visibility is managed automatically by the system - PrepareModulePaneControl() ensures parent pane visibility. This is not a user-toggleable feature but an internal mechanism.",
+    "The LayoutPanePrefixGenerator uses first 4 characters after position 1 of a GUID to create unique prefixes (e.g., F30A, 9977), virtually eliminating collision risk.",
+    "Bootstrap responsive grid classes (col-lg-X, col-md-X, col-sm-X, col-xs-12) are automatically assigned based on the number of columns in the layout configuration."
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

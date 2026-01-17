@@ -1,0 +1,82 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Assets",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "File Type Filtering",
+    "feature_description": "Filters files based on type with configurable allowed extensions and validation",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Filter by image files",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Assets panel and enter '.png' in the search box",
+          "expected": "Only PNG image files should be displayed",
+          "actual": "Search returned only PNG files (batch_image_3.png, Bronze-Gettingstarted.png, cavalier-tv.png, etc.) with thumbnails showing. Breadcrumb displayed 'Search .PNG'",
+          "screenshot": "File Type Filtering_step02_filter_png_images.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Filter by document files",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter '.xml' in the search box to filter XML document files",
+          "expected": "XML document files should be displayed (e.g., Dnn.CKEditorSettings.xml)",
+          "actual": "Search returned 'Your Search Produced No Results' despite XML files being visible in the folder listing",
+          "screenshot": "File Type Filtering_step03_filter_xml_no_results.png"
+        }
+      ],
+      "issues": ["Search/filter functionality does not index non-image file types. XML, CSS, and TXT files cannot be filtered using the search box despite being visible in the folder listing."]
+    },
+    {
+      "scenario_name": "Test case-insensitive filtering",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter '.PNG' (uppercase) in the search box",
+          "expected": "PNG files should be returned regardless of case",
+          "actual": "Search returned the same PNG files as lowercase '.png' search, confirming case-insensitive filtering works",
+          "screenshot": "File Type Filtering_step04_case_insensitive.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify file type display in details",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hover over cavalier-logo.png file and click the edit (pencil) button to open file details",
+          "expected": "File details panel should display the file type/extension",
+          "actual": "File details panel opened showing 'Type: png' along with other metadata (Created date, Size: 2.0 KB, Last Modified, URL). File type is clearly displayed.",
+          "screenshot": "File Type Filtering_step06_file_type_display.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "No dedicated 'Filter Options' UI panel exists at the specified location 'Admin > Content > Assets > Filter Options'. File type filtering is implemented through the search functionality.",
+    "The search/filter feature only indexes image files (PNG, JPG, etc.). Non-image file types (XML, CSS, TXT, DOCX, PDF) are visible in the folder listing but cannot be filtered via search by extension.",
+    "Different file types display with appropriate icons in the file listing: image files show thumbnails, XML files show </> code icons, document files show document icons.",
+    "Code review shows file type filtering for uploads is implemented server-side via GetFileUploadToken method with a Filter parameter for allowed extensions, but this is not exposed in the Assets browser UI.",
+    "The file details panel correctly displays the file type (extension) under 'Type:' field when viewing file properties."
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 3,
+    "failed": 1,
+    "pass_rate": "75%"
+  }
+}

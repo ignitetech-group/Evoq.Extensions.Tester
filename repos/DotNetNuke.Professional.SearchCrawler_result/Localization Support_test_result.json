@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Localization Support",
+    "feature_description": "Provides multi-language support for search crawler administration.",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T13:50:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Display localized UI text",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Site Settings > Search > Basic Settings tab",
+          "expected": "Search settings page loads with localized labels in English",
+          "actual": "Search settings page loaded successfully with all UI labels displayed in English including: Minimum Word Length, Maximum Word Length, Maximum Result Per Page, Custom Analyzer Type, Enable Partial-Word Search, SEARCH PRIORITIES, Title Boost, Tag Boost, Content Boost, Description Boost",
+          "screenshot": "Localization Support_step01_search_settings_basic.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to Crawling tab to view more localized labels",
+          "expected": "Crawling tab displays localized section headers and column labels",
+          "actual": "Crawling tab loaded with localized labels: URL PATHS, URL, ENABLE SPIDERING, DNN IMPERSONATION, WINDOWS AUTH, Duplicates, Description, Regex Pattern, Included Directories, Excluded Directories",
+          "screenshot": "Localization Support_step02_crawling_tab.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test resource file loading",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to File Extensions tab and verify resource strings are loaded",
+          "expected": "Labels from SharedResources.resx file are displayed correctly",
+          "actual": "File Extensions tab loaded with localized labels from resource files: INCLUDED FILE EXTENSIONS, FILE EXTENSION, FILE TYPE, CONTENT CRAWLING, EXCLUDED FILE EXTENSIONS, Add File Type. Tooltip 'Content crawling is unavailable' matches tooltipContentCrawlingUnavailable.Text from SharedResources.resx",
+          "screenshot": "Localization Support_step03_file_extensions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify fallback to default language",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on German language flag in the persona bar language selector",
+          "expected": "Admin UI falls back to English since German translations are not available for Search Crawler admin resources",
+          "actual": "After clicking German flag, the admin UI correctly remains in English. All labels continue to display in English (INCLUDED FILE EXTENSIONS, FILE EXTENSION, FILE TYPE, etc.), demonstrating proper fallback behavior to the default language when translations are unavailable",
+          "screenshot": "Localization Support_step04_fallback_to_english.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The LocalizationHelper.cs class wraps DNN's Localization.GetString() method to retrieve localized strings from DesktopModules/DNNCorp/SearchCrawler/App_LocalResources/CrawlerSettings.ascx.resx",
+    "SharedResources.resx contains localized strings for error messages, log messages, tooltips, and UI labels used throughout the Search Crawler module",
+    "The localization system correctly falls back to the default English language when translations for other languages (e.g., German) are not available",
+    "Resource strings like 'Content crawling is unavailable' (tooltipContentCrawlingUnavailable.Text) are properly loaded and displayed in the UI",
+    "The admin persona bar provides language switching functionality, but Search Crawler admin resources only have English translations"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

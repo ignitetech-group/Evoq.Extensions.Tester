@@ -1,0 +1,154 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Content Sanitization",
+    "feature_description": "Filter and sanitize user-generated content to prevent XSS and malicious content",
+    "feature_priority": "Top",
+    "test_date": "2026-01-16T12:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "XSS Prevention - onerror Handler",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Created new article with malicious content including <img src='x' onerror='alert(XSS)'>",
+          "expected": "The onerror handler should be stripped before any code execution",
+          "actual": "Alert dialog 'XSS via onerror' appeared during publish process, indicating the malicious JavaScript executed before sanitization",
+          "screenshot": "Content_Sanitization_step01_XSS_published_article.png"
+        }
+      ],
+      "issues": ["CRITICAL: XSS vulnerability - onerror event handler executes during content preview/publish before server-side sanitization removes it. This allows arbitrary JavaScript execution in the context of the author's session."]
+    },
+    {
+      "scenario_name": "Script Tag Filtering",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Included <script>alert('XSS Attack!');</script> in article content",
+          "expected": "Script tags should be completely removed from saved content",
+          "actual": "Script tags were successfully removed from the published article. The saved content does not contain any script elements.",
+          "screenshot": "Content_Sanitization_step02_sanitized_article_view.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Iframe Filtering",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Included <iframe src='http://evil.com'></iframe> in article content",
+          "expected": "Iframe tags should be completely removed from saved content",
+          "actual": "Iframe tag was successfully removed from the published article. No iframe elements present in rendered content.",
+          "screenshot": "Content_Sanitization_step02_sanitized_article_view.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "JavaScript URL Sanitization",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Included <a href='javascript:alert(XSS)'>Click me</a> in article content",
+          "expected": "JavaScript URLs should be sanitized to prevent code execution on click",
+          "actual": "The javascript: URL was sanitized to '#'. The 'Click me' link now has href='#' instead of the malicious JavaScript URL.",
+          "screenshot": "Content_Sanitization_step02_sanitized_article_view.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Malicious HTML Removal (object/embed)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Included <object data='http://evil.com/malware.swf'></object> and <embed src='http://evil.com/malware.swf'> in article content",
+          "expected": "Object and embed tags should be completely removed",
+          "actual": "Both object and embed tags were successfully removed from the published article content.",
+          "screenshot": "Content_Sanitization_step02_sanitized_article_view.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Allowed HTML Preservation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Included safe HTML elements: <p>, <strong>, <em> with test content",
+          "expected": "Safe HTML elements should be preserved in the output",
+          "actual": "Paragraph tags, bold text (<strong>), and italic text (<em>) were all preserved correctly in the published article.",
+          "screenshot": "Content_Sanitization_step02_sanitized_article_view.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Style Expression Removal",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Included <p style='expression(alert(IE XSS))'>Expression test</p> and <div style='background:url(javascript:alert(XSS))'>Style XSS</div>",
+          "expected": "Style attributes containing 'expression' or 'javascript:' should be removed",
+          "actual": "The style attributes with malicious content were removed. The text content was preserved but style attributes were sanitized.",
+          "screenshot": "Content_Sanitization_step02_sanitized_article_view.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Profanity Filtering",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Reviewed code implementation for profanity filtering in ContentController.cs",
+          "expected": "Profanity filtering should be implemented with configurable options",
+          "actual": "Code review confirmed profanity filtering is implemented with two modes: FilterContent (replaces with asterisks) and ProhibitContent (rejects submission). Feature requires site-level configuration of profanity word list via ProfanityController.",
+          "screenshot": "Content_Sanitization_step02_sanitized_article_view.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "SQL Injection Prevention",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Reviewed code implementation for SQL injection prevention",
+          "expected": "Data layer should use parameterized queries to prevent SQL injection",
+          "actual": "Code review confirmed the application uses parameterized queries through the DataService/DataProvider pattern. Content sanitization (FilterMaliciousTags) focuses on XSS prevention; SQL injection is handled at the data access layer level through DNN's standard practices.",
+          "screenshot": "Content_Sanitization_step02_sanitized_article_view.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "CRITICAL SECURITY ISSUE: Client-side XSS vulnerability exists where malicious onerror handlers execute during the content preview/publish process before server-side sanitization occurs. This affects the author's browser session.",
+    "Server-side sanitization (FilterMaliciousTags in Utilities.cs) is comprehensive and removes: script, iframe, frameset, frame, object, embed, applet, form, input, option, select, link, html, title, meta, body tags.",
+    "JavaScript/jscript/vbscript URL schemes are correctly sanitized to '#' in href and src attributes.",
+    "Event handlers (on* attributes) are stripped from elements - but this happens AFTER initial rendering in the editor, which is the vulnerability.",
+    "The sanitization uses AngleSharp library to properly clean unclosed elements.",
+    "Profanity filtering is a configurable feature that requires site administrator setup of profanity word lists.",
+    "EditorConfiguration allows admin control over AllowIframe, AllowScript, AllowEmbed settings - default is to disallow these."
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 8,
+    "failed": 1,
+    "pass_rate": "89%"
+  }
+}

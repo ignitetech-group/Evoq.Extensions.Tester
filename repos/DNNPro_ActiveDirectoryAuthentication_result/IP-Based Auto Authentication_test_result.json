@@ -1,0 +1,116 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "IP-Based Auto Authentication",
+    "feature_description": "Automatically authenticate users based on their IP address ranges",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T14:35:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Configure single IP address for auto-authentication",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Extensions > Authentication Systems > DNNPro_ActiveDirectoryAuthentication > Site Settings",
+          "expected": "Site Settings tab displays with Auto-login IP Address field",
+          "actual": "Site Settings tab displayed with Auto-login IP Address (Optional) field visible",
+          "screenshot": "IP-Based Auto Authentication_step01_navigate_to_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter single IP address '192.168.1.100' in Auto-login IP Address field",
+          "expected": "IP address is entered in the field",
+          "actual": "IP address '192.168.1.100' was entered successfully in the Auto-login IP Address field",
+          "screenshot": "IP-Based Auto Authentication_step02_single_ip_entered.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click 'Update Authentication Settings' to save",
+          "expected": "Settings are saved and IP address is persisted",
+          "actual": "Settings were saved successfully. LDAP status message appeared (FAIL expected as no AD server). IP address '192.168.1.100' was preserved in the field after save.",
+          "screenshot": "IP-Based Auto Authentication_step03_single_ip_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure IP range",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter IP range '192.168.1.1-192.168.1.254' in Auto-login IP Address field",
+          "expected": "IP range is entered in the field using dash notation",
+          "actual": "IP range '192.168.1.1-192.168.1.254' was entered successfully",
+          "screenshot": "IP-Based Auto Authentication_step04_ip_range_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Update Authentication Settings' to save",
+          "expected": "IP range is saved and persisted",
+          "actual": "Settings were saved successfully. IP range '192.168.1.1-192.168.1.254' was preserved after save.",
+          "screenshot": "IP-Based Auto Authentication_step05_ip_range_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure multiple IP ranges separated by semicolons",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter multiple IP configurations '192.168.1.1-192.168.1.100;10.0.0.1-10.0.0.50;172.16.0.100' separated by semicolons",
+          "expected": "Multiple IP ranges and single IPs can be entered separated by semicolons",
+          "actual": "Multiple IP configurations were entered successfully: two IP ranges and one single IP, all separated by semicolons",
+          "screenshot": "IP-Based Auto Authentication_step06_multiple_ranges_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Update Authentication Settings' to save",
+          "expected": "All IP configurations are saved",
+          "actual": "Settings were saved successfully. All IP configurations '192.168.1.1-192.168.1.100;10.0.0.1-10.0.0.50;172.16.0.100' were preserved after save.",
+          "screenshot": "IP-Based Auto Authentication_step07_multiple_ranges_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate IP address format validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter invalid IP address '192.168.1' (only 3 octets) in Auto-login IP Address field",
+          "expected": "Invalid IP format should be detected",
+          "actual": "Invalid IP '192.168.1' was entered in the field",
+          "screenshot": "IP-Based Auto Authentication_step08_invalid_ip_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Update Authentication Settings' to attempt save",
+          "expected": "Validation error should appear preventing save",
+          "actual": "Validation error displayed: '192.168.1 is not a valid IP address' with red X icon. Settings were not saved. Validation correctly rejected the incomplete IP address.",
+          "screenshot": "IP-Based Auto Authentication_step09_validation_error_full.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "LDAP connection status messages (FAIL) appear after each save, which is expected since no Active Directory server is configured in the test environment",
+    "The Auto-login IP Address field accepts: single IPv4 addresses, IP ranges using dash notation (start-end), and multiple entries separated by semicolons",
+    "IP validation requires exactly 4 octets - partial IPs like '192.168.1' are correctly rejected with clear error message",
+    "Code review confirms validation logic in Settings.ascx.cs CheckEnteredIPAddr() method validates each IP has 4 octets and uses Utilities.GetIP4Address() for validation"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

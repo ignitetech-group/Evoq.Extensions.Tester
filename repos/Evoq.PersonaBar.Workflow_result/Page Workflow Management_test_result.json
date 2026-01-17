@@ -1,0 +1,226 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Workflow",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Page Workflow Management",
+    "feature_description": "Apply workflows to pages, managing page publishing and approval through workflow states.",
+    "feature_priority": "Top",
+    "test_date": "2026-01-16T19:53:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Apply workflow to new page",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Content > Pages",
+          "expected": "Pages panel opens showing list of pages",
+          "actual": "Pages panel opened with page list displayed",
+          "screenshot": "Page_Workflow_Management_step01_pages_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Add Page button to create new page",
+          "expected": "Add page form appears with workflow dropdown",
+          "actual": "Add page form displayed with Name field and Workflow dropdown visible",
+          "screenshot": "Page_Workflow_Management_step02_add_page_form.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Workflow dropdown to view options",
+          "expected": "Dropdown shows available workflow options",
+          "actual": "Dropdown displayed showing Direct Publish, Save Draft, Content Approval, Test Approval Workflow, and other custom workflows",
+          "screenshot": "Page_Workflow_Management_step03_workflow_dropdown_options.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Select 'Content Approval' workflow and enter page name 'Workflow Test Page Jan16'",
+          "expected": "Content Approval workflow selected for new page",
+          "actual": "Content Approval selected and page name entered",
+          "screenshot": "Page_Workflow_Management_step04_content_approval_selected.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Click Add Page button to create the page",
+          "expected": "Page created successfully with Content Approval workflow",
+          "actual": "Page created and navigated to new page URL",
+          "screenshot": "Page_Workflow_Management_step05_page_created.png"
+        },
+        {
+          "step_number": 6,
+          "action": "Navigate to Pages panel and select new page to verify workflow",
+          "expected": "Page details show Content Approval workflow assigned",
+          "actual": "Page details displayed showing Workflow: Content Approval in dropdown",
+          "screenshot": "Page_Workflow_Management_step06_verify_workflow_assigned.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Change workflow for existing page",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select existing page 'Workflow Test Page Jan16' and click Workflow dropdown",
+          "expected": "Workflow dropdown opens showing available workflows",
+          "actual": "Dropdown opened showing all available workflow options including Direct Publish, Save Draft, Content Approval, etc.",
+          "screenshot": "Page_Workflow_Management_step07_workflow_dropdown_options.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select 'Save Draft' workflow and click Save",
+          "expected": "Workflow changed to Save Draft and saved successfully",
+          "actual": "Success message 'Page updated successfully' displayed. Workflow changed to Save Draft.",
+          "screenshot": "Page_Workflow_Management_step08_workflow_changed_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Apply workflow to child pages",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select parent page 'HierarchyTestParent' with child pages",
+          "expected": "Parent page details displayed with workflow settings",
+          "actual": "HierarchyTestParent page selected showing Workflow: Content Approval",
+          "screenshot": "Page_Workflow_Management_step09_hierarchy_parent_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Expand parent page to view child pages",
+          "expected": "Child pages visible under parent",
+          "actual": "Child pages displayed: HierarchyTestChild1, HierarchyTestChild2, Child Page Workflow Test, TestParentPage",
+          "screenshot": "Page_Workflow_Management_step10_hierarchy_expanded.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Select child page 'HierarchyTestChild1' to view its workflow",
+          "expected": "Child page details show its workflow setting",
+          "actual": "Child page displayed showing Parent: HierarchyTestParent, Workflow: Content Approval (same as parent)",
+          "screenshot": "Page_Workflow_Management_step11_child_page_workflow.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Change child page workflow to 'Direct Publish' and save",
+          "expected": "Child page can have independent workflow different from parent",
+          "actual": "Child page workflow successfully changed to Direct Publish - confirming child pages can have independent workflow settings",
+          "screenshot": "Page_Workflow_Management_step12_child_workflow_changed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Complete workflow state for page",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page with active workflow state to test completion",
+          "expected": "Page with active workflow (Draft state) found for testing",
+          "actual": "All test pages show 'Workflow: Off' status indicating workflow state is already completed. Versioning is also Off, which is required for active workflow states.",
+          "screenshot": "Page_Workflow_Management_step13_workflow_state_off.png"
+        }
+      ],
+      "issues": ["Unable to test workflow completion - no pages with active workflow state (Draft) found. Workflow state completion requires page versioning to be enabled and an unpublished version to exist."]
+    },
+    {
+      "scenario_name": "Discard workflow state for page",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page with active workflow state to test discard",
+          "expected": "Page with unpublished changes found for testing discard",
+          "actual": "All test pages show 'Workflow: Off' and 'Versioning: Off' - no active workflow state to discard",
+          "screenshot": "Page_Workflow_Management_step13_workflow_state_off.png"
+        }
+      ],
+      "issues": ["Unable to test workflow discard - no pages with active workflow state found. Discard functionality requires an unpublished version with active workflow."]
+    },
+    {
+      "scenario_name": "Verify page shows unpublished changes indicator",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check page list for unpublished changes indicators",
+          "expected": "Pages with unpublished changes show visual indicator",
+          "actual": "Pages show edit icons in the list but no specific unpublished changes indicator visible. Status shows 'Workflow: Off' for tested pages, indicating no unpublished changes.",
+          "screenshot": "Page_Workflow_Management_step13_workflow_state_off.png"
+        }
+      ],
+      "issues": ["Cannot verify unpublished changes indicator - all tested pages have completed workflow state with no unpublished changes"]
+    },
+    {
+      "scenario_name": "Test workflow propagation to subpages",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Look for workflow propagation option in parent page settings",
+          "expected": "Option to propagate workflow to child pages found in Details or Advanced tab",
+          "actual": "No visible UI option for workflow propagation to children found in Details or Advanced tabs. Code review shows PropagateWorkflowToChildren method exists but may be called automatically or through API.",
+          "screenshot": "Page_Workflow_Management_step09_hierarchy_parent_page.png"
+        }
+      ],
+      "issues": ["UI option for workflow propagation to subpages not found. Code exists (WorkflowHelper.PropagateWorkflowToChildren) but no visible UI trigger discovered."]
+    },
+    {
+      "scenario_name": "Check workflow state in page list view",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View page list and select pages to check workflow information",
+          "expected": "Workflow information visible for pages",
+          "actual": "Page details panel shows workflow information including: Workflow status (On/Off), Workflow type dropdown (Content Approval, Direct Publish, etc.), and current workflow assignment",
+          "screenshot": "Page_Workflow_Management_step06_verify_workflow_assigned.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify direct publish workflow for system pages",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select system page '404 Error Page' and view workflow settings",
+          "expected": "System page has Direct Publish workflow assigned",
+          "actual": "404 Error Page shows Workflow dropdown with 'Direct Publish' selected. Page was created by System and has Hidden status.",
+          "screenshot": "Page_Workflow_Management_step14_system_page_direct_publish.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select another system page 'Search Results' and verify workflow",
+          "expected": "System page has Direct Publish workflow assigned",
+          "actual": "Search Results page also shows 'Direct Publish' workflow selected, confirming system pages use Direct Publish by default.",
+          "screenshot": "Page_Workflow_Management_step15_search_results_direct_publish.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review shows workflow management features exist in WorkflowHelper.cs including AssignWorkflowToTab, PropagateWorkflowToChildren, and IsWorkflowPropagationAvailable methods",
+    "Workflow state completion and discard require page versioning to be enabled and an active unpublished version to exist",
+    "The PropagateWorkflowToChildren feature requires all child pages to have completed workflows (IsWorkflowPropagationAvailable check)",
+    "WorkflowCompleteTabAction publishes the tab when workflow completes",
+    "WorkflowDiscardTabAction discards unpublished changes and may hard delete if only one version exists",
+    "Direct Publish workflow automatically publishes pages without approval steps",
+    "The workflow dropdown in page settings shows all available workflows for the portal",
+    "Child pages can have independent workflow settings different from their parent",
+    "System pages (404 Error Page, Search Results) are created by System and use Direct Publish workflow by default"
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 5,
+    "failed": 4,
+    "pass_rate": "56%"
+  }
+}

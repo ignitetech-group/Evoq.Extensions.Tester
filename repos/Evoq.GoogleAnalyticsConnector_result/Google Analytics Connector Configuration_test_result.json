@@ -1,0 +1,181 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Google Analytics Connector Configuration",
+    "feature_description": "Main connector interface for configuring Google Analytics tracking settings including tracking ID, domain, and admin tracking preferences.",
+    "feature_priority": "Top",
+    "test_date": "2026-01-16T13:56:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Configure GA4 tracking ID (G-XXXXX format)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors > Google Analytics 4",
+          "expected": "Google Analytics 4 connector configuration panel opens",
+          "actual": "Configuration panel opened with Measurement ID field and Track for Administrators checkbox",
+          "screenshot": "Google Analytics Connector Configuration_step02_ga4_config_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter GA4 tracking ID 'G-ABC123TEST' in Measurement ID field",
+          "expected": "Tracking ID is accepted in the field",
+          "actual": "Tracking ID 'G-ABC123TEST' was entered successfully",
+          "screenshot": "Google Analytics Connector Configuration_step03_ga4_id_entered.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save button",
+          "expected": "Configuration saves successfully",
+          "actual": "Configuration saved with 'Item successfully saved.' message and green checkmark appeared",
+          "screenshot": "Google Analytics Connector Configuration_step04_ga4_saved_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure UA tracking ID (UA-XXXXX format)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Change Measurement ID to 'UA-123456789-1'",
+          "expected": "UA format tracking ID is accepted",
+          "actual": "UA format tracking ID was accepted in the field",
+          "screenshot": "Google Analytics Connector Configuration_step05_ua_id_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Configuration saves successfully",
+          "actual": "Configuration saved with 'Item successfully saved.' message",
+          "screenshot": "Google Analytics Connector Configuration_step06_ua_saved_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Clear/remove existing configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Delete Connection' button",
+          "expected": "Configuration is deleted and connector returns to unconfigured state",
+          "actual": "Configuration deleted with 'Item successfully deleted.' message, connector shows 'Connect' button again",
+          "screenshot": "Google Analytics Connector Configuration_step07_deleted_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify connector status (HasConfig check)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Save a valid tracking ID and observe connector status",
+          "expected": "Green checkmark appears when configured, no checkmark when not configured",
+          "actual": "Green checkmark appeared next to 'GOOGLE ANALYTICS 4' after saving, disappeared after deletion",
+          "screenshot": "Google Analytics Connector Configuration_step04_ga4_saved_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test invalid tracking ID format acceptance",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter invalid random string 'INVALID-RANDOM-STRING-12345'",
+          "expected": "System should reject invalid tracking ID format or show validation error",
+          "actual": "Invalid tracking ID was ACCEPTED and saved with 'Item successfully saved.' message",
+          "screenshot": "Google Analytics Connector Configuration_step08_invalid_id_accepted.png"
+        }
+      ],
+      "issues": ["No format validation exists for Measurement ID - any string is accepted regardless of whether it's a valid GA4 or UA tracking ID format"]
+    },
+    {
+      "scenario_name": "Test empty input validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear Measurement ID field and click Save",
+          "expected": "System should reject empty input with validation error",
+          "actual": "Empty input was rejected with error message 'Tracking Code Cannot Be Empty'",
+          "screenshot": "Google Analytics Connector Configuration_step09_empty_rejected.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test special characters input (XSS)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter XSS script '<script>alert('XSS')</script>' in Measurement ID field",
+          "expected": "System should reject or sanitize special characters/script tags",
+          "actual": "Special characters including script tags were ACCEPTED and saved",
+          "screenshot": "Google Analytics Connector Configuration_step10_special_chars_accepted.png"
+        }
+      ],
+      "issues": ["Special characters and potential XSS payloads are accepted without sanitization - potential security concern"]
+    },
+    {
+      "scenario_name": "Test maximum length input",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter very long string (200+ characters) in Measurement ID field",
+          "expected": "System should either accept or show length validation",
+          "actual": "Long string was accepted and saved successfully",
+          "screenshot": "Google Analytics Connector Configuration_step11_long_string_accepted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Track for Administrators setting",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Set valid tracking ID and check 'Track for Administrators' checkbox",
+          "expected": "Checkbox state should be saveable and persist",
+          "actual": "Checkbox was checked and setting saved successfully",
+          "screenshot": "Google Analytics Connector Configuration_step12_admin_tracking_checked.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Save configuration with checkbox enabled",
+          "expected": "Setting persists after save",
+          "actual": "Setting saved successfully with 'Item successfully saved.' message, checkbox remains checked",
+          "screenshot": "Google Analytics Connector Configuration_step13_admin_tracking_saved.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The UI shows 'Google Analytics 4' in the connector list, but the code files reference 'GoogleAnalytics' with DisplayName 'Google Analytics' - the display name appears to have been changed",
+    "The code file GoogleAnalyticsConnector.cs has logic for UA- and G- prefix detection, but no format validation is enforced in the UI",
+    "The code shows a warning message for UA- prefix IDs (Universal Analytics deprecated), but this warning does not appear in the 'Google Analytics 4' connector UI",
+    "The Advanced Settings link mentioned in the HTML template (connector.htm) with Domain Name and Rules configuration is not visible in this connector UI",
+    "No input sanitization appears to be implemented - script tags and special characters are accepted",
+    "The connector does validate for empty input, which is the only validation observed"
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 7,
+    "failed": 2,
+    "pass_rate": "78%"
+  }
+}

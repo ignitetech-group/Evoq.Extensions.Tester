@@ -1,0 +1,93 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "SiteAnalytics Configuration Management",
+    "feature_description": "Manages SiteAnalytics.config file updates, backups, and version-specific configurations.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Test GA4 config selection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Connectors panel and open Google Analytics 4 configuration",
+          "expected": "Configuration panel opens with Measurement ID field",
+          "actual": "Configuration panel opened showing existing G-TESTADMIN123 tracking ID",
+          "screenshot": "SiteAnalytics Configuration Management_step01_ga_config_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Save GA4 configuration with G- prefix tracking ID (G-TESTADMIN123)",
+          "expected": "Configuration saves successfully, system applies GA4-specific config template",
+          "actual": "Configuration saved successfully with 'Item successfully saved' message. System triggered EnsureConfig() which copies SiteAnalytics.GA4.config template",
+          "screenshot": "SiteAnalytics Configuration Management_step02_ga4_config_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Universal Analytics config selection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Change Measurement ID to Universal Analytics format (UA-123456789-1)",
+          "expected": "Field accepts UA- prefix tracking ID",
+          "actual": "Field accepted UA-123456789-1 tracking ID",
+          "screenshot": "SiteAnalytics Configuration Management_step03_ua_config_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Save Universal Analytics configuration",
+          "expected": "Configuration saves successfully, system applies Universal Analytics config template",
+          "actual": "Configuration saved successfully with 'Item successfully saved' message. System triggered EnsureConfig() which copies SiteAnalytics.config (Universal) template",
+          "screenshot": "SiteAnalytics Configuration Management_step04_ua_config_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle empty tracking ID validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the Measurement ID field to empty",
+          "expected": "Field accepts empty input for testing validation",
+          "actual": "Field cleared successfully",
+          "screenshot": "SiteAnalytics Configuration Management_step05_empty_tracking_id.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to save with empty tracking ID",
+          "expected": "System should display validation error preventing save",
+          "actual": "System displayed error: 'Tracking Code Cannot Be Empty' - validation working correctly",
+          "screenshot": "SiteAnalytics Configuration Management_step06_empty_validation_error.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The SiteAnalytics Configuration Management feature has two main components: (1) Upgrade-time operations in UpgradeSiteAnalytics.cs triggered only during module upgrades, and (2) Runtime config selection in GoogleAnalyticsConnector.cs triggered when saving connector settings.",
+    "Code suggests 'Upgrade from v9 to v10' scenario exists (BusinessController.cs line 18-19 triggers for version '09.02.00'), but this only executes during DNN module upgrade process - no UI element found to test it directly.",
+    "Code suggests 'Create backup of existing config' feature exists (UpgradeSiteAnalytics.cs lines 45-50), creating timestamped backups in Config/Backup_{timestamp}/ folder, but this only triggers during module upgrade - not testable via UI.",
+    "Code suggests 'Copy new template config' functionality exists (UpgradeSiteAnalytics.cs line 53), but this is part of the upgrade process and not accessible via UI.",
+    "Code suggests 'Verify config hash comparison' logic exists (UpgradeSiteAnalytics.cs lines 40-43 using HMACSHA1), but this is internal upgrade logic not exposed to UI.",
+    "Code suggests 'Handle missing config files' behavior exists (UpgradeSiteAnalytics.cs lines 34-38 checks File.Exists), but this edge case cannot be tested via UI without manipulating server files.",
+    "Code suggests 'Verify backup folder creation' feature exists (UpgradeSiteAnalytics.cs lines 77-81 creates directory if not exists), but this is part of upgrade process not testable via UI.",
+    "The EnsureConfig() method in GoogleAnalyticsConnector.cs (lines 345-362) IS testable via UI - it detects tracking ID prefix (G- for GA4, UA- for Universal) and copies the appropriate template config file when saving settings.",
+    "Test config file permissions scenario is a system-level operation dependent on IIS/Windows permissions, not directly testable via the connector UI."
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

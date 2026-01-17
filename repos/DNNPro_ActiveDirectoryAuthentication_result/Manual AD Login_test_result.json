@@ -1,0 +1,142 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Manual AD Login",
+    "feature_description": "Allows users to manually login using their Active Directory credentials through a login form",
+    "feature_priority": "Top",
+    "test_date": "2026-01-16T14:28:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Empty Input Fields Validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Login page and click Windows Login tab",
+          "expected": "AD Login form should be displayed with Username and Password fields",
+          "actual": "AD Login form displayed correctly with Username and Password fields marked as required (*)",
+          "screenshot": "Manual_AD_Login_step02_ad_login_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Login button without entering any credentials",
+          "expected": "Validation messages should appear for both required fields",
+          "actual": "Validation messages appeared: 'You need provide your username.' and 'You need provide your password.'",
+          "screenshot": "Manual_AD_Login_step03_empty_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Asterisk Character Validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter username containing asterisk character (test*user)",
+          "expected": "Validation should block asterisk character per regex ^[^*]+$",
+          "actual": "Validation message appeared: 'Your username contains invalid chars.'",
+          "screenshot": "Manual_AD_Login_step04_asterisk_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Password Field Security (Masking)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter password in the Password field",
+          "expected": "Password should be masked (displayed as dots/asterisks)",
+          "actual": "Password was masked correctly showing dots instead of actual characters",
+          "screenshot": "Manual_AD_Login_step04_asterisk_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Login with Invalid Credentials (domain\\username format)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter credentials in DOMAIN\\username format (TESTDOMAIN\\invaliduser)",
+          "expected": "Form should accept the DOMAIN\\username format",
+          "actual": "Form accepted the credentials in DOMAIN\\username format",
+          "screenshot": "Manual_AD_Login_step05_domain_username_format.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Login button",
+          "expected": "Login should fail with appropriate error message since no AD is configured",
+          "actual": "Login failed with message: 'Login Failed. Please remember that passwords are case sensitive.'",
+          "screenshot": "Manual_AD_Login_step06_invalid_credentials_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Login with username@domain Format",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter credentials in username@domain format (testuser@testdomain.com)",
+          "expected": "Form should accept and process the username@domain format",
+          "actual": "Form accepted the credentials visually",
+          "screenshot": "Manual_AD_Login_step07_email_format_username.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Login button",
+          "expected": "Login should fail with appropriate error message",
+          "actual": "Page silently redirected to Standard login form without any error message. Code analysis shows ManualLogon is only called when username contains backslash (\\). The username@domain format is only converted to DOMAIN\\user if the domain matches the default domain setting.",
+          "screenshot": "Manual_AD_Login_step08_email_format_result.png"
+        }
+      ],
+      "issues": [
+        "Silent failure when using username@domain format that doesn't match default domain - no error feedback to user",
+        "Poor user experience: user receives no indication of why login didn't work"
+      ]
+    },
+    {
+      "scenario_name": "Special Characters in Credentials (non-asterisk)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter username with special characters: TEST\\user!#$%^&()_+-=",
+          "expected": "Form should accept special characters other than asterisk",
+          "actual": "Form accepted the username with special characters without validation error",
+          "screenshot": "Manual_AD_Login_step09_special_chars.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Login button",
+          "expected": "Login should be attempted and fail (no AD configured)",
+          "actual": "Login was attempted and failed with expected error message: 'Login Failed. Please remember that passwords are case sensitive.'",
+          "screenshot": "Manual_AD_Login_step10_special_chars_result.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "CAPTCHA control exists in code (ctlCaptcha) but is not visible in UI - controlled by portal setting 'Security_CaptchaLogin'",
+    "Code review shows login failure events are logged to the event log via AddEventLog method",
+    "The ManualLogon method is only called when username contains backslash (\\) - this creates silent failure for username@domain format when domain doesn't match default",
+    "Default domain prefix functionality exists in code but requires AD configuration to test properly",
+    "Code supports both automatic Windows authentication (AuthenticationLogon) and manual form authentication (ManualLogon)",
+    "Test environment does not have Active Directory configured, so successful login scenarios could not be tested"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 5,
+    "failed": 1,
+    "pass_rate": "83%"
+  }
+}

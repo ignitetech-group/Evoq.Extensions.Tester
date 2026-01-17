@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "extension_name": "Publisher",
+    "extension_type": "Module",
+    "feature_name": "Search and Filtering",
+    "feature_description": "Search posts by keywords, tags, and authors with advanced filtering options",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T15:16:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Search posts by keyword",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Publisher module on News page",
+          "expected": "Publisher search interface is displayed",
+          "actual": "Publisher module loaded on News page with search box and author filter visible",
+          "screenshot": "Search and Filtering_step02_publisher_view.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'Workflow' in the search box and press Enter",
+          "expected": "Search results are filtered by keyword",
+          "actual": "Search returned 2 posts matching 'Workflow': 'Workflow Test Post - Claude Testing' and 'Test Workflow Post - Submit for Review'. URL updated to include ?text=Workflow",
+          "screenshot": "Search and Filtering_step03_search_keyword_results.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Filter posts by author",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on 'Test User2' in the Authors filter list",
+          "expected": "Posts are filtered to show only those by Test User2",
+          "actual": "Results filtered to 1 post by Test User2. URL updated to include &author=7. 'Viewing:' section shows active filter 'Test User2' with X to remove",
+          "screenshot": "Search and Filtering_step04_filter_by_author.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Clear all filters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on 'News' breadcrumb link to clear filters",
+          "expected": "All filters are cleared and full post list is displayed",
+          "actual": "Navigated to clean News page without query parameters. Featured and Latest sections displayed with all posts visible",
+          "screenshot": "Search and Filtering_step05_filter_cleared.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test empty search results",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for non-existent term 'xyznonexistent123'",
+          "expected": "Empty results message is displayed",
+          "actual": "Search returned no results. Page displayed 'Your search returned no results' message",
+          "screenshot": "Search and Filtering_step06_empty_search_results.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Search with special characters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for 'test & workflow' containing ampersand character",
+          "expected": "Special character is properly handled and search returns relevant results",
+          "actual": "Search successfully handled ampersand. URL properly encoded as ?text=test%20%26%20workflow. Returned 3 matching posts: Publisher Test Post, Workflow Test Post - Claude Testing, Test Workflow Post - Submit for Review",
+          "screenshot": "Search and Filtering_step07_special_characters.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Combine multiple filters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "With search 'test & workflow' active, click on 'Test User2' author filter",
+          "expected": "Results are filtered by both search term and author",
+          "actual": "Combined filters working correctly. URL shows both parameters: ?text=test%20%26%20workflow&author=7. Results narrowed to 1 post ('Test Workflow Post - Submit for Review') matching both criteria. 'Viewing:' section shows 'Test User2' active filter token",
+          "screenshot": "Search and Filtering_step08_combine_filters.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Tags filter (TagsFilter.ascx) exists in code but was not visible in the current Publisher UI configuration. Only Authors filter was available on the sidebar.",
+    "Date range filter was not visible in the UI despite being mentioned in suggested test scenarios.",
+    "Pagination controls were not visible with the current data set (insufficient posts to trigger pagination).",
+    "Sorting options were not visible in the search results UI.",
+    "The search uses URL query parameters (text, author) which allows for bookmarkable/shareable filtered views.",
+    "Filter tokens display in 'Viewing:' section with X button for removal, providing clear indication of active filters."
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

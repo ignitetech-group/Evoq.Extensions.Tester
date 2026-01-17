@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleTagManagerConnector",
+    "extension_type": "Connector",
+    "feature_name": "Configuration Caching",
+    "feature_description": "Caches GTM script template from configuration file to improve performance",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [],
+  "observations": [
+    "Configuration Caching is a system-level (automatic) feature with NO UI elements to interact with or observe. The UI Location is listed as 'System level (automatic)' which means there are no UI controls, indicators, or feedback mechanisms for this feature.",
+    "All suggested test scenarios cannot be tested via UI: (1) 'Verify script template is cached on first access' - cache state is internal to DNN DataCache service with no UI visibility, (2) 'Test cache invalidation on config file change' - requires server-side file modification and cache inspection not accessible via browser, (3) 'Verify cache dependency on GoogleTagManager.config' - DNNCacheDependency is server-side only, (4) 'Test performance with cached vs uncached template' - no performance metrics exposed in UI, (5) 'Verify cache works across multiple requests' - cache hit/miss status is not observable.",
+    "Code review of TagManagerModule.cs (lines 65-78) reveals the caching implementation: Uses DataCache.GetCache('GoogleTagManagerScript') to retrieve cached content, and DataCache.SetCache with DNNCacheDependency(filePath) for cache storage with file dependency.",
+    "POTENTIAL BUG FOUND in TagManagerModule.cs line 74-77: The caching condition appears to be inverted. Code shows 'if (string.IsNullOrEmpty(scriptContent)) { DataCache.SetCache(...) }' which means it only attempts to cache when scriptContent is NULL or EMPTY. This is likely incorrect - the condition should be 'if (!string.IsNullOrEmpty(scriptContent))' to cache valid content. This bug would prevent the script template from ever being cached.",
+    "Indirect verification performed: Used browser JavaScript evaluation to confirm GTM script IS being injected into page head with correct Container ID 'GTM-TEST123' and proper placeholder substitutions ([CONTAINERID], [USETAGMANAGERFORGA], [DATALAYER_INIT] all replaced correctly). This confirms the code path in InjectTagManagerJs() is executing, but does not verify caching behavior.",
+    "GTM Connector configuration verified via Connectors panel: Container ID is set to 'GTM-TEST123', and 'Use Tag Manager for GA' toggle is set to 'Off'. The connector shows as configured (green checkmark).",
+    "Per testing philosophy guidelines: 'Feature exists in code but not visible in UI? Do NOT create a test for it.' - Therefore no test scenarios were created for this system-level feature. All findings are documented in Observations only."
+  ],
+  "summary": {
+    "total_scenarios": 0,
+    "passed": 0,
+    "failed": 0,
+    "pass_rate": "N/A - No UI-testable scenarios for this system-level feature"
+  }
+}

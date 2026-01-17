@@ -1,0 +1,188 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Extension Management Administration",
+    "feature_description": "Manages included and excluded file extensions for crawling and indexing operations.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T00:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Remove included file extension",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to File Extensions page and identify .xls in included list",
+          "expected": "File Extensions page loads with .xls visible in included extensions",
+          "actual": "Page loaded showing .xls in included extensions list",
+          "screenshot": "Extension Management Administration_step08_before_remove.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click delete icon for .xls extension",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete .xls?'",
+          "screenshot": "Extension Management Administration_step09_delete_confirmation.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Yes to confirm deletion",
+          "expected": ".xls is removed from the included extensions list",
+          "actual": ".xls was successfully removed from the list",
+          "screenshot": "Extension Management Administration_step10_xls_removed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add included file extension",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add File Type in Included File Extensions section",
+          "expected": "Add form appears with textbox for extension",
+          "actual": "Add form appeared with textbox",
+          "screenshot": "Extension Management Administration_step02_add_included_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'txt' and click Save",
+          "expected": "Extension is added to the list",
+          "actual": "Validation error - extension not in host whitelist",
+          "screenshot": "Extension Management Administration_step04_whitelist_validation_error.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Try multiple extensions: xlsx, htm, jpg, xls",
+          "expected": "At least one extension is successfully added",
+          "actual": "All extensions rejected by whitelist validation",
+          "screenshot": "Extension Management Administration_step11_add_xls.png"
+        }
+      ],
+      "issues": ["Unable to add any included extension due to restrictive host whitelist configuration in test environment. All attempted extensions (txt, xlsx, htm, jpg, xls) were rejected with whitelist validation errors."]
+    },
+    {
+      "scenario_name": "Remove excluded file extension",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Excluded File Extensions section and locate .zip",
+          "expected": ".zip is visible in excluded extensions list",
+          "actual": ".zip visible in excluded extensions list",
+          "screenshot": "Extension Management Administration_step12_excluded_section.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click delete icon for .zip extension",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete .zip?'",
+          "screenshot": "Extension Management Administration_step13_delete_zip_confirmation.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Yes to confirm deletion",
+          "expected": ".zip is removed from the excluded extensions list",
+          "actual": ".zip was successfully removed from the list (8 items remaining)",
+          "screenshot": "Extension Management Administration_step14_zip_removed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add excluded file extension",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add File Type in Excluded File Extensions section",
+          "expected": "Add form appears with textbox for extension",
+          "actual": "Add form appeared with textbox",
+          "screenshot": "Extension Management Administration_step15_add_excluded_zip.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'zip' and click Save",
+          "expected": "Extension is added to excluded list",
+          "actual": "Validation error displayed - extension rejected",
+          "screenshot": "Extension Management Administration_step16_add_excluded_result.png"
+        }
+      ],
+      "issues": ["Excluded extensions also require host whitelist validation. The 'zip' extension was rejected with validation error similar to included extensions."]
+    },
+    {
+      "scenario_name": "Verify host whitelist enforcement",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to add extension 'txt' to included list",
+          "expected": "System validates against host whitelist",
+          "actual": "System correctly rejected 'txt' with validation error",
+          "screenshot": "Extension Management Administration_step04_whitelist_validation_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to add extension 'xlsx' to included list",
+          "expected": "System validates against host whitelist",
+          "actual": "System correctly rejected 'xlsx' with validation error",
+          "screenshot": "Extension Management Administration_step06_xlsx_validation.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Attempt to add extension 'htm' to included list",
+          "expected": "System validates against host whitelist",
+          "actual": "System correctly rejected 'htm' with validation error",
+          "screenshot": "Extension Management Administration_step07_htm_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test duplicate extension prevention",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to add 'ico' to excluded list (already exists as .ico)",
+          "expected": "System prevents duplicate entry with validation error",
+          "actual": "Validation error displayed - system detected duplicate extension",
+          "screenshot": "Extension Management Administration_step17_duplicate_prevention.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test empty input validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the extension textbox and observe validation",
+          "expected": "System shows validation error for empty input",
+          "actual": "Validation error displayed with red border indicating empty input is not allowed",
+          "screenshot": "Extension Management Administration_step18_empty_input.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The host whitelist in the test environment is very restrictive, preventing addition of common extensions like txt, xlsx, htm, jpg, and even xls to both included and excluded lists.",
+    "Code confirms extensions must be in Host.AllowedExtensionWhitelist to be added to either included or excluded lists.",
+    "The code normalizes extensions by trimming whitespace, converting to lowercase, and removing leading dots.",
+    "Extension case normalization is confirmed in code (SearchSpiderHelper.cs) but could not be fully tested via UI due to whitelist restrictions.",
+    "Portal-specific extension settings (portalId) are properly handled - returns -1 for host-level (SuperTab) and PortalSettings.PortalId for portal-level.",
+    "IFilter information is available via GetIFilterExtensionInfo() for content crawling capability display."
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 5,
+    "failed": 2,
+    "pass_rate": "71%"
+  }
+}

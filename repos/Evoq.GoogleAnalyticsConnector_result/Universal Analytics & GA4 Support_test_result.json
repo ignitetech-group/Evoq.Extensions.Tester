@@ -1,0 +1,159 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Universal Analytics & GA4 Support",
+    "feature_description": "Support for both Universal Analytics (UA-) and Google Analytics 4 (G-) tracking codes with appropriate configuration.",
+    "feature_priority": "Top",
+    "test_date": "2026-01-16T00:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Configure UA tracking code (UA-XXXXX)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors and locate Google Analytics connector",
+          "expected": "Google Analytics connector is visible in the connectors list",
+          "actual": "Google Analytics 4 connector visible with Edit button indicating it is already configured",
+          "screenshot": "Universal Analytics & GA4 Support_step01_connectors_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit on Google Analytics connector to view current configuration",
+          "expected": "Configuration panel expands showing current tracking ID",
+          "actual": "Configuration panel expanded showing Measurement ID field with G-TESTADMIN123 (GA4 format) and Track for Administrators checkbox",
+          "screenshot": "Universal Analytics & GA4 Support_step02_current_ga4_config.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Enter Universal Analytics tracking code UA-12345678-1 in Measurement ID field",
+          "expected": "UA tracking code is accepted in the field",
+          "actual": "UA-12345678-1 was entered successfully in the Measurement ID field",
+          "screenshot": "Universal Analytics & GA4 Support_step03_ua_tracking_entered.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click Save button to save UA configuration",
+          "expected": "Configuration saves successfully with confirmation message",
+          "actual": "Configuration saved successfully with 'Item successfully saved.' message displayed",
+          "screenshot": "Universal Analytics & GA4 Support_step04_ua_saved_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure GA4 tracking code (G-XXXXX)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter GA4 tracking code G-ABC123TEST in Measurement ID field",
+          "expected": "GA4 tracking code is accepted in the field",
+          "actual": "G-ABC123TEST was entered successfully in the Measurement ID field",
+          "screenshot": "Universal Analytics & GA4 Support_step05_ga4_tracking_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button to save GA4 configuration",
+          "expected": "Configuration saves successfully with confirmation message",
+          "actual": "Configuration saved successfully with 'Item successfully saved.' message displayed",
+          "screenshot": "Universal Analytics & GA4 Support_step06_ga4_saved_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Display warning for UA deprecation",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter Universal Analytics tracking code (UA-12345678-1) and observe UI for deprecation warning",
+          "expected": "A warning should be displayed indicating Universal Analytics is deprecated and users should migrate to GA4",
+          "actual": "No deprecation warning was displayed. The UA tracking code was accepted without any warning message about UA being deprecated by Google.",
+          "screenshot": "Universal Analytics & GA4 Support_step03_ua_tracking_entered.png"
+        }
+      ],
+      "issues": ["No deprecation warning is shown when entering Universal Analytics (UA-) tracking codes. Given that Google deprecated Universal Analytics in July 2023, users should be warned to migrate to GA4."]
+    },
+    {
+      "scenario_name": "Auto-detect analytics version from tracking ID",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review code implementation of GetAnalyticsVersion() method in GoogleAnalyticsConnector.cs",
+          "expected": "Code should detect UA- prefix for Universal Analytics and G- prefix for GA4",
+          "actual": "Code at line 325-343 correctly implements auto-detection: returns Constants.AnalyticsVersion.Universal for UA- prefix, Constants.AnalyticsVersion.GA4 for G- prefix, and Constants.AnalyticsVersion.Other for unrecognized formats",
+          "screenshot": "Universal Analytics & GA4 Support_step03_ua_tracking_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify both UA and GA4 tracking IDs are accepted and saved",
+          "expected": "Both tracking ID formats should be saved successfully",
+          "actual": "Both UA-12345678-1 and G-ABC123TEST were accepted and saved without error, confirming the connector supports both formats",
+          "screenshot": "Universal Analytics & GA4 Support_step06_ga4_saved_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Load correct config file based on version",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review EnsureConfig() method implementation and verify SiteAnalytics.config file",
+          "expected": "EnsureConfig() should copy the appropriate config file based on analytics version",
+          "actual": "Code at line 345-362 implements config file selection: uses SiteAnalytics.config for UA (no suffix) and SiteAnalytics.GA4.config for GA4. The SiteAnalytics.config file was found to contain both UA (analytics.js) and GA4 (gtag.js) engine configurations.",
+          "screenshot": "Universal Analytics & GA4 Support_step02_current_ga4_config.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test analytics.js vs gtag.js script injection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check page source for analytics script injection after saving GA4 configuration",
+          "expected": "gtag.js script should be injected for GA4 tracking IDs",
+          "actual": "Page source contains: 1) https://www.googletagmanager.com/gtag/js?id=G-TESTADMIN123 (gtag.js), 2) Inline script with gtag('config', 'G-TESTADMIN123'). This confirms GA4 gtag.js script injection is working correctly.",
+          "screenshot": "Universal Analytics & GA4 Support_step07_script_injection_check.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Track for Administrators option",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify Track for Administrators checkbox is present and functional",
+          "expected": "Checkbox should be visible and changeable",
+          "actual": "Track for Administrators checkbox is present in the configuration panel and is checked by default. This option controls whether analytics tracking is enabled for admin users.",
+          "screenshot": "Universal Analytics & GA4 Support_step02_current_ga4_config.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The connector is labeled 'Google Analytics 4' in the UI but uses the Evoq.GoogleAnalyticsConnector component which supports both UA and GA4 formats",
+    "Code suggests UA deprecation warning feature should exist (per feature description) but no UI element was found to display this warning",
+    "The SiteAnalytics.config file contains both Universal Analytics (analytics.js) and GA4 (gtag.js) engine configurations simultaneously",
+    "Auto-detection of analytics version is implemented in code (GetAnalyticsVersion method) but there is no visual feedback in the UI indicating which version is detected",
+    "The UI field is labeled 'Measurement ID' which is GA4 terminology, but it accepts both UA and GA4 tracking IDs"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 6,
+    "failed": 1,
+    "pass_rate": "86%"
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Content.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Google Analytics OAuth Authorization",
+    "feature_description": "Enables OAuth-based authorization flow to connect Google Analytics account to the Evoq site",
+    "feature_priority": "Top",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View connected state UI",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Persona Bar > Settings > Connectors",
+          "expected": "Connectors page loads with Google Analytics 4 connector visible",
+          "actual": "Connectors page loaded successfully, Google Analytics 4 connector visible with Edit button and green checkmark indicating connected state",
+          "screenshot": "Google Analytics OAuth Authorization_step02_connectors_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit button on Google Analytics 4 connector",
+          "expected": "Edit form expands showing current configuration",
+          "actual": "Edit form expanded showing Measurement ID field, Track for Administrators checkbox, Cancel, Save, and Delete Connection buttons",
+          "screenshot": "Google Analytics OAuth Authorization_step03_ga_edit_form.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete Connection functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Delete Connection button",
+          "expected": "Connection is deleted and connector shows Connect button",
+          "actual": "Connection deleted successfully. Success message displayed: 'Item successfully deleted.' Connector now shows 'Connect' button instead of 'Edit'",
+          "screenshot": "Google Analytics OAuth Authorization_step05_connection_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Empty Measurement ID validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Connect on Google Analytics 4 and leave Measurement ID empty, then click Save",
+          "expected": "Validation error displayed for empty field",
+          "actual": "Error message displayed: 'Tracking Code Cannot Be Empty'. Save operation prevented.",
+          "screenshot": "Google Analytics OAuth Authorization_step07_empty_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Valid Measurement ID save",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter valid Measurement ID 'G-TEST123456' and click Save",
+          "expected": "Configuration saved successfully",
+          "actual": "Success message displayed: 'Item successfully saved.' Measurement ID saved. Delete Connection button appears indicating connection is active.",
+          "screenshot": "Google Analytics OAuth Authorization_step08_save_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Track for Administrators checkbox",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check the Track for Administrators checkbox and click Save",
+          "expected": "Checkbox state is saved",
+          "actual": "Success message displayed. Checkbox state persisted - checked state retained after save.",
+          "screenshot": "Google Analytics OAuth Authorization_step09_track_admin_enabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Cancel button discards changes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Modify Measurement ID to 'G-CHANGED999' and click Cancel",
+          "expected": "Changes discarded, original value preserved",
+          "actual": "Form collapsed. Upon reopening, original Measurement ID 'G-TEST123456' was preserved. Changes were correctly discarded.",
+          "screenshot": "Google Analytics OAuth Authorization_step11_cancel_preserved_value.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Initiate OAuth authorization with valid Google account",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Look for OAuth authorization button or 'Connect to GA' button in the UI",
+          "expected": "OAuth authorization button available to initiate Google OAuth flow",
+          "actual": "No OAuth authorization button found. The 'Google Analytics 4' connector only provides direct Measurement ID input field without any OAuth-based authorization flow.",
+          "screenshot": "Google Analytics OAuth Authorization_step06_connect_form.png"
+        }
+      ],
+      "issues": ["OAuth authorization flow described in the code (authorize.js) is not visible in the Google Analytics 4 connector UI. The connector only accepts manual Measurement ID entry."]
+    },
+    {
+      "scenario_name": "Verify popup window behavior for OAuth flow",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to trigger OAuth popup window",
+          "expected": "OAuth popup window opens for Google authentication",
+          "actual": "No OAuth popup functionality available. The Google Analytics 4 connector UI does not have the OAuth authorization button that would trigger the popup.",
+          "screenshot": "Google Analytics OAuth Authorization_step06_connect_form.png"
+        }
+      ],
+      "issues": ["OAuth popup window functionality exists in code (authorize.js, onAuthorize function) but is not exposed in the Google Analytics 4 connector UI"]
+    },
+    {
+      "scenario_name": "Authorization cancellation by user",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to initiate and cancel OAuth authorization",
+          "expected": "User can cancel OAuth flow and return to connector settings",
+          "actual": "Cannot test - OAuth authorization flow is not available in the Google Analytics 4 connector UI",
+          "screenshot": "Google Analytics OAuth Authorization_step06_connect_form.png"
+        }
+      ],
+      "issues": ["OAuth authorization flow not available in UI to test cancellation scenario"]
+    },
+    {
+      "scenario_name": "Handle authorization failure scenarios",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Test error handling for failed OAuth authorization",
+          "expected": "Appropriate error messages displayed for authorization failures",
+          "actual": "Cannot test - OAuth authorization flow is not available in the Google Analytics 4 connector UI. Error handling code exists (autherror.htm, GetAuthErrorMessage) but cannot be triggered.",
+          "screenshot": "Google Analytics OAuth Authorization_step06_connect_form.png"
+        }
+      ],
+      "issues": ["OAuth error handling code exists but cannot be tested due to missing OAuth UI"]
+    }
+  ],
+  "observations": [
+    "CRITICAL: The OAuth-based authorization flow described in the code (authorize.js, ServicesController.cs, GoogleAnalyticsRemoteManager.cs) is NOT visible in the 'Google Analytics 4' connector UI.",
+    "The code references a connector with ID '#connector-GoogleAnalytics' that includes OAuth authorization with Account, WebProperty, and DataStream selection dropdowns - these elements are not present in the current UI.",
+    "The 'Google Analytics 4' connector only provides: (1) Direct Measurement ID text input, (2) Track for Administrators checkbox, (3) Cancel/Save/Delete Connection buttons.",
+    "The OAuth flow code includes: popup window handling (popupWindow function), authorization initiation (onAuthorize), deauthorization (onUnAuthorize), token management (getToken, validateToken), and account data fetching (refreshAccounts) - none of these are accessible from the current UI.",
+    "The Content Google Analytics Connector (Evoq.Content.GoogleAnalyticsConnector) with full OAuth support may be a separate connector that is either: (1) Not installed in this environment, (2) Replaced by the simpler GA4 connector, or (3) Requires specific configuration to appear.",
+    "Basic connector functionality (CRUD operations, validation) works correctly for the available GA4 connector."
+  ],
+  "summary": {
+    "total_scenarios": 10,
+    "passed": 6,
+    "failed": 4,
+    "pass_rate": "60%"
+  }
+}

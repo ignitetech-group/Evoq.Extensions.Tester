@@ -1,0 +1,129 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Templates",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Template Page Settings",
+    "feature_description": "Configure template-specific settings like name, description, keywords, and URL",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Template creation form UI displays correctly",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Content > Pages and select a page",
+          "expected": "Page list should display with action buttons",
+          "actual": "Page list displayed with 'Save Page Template' button visible",
+          "screenshot": "Template_Page_Settings_step02_pages_panel_with_save_template.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Save Page Template' > 'Evoq Page Template'",
+          "expected": "Template creation form should open with Name and Description fields",
+          "actual": "Template creation form opened with Template Name (required) and Description fields",
+          "screenshot": "Template_Page_Settings_step03_template_creation_form.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit template name and description",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter template name 'Products Page Template' in the Template Name field",
+          "expected": "Template name should be accepted and Save button should become enabled",
+          "actual": "Template name was entered successfully and Save button became enabled",
+          "screenshot": "Template_Page_Settings_step06_products_template_form_filled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter description 'A template based on the Our Products page for testing template settings.'",
+          "expected": "Description should be entered in the textarea",
+          "actual": "Description was entered successfully in the Description textarea",
+          "screenshot": "Template_Page_Settings_step06_products_template_form_filled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate required template name field",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open template creation form without entering template name",
+          "expected": "Save button should be disabled when template name is empty",
+          "actual": "Save button was disabled when template name field was empty, demonstrating required field validation",
+          "screenshot": "Template_Page_Settings_step03_template_creation_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter template name in the required field",
+          "expected": "Save button should become enabled after entering template name",
+          "actual": "Save button became enabled after entering 'Products Page Template'",
+          "screenshot": "Template_Page_Settings_step06_products_template_form_filled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save template settings",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Fill template name and description, then click Save",
+          "expected": "Template should be saved and appear in the templates list",
+          "actual": "Server returned 500 Internal Server Error. Error message displayed: 'There was an error retrieving your content. Please check your internet connection.'",
+          "screenshot": "Template_Page_Settings_step05_after_save_attempt.png"
+        }
+      ],
+      "issues": [
+        "Template save operation fails with 500 Internal Server Error",
+        "Multiple attempts on different pages (Home, Our Products) all resulted in server errors (400 or 500)",
+        "The feature UI works correctly but the backend SavePageDetails API endpoint fails"
+      ]
+    },
+    {
+      "scenario_name": "Handle validation errors",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access Page Templates without any saved templates",
+          "expected": "System should display appropriate message when no templates exist",
+          "actual": "System displayed message: 'You must save an existing page as a template prior to create a new template'",
+          "screenshot": "Template_Page_Settings_step01_no_templates_message.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Observe validation behavior when required field is empty",
+          "expected": "Save button should be disabled and validation should prevent submission",
+          "actual": "Save button remained disabled when Template Name was empty, preventing invalid form submission",
+          "screenshot": "Template_Page_Settings_step03_template_creation_form.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code suggests 'keywords' field exists in the Template model (templatesCreateManager.js line 57), but no Keywords UI field is visible in the template creation form. Keywords may be inherited from page/portal settings rather than configured per-template.",
+    "The 'Set template keywords for SEO' scenario from suggested tests cannot be tested as no Keywords field exists in the template settings UI.",
+    "The 'Validate duplicate template names' scenario cannot be tested because template creation fails with server errors before any validation can occur.",
+    "Template creation workflow requires: 1) Navigate to Pages section, 2) Select a page, 3) Click 'Save Page Template' > 'Evoq Page Template', 4) Fill form and save.",
+    "The SavePageDetails API endpoint (TemplatesController.cs line 95) appears to have a server-side issue causing 500 errors.",
+    "Code shows validation for script injection prevention (hasScript rule in templatesCreateManager.js) but this could not be tested due to save failures."
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 4,
+    "failed": 1,
+    "pass_rate": "80%"
+  }
+}

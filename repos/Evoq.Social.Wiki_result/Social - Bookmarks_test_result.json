@@ -1,0 +1,117 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Social - Bookmarks",
+    "feature_description": "Bookmark and unbookmark articles for later reference",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T08:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Bookmark an article",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki article 'Published Test Article - Jan 16 2026'",
+          "expected": "Article page loads with bookmark button visible",
+          "actual": "Article page loaded successfully with 'Bookmark this' button visible",
+          "screenshot": "Social - Bookmarks_step01_article_view_bookmark_button.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Bookmark this' button",
+          "expected": "Article is bookmarked, button changes to 'Remove bookmark', bookmark count increases",
+          "actual": "Button changed to 'Remove bookmark', sidebar bookmark count increased from (2) to (3)",
+          "screenshot": "Social - Bookmarks_step02_article_bookmarked.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Remove bookmark",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Remove bookmark' button on bookmarked article",
+          "expected": "Bookmark is removed, button changes back to 'Bookmark this', bookmark count decreases",
+          "actual": "Button changed back to 'Bookmark this', sidebar bookmark count decreased from (3) back to (2)",
+          "screenshot": "Social - Bookmarks_step03_bookmark_removed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View bookmarked articles list",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki main page and locate bookmarks section in sidebar",
+          "expected": "Bookmarks section is visible showing count",
+          "actual": "Bookmarks (2) is displayed in sidebar",
+          "screenshot": "Social - Bookmarks_step04_bookmarks_sidebar.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on 'Bookmarks (2)' in sidebar to view bookmarked articles list",
+          "expected": "A list of bookmarked articles is displayed",
+          "actual": "Clicking on 'Bookmarks (2)' did not navigate to a list view or display bookmarked articles. The click had no visible effect on the page.",
+          "screenshot": "Social - Bookmarks_step05_after_bookmarks_click.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Navigate to Activity Feed page to look for bookmarks tab/section",
+          "expected": "Bookmarks tab or filter available in Activity Feed",
+          "actual": "Activity Feed has tabs for Activity Feed, Friends, Messages, and My Profile - no Bookmarks tab exists",
+          "screenshot": "Social - Bookmarks_step06_activity_feed_no_bookmarks.png"
+        }
+      ],
+      "issues": ["No UI element exists to view the list of bookmarked articles. The 'Bookmarks (X)' in the sidebar only displays a count and does not provide navigation to a list view."]
+    },
+    {
+      "scenario_name": "Bookmark persistence",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki article and bookmark it",
+          "expected": "Article is bookmarked",
+          "actual": "Article bookmarked successfully, button shows 'Remove bookmark', Bookmarks count shows (3)",
+          "screenshot": "Social - Bookmarks_step07_bookmark_added_for_persistence.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate away to Home page",
+          "expected": "Navigation successful",
+          "actual": "Successfully navigated to Home page",
+          "screenshot": null
+        },
+        {
+          "step_number": 3,
+          "action": "Navigate back to the same Wiki article",
+          "expected": "Bookmark state should persist - button should show 'Remove bookmark' and count should still be (3)",
+          "actual": "Bookmark persisted successfully - button shows 'Remove bookmark' and Bookmarks count shows (3)",
+          "screenshot": "Social - Bookmarks_step08_bookmark_persisted.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review shows bookmarking does not award scoring points (0 reputation, 0 experience points) as defined in Mechanics.cs line 56",
+    "The bookmark functionality requires authentication (DnnAuthorize attribute) as shown in SocialController.cs",
+    "The 'Bookmarks (X)' counter in the sidebar only shows the count of bookmarked items but does not provide a link to view the actual list of bookmarked articles",
+    "No dedicated 'Bookmarks' tab or filter exists in the Wiki module listing page or Activity Feed page",
+    "The bookmark and unbookmark operations are logged as scoring actions (BookmarkedArticle and RemovedArticleBookmark) for activity tracking purposes"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 3,
+    "failed": 1,
+    "pass_rate": "75%"
+  }
+}

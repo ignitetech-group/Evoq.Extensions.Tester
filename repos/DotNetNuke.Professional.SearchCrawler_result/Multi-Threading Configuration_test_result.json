@@ -1,0 +1,86 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Multi-Threading Configuration",
+    "feature_description": "Configures multi-threaded crawling for improved performance.",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T13:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Scheduler shows SearchCrawler tasks",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Settings > Scheduler from Persona Bar",
+          "expected": "Scheduler page loads showing all scheduled tasks",
+          "actual": "Scheduler page loaded successfully showing Task Queue, Scheduler tab, and History tab with all scheduled tasks visible",
+          "screenshot": "Multi-Threading_Configuration_step01_scheduler_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Viewed SCHEDULER tab to see Search: Url Crawler task",
+          "expected": "Search: Url Crawler task is visible and accessible",
+          "actual": "Search: Url Crawler task found at ID 19 with Frequency 'Every 1 Day', enabled, next start scheduled. Global Max Threads shows '1' in scheduler header.",
+          "screenshot": "Multi-Threading_Configuration_step01_scheduler_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Search Crawling settings page loads",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Site Settings > Search > Crawling tab",
+          "expected": "Crawling settings page loads with configuration options",
+          "actual": "Crawling settings page loaded successfully showing URL Paths, Duplicates patterns, Included Directories, and Excluded Directories sections",
+          "screenshot": "Multi-Threading_Configuration_step02_crawling_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure thread count for SearchCrawler",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for thread count configuration field in Scheduler task edit panel",
+          "expected": "A field to configure IndexThreads or thread count should be available",
+          "actual": "No thread count configuration field found in the task edit panel. Only standard scheduler fields visible: Friendly Name, Class Name, Retain History, Servers, Dependencies, Schedule timing, Frequency, Retry settings.",
+          "screenshot": "Multi-Threading_Configuration_step01_scheduler_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Searched for thread count configuration in Search > Crawling settings",
+          "expected": "A field to configure thread count for multi-threaded crawling should be available",
+          "actual": "No thread count configuration field found. Crawling tab only shows URL Paths, Duplicates patterns, and Directory inclusion/exclusion settings.",
+          "screenshot": "Multi-Threading_Configuration_step02_crawling_settings.png"
+        }
+      ],
+      "issues": [
+        "No UI element found in Persona Bar to configure thread count (IndexThreads) for the SearchCrawler",
+        "Code analysis confirms IndexThreads setting exists in Spider.cs (line 342-361) and is read from ScheduleHistoryItem.Settings with default value of 1, but no UI field exposes this setting"
+      ]
+    }
+  ],
+  "observations": [
+    "Code analysis (Spider.cs:342-369) confirms multi-threading capability exists - Start() method accepts 'threads' parameter and creates N DocumentWorker instances for parallel URL processing",
+    "IndexThreads setting is stored in ScheduleHistoryItem.Settings and defaults to 1 (SearchSpiderHelper.cs:588)",
+    "Thread safety is implemented using lock(this) and Monitor.Wait/Pulse patterns in Spider.cs",
+    "The global Scheduler 'Max Threads' setting (shown as '1' in scheduler header) controls overall scheduler thread pool, not per-task threading",
+    "The IndexThreads setting may need to be configured via database (ScheduleItemSetting table) or legacy DNN admin interface, as no Persona Bar UI element exposes it",
+    "Related UI pages (Scheduler, Search > Crawling) load and function correctly - only the specific thread count configuration UI is missing"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 2,
+    "failed": 1,
+    "pass_rate": "67%"
+  }
+}

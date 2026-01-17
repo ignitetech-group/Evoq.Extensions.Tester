@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Content.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Retry Mechanism for Failed Operations",
+    "feature_description": "Implements automatic retry logic for failed Google Analytics API operations with exponential backoff",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [],
+  "observations": [
+    "This feature is explicitly documented as 'Backend service (no direct UI)' - no UI elements exist to test this feature directly.",
+    "Code analysis of GoogleAnalyticsRemoteRetryManager.cs reveals the retry mechanism exists and uses the Polly library for retry logic.",
+    "The retry mechanism is configured for maximum 3 retries using Polly's .Retry(3, ...) method.",
+    "HTTP status codes that trigger retry (from RetryPolicyHelper.cs): 401 Unauthorized, 408 RequestTimeout, 500 InternalServerError, 502 BadGateway, 503 ServiceUnavailable, 504 GatewayTimeout.",
+    "On HTTP 401 Unauthorized errors, the token cache is cleared via TokenServiceImpl.ClearCache(portalId, userId) before retry.",
+    "IMPORTANT DISCREPANCY: The feature description states 'exponential backoff' but the code uses simple .Retry(3, ...) which performs immediate retries WITHOUT exponential backoff delays. Exponential backoff would require Polly's .WaitAndRetry() method with increasing delays.",
+    "Google Analytics 4 connector settings UI only shows: Measurement ID field and Track for Administrators checkbox - no retry configuration options.",
+    "Server Settings page shows DBLoggingProvider as the logging provider, but no UI exists to view retry operation logs.",
+    "The retry mechanism wraps the InitAuth method of GoogleAnalyticsRemoteManager and executes automatically when API calls fail with retryable HTTP status codes.",
+    "All suggested test scenarios (HTTP 401, HTTP 503, max retries, exponential backoff, token cache clearing, successful retry) require backend/API-level testing or log analysis that cannot be performed through the UI."
+  ],
+  "summary": {
+    "total_scenarios": 0,
+    "passed": 0,
+    "failed": 0,
+    "pass_rate": "N/A - Backend service with no direct UI; no UI-based tests could be executed"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Domain Name Management",
+    "feature_description": "Configure how domain names are handled in usernames",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Configure Default Domain",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Extensions > Authentication Systems > DNNPro_ActiveDirectoryAuthentication > Site Settings",
+          "expected": "Active Directory settings page should load with all configuration options",
+          "actual": "AD settings page loaded successfully showing all configuration fields including Default Domain",
+          "screenshot": "Domain_Name_Management_step01_ad_settings_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Locate the Default Domain field and verify it is visible",
+          "expected": "Default Domain field should be visible and editable",
+          "actual": "Default Domain field is visible and empty (editable textbox)",
+          "screenshot": "Domain_Name_Management_step02_default_domain_field.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Enter 'TESTDOMAIN' in the Default Domain field",
+          "expected": "Value should be accepted in the textbox",
+          "actual": "Successfully entered 'TESTDOMAIN' in the Default Domain field",
+          "screenshot": "Domain_Name_Management_step03_default_domain_entered.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click 'Update Authentication Settings' to save the configuration",
+          "expected": "Settings should be saved and persisted",
+          "actual": "Settings saved successfully. Page refreshed showing connection test results (expected failures due to no AD server) and Default Domain field retained the value 'TESTDOMAIN'",
+          "screenshot": "Domain_Name_Management_step04_default_domain_saved.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Strip Domain Name setting: Code analysis (Settings.ascx line 35-36) shows the checkbox control 'chkStripDomainName' exists but is explicitly hidden with Visible='false'. This feature cannot be tested via UI as there is no visible control to interact with.",
+    "Login scenario tests (DOMAIN\\username, username@domain.com, username with default domain): These tests require an actual Active Directory server connection. The test environment shows expected connection failures ('Accessing Global Catalog: FAIL', 'Checking Root Domain: FAIL', 'Accessing LDAP: FAIL') since no AD infrastructure is configured.",
+    "The Default Domain setting is stored as 'AD_DefaultDomain' in portal settings (Configuration.cs line 132) and is used by Login.ascx.cs to automatically prepend the domain when users enter a username without domain prefix.",
+    "Code confirms that when Default Domain is set and user enters just 'username', the system will format it as 'DEFAULTDOMAIN\\username' before authentication (Login.ascx.cs lines 139-141)."
+  ],
+  "summary": {
+    "total_scenarios": 1,
+    "passed": 1,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Workflow",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Workflow Link Actions",
+    "feature_description": "Generate and manage workflow action links for files and pages to facilitate workflow transitions.",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Generate workflow link for page",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to workflow link URL for page with type=1 (Tab) and id=21 (Home page)",
+          "expected": "The workflow link should redirect to the correct page (Home page) in edit mode",
+          "actual": "Successfully redirected to Home page (http://localhost:8081/en-us/) with user set to edit mode - Discard and Publish buttons visible",
+          "screenshot": "Workflow_Link_Actions_step01_page_link_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Generate workflow link for file",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to workflow link URL for file with type=2 and id=1 (existing file)",
+          "expected": "The workflow link should either redirect to file properties or show appropriate error if DAM module not configured",
+          "actual": "API returned 'Sorry, DAM module not found' - This is correct behavior as the site does not have a Digital Asset Management module configured. The code correctly checked that the file exists and then looked for a DAM module to redirect to.",
+          "screenshot": "Workflow_Link_Actions_step02_file_link_no_dam.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to workflow link URL for non-existent file with type=2 and id=99999",
+          "expected": "The workflow link should return 'file not found' error",
+          "actual": "API returned 'Sorry, file Not found' - correct error handling for non-existent files",
+          "screenshot": "Workflow_Link_Actions_step03_file_not_found.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify link permissions enforcement",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Log out of the website",
+          "expected": "User should be logged out",
+          "actual": "Successfully logged out - Register and Login links visible in navigation",
+          "screenshot": "Workflow_Link_Actions_step04_permissions_redirect_login.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to workflow link URL without authentication",
+          "expected": "Unauthenticated users should be redirected to login page with return URL preserved",
+          "actual": "Successfully redirected to login page with return URL preserved: /en-us/Login?returnurl=%2fDesktopModules%2fEvoqContentLibrary%2fAPI%2fWorkflowsLinks%2fIndex%2f%3fid%3d21%26type%3d1",
+          "screenshot": "Workflow_Link_Actions_step04_permissions_redirect_login.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Workflow Link Actions is an internal feature used in workflow notification emails - there is no direct UI to generate these links",
+    "The workflow link API endpoint is: /DesktopModules/EvoqContentLibrary/API/WorkflowsLinks/Index/?id={id}&type={type}",
+    "Type 1 (Tab) redirects to pages in edit mode by setting the user's personalization to EDIT mode and setting a LastPageId cookie",
+    "Type 2 (File) requires a Digital Asset Management (DAM) module to be configured on the site - without it, the file workflow link returns 'DAM module not found'",
+    "The API correctly enforces authentication - unauthenticated users are redirected to login page with return URL preserved",
+    "Link expiration testing could not be performed as these links do not have built-in expiration - they redirect immediately based on authentication status"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Revision Management",
+    "feature_description": "Track and manage article revisions with approval workflow and version history",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T16:21:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View revision history",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki module at http://localhost:8081/en-us/Community/Wiki",
+          "expected": "Wiki article list page should load",
+          "actual": "Wiki article list page loaded successfully with 26 articles displayed",
+          "screenshot": "Revision Management_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on 'Test Article - Title Updated' to view article details",
+          "expected": "Article detail page should open with History link visible",
+          "actual": "Article detail page opened showing article content with History link in the actions area",
+          "screenshot": "Revision Management_step01_view_history.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click on 'History' link to open revision history dialog",
+          "expected": "History dialog should open showing list of revisions with version numbers, dates, users, types, and states",
+          "actual": "History dialog opened showing 2 revisions (Version 1 and 2) with Published state, dates (12/30/2025), user info (Anonymous), and actions (Rollback, Delete)",
+          "screenshot": "Revision Management_step01_view_history.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Compare different revisions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "In History dialog, check the checkboxes for Version 1 and Version 2",
+          "expected": "Both revision checkboxes should be selected",
+          "actual": "Both revision checkboxes selected successfully",
+          "screenshot": "Revision Management_step01_view_history.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Compare Revisions' button",
+          "expected": "Compare Revisions dialog should open showing visual diff between the two versions",
+          "actual": "Compare Revisions dialog opened showing visual diff with insertions highlighted in green and deletions in red/strikethrough. Clearly shows the text changes between versions.",
+          "screenshot": "Revision Management_step02_compare_revisions.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify diff display format",
+          "expected": "Visual diff should clearly indicate what was added, removed, or modified",
+          "actual": "Diff display showed strikethrough text for removed content (red) and highlighted text for added content (green). Changes were clearly visible and easy to understand.",
+          "screenshot": "Revision Management_step02_compare_revisions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Restore previous revision (Rollback)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "In History dialog, click 'Rollback' button for Version 2",
+          "expected": "System should create an offsetting revision to restore to the previous state",
+          "actual": "Rollback action executed successfully. The History dialog updated to show 3 revisions, with a new Version 3 created as the rollback result.",
+          "screenshot": "Revision Management_step03_rollback_success.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify new revision was created",
+          "expected": "A new revision should appear in the history with Published state",
+          "actual": "Version 3 appeared in history with Published state, dated 1/16/2026, showing it was created by SuperUser Account as a result of the rollback operation",
+          "screenshot": "Revision Management_step03_rollback_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete revision",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "In History dialog, click 'Delete' button for Version 3",
+          "expected": "The revision should be deleted from the history",
+          "actual": "Delete action executed successfully. The History dialog updated to show only 2 revisions remaining (Version 1 and Version 2).",
+          "screenshot": "Revision Management_step04_delete_revision.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify revision was removed from history",
+          "expected": "Version 3 should no longer appear in the revision list",
+          "actual": "Version 3 was successfully removed. History now shows only Version 1 and Version 2, both with Published state.",
+          "screenshot": "Revision Management_step04_delete_revision.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Approve pending revision, Reject pending revision, and Revision state transitions (Draft->Pending->Published) scenarios could not be tested because the SuperUser account has auto-publish permissions that bypass the approval workflow. Even when the 'Approved' checkbox is unchecked during article creation/editing, no pending revision is created - content is published immediately.",
+    "Code analysis confirms the approval workflow exists in RevisionsApiController.cs with Publish() and Reject() methods, and RevisionState enum includes Draft, Pending, Published, Unpublished (rejected), and Deleted states. However, these states are only applicable when a non-admin user creates content that requires moderator approval.",
+    "The Multiple pending revisions scenario could not be tested because pending revisions cannot be created with the SuperUser account.",
+    "To properly test the approval/rejection workflow, a non-SuperUser account with limited permissions would be required, along with proper workflow configuration in the site settings.",
+    "All testable revision management features (View history, Compare revisions, Rollback, Delete) work correctly and as expected based on the code implementation."
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Templates",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Create New Template",
+    "feature_description": "Allows administrators to create new page templates with name, description, and layout selection",
+    "feature_priority": "Top",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Navigate to Templates Panel",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Manage > Templates",
+          "expected": "Templates panel should open showing Page Templates heading and Add Template button",
+          "actual": "Templates panel opened successfully with Page Templates heading and Add Template button visible",
+          "screenshot": "Create_New_Template_step01_templates_panel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create template when no existing templates",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add Template button when no templates exist",
+          "expected": "System should show appropriate message about needing existing templates",
+          "actual": "System correctly displayed message: 'You must save an existing page as a template prior to create a new template.'",
+          "screenshot": "Create_New_Template_step02_no_templates_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create template with valid name and description",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Pages panel and click Save Page Template > Evoq Page Template to create initial template",
+          "expected": "Save Page Template form should appear with Template Name and Description fields",
+          "actual": "Save Page Template form appeared correctly with Template Name* and Description fields",
+          "screenshot": "Create_New_Template_step03_save_page_template_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter template name 'Base Home Template' and description, then click Save",
+          "expected": "Template should be saved successfully and system should redirect to Templates panel with new template visible",
+          "actual": "Server returned 500 Internal Server Error. Template creation failed. GetPageTemplates API also returning 500 errors preventing template list from loading.",
+          "screenshot": "Create_New_Template_step04_500_error_blocking.png"
+        }
+      ],
+      "issues": ["HTTP 500 Internal Server Error from Templates API (GetPageTemplates endpoint)", "Server-side error preventing template creation and retrieval"]
+    },
+    {
+      "scenario_name": "Select different layout templates",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to test layout template selection in Add Template form",
+          "expected": "Add Template form should display available layout templates for selection",
+          "actual": "Could not test - GetPageTemplates API returns 500 error, preventing templates from loading. The Add Template form requires existing templates as layout options but none could be retrieved due to server error.",
+          "screenshot": "Create_New_Template_step04_500_error_blocking.png"
+        }
+      ],
+      "issues": ["Server 500 error prevents loading of template layouts", "Add Template form cannot function without existing templates"]
+    },
+    {
+      "scenario_name": "Validate empty template name shows error",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to test empty template name validation",
+          "expected": "Clicking Save/Create with empty template name should show validation error",
+          "actual": "Could not test - GetPageTemplates API returns 500 error. Template creation form requires existing templates to load first, which failed due to server error.",
+          "screenshot": "Create_New_Template_step04_500_error_blocking.png"
+        }
+      ],
+      "issues": ["Server error prevents access to template creation form with layout templates loaded"]
+    },
+    {
+      "scenario_name": "Validate script injection prevention in template name",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to test XSS prevention by entering script tags in template name",
+          "expected": "System should block or sanitize script tags in template name field",
+          "actual": "Could not test - Server 500 error blocks access to full template creation form. Code review confirms hasScript validation exists: regex /<[\\/]?[ ]{0,}[\\t]{0,}script\\b/gi is used to validate template names.",
+          "screenshot": "Create_New_Template_step04_500_error_blocking.png"
+        }
+      ],
+      "issues": ["Server error prevents testing of XSS validation"]
+    },
+    {
+      "scenario_name": "Cancel template creation",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to test Cancel button functionality",
+          "expected": "Cancel button should close the Add Template form without saving",
+          "actual": "Could not test Cancel functionality in Add Template form - server 500 error prevents the form from loading properly with layout templates.",
+          "screenshot": "Create_New_Template_step04_500_error_blocking.png"
+        }
+      ],
+      "issues": ["Server error prevents access to template creation form"]
+    },
+    {
+      "scenario_name": "Verify new template appears in list after creation",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to verify template appears in list after successful creation",
+          "expected": "Newly created template should appear in the templates list",
+          "actual": "Could not test - Template creation failed due to 500 server error, and template list itself cannot load due to the same API error.",
+          "screenshot": "Create_New_Template_step04_500_error_blocking.png"
+        }
+      ],
+      "issues": ["Server error prevents template creation and list loading"]
+    }
+  ],
+  "observations": [
+    "GetPageTemplates API endpoint consistently returns HTTP 500 Internal Server Error",
+    "The Templates panel UI correctly loads with Page Templates heading, Search box, and Add Template button",
+    "When no templates exist (or cannot be loaded), clicking Add Template shows the message: 'You must save an existing page as a template prior to create a new template' - this is expected behavior per code review",
+    "Save Page Template form (accessed via Pages > Save Page Template > Evoq Page Template) correctly displays Template Name* and Description fields",
+    "Code review confirms the feature has proper validation: template name is required, script injection is prevented via regex validation, and templateId (layout selection) is required",
+    "The server-side issue appears to be with the PageTemplateController.GetTemplates() method or related template retrieval logic",
+    "Multiple API calls to the Templates service are failing with 500 errors, suggesting a systemic backend issue rather than UI problem"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 2,
+    "failed": 6,
+    "pass_rate": "25%"
+  }
+}

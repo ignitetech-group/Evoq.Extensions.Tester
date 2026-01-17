@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleTagManagerConnector",
+    "extension_type": "Connector",
+    "feature_name": "Container ID Validation",
+    "feature_description": "Validates GTM container IDs by checking if they exist and are published on Google's servers",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T14:51:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Validate non-existent container shows error",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Settings > Connectors > Google Tag Manager",
+          "expected": "GTM connector settings panel opens",
+          "actual": "GTM connector settings panel opened with Container ID field",
+          "screenshot": "Container_ID_Validation_step01_gtm_connector_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter non-existent container ID 'GTM-WVXMVX' and click Save",
+          "expected": "Validation error should appear indicating invalid or unpublished container",
+          "actual": "Error message displayed: 'The Container Id is invalid or container hasn't been published yet.'",
+          "screenshot": "Container_ID_Validation_step03_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate malformed container ID shows error",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter malformed container ID 'invalid-container-id' in the Container ID field",
+          "expected": "Field accepts any text input",
+          "actual": "Text 'invalid-container-id' was entered in the Container ID field",
+          "screenshot": "Container_ID_Validation_step04_malformed_id_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button to trigger validation",
+          "expected": "Validation error should appear for malformed container ID",
+          "actual": "Error message displayed: 'The Container Id is invalid or container hasn't been published yet.'",
+          "screenshot": "Container_ID_Validation_step05_malformed_id_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate empty container ID saves successfully",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the Container ID field leaving it empty",
+          "expected": "Container ID field should be empty",
+          "actual": "Container ID field cleared successfully",
+          "screenshot": "Container_ID_Validation_step06_empty_container_id.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button with empty container ID",
+          "expected": "Empty container ID should be accepted (validation skipped for empty values)",
+          "actual": "Success message displayed: 'Item successfully saved.' - Empty container ID was accepted as expected per code logic",
+          "screenshot": "Container_ID_Validation_step07_empty_container_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate published GTM container returns success",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter valid/published container ID 'GTM-5CVQBG' in the Container ID field",
+          "expected": "Field accepts the container ID format",
+          "actual": "Text 'GTM-5CVQBG' was entered in the Container ID field",
+          "screenshot": "Container_ID_Validation_step08_valid_container_attempt.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button to validate the container",
+          "expected": "Valid container should be accepted and saved successfully",
+          "actual": "Success message displayed: 'Item successfully saved.' - Container was validated against Google's servers and accepted",
+          "screenshot": "Container_ID_Validation_step09_valid_container_success.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Validation is performed by making an HTTP request to https://www.googletagmanager.com/gtm.js?id={containerId} - if HTTP 200 is returned, the container is valid",
+    "Empty container IDs skip validation entirely and save successfully, which is by design to allow clearing/disabling the connector",
+    "The error message 'The Container Id is invalid or container hasn't been published yet' is displayed for both non-existent and malformed container IDs",
+    "Network timeout and unreachable server scenarios could not be tested without modifying network conditions, but the code handles exceptions by returning false (invalid)"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "User Identity Mapping",
+    "feature_description": "Maps Active Directory User Principal Names to DNN usernames for flexible authentication",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [],
+  "observations": [
+    "CRITICAL: User Identity Mapping is a DATABASE-LEVEL feature with NO UI. The feature description explicitly states: 'Database-level feature - automatic during authentication'",
+    "Code analysis confirmed the feature consists of: (1) AD_UserMapping database table with IdentityName and UserId columns, (2) AD_GetUserMapping stored procedure to retrieve DNN username by AD identity, (3) AD_UpdateUserMapping stored procedure to create/update mappings, (4) DataProvider.cs methods that call these stored procedures",
+    "The mapping table has a foreign key to Users table with CASCADE DELETE, ensuring automatic cleanup when users are deleted from DNN",
+    "The mapping is created AUTOMATICALLY during AD authentication - there is no manual configuration or UI to manage mappings",
+    "Testing this feature would require: (1) IIS Windows Authentication properly configured, (2) Active Directory domain accessible, (3) AD users with UPNs available for login testing",
+    "When attempting to access the Windows Login feature (which triggers AD authentication), the system returned HTTP 500.19 error indicating IIS Windows Authentication is not properly configured on this server",
+    "The DNNPro_ActiveDirectoryAuthentication provider is installed (version 10.1.1) and available as an authentication option in Security > Authentication settings",
+    "No UI elements exist to: view existing user mappings, manually create/edit/delete mappings, configure mapping behavior, or verify mapping persistence",
+    "Per testing philosophy: 'If a feature exists in code but not visible in UI, do NOT create a test for it' - This feature CANNOT be tested via UI because the entire implementation is database-level and automatic",
+    "The suggested test scenarios (verify mapping table creation, test UPN to username mapping, verify mapping persistence, test different UPN formats, verify mapping updates, test mapping cleanup) all require either direct database access or functional AD authentication - neither available via UI testing",
+    "Screenshot evidence captured: (1) Login page showing Windows Login tab exists but AD auth fails with IIS error, (2) Security > Authentication settings showing DNNPro_ActiveDirectory as available provider, (3) Extensions page showing DNNPro_ActiveDirectoryAuthentication installed"
+  ],
+  "summary": {
+    "total_scenarios": 0,
+    "passed": 0,
+    "failed": 0,
+    "pass_rate": "N/A - No UI tests possible for database-level feature"
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Interactive Column Resizing",
+    "feature_description": "Provides drag-and-drop column resizing functionality in edit mode for visual layout adjustments.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Drag column border to resize",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page with Content Layout module in edit mode",
+          "expected": "Content Layout module visible with column borders and resize handles",
+          "actual": "Content Layout module displayed with dashed column borders and circular resize handles visible",
+          "screenshot": "Interactive_Column_Resizing_step03_2col_layout.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Drag resize handle 100px to the right on 2-column layout",
+          "expected": "Left column should expand, right column should shrink",
+          "actual": "Left column changed from 479px (50%) to 584px (61%), right column changed from 479px (50%) to 374px (39%)",
+          "screenshot": "Interactive_Column_Resizing_step06_after_resize.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify minimum column width constraints",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Drag resize handle far to the left to minimize left column",
+          "expected": "Left column should not go below minimum width (105px as defined in code)",
+          "actual": "Left column stopped at 125px (13%), respecting the minimum width constraint",
+          "screenshot": "Interactive_Column_Resizing_step07_min_width_test.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test maximum column width constraints",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Drag resize handle far to the right to maximize left column",
+          "expected": "Right column should not go below minimum width (105px)",
+          "actual": "Right column went to 86px (9%), which is BELOW the expected minimum of 105px. Left column expanded to 872px (91%)",
+          "screenshot": "Interactive_Column_Resizing_step08_max_width_test.png"
+        }
+      ],
+      "issues": ["Maximum width constraint does not properly enforce minimum width on the adjacent column. The right column was allowed to shrink to 86px, below the configured minimum of 105px."]
+    },
+    {
+      "scenario_name": "Verify resize updates persist after save",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After resizing columns, reload the page",
+          "expected": "Column widths should persist after page reload",
+          "actual": "Column widths persisted: 2-column layout (91%, 9%) and 4-column layout (33%, 26%, 16%, 25%) maintained their sizes after reload. The resize API automatically saves changes via UpdateLayoutWithColumnSizes endpoint.",
+          "screenshot": "Interactive_Column_Resizing_step12_persistence_verified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test resize with multiple columns",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to 4-column Content Layout module",
+          "expected": "4-column layout visible with 3 resize handles between columns",
+          "actual": "4-column layout displayed with panes showing 33%, 17%, 25%, 25% widths and 3 resize handles",
+          "screenshot": "Interactive_Column_Resizing_step09_4col_layout.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Drag middle resize handle (between columns 2 and 3) 80px to the right",
+          "expected": "Column 2 should expand, column 3 should shrink",
+          "actual": "Column 2 changed from 17% to 26%, Column 3 changed from 25% to 16%. Resize works correctly with multiple columns.",
+          "screenshot": "Interactive_Column_Resizing_step10_4col_resized.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify resize UI feedback",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hover over resize handle between columns",
+          "expected": "Size viewer should appear showing percentage width of each column",
+          "actual": "Size viewer appeared showing '50%' for both columns in dark overlay badges. The UI feedback provides real-time percentage display during resize operations.",
+          "screenshot": "Interactive_Column_Resizing_step05_size_viewer_visible.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The resize functionality uses jQuery UI resizable plugin with handles on the east (right) edge of each column.",
+    "Minimum column width is configured as 105px (colMinWidth in code), but the maximum width constraint has a bug that allows adjacent columns to shrink below this minimum.",
+    "Size viewer displays percentage widths in dark semi-transparent badges centered in each column during resize operations.",
+    "Resize changes are automatically saved via API call to UpdateLayoutWithColumnSizes endpoint when mouse is released, without requiring explicit Publish action.",
+    "A publish conflict error appeared during testing ('Another user has taken action on the page'), which is expected behavior when page state changes during the session.",
+    "The resize handles are styled as small circular buttons (12x12px) positioned at the border between columns."
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 5,
+    "failed": 1,
+    "pass_rate": "83%"
+  }
+}

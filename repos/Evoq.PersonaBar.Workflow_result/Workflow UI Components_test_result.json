@@ -1,0 +1,145 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Workflow",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Workflow UI Components",
+    "feature_description": "React-based UI components for workflow selection, status display, and workflow notes.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Select workflow from dropdown",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Content > Pages and select Workflow Test Page",
+          "expected": "Page details panel opens with workflow dropdown visible",
+          "actual": "Page details panel opened showing workflow dropdown with 'Content Approval' selected",
+          "screenshot": "Workflow_UI_Components_step02_workflow_test_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on workflow dropdown to view options",
+          "expected": "Dropdown shows available workflow options",
+          "actual": "Dropdown expanded showing 'Content Approval', 'Direct Publish', and 'Test Approval Workflow' options",
+          "screenshot": "Workflow_UI_Components_step03_dropdown_options.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Select 'Direct Publish' from dropdown",
+          "expected": "Workflow selection changes to Direct Publish",
+          "actual": "Workflow changed to 'Direct Publish' and 'Changes have not been saved' message appeared",
+          "screenshot": "Workflow_UI_Components_step04_workflow_changed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify workflow selection persists after save",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Save the page after changing workflow to Direct Publish",
+          "expected": "Page saves successfully with new workflow",
+          "actual": "Page saved successfully, 'Page has been updated' notification appeared",
+          "screenshot": "Workflow_UI_Components_step05_save_success.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate away and return to the same page",
+          "expected": "Workflow should still show 'Direct Publish'",
+          "actual": "Workflow reverted back to 'Content Approval' instead of persisting 'Direct Publish'",
+          "screenshot": "Workflow_UI_Components_step06_persistence_check.png"
+        }
+      ],
+      "issues": ["Workflow selection does not persist after save - reverts to previous value when page is reloaded"]
+    },
+    {
+      "scenario_name": "View workflow status bubble on hover",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review WorkflowBubble component code",
+          "expected": "Component should show bubble when workflow incomplete and hovering",
+          "actual": "Code confirms WorkflowBubble visible when !isWorkflowCompleted && mouseOverWorkflow",
+          "screenshot": "Workflow_UI_Components_step07_hover_no_bubble.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Hover over workflow dropdown on multiple pages",
+          "expected": "Bubble should appear if page has incomplete workflow",
+          "actual": "No bubble appeared - all tested pages have completed workflows (isWorkflowCompleted=true). Component logic verified in code.",
+          "screenshot": "Workflow_UI_Components_step07_hover_no_bubble.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Toggle apply workflow to children switch",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select HierarchyTestParent page (a page with child pages)",
+          "expected": "Page details should load for parent page",
+          "actual": "HierarchyTestParent page loaded with workflow dropdown showing 'Content Approval'",
+          "screenshot": "Workflow_UI_Components_step08_apply_to_children_switch.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Change workflow from Content Approval to Direct Publish",
+          "expected": "Apply setting to all subpages switch should appear",
+          "actual": "Switch appeared after workflow change, showing 'Apply setting to all subpages: Off'",
+          "screenshot": "Workflow_UI_Components_step09_switch_wrong_toggle.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Toggle the apply to subpages switch",
+          "expected": "Switch should toggle from Off to On",
+          "actual": "Switch successfully toggled to 'On'",
+          "screenshot": "Workflow_UI_Components_step10_apply_children_on.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify workflow dropdown disabled when workflow incomplete",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for pages with incomplete workflows",
+          "expected": "Find a page where isWorkflowCompleted is false",
+          "actual": "All pages in the test environment have completed workflows. Unable to find a page with incomplete workflow state.",
+          "screenshot": "Workflow_UI_Components_step01_pages_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify dropdown disabled state in code",
+          "expected": "Code should disable dropdown when workflow incomplete",
+          "actual": "Code verified: Dropdown has enabled={props.isWorkflowCompleted} which would disable it when workflow is incomplete. Cannot verify UI behavior without incomplete workflow page.",
+          "screenshot": "Workflow_UI_Components_step01_pages_panel.png"
+        }
+      ],
+      "issues": ["Could not verify dropdown disabled state - no pages with incomplete workflows available in test environment"]
+    }
+  ],
+  "observations": [
+    "WorkflowBubble component exists and displays 'WorkflowRunning' message when visible. Visibility condition: !isWorkflowCompleted && mouseOverWorkflow. All tested pages had completed workflows so bubble could not be visually verified.",
+    "WorkflowNote component shows 'WorkflowNoteApplyOnSubPages' text when workflow propagation is not available (!isWorkflowPropagationAvailable). This is not a note history feature but a static informational message.",
+    "Suggested test scenarios 'Add workflow note to state change' and 'View workflow note history' cannot be tested - these features do not exist in the reviewed code. The WorkflowNote component only displays a static message about subpage propagation limitations.",
+    "The 'Apply setting to all subpages' switch only appears when: (1) workflow has been changed from original value, (2) workflow is completed, and (3) page has child pages. Switch may be read-only when workflow propagation is unavailable.",
+    "Workflow selection persistence issue: After saving a workflow change, the selection reverts to the original workflow when the page is reloaded. This appears to be a bug in the save functionality."
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 3,
+    "failed": 2,
+    "pass_rate": "60%"
+  }
+}

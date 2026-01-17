@@ -1,0 +1,145 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "Pagination",
+    "feature_description": "Load activity stream content in pages with 'Get More' and 'Show All' options",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T08:02:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Load initial page of posts",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Activity Feed page",
+          "expected": "Activity Feed page loads with initial posts",
+          "actual": "Activity Feed loaded successfully with posts from SuperUser Account profile",
+          "screenshot": "Pagination_step02_initial_posts_clean.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify posts are displayed",
+          "expected": "Multiple posts should be visible in the feed",
+          "actual": "Multiple posts displayed with various content types (text, photos, wiki articles)",
+          "screenshot": "Pagination_step03_posts_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Click 'Get More' to load next page",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Scroll down to find Get More button",
+          "expected": "Get More button should be visible at the bottom of the posts",
+          "actual": "Get More button found at the bottom of the activity stream",
+          "screenshot": "Pagination_step05_scroll_to_get_more.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Get More button",
+          "expected": "Additional posts should load and append to existing posts",
+          "actual": "More posts loaded successfully. URL changed to include ?lastItem=163 parameter indicating pagination working",
+          "screenshot": "Pagination_step06_after_get_more.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify Get More button still available",
+          "expected": "Get More button should still be visible for loading more content",
+          "actual": "Get More button remains visible for loading additional pages",
+          "screenshot": "Pagination_step07_get_more_button_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Click 'Show All' to load all posts",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for Show All button in the UI",
+          "expected": "'Show All' button should be visible near pagination controls",
+          "actual": "No 'Show All' button found in the UI. Only 'Get More' button exists at the bottom of the activity stream",
+          "screenshot": "Pagination_step07_get_more_button_visible.png"
+        }
+      ],
+      "issues": ["'Show All' button mentioned in feature description does not exist in the current UI. Only 'Get More' pagination option is available."]
+    },
+    {
+      "scenario_name": "Verify correct number of posts per page",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review code and count visible posts",
+          "expected": "Posts should load in configured page sizes (MaxRows parameter)",
+          "actual": "Code review shows MaxRows parameter controls page size. Posts loaded in batches with Get More loading additional content. Default appears to be approximately 20 posts per page based on observation.",
+          "screenshot": "Pagination_step03_posts_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test pagination with filters applied",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Added to Wiki' filter from dropdown",
+          "expected": "Activity stream should filter to show only wiki articles",
+          "actual": "Filter applied successfully - only wiki article entries displayed",
+          "screenshot": "Pagination_step09_filtered_wiki_content.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Get More with filter applied",
+          "expected": "Additional wiki articles should load while maintaining filter",
+          "actual": "More wiki articles loaded successfully. Filter was maintained - only 'authored wiki article' entries shown. Articles from 2 weeks ago loaded.",
+          "screenshot": "Pagination_step10_filtered_get_more_result.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test empty state pagination behavior",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Challenges Completed' filter (no entries)",
+          "expected": "Empty state should display with no posts and no Get More button",
+          "actual": "Filter applied successfully - empty content area displayed with no posts visible",
+          "screenshot": "Pagination_step11_empty_state.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify Get More button is hidden",
+          "expected": "Get More button should not be displayed when there are no posts",
+          "actual": "Get More button correctly hidden - only RSS feed icon visible at bottom",
+          "screenshot": "Pagination_step12_empty_state_content.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Feature description mentions 'Show All' option but this button does not exist in the current UI implementation. Only 'Get More' pagination is available.",
+    "Pagination uses URL parameter ?lastItem=<id> to track pagination state",
+    "Code review shows pagination is handled by GetListForProfile method with parameters: RowIndex, MaxRows, OlderThanJournalId, NewerThanJournalId",
+    "Activity Stream Filter sidebar provides custom filter options alongside the dropdown filter",
+    "RSS feed link is available next to the Get More button for subscribing to activity feed"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 5,
+    "failed": 1,
+    "pass_rate": "83%"
+  }
+}

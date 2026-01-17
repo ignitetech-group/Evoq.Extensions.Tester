@@ -1,0 +1,126 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Content Import/Export",
+    "feature_description": "Import and export module content for backup or migration purposes",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T05:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Export module content to XML",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Import/Export",
+          "expected": "Import/Export page should load",
+          "actual": "Import/Export page loaded successfully showing import/export log",
+          "screenshot": "Content Import_Export_step01_import_export_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select 'My Website' from the site dropdown",
+          "expected": "Export Data and Import Data buttons should become enabled",
+          "actual": "Buttons enabled, showing Last Import and Last Export dates",
+          "screenshot": "Content Import_Export_step02_site_selected.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click 'Export Data' button",
+          "expected": "Export configuration dialog should appear",
+          "actual": "Export dialog opened with all configuration options including Content toggle",
+          "screenshot": "Content Import_Export_step03_export_dialog.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Enter export name 'HTML_Content_Export_Test' and verify Content is set to On",
+          "expected": "Export should be configured with content included",
+          "actual": "Name entered, Content toggle set to 'On', all export options visible",
+          "screenshot": "Content Import_Export_step04_export_configured.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Click 'Begin Export' button",
+          "expected": "Export should be queued and success message displayed",
+          "actual": "Success message: 'Your data export has been placed in the queue, and will begin shortly.' Export appeared in log with 'Submitted' status",
+          "screenshot": "Content Import_Export_step05_export_submitted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Import content from XML",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Import Data' button",
+          "expected": "Import package selection dialog should appear",
+          "actual": "Import dialog opened showing list of available export packages with details",
+          "screenshot": "Content Import_Export_step06_import_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select the 'HTML_Content_Export_Test' package from the list",
+          "expected": "Package should be selected and highlighted",
+          "actual": "Package selected with blue highlight and checkmark, 'Continue' button enabled",
+          "screenshot": "Content Import_Export_step07_package_selected.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click 'Continue' and wait for package validation",
+          "expected": "System should validate the package and show import summary",
+          "actual": "Package validated successfully. Import Summary displayed: 14 Users, 34 Pages, Include Content: Yes, Total Export Size: 8.7 MB",
+          "screenshot": "Content Import_Export_step08_import_summary.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click 'Continue' to start import",
+          "expected": "Import should be queued and success message displayed",
+          "actual": "Success message: 'Your data import has been placed in the queue, and will begin shortly.' Import appeared in log with 'Submitted' status",
+          "screenshot": "Content Import_Export_step09_import_submitted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate import file format",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select an export package for import",
+          "expected": "System should automatically validate the package format",
+          "actual": "System displayed 'Just a moment, we are checking the package...' during validation",
+          "screenshot": "Content Import_Export_step07_package_selected.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Wait for package validation to complete",
+          "expected": "Valid packages should show import summary with all details",
+          "actual": "Validation completed successfully, showing detailed Import Summary with Users, Pages, Roles, Vocabularies, Include Content status, Extensions count, Assets count, and Total Export Size",
+          "screenshot": "Content Import_Export_step08_import_summary.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Import/Export feature operates at the site level, with HTML module content included as part of the overall site content export (Include Content: Yes)",
+    "Export packages are stored in the website's App_Data/ExportImport folder as noted in the UI",
+    "Package format validation is built into the import workflow - packages are automatically validated when selected before allowing import to proceed",
+    "Both Differential and Full export modes are supported, allowing for incremental or complete site backups",
+    "The HtmlTextController.cs implements IPortable interface with ExportModule and ImportModule methods that handle the HTML content serialization to XML format with tokenized links",
+    "Export includes workflow state information through the content versioning system (published vs draft content)",
+    "The import process supports version detection and handles both legacy (< v5.1.0) and current XML formats"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

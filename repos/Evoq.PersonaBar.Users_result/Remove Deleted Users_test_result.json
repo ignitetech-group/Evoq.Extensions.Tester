@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Users",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Remove Deleted Users",
+    "feature_description": "Permanently remove users marked as deleted from the system",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Display confirmation dialog before removal",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Users panel in PersonaBar",
+          "expected": "Users panel opens with Remove Deleted Users button visible",
+          "actual": "Users panel opened with Remove Deleted Users button visible",
+          "screenshot": "Remove_Deleted_Users_step00_login_success.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Remove Deleted Users button",
+          "expected": "Confirmation dialog appears with warning message",
+          "actual": "Confirmation dialog appeared with message 'Do you wish to permanently remove deleted users? You cannot undo this operation.' and Yes/No buttons",
+          "screenshot": "Remove_Deleted_Users_step01_confirmation_dialog.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with no deleted users present",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked Yes on confirmation dialog when no deleted users exist",
+          "expected": "System handles gracefully with appropriate message",
+          "actual": "Success notification 'All deleted users have been removed' displayed",
+          "screenshot": "Remove_Deleted_Users_step02_success_notification.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Checked Deleted filter to verify no deleted users",
+          "expected": "No users found message displayed",
+          "actual": "No users found message displayed in Deleted filter view",
+          "screenshot": "Remove_Deleted_Users_step03_no_deleted_users.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create test user and mark as deleted",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Created new test user 'DeleteTest User' with username 'deletetestuser'",
+          "expected": "User created successfully",
+          "actual": "User created successfully with 'User created successfully' notification",
+          "screenshot": "Remove_Deleted_Users_step04_user_created.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Opened user menu and selected Delete User option",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete this user?'",
+          "screenshot": "Remove_Deleted_Users_step05_delete_user_confirm.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Confirmed user deletion",
+          "expected": "User marked as deleted and removed from authorized list",
+          "actual": "User deleted successfully with notification, removed from Authorized users list",
+          "screenshot": "Remove_Deleted_Users_step06_user_soft_deleted.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Switched to Deleted filter to verify user status",
+          "expected": "DeleteTest User appears in deleted users list",
+          "actual": "DeleteTest User displayed in Deleted filter view",
+          "screenshot": "Remove_Deleted_Users_step07_deleted_user_in_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Successfully remove all deleted users",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked Remove Deleted Users button with deleted user present",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog appeared with warning message",
+          "screenshot": "Remove_Deleted_Users_step08_confirm_permanent_removal.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Confirmed permanent removal by clicking Yes",
+          "expected": "Deleted users permanently removed from system",
+          "actual": "Users permanently removed, success notification displayed",
+          "screenshot": "Remove_Deleted_Users_step09_success_removed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify user list refreshes after removal",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observed user list after removal confirmation",
+          "expected": "User list refreshes to show updated data",
+          "actual": "User list refreshed and showed 'No users found' in Deleted filter",
+          "screenshot": "Remove_Deleted_Users_step09_success_removed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Display success notification after completion",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observed notification after removal completion",
+          "expected": "Success notification displayed",
+          "actual": "Success notification 'All deleted users have been removed' displayed",
+          "screenshot": "Remove_Deleted_Users_step09_success_removed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify admin-only permission requirement",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged in as SuperUser (admin) and verified button visibility",
+          "expected": "Remove Deleted Users button visible for admin users",
+          "actual": "Remove Deleted Users button visible in Users panel header for admin user",
+          "screenshot": "Remove_Deleted_Users_step00_login_success.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review confirms canRemoveDeletedUsers() function only returns true for admin users (settings.isAdmin)",
+    "The Remove Deleted Users button uses a secondary style while Add User uses primary style, following good UI practices",
+    "The confirmation dialog clearly warns users that the operation cannot be undone",
+    "Success notification uses the localization key 'RemoveDeleted.Done' for proper internationalization support",
+    "Testing non-admin button visibility would require logging out and logging in as a non-admin user, which is beyond the scope of this medium-priority test"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 7,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

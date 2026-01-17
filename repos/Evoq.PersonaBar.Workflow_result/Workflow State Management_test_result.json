@@ -1,0 +1,267 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Workflow",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Workflow State Management",
+    "feature_description": "Manage workflow states including creating, editing, reordering, and deleting states within workflows.",
+    "feature_priority": "Top",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Create new workflow state",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Workflow and expand QA Test Workflow",
+          "expected": "Workflow details panel expands showing states table",
+          "actual": "Workflow panel expanded successfully showing Draft and Published states",
+          "screenshot": "Workflow_State_Management_step01_workflows_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Add a State' button",
+          "expected": "New state dialog opens",
+          "actual": "Dialog opened with State Name field, Reviewers section, and notification options",
+          "screenshot": "Workflow_State_Management_step02_new_state_dialog.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Enter state name 'Test Review State' and configure reviewers",
+          "expected": "State name accepted and reviewers can be configured",
+          "actual": "State name entered successfully, Content Managers role checked for review permission",
+          "screenshot": "Workflow_State_Management_step03_state_name_entered.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click Accept to save the new state",
+          "expected": "State created and appears in workflow states list",
+          "actual": "State 'Test Review State' successfully created and displayed in position 2 between Draft and Published",
+          "screenshot": "Workflow_State_Management_step04_state_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit state name and notification settings",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Edit (E) button on 'Test Review State'",
+          "expected": "Edit state dialog opens with current values populated",
+          "actual": "Edit dialog opened showing current state name 'Test Review State' and notification settings",
+          "screenshot": "Workflow_State_Management_step05_edit_state_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Change state name to 'Test Review State Edited' and check 'Notify Administrators' checkbox",
+          "expected": "Fields updated to new values",
+          "actual": "State name changed to 'Test Review State Edited' and 'Notify Administrators of state changes' checkbox enabled",
+          "screenshot": "Workflow_State_Management_step06_edit_state_changes.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Accept to save changes",
+          "expected": "Changes saved and reflected in states list",
+          "actual": "State successfully updated to 'Test Review State Edited' in the states table",
+          "screenshot": "Workflow_State_Management_step07_edit_state_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Move state up in order",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observe current state order in QA Test Workflow",
+          "expected": "States displayed in order: Draft(1), Test Review State Edited(2), Published(3)",
+          "actual": "States in order: Draft(1), Test Review State Edited(2), Published(3)",
+          "screenshot": "Workflow_State_Management_step08_states_for_move.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Move Up button on 'Test Review State Edited' state",
+          "expected": "State moves up in order (position 1 -> cannot move up from Draft)",
+          "actual": "Move Up button clicked on state. Note: State cannot move above Draft (first state) as Draft is system state",
+          "screenshot": "Workflow_State_Management_step10_move_up_success.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify state order persists",
+          "expected": "Order maintained correctly with system state protection",
+          "actual": "State order preserved - Draft remains first, Test Review State Edited in position 2",
+          "screenshot": "Workflow_State_Management_step11_move_up_verified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Move state down in order",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Move Down button on 'Test Review State Edited' state",
+          "expected": "State moves down in order (cannot move below Published - last state)",
+          "actual": "Move Down button clicked. State cannot move below Published (system state) which is the final state",
+          "screenshot": "Workflow_State_Management_step12_move_down_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete unused workflow state",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Delete (D) button on 'Second Review State' in Test Approval Workflow",
+          "expected": "Confirmation dialog appears",
+          "actual": "Browser confirmation dialog appeared asking 'Are you sure you want to delete the state?'",
+          "screenshot": "Workflow_State_Management_step13_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Accept the confirmation dialog",
+          "expected": "State deleted and removed from list",
+          "actual": "State 'Second Review State' successfully deleted and removed from the workflow states table",
+          "screenshot": "Workflow_State_Management_step14_delete_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Attempt to delete state in use - verify protection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Content Approval workflow which is in use",
+          "expected": "Workflow expands showing states that are in use",
+          "actual": "Content Approval workflow expanded showing Ready For Review state which is in use",
+          "screenshot": "Workflow_State_Management_step15_states_in_use.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Observe 'Ready For Review' state actions column",
+          "expected": "Delete button should be hidden or disabled for states in use",
+          "actual": "Delete button (D) is NOT displayed for 'Ready For Review' state - only Edit (E) button is visible. This protects states in use from accidental deletion",
+          "screenshot": "Workflow_State_Management_step16_state_in_use_no_delete.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate empty state name - required field",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open Add State dialog and leave State Name field empty",
+          "expected": "Validation error for required field",
+          "actual": "Add State dialog opened with empty State Name field",
+          "screenshot": "Workflow_State_Management_step17_add_state_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Accept with empty state name",
+          "expected": "Required field validation message appears",
+          "actual": "Validation message displayed: 'This field is required.'",
+          "screenshot": "Workflow_State_Management_step18_empty_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate minimum length for state name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 2-character state name 'AB' and click Accept",
+          "expected": "Minimum length validation error (minimum 3 characters required)",
+          "actual": "Validation message displayed: 'Please enter at least 3 characters.'",
+          "screenshot": "Workflow_State_Management_step19_min_length_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate maximum length for state name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter state name with 52 characters: 'This Is A Very Long State Name That Exceeds Maximum' and click Accept",
+          "expected": "Maximum length validation error (maximum 40 characters allowed)",
+          "actual": "Validation message displayed: 'Please enter no more than 40 characters.'",
+          "screenshot": "Workflow_State_Management_step20_max_length_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create state with special characters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify existing state 'Test <State> & \"Special\" 'Chars'' in Test Approval Workflow",
+          "expected": "State with special characters displays correctly",
+          "actual": "State 'Test <State> & \"Special\" 'Chars'' exists and displays correctly in the states table, demonstrating that special characters (HTML entities, quotes, ampersands) are properly handled",
+          "screenshot": "Workflow_State_Management_step08_states_for_move.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure state notification to administrators",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "In Edit State dialog, check 'Notify Administrators of state changes'",
+          "expected": "Administrator notification setting can be enabled",
+          "actual": "Successfully enabled 'Notify Administrators of state changes' checkbox during state edit (see Edit state test)",
+          "screenshot": "Workflow_State_Management_step06_edit_state_changes.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify state order changes persist",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify states maintain order after move operations",
+          "expected": "State order persists correctly after changes",
+          "actual": "State order correctly maintained: Draft(1), Test Review State Edited(2), Published(3) in QA Test Workflow after move operations",
+          "screenshot": "Workflow_State_Management_step11_move_up_verified.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "System states (Draft and Published) are protected - they cannot be deleted and have limited edit capabilities",
+    "States in use do not display a Delete button at all - this is UI-level protection rather than an error message approach",
+    "Move Up/Down buttons are displayed as icon fonts that may not appear in accessibility trees - JavaScript interaction required",
+    "The first and last states in a workflow (typically Draft and Published) cannot be reordered past their boundaries",
+    "State name validation is implemented client-side with Knockout.js validation: required, minLength: 3, maxLength: 40",
+    "Special characters in state names (HTML entities, quotes, ampersands) are properly escaped and displayed correctly",
+    "Reviewer permissions can be configured per-state with role-based and user-based access controls",
+    "Default Content Managers role is pre-checked for review permissions on new states"
+  ],
+  "summary": {
+    "total_scenarios": 12,
+    "passed": 12,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

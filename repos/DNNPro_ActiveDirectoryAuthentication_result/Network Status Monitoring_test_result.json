@@ -1,0 +1,154 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Network Status Monitoring",
+    "feature_description": "Monitors and reports Active Directory connection status and availability",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Navigate to AD Settings and Access Network Status",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login to DNN as host user",
+          "expected": "Successfully logged in as SuperUser Account",
+          "actual": "Successfully logged in as SuperUser Account",
+          "screenshot": "Network Status Monitoring_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to Settings > Extensions > Authentication Systems > DNNPro_ActiveDirectoryAuthentication > Site Settings",
+          "expected": "AD authentication settings page displayed",
+          "actual": "AD authentication settings page displayed with configuration options",
+          "screenshot": "Network Status Monitoring_step01_ad_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with unreachable domain controller",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View current AD configuration (Root Domain: persistence-test.local, User: testuser)",
+          "expected": "Configuration displayed with domain settings",
+          "actual": "Configuration displayed showing Root Domain: persistence-test.local, User Name: testuser",
+          "screenshot": "Network Status Monitoring_step02_before_update.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Update Authentication Settings' to trigger network status check",
+          "expected": "Network status check performed and results displayed",
+          "actual": "Network status displayed with FAIL status for all components",
+          "screenshot": "Network Status Monitoring_step03_status_displayed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Global Catalog status reporting",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review status message after clicking Update Authentication Settings",
+          "expected": "Global Catalog status should be displayed",
+          "actual": "Global Catalog status displayed as 'FAIL' in red error message box",
+          "screenshot": "Network Status Monitoring_step04_full_status.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify LDAP status reporting",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review status message after clicking Update Authentication Settings",
+          "expected": "LDAP status should be displayed",
+          "actual": "LDAP status displayed as 'Accessing LDAP: FAIL'",
+          "screenshot": "Network Status Monitoring_step04_full_status.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Root Domain status reporting",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review status message after clicking Update Authentication Settings",
+          "expected": "Root Domain status should be displayed",
+          "actual": "Root Domain status displayed as 'Checking Root Domain: FAIL'",
+          "screenshot": "Network Status Monitoring_step04_full_status.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Network Domains status reporting",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review status message after clicking Update Authentication Settings",
+          "expected": "Network Domains status should be displayed",
+          "actual": "Network Domains status displayed as 'Find all domains in network: Could not access LDAP to obtain domains info'",
+          "screenshot": "Network Status Monitoring_step04_full_status.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify error message localization",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review status messages for proper localization",
+          "expected": "Status messages should be localized and readable",
+          "actual": "Status messages displayed in English with proper formatting: 'Accessing Global Catalog', 'Checking Root Domain', 'Accessing LDAP', 'Find all domains in network'",
+          "screenshot": "Network Status Monitoring_step04_full_status.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify status updates after configuration changes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Update Authentication Settings' with AD enabled",
+          "expected": "Status should refresh and display current connection status",
+          "actual": "Status message displayed in red error box immediately after clicking Update, showing current connection status (all FAIL due to no AD server)",
+          "screenshot": "Network Status Monitoring_step04_full_status.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Network Status Monitoring feature is accessed by clicking 'Update Authentication Settings' in the AD provider Site Settings",
+    "Status is displayed as a module message (red for errors, green for success based on code review)",
+    "The feature correctly reports status for: Global Catalog, Root Domain, LDAP, and Network Domains",
+    "Since there is no actual Active Directory server configured in the test environment, all status checks return FAIL - this is expected behavior",
+    "Code review (ADSIProvider.cs:479-583) confirms the GetNetworkStatus() method checks four components: ADSINetwork (Global Catalog), RootEntry (Root Domain), LDAPAccessible (LDAP), and RefCollection (Network Domains)",
+    "The status messages are localized through the LocalizedStatus() method in Settings.ascx.cs",
+    "Testing with a valid AD connection was not possible without an actual Active Directory server in the environment"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 8,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

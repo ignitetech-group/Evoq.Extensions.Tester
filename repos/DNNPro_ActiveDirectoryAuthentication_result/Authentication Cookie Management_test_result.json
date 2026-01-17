@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Authentication Cookie Management",
+    "feature_description": "Manages authentication cookies and timeout settings for persistent login",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify authentication cookies after login",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login to website as host user using standard DNN authentication",
+          "expected": "Authentication cookies should be created after successful login",
+          "actual": "Login successful. Multiple HTTP-only authentication cookies created: .DOTNETNUKE (Forms Auth), authentication.status.0 (Auth Status), authentication, __RequestVerificationToken (CSRF)",
+          "screenshot": "Authentication_Cookie_Management_step00_setup_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Inspect browser cookies using Playwright context API",
+          "expected": "Authentication cookies should be HTTP-only for security",
+          "actual": "All authentication cookies (.DOTNETNUKE, authentication.status.0, authentication) are HTTP-only. Cookie authentication.status.0 matches code pattern AUTHENTICATION_STATUS_KEY.{portalId}",
+          "screenshot": "Authentication_Cookie_Management_step01_cookies_after_login.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test logout cookie cleanup",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Logoff.aspx to trigger logout",
+          "expected": "User should be logged out and redirected to home page",
+          "actual": "Successfully logged out. Page shows 'Register | Login' links instead of username. Access denied message displayed.",
+          "screenshot": "Authentication_Cookie_Management_step02_logged_out_state.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify cookies after logout using Playwright context API",
+          "expected": "Main authentication cookie (.DOTNETNUKE) should be removed by FormsAuthentication.SignOut()",
+          "actual": ".DOTNETNUKE cookie was REMOVED after logout (not present in cookie list). This confirms FormsAuthentication.SignOut() in AuthenticationLogoff() method works correctly.",
+          "screenshot": "Authentication_Cookie_Management_step02_logged_out_state.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Remember Login checkbox for persistent cookies",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to login page and locate Remember Login checkbox",
+          "expected": "Remember Login checkbox should be visible on login form",
+          "actual": "Login form displayed with Username, Password fields and 'Remember Login' checkbox visible (unchecked by default)",
+          "screenshot": "Authentication_Cookie_Management_step03_remember_login_checkbox.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter credentials and check the Remember Login checkbox",
+          "expected": "Checkbox should be checked before submitting login",
+          "actual": "Credentials entered (host/Pass123456) and Remember Login checkbox checked successfully",
+          "screenshot": "Authentication_Cookie_Management_step04_remember_login_checked.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Submit login and verify cookie expiration times",
+          "expected": "With Remember Login checked, .DOTNETNUKE cookie should have persistent expiration (not session)",
+          "actual": ".DOTNETNUKE cookie has 30-minute expiration (persistent cookie) instead of session (-1). This matches the forms authentication timeout in web.config as read by GetAuthCookieTimeout() method.",
+          "screenshot": "Authentication_Cookie_Management_step05_persistent_cookie_verified.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Authentication Cookie Management is an automatic/backend feature with no direct UI configuration panel - cookies are managed during login/logout processes",
+    "Cookie timeout configuration is done via web.config (PersistentCookieTimeout setting and forms authentication timeout), not through UI",
+    "The code in AuthenticationController.cs correctly implements: FormsAuthentication.SetAuthCookie() for login, FormsAuthentication.SignOut() for logout, and cookie expiration based on PersistentCookieTimeout config setting",
+    "All authentication cookies are properly set as HTTP-only, which is a security best practice preventing JavaScript access (XSS protection)",
+    "The authentication.status.0 cookie follows the pattern AUTHENTICATION_STATUS_KEY.{portalId} as defined in the Configuration class",
+    "Cookie expiration handling and security settings are handled by ASP.NET Forms Authentication infrastructure, which the code properly utilizes"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

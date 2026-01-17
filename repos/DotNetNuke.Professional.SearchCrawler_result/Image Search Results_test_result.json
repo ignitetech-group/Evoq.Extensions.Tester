@@ -1,0 +1,117 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Image Search Results",
+    "feature_description": "Specialized handling for image file search results with thumbnail generation.",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Display image search results",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to home page and logged in as SuperUser (host)",
+          "expected": "Login successful, SuperUser Account displayed",
+          "actual": "Login successful, SuperUser Account displayed in top navigation",
+          "screenshot": "Image Search Results_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Entered 'logo' in search box and submitted search",
+          "expected": "Search results page displays image files",
+          "actual": "Search results page loaded at /en-us/Search-Results?Search=logo showing 'About 1 Results'",
+          "screenshot": "Image Search Results_step01_search_results_page.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verified image search result is displayed correctly",
+          "expected": "Image file cavalier-logo.png appears in search results with proper metadata",
+          "actual": "cavalier-logo.png displayed with URL path, description showing 'alier-logo.png...alier-logo png image/png users/001/01/1/', and Source: Images label",
+          "screenshot": "Image Search Results_step02_image_result_displayed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test image file type detection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Reviewed search result metadata for image file",
+          "expected": "Image file should be categorized as 'Images' source type",
+          "actual": "Search result shows 'Source: Images' confirming PNG file is correctly detected and categorized as an image type",
+          "screenshot": "Image Search Results_step02_image_result_displayed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test image URL generation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked on cavalier-logo.png search result link",
+          "expected": "Image URL should be generated and image should be accessible",
+          "actual": "Image opened directly in browser at /Portals/_default/Users/001/01/1/cavalier-logo.png with page title showing dimensions (225x60)",
+          "screenshot": "Image Search Results_step03_image_url_opens.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Generate image thumbnails",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Content > Assets in PersonaBar",
+          "expected": "Asset Manager should display with access to site files",
+          "actual": "Asset Manager opened showing folder structure: Global Assets, My Website, Test Portal",
+          "screenshot": "Image Search Results_step04_asset_manager_images.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigated to Home > Images folder to view image files",
+          "expected": "Image files should display with generated thumbnails",
+          "actual": "Images folder displayed with multiple image files showing circular thumbnails: batch_image_3.png, cavalier-tv.png, CTA-1.jpg through CTA-8.jpg, and other PNG/JPG files with visible thumbnail previews",
+          "screenshot": "Image Search Results_step04_asset_manager_images.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle missing images gracefully",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access non-existent image URL: /Portals/0/Images/non_existent_image_12345.png",
+          "expected": "System should return appropriate error without crashing",
+          "actual": "System returned HTTP Error 404.0 - Not Found with detailed error page explaining 'The resource you are looking for has been removed, had its name changed, or is temporarily unavailable'",
+          "screenshot": "Image Search Results_step05_missing_image_404.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "ImageResultController extends FileResultController and provides localized search type name for images",
+    "Image file types are detected based on extension matching against Globals.glbImageFileTypes configuration",
+    "Thumbnails are generated via ThumbnailsController API at API/DNNCorp/PersonaBar/Assets/ThumbnailDownLoad endpoint",
+    "Search results correctly differentiate between 'document' and 'image' search types using SearchTypeId",
+    "The FileCrawlerController handles cleanup of documents that were previously indexed as documents but are now recognized as images"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

@@ -1,0 +1,171 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Pages",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Page Publishing",
+    "feature_description": "Publish pages and manage publishing states",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T18:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Publish unpublished page",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Created new page 'Publish Test Jan16' with 'Test Approval Workflow' assigned",
+          "expected": "Page created in draft/unpublished state",
+          "actual": "Page created successfully with Test Approval Workflow assigned",
+          "screenshot": "Page_Publishing_step02_page_created.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigated to page edit mode to find publish button",
+          "expected": "Publish or Approve button visible in toolbar",
+          "actual": "Only 'Discard', 'Reject', 'Close' buttons visible in edit mode toolbar. No explicit 'Publish' or 'Approve' button found.",
+          "screenshot": "Page_Publishing_step05_workflow_buttons.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Checked page details panel for publish status",
+          "expected": "PublishStatus and HasBeenPublished information displayed",
+          "actual": "PublishStatus field shows empty value. Versioning: Off, Workflow: Off displayed despite workflow being assigned.",
+          "screenshot": "Page_Publishing_step13_page_status_info.png"
+        }
+      ],
+      "issues": [
+        "No explicit 'Publish' or 'Approve' button found in the UI for pages with workflow",
+        "Page status shows 'Workflow: Off' even when Test Approval Workflow is assigned in settings",
+        "PublishStatus field is empty with no clear indication of publish state"
+      ]
+    },
+    {
+      "scenario_name": "Direct publish for non-normal pages",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to create new URL-type page to test direct publish behavior",
+          "expected": "URL-type page created and auto-published",
+          "actual": "System error occurred: 'System.InvalidOperationException: Sequence contains more than one element' at WorkflowActionRepository.GetWorkflowAction",
+          "screenshot": "Page_Publishing_step10_url_page_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Examined existing 'Direct Publish URL Test' page with Direct Publish workflow",
+          "expected": "Page shows published status",
+          "actual": "Page shows Status: Visible and Workflow: Direct Publish, confirming direct publish worked for existing pages",
+          "screenshot": "Page_Publishing_step15_url_page_direct_publish.png"
+        }
+      ],
+      "issues": [
+        "Creating new URL-type page fails with database error indicating duplicate workflow actions",
+        "Direct publish appears to work for existing pages but cannot verify with new page creation"
+      ]
+    },
+    {
+      "scenario_name": "Create new tab version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched UI for option to manually create new tab version",
+          "expected": "Button or menu option to create new page version",
+          "actual": "No UI option found to manually create new tab version. The CreateNewTabVersion method in code is called internally during save operations.",
+          "screenshot": "Page_Publishing_step06_edit_mode_toolbar.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Checked site settings for versioning configuration",
+          "expected": "Versioning settings visible and configurable",
+          "actual": "Found 'Enable Page Versioning: On' in Site Settings > Site Behavior > More, but individual page shows 'Versioning: Off'",
+          "screenshot": "Page_Publishing_step08_versioning_settings.png"
+        }
+      ],
+      "issues": [
+        "No UI control to manually create a new tab version",
+        "Disconnect between site-level versioning (enabled) and page-level versioning display (off)"
+      ]
+    },
+    {
+      "scenario_name": "Verify HasBeenPublished flag",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examined page details panel for HasBeenPublished indication",
+          "expected": "Clear UI indication showing whether page HasBeenPublished",
+          "actual": "No UI element displays HasBeenPublished flag. PublishStatus field is empty. Code shows HasBeenPublished is used internally but not exposed in UI.",
+          "screenshot": "Page_Publishing_step12_page_details_panel.png"
+        }
+      ],
+      "issues": [
+        "HasBeenPublished flag is not exposed in the UI",
+        "PublishStatus field shows no value, making it impossible to verify publish state visually"
+      ]
+    },
+    {
+      "scenario_name": "Publish with workflow",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Created page with 'Test Approval Workflow' (multi-step workflow)",
+          "expected": "Workflow actions available to progress through states: Draft -> Review -> Test -> Published",
+          "actual": "Only 'Discard', 'Reject', 'Close' buttons visible. No 'Approve', 'Submit', or workflow progression buttons found.",
+          "screenshot": "Page_Publishing_step05_workflow_buttons.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Checked workflow configuration in Settings",
+          "expected": "Workflow states and transitions visible",
+          "actual": "Test Approval Workflow shows 4 states (Draft, Review State Edited, Test State, Published) but no UI to progress through states",
+          "screenshot": "Page_Publishing_step07_workflow_settings.png"
+        }
+      ],
+      "issues": [
+        "No workflow progression buttons (Approve/Submit/Complete) visible in page edit mode",
+        "Workflow appears to be configured but cannot be exercised through UI"
+      ]
+    },
+    {
+      "scenario_name": "Verify publish permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Opened Permissions tab for page settings",
+          "expected": "Permission settings including publish permission visible",
+          "actual": "Permissions tab shows standard DNN permissions: View, Add, Content, Copy, Delete, Export, Import, Manage, Navigate, Edit Tab. No explicit 'Publish' permission.",
+          "screenshot": "Page_Publishing_step14_permissions_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verified permission structure matches code expectations",
+          "expected": "Publish permissions handled through workflow state permissions",
+          "actual": "Code confirms publish permissions are controlled via workflow state permissions (WorkflowStatePermission), not page permissions. This is correct architectural design.",
+          "screenshot": "Page_Publishing_step14_permissions_tab.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code in EvoqPagesController.cs shows sophisticated publish logic: needDirectPublish = pageType != 'normal' && pageType != 'template' || pageSettings.DisableLink",
+    "WorkflowHelper.cs contains IsWorkflowCompleted() method that checks workflow state across all Workflow Status Managers",
+    "HasBeenPublished flag exists in code and is used for conditional publishing but is not visible in UI",
+    "Direct Publish workflow auto-publishes pages immediately, but this cannot be tested due to database error when creating new non-normal pages",
+    "Workflow system appears to have database integrity issue: 'Sequence contains more than one element' at WorkflowActionRepository indicates duplicate workflow actions",
+    "The 'Test Approval Workflow' is set as default but pages show 'Workflow: Off' status even when assigned",
+    "Publish/Approve functionality may require notification system interaction or specific workflow state transitions not accessible from edit mode toolbar",
+    "Code suggests publishing can be triggered through PublishingController.Instance.Publish() but no UI trigger found"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 1,
+    "failed": 5,
+    "pass_rate": "17%"
+  }
+}

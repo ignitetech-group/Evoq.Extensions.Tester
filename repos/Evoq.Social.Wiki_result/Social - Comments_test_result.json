@@ -1,0 +1,181 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Social - Comments",
+    "feature_description": "Add, edit, delete and moderate comments on wiki articles",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Post new comment",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki article page",
+          "expected": "Wiki article with comments section visible",
+          "actual": "Wiki article 'Published Test Article - Jan 16 2026' displayed with comments section",
+          "screenshot": "Social - Comments_step01_wiki_article_view.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Add Comment to expand comment input area",
+          "expected": "Comment input field expands and becomes editable",
+          "actual": "Comment input area expanded with Post Comment button visible",
+          "screenshot": "Social - Comments_step02_add_comment_expanded.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Enter comment text 'Test comment from automated testing - Jan 16 2026'",
+          "expected": "Comment text appears in input field",
+          "actual": "Comment text successfully entered in contenteditable div",
+          "screenshot": "Social - Comments_step03_comment_typed.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click Post Comment button",
+          "expected": "Comment saved and displayed in comments list",
+          "actual": "Comment posted successfully by SuperUser Account with timestamp",
+          "screenshot": "Social - Comments_step04_comment_posted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit own comment",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Edit link on posted comment",
+          "expected": "Edit dialog/form opens with current comment text",
+          "actual": "Edit dialog opened with comment text in editable field",
+          "screenshot": "Social - Comments_step05_edit_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Modify comment text to 'EDITED: Test comment updated - Jan 16 2026' and click Update",
+          "expected": "Comment updated and shows edited content",
+          "actual": "Comment successfully updated with new text displayed",
+          "screenshot": "Social - Comments_step06_comment_edited.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Reply to comment",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Reply link on existing comment",
+          "expected": "Reply input field appears below the comment",
+          "actual": "Reply input field expanded with post reply button visible",
+          "screenshot": "Social - Comments_step07_reply_input.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter reply text with @SuperUser Account mention and click Post Reply",
+          "expected": "Reply posted as nested comment under parent",
+          "actual": "Reply posted successfully with @SuperUser Account mention rendered as clickable link",
+          "screenshot": "Social - Comments_step08_reply_posted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test comment with user mentions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify @SuperUser Account mention in posted reply",
+          "expected": "User mention rendered as clickable profile link",
+          "actual": "@SuperUser Account displayed as hyperlink pointing to user profile",
+          "screenshot": "Social - Comments_step08_reply_posted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete own comment",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Delete link on reply comment",
+          "expected": "Confirmation dialog appears",
+          "actual": "Delete confirmation dialog displayed with Yes/No options",
+          "screenshot": "Social - Comments_step09_delete_confirm.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Yes to confirm deletion",
+          "expected": "Comment removed from comments list",
+          "actual": "Reply comment successfully deleted, only original edited comment remains",
+          "screenshot": "Social - Comments_step10_comment_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test profanity filter in comments",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to verify profanity filter functionality",
+          "expected": "Profanity filter blocks or masks inappropriate content",
+          "actual": "Unable to verify profanity filter functionality - no visible configuration in site settings and comment input validation did not show profanity blocking behavior",
+          "screenshot": "Social - Comments_step04_comment_posted.png"
+        }
+      ],
+      "issues": ["Profanity filter configuration not visible in UI. Code review shows filter may be handled by SocialLibrary base class, but no direct evidence of active filtering in test environment."]
+    },
+    {
+      "scenario_name": "Moderate comments (approve/reject)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to test comment moderation workflow",
+          "expected": "Comments awaiting approval should be visible for moderator action",
+          "actual": "Cannot test with single SuperUser account - SuperUser has auto-approve permissions (CanModerate=true), so all comments posted are automatically approved. No pending comments available to moderate.",
+          "screenshot": "Social - Comments_step04_comment_posted.png"
+        }
+      ],
+      "issues": ["Comment moderation requires comments from non-moderator users that need approval. Testing with SuperUser account auto-approves all comments. Code confirms moderation check in SocialController.cs:164 (CanModerateComments) and SendCommentAwaitingApprovalNotifications for unapproved comments."]
+    },
+    {
+      "scenario_name": "Test comment notifications",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to user notifications page after posting comments",
+          "expected": "Notification received for comment activity",
+          "actual": "Notifications page shows 0-0 of 0 notifications for SuperUser Account",
+          "screenshot": "Social - Comments_step11_notifications_page.png"
+        }
+      ],
+      "issues": ["Code review shows comment notifications (NewCommentNotifications in Notifications.cs:262-287) are sent to article content subscribers, not to comment authors. SuperUser did not receive notifications because: (1) notifications go to subscribers of the article, not the commenter, (2) SuperUser may not be subscribed to the test article. The notification infrastructure exists but requires subscribers to verify delivery."]
+    }
+  ],
+  "observations": [
+    "Code suggests comment approval workflow exists (SocialController.ApproveComment) but requires non-moderator user to post comments for testing.",
+    "User mentions (@username) functionality works correctly - mentions are rendered as clickable profile links.",
+    "Comment input uses contenteditable div rather than standard form input, requiring JavaScript manipulation for automated testing.",
+    "Notifications.cs shows comprehensive notification system for comments including: NewCommentNotifications, SendCommentAwaitingApprovalNotifications, and UserMentionNotificationsController for @mentions.",
+    "Profanity filter may be configured at site or module level through SocialLibrary, but no visible configuration found in current test environment.",
+    "Comments update article's LastModifiedOnDate to push the article higher in activity stream."
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 5,
+    "failed": 3,
+    "pass_rate": "62.5%"
+  }
+}

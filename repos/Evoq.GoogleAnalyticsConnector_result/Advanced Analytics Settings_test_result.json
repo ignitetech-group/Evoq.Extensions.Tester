@@ -1,0 +1,132 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Advanced Analytics Settings",
+    "feature_description": "Advanced configuration options including domain name settings and admin tracking preferences with toggle functionality.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T13:50:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Enable tracking for administrators",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors and click Connect on Google Analytics 4",
+          "expected": "Google Analytics 4 configuration panel opens",
+          "actual": "Configuration panel opened with Measurement ID field and Track for Administrators checkbox",
+          "screenshot": "Advanced_Analytics_Settings_step02_GA4_initial_state.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Track for Administrators checkbox to enable it",
+          "expected": "Checkbox becomes checked",
+          "actual": "Checkbox is now checked (blue checkmark visible)",
+          "screenshot": "Advanced_Analytics_Settings_step03_admin_tracking_enabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Disable tracking for administrators",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "With Track for Administrators enabled, click the checkbox to disable it",
+          "expected": "Checkbox becomes unchecked",
+          "actual": "Checkbox is now unchecked (empty box visible)",
+          "screenshot": "Advanced_Analytics_Settings_step06_admin_tracking_disabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save settings with valid Measurement ID",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter a valid GA4 Measurement ID (G-TEST123456)",
+          "expected": "Measurement ID is entered in the field",
+          "actual": "G-TEST123456 entered in Measurement ID field",
+          "screenshot": "Advanced_Analytics_Settings_step04_measurement_id_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Settings saved successfully with success message",
+          "actual": "Success message 'Item successfully saved.' displayed, green checkmark appears next to connector name, Delete Connection button appears",
+          "screenshot": "Advanced_Analytics_Settings_step05_save_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify empty Measurement ID validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the Measurement ID field",
+          "expected": "Field is empty",
+          "actual": "Measurement ID field cleared",
+          "screenshot": "Advanced_Analytics_Settings_step07_empty_measurement_id.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button with empty Measurement ID",
+          "expected": "Validation error appears preventing save",
+          "actual": "Error message 'Tracking Code Cannot Be Empty' displayed",
+          "screenshot": "Advanced_Analytics_Settings_step08_empty_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure custom domain name",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Look for Domain Name field in connector settings",
+          "expected": "Domain Name field should be available in Advanced Settings",
+          "actual": "Classic Google Analytics connector with Domain Name field is not available in the UI. Only Google Analytics 4 connector is present, which does not include domain name configuration.",
+          "screenshot": "Advanced_Analytics_Settings_step01_connectors_list.png"
+        }
+      ],
+      "issues": ["The classic Google Analytics connector with Advanced Settings (including Domain Name field) is not visible in the Connectors list. Only Google Analytics 4 connector is available, which has a simplified interface without domain name configuration."]
+    },
+    {
+      "scenario_name": "Test empty domain configuration",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to test empty domain configuration",
+          "expected": "Empty domain should default to 'none'",
+          "actual": "Domain Name field is not available in Google Analytics 4 connector. The classic Google Analytics connector with this feature is not visible in the UI.",
+          "screenshot": "Advanced_Analytics_Settings_step01_connectors_list.png"
+        }
+      ],
+      "issues": ["Domain name configuration is not available in Google Analytics 4 connector. This feature exists only in the classic Google Analytics connector which is not present in the UI."]
+    }
+  ],
+  "observations": [
+    "The classic 'Google Analytics' connector (with Advanced Settings dialog containing Domain Name, Admin Tracking Toggle, and Segmentation Rules) exists in the codebase at 'Evoq Content/Connectors/GoogleAnalytics/' but is NOT visible in the Connectors UI list.",
+    "Only 'Google Analytics 4' connector is available in the UI, which has a simplified interface with just Measurement ID field and Track for Administrators checkbox.",
+    "The code files reviewed (advanced.htm, connector.js, GoogleAnalyticsConnector.cs) describe features for the classic Google Analytics connector that cannot be tested via UI because the connector is not visible.",
+    "Google Analytics 4 uses a standard checkbox for 'Track for Administrators' instead of the toggle switch (On/Off) described for the classic connector.",
+    "The suggested test scenarios for domain name configuration and segmentation rules are specific to the classic Google Analytics connector which is not accessible via UI.",
+    "A warning message in the code indicates: 'Universal Analytics (UA) will sunset on the 1st of July 2023, please config your tracking information to connect to Google Analytics 4 (GA4).' This may explain why the classic GA connector is no longer prominently displayed."
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 4,
+    "failed": 2,
+    "pass_rate": "67%"
+  }
+}

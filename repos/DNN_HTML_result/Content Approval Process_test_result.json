@@ -1,0 +1,160 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Content Approval Process",
+    "feature_description": "Submit, review, approve or reject content through workflow states",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T13:15:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Submit content for approval",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Workflow Test Page New Approval and enter Edit mode",
+          "expected": "Page enters edit mode with workflow controls visible",
+          "actual": "Page entered edit mode successfully with Discard/Reject/Close buttons visible in toolbar",
+          "screenshot": "Content Approval Process_step01_edit_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Open HTML module editor and add content",
+          "expected": "Content editor opens and allows content entry",
+          "actual": "CKEditor opened successfully and content was added",
+          "screenshot": "Content Approval Process_step03_content_added.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Save content and look for Submit for Approval option",
+          "expected": "Submit button or workflow submission option available",
+          "actual": "No Submit button available. Workflow toolbar shows only Discard/Reject/Close buttons. Page settings show 'Versioning: Off' and 'Workflow: Off' even though Content Approval workflow is selected",
+          "screenshot": "Content Approval Process_step12_versioning_off.png"
+        }
+      ],
+      "issues": [
+        "No Submit for Approval button available in the workflow toolbar",
+        "Workflow is effectively disabled because page versioning is Off",
+        "Content Approval workflow selected in dropdown but status shows 'Workflow: Off'"
+      ]
+    },
+    {
+      "scenario_name": "Approve content",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Look for Approve button in workflow toolbar",
+          "expected": "Approve button available for approving submitted content",
+          "actual": "No Approve button found. Workflow toolbar shows Discard, Reject, and Close buttons only",
+          "screenshot": "Content Approval Process_step11_workflow_toolbar.png"
+        }
+      ],
+      "issues": [
+        "Approve button not available because workflow requires versioning to be enabled",
+        "Cannot approve content when no content has been submitted through workflow"
+      ]
+    },
+    {
+      "scenario_name": "Reject content with comments",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Reject button in workflow toolbar",
+          "expected": "Reject dialog opens with comment field",
+          "actual": "Reject Change dialog opened successfully with comment textarea and image attachment option",
+          "screenshot": "Content Approval Process_step08_reject_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter rejection comment and click Reject Changes",
+          "expected": "Content rejected successfully with comment recorded",
+          "actual": "Error dialog appeared: 'Another user has taken action on the page and its state has been changed. Press OK to refresh.'",
+          "screenshot": "Content Approval Process_step10_conflict_error.png"
+        }
+      ],
+      "issues": [
+        "Reject dialog UI works correctly and accepts comments",
+        "Rejection action fails with conflict error due to page state management issues when versioning is disabled"
+      ]
+    },
+    {
+      "scenario_name": "View pending approvals",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for pending approvals view in Manage menu and site settings",
+          "expected": "Pending approvals list or dashboard showing content awaiting approval",
+          "actual": "No dedicated pending approvals view found in the UI. Manage menu contains Users, Roles, Templates, etc. but no workflow approvals panel",
+          "screenshot": "Content Approval Process_step07_module_actions.png"
+        }
+      ],
+      "issues": [
+        "No dedicated pending approvals UI panel found in Persona Bar",
+        "Workflow-related views may require different navigation or configuration"
+      ]
+    },
+    {
+      "scenario_name": "Check workflow state transitions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check page workflow configuration and state",
+          "expected": "Workflow states (Draft, Pending Approval, Approved) visible and transitionable",
+          "actual": "Page settings show Content Approval workflow selected but 'Workflow: Off' in status. Versioning is Off which prevents workflow state tracking",
+          "screenshot": "Content Approval Process_step05_workflow_config.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View available workflow options in dropdown",
+          "expected": "Multiple workflow states available for selection",
+          "actual": "Workflow dropdown shows workflow types (Direct Publish, Save Draft, Content Approval) but these are workflow configurations, not states",
+          "screenshot": "Content Approval Process_step06_workflow_dropdown.png"
+        }
+      ],
+      "issues": [
+        "Workflow state transitions cannot be tested because versioning is disabled",
+        "The Content Approval workflow exists and is selectable but non-functional without versioning"
+      ]
+    },
+    {
+      "scenario_name": "Verify permission-based actions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check workflow toolbar permissions as SuperUser",
+          "expected": "SuperUser has access to all workflow actions (Submit, Approve, Reject)",
+          "actual": "SuperUser sees Discard, Reject, Close buttons. Submit and Approve buttons not present regardless of permission level",
+          "screenshot": "Content Approval Process_step11_workflow_toolbar.png"
+        }
+      ],
+      "issues": [
+        "Cannot properly test permission-based actions because workflow functionality is limited",
+        "All users see same limited workflow options due to versioning being disabled"
+      ]
+    }
+  ],
+  "observations": [
+    "Code in HtmlTextController.cs shows SaveHtmlContent() checks IsChangeControlEnabled() to determine if versioning/workflow applies",
+    "WorkflowStatePermissionController.cs provides permission checking via HasWorkflowStatePermission() method",
+    "The Content Approval workflow UI exists and Reject dialog functions correctly with comment support",
+    "Page versioning must be enabled for Content Approval workflow to function properly",
+    "Conflict detection is working - 'Another user has taken action' error shows the system tracks page state changes",
+    "SystemWorkflowManager in code defines three workflow types: DirectPublish, SaveDraft, ContentApproval",
+    "The HTML module editor (EditHtml.ascx) has auto-save functionality but does not expose workflow submission controls",
+    "Suggest enabling page versioning to properly test all Content Approval workflow features"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 0,
+    "failed": 6,
+    "pass_rate": "0%"
+  }
+}

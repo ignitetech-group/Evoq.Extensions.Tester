@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.CommunityAnalytics",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Top Community Users Display",
+    "feature_description": "Displays top community contributors with their engagement metrics and avatars",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Community Analytics Dashboard",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login as superuser (host/Pass123456)",
+          "expected": "Successfully logged in",
+          "actual": "Successfully logged in as SuperUser Account",
+          "screenshot": "Top_Community_Users_Display_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to PersonaBar > Dashboard > Community Analytics",
+          "expected": "Community Analytics dashboard should load with top users sections",
+          "actual": "JavaScript error 'utility.serializeCustomDate is not a function' prevents dashboard from loading. Panel displays blank/empty content.",
+          "screenshot": "Top_Community_Users_Display_step01_community_analytics_error.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Refresh page and retry accessing Community Analytics",
+          "expected": "Dashboard should load after refresh",
+          "actual": "Same JavaScript error occurs consistently. Dashboard panel remains blank.",
+          "screenshot": "Top_Community_Users_Display_step02_js_error_blank_panel.png"
+        }
+      ],
+      "issues": [
+        "Critical JavaScript error: 'TypeError: utility.serializeCustomDate is not a function' in social-dashboard-instance.js at dashboardClass.init()",
+        "Community Analytics dashboard fails to initialize and displays blank panel",
+        "Error occurs consistently on multiple attempts"
+      ]
+    },
+    {
+      "scenario_name": "Display top users with avatars",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to view top users section in Community Analytics",
+          "expected": "Top users should display with avatars in table format",
+          "actual": "Cannot test - Community Analytics dashboard fails to load due to JavaScript error",
+          "screenshot": "Top_Community_Users_Display_step02_js_error_blank_panel.png"
+        }
+      ],
+      "issues": [
+        "Feature cannot be tested due to dashboard initialization failure"
+      ]
+    },
+    {
+      "scenario_name": "Navigate to user profiles on click",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to click on user to navigate to profile",
+          "expected": "Clicking a user should navigate to their profile via utility.loadPanel('users', params)",
+          "actual": "Cannot test - Community Analytics dashboard fails to load due to JavaScript error",
+          "screenshot": "Top_Community_Users_Display_step02_js_error_blank_panel.png"
+        }
+      ],
+      "issues": [
+        "Feature cannot be tested due to dashboard initialization failure"
+      ]
+    },
+    {
+      "scenario_name": "View user contribution metrics",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to view user metrics (topSpectators, mostActiveUsers, powerRankings)",
+          "expected": "Should display three sections: Top Spectators, Most Active Users, and Power Rankings with engagement values",
+          "actual": "Cannot test - Community Analytics dashboard fails to load due to JavaScript error",
+          "screenshot": "Top_Community_Users_Display_step02_js_error_blank_panel.png"
+        }
+      ],
+      "issues": [
+        "Feature cannot be tested due to dashboard initialization failure"
+      ]
+    },
+    {
+      "scenario_name": "Test empty state when no users",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to verify empty state display",
+          "expected": "Should show 'No Data Available' message when no users exist (per code: resx.topCommunity_NoDataAvailable)",
+          "actual": "Cannot test - Community Analytics dashboard fails to load due to JavaScript error",
+          "screenshot": "Top_Community_Users_Display_step02_js_error_blank_panel.png"
+        }
+      ],
+      "issues": [
+        "Feature cannot be tested due to dashboard initialization failure"
+      ]
+    }
+  ],
+  "observations": [
+    "Code analysis shows the Top Community Users Display feature is implemented in communityUsers.js as a Knockout component that renders users in a table with avatar, displayName, and value columns",
+    "The component supports navigation to user profiles via utility.loadPanel('users', params) function",
+    "Empty state handling is implemented: shows placeholder rows with '-' when fewer than 5 users, and 'No Data Available' when no users",
+    "Three user categories are displayed: topSpectators, mostActiveUsers, powerRankings - each limited to 5 users (TOPCOMMUNITY_MAX_USERS = 5)",
+    "Critical bug discovered: The social-dashboard-instance.js file calls utility.serializeCustomDate() but this function is not available on the utility object during initialization, causing the entire Community Analytics dashboard to fail to load",
+    "The bug prevents ANY testing of Community Analytics features including Top Community Users Display"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 0,
+    "failed": 5,
+    "pass_rate": "0%"
+  }
+}

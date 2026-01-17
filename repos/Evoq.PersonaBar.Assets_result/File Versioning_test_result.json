@@ -1,0 +1,177 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Assets",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "File Versioning",
+    "feature_description": "Manages file versions with configurable maximum versions per portal and version-specific operations",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T18:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Retrieve version history",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Assets > My Website and select a file (batch_image_2.png)",
+          "expected": "File details panel should open",
+          "actual": "File details panel opened with Details and Versioning tabs",
+          "screenshot": "File_Versioning_step03_file_details_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on the Versioning tab",
+          "expected": "Version history should be displayed in a table format",
+          "actual": "Version history displayed showing: Maximum number of versions: 10, table with Version, Date, User, State columns, showing Version 1 with date 12/30/2025, user SuperUser Account, state Published",
+          "screenshot": "File_Versioning_step04_versioning_tab.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Download specific version",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "In the Versioning tab, click the Preview/eye icon for Version 1",
+          "expected": "The specific version file should be downloaded",
+          "actual": "File 'batch_image_2.v1.png' was downloaded successfully with version-specific naming",
+          "screenshot": "File_Versioning_step05_download_version.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View version metadata",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View version information in the Versioning tab",
+          "expected": "Version metadata should display version number, date, user, and state",
+          "actual": "Version metadata correctly displays: Version number (1), Date (12/30/2025 2:34:42 PM), User (SuperUser Account), State (Published), Preview button",
+          "screenshot": "File_Versioning_step04_versioning_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check file in different folder (WorkflowTestFolder)",
+          "expected": "File should show version information",
+          "actual": "File test_upload_file.txt shows Version 1, Date 1/16/2026 5:17:55 PM, User SuperUser Account, State Published",
+          "screenshot": "File_Versioning_step06_workflow_folder_file.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test maximum version limits display",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check the maximum versions configuration displayed in Versioning tab",
+          "expected": "Maximum number of versions should be displayed",
+          "actual": "Maximum number of versions: 10 is displayed at the top of the versioning panel",
+          "screenshot": "File_Versioning_step04_versioning_tab.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Enable folder versioning",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open folder settings for WorkflowTestFolder",
+          "expected": "Folder settings panel should open with Versioning toggle",
+          "actual": "Folder settings panel opened showing Versioning toggle (initially Off)",
+          "screenshot": "File_Versioning_step07_folder_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Toggle Versioning to On and click Save",
+          "expected": "Versioning should be enabled and settings saved successfully",
+          "actual": "Toggle changed to On, but Save button failed with JavaScript error: 'Cannot read properties of undefined (reading getPermissions)'",
+          "screenshot": "File_Versioning_step08_save_attempted.png"
+        }
+      ],
+      "issues": ["JavaScript error prevents saving folder versioning settings: 'TypeError: Cannot read properties of undefined (reading getPermissions)' - This appears to be a bug in the folder save functionality"]
+    },
+    {
+      "scenario_name": "Create new version by re-uploading file",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to enable folder versioning to test new version creation",
+          "expected": "Folder versioning should be enabled to allow new version creation",
+          "actual": "Could not enable folder versioning due to save error (see 'Enable folder versioning' test)",
+          "screenshot": "File_Versioning_step08_save_attempted.png"
+        }
+      ],
+      "issues": ["Cannot test new version creation because folder versioning settings cannot be saved due to JavaScript error"]
+    },
+    {
+      "scenario_name": "Delete version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to find a file with multiple versions to test delete functionality",
+          "expected": "File with multiple versions should have delete option for non-published versions",
+          "actual": "All files tested only have Version 1 (the published version). According to code review, delete is only available when: 1) More than one version exists, 2) Version is not the currently published version or workflow is completed. Cannot test because no files have multiple versions.",
+          "screenshot": "File_Versioning_step04_versioning_tab.png"
+        }
+      ],
+      "issues": ["Cannot test delete version - no files with multiple versions available, and folder versioning cannot be enabled to create new versions"]
+    },
+    {
+      "scenario_name": "Restore previous version (rollback)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to find a file with multiple versions to test restore/rollback functionality",
+          "expected": "File with multiple versions should have rollback option for non-published versions",
+          "actual": "All files tested only have Version 1. According to code review, rollback is only available when: 1) Version is not the published version, 2) Workflow is completed. Cannot test because no files have unpublished versions.",
+          "screenshot": "File_Versioning_step04_versioning_tab.png"
+        }
+      ],
+      "issues": ["Cannot test restore/rollback - no files with multiple versions or unpublished versions available"]
+    },
+    {
+      "scenario_name": "Verify version permissions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access folder Permissions tab",
+          "expected": "Permissions should load and be configurable",
+          "actual": "Error displayed: 'Could not load type Dnn.PersonaBar.Library.Dto.Permissions from assembly Dnn.PersonaBar.Library'",
+          "screenshot": "File_Versioning_step07_folder_settings.png"
+        }
+      ],
+      "issues": ["Permissions loading fails with type loading error - this is a system configuration issue affecting the Permissions functionality"]
+    }
+  ],
+  "observations": [
+    "Code review confirms file versioning API endpoints exist: GetFileVersions, Preview, RollbackVersion, DeleteVersion",
+    "Versioning is enabled at the folder level through the folder settings panel",
+    "Version history UI correctly shows version table with metadata columns",
+    "Download specific version works correctly with version-specific filename (e.g., filename.v1.extension)",
+    "Maximum versions per portal is configurable (default shows 10)",
+    "JavaScript error 'Cannot read properties of undefined (reading getPermissions)' prevents saving folder settings - this appears to be a bug in the permissions handling code",
+    "Permissions tab fails to load with error 'Could not load type Dnn.PersonaBar.Library.Dto.Permissions' - this is a system configuration or assembly version mismatch issue",
+    "CanRollback logic in code: Only available if version is not published AND workflow is completed",
+    "CanDelete logic in code: Only available if more than 1 version exists AND (version is below published OR workflow is completed)"
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 4,
+    "failed": 5,
+    "pass_rate": "44%"
+  }
+}

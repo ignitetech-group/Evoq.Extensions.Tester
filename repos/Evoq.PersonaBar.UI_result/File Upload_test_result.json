@@ -1,0 +1,181 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.UI",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "File Upload",
+    "feature_description": "Enables uploading of images, documents, and generic files with multipart support and automatic path generation.",
+    "feature_priority": "Top",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Upload single image file",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Assets > My Website and click Add Asset",
+          "expected": "Upload dialog should appear with drag-and-drop area",
+          "actual": "Upload dialog appeared with 'Drag and Drop a File or Select an Option' text and File button",
+          "screenshot": "File Upload_step03_upload_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select test_upload_image.png for upload",
+          "expected": "File should be uploaded successfully",
+          "actual": "File was uploaded and duplicate detection triggered (file already existed). After clicking Replace, file showed 'File uploaded' with checkmark",
+          "screenshot": "File Upload_step05_upload_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Upload multiple images simultaneously",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select three files (multi_upload_A.png, multi_upload_B.png, multi_upload_C.png) for upload",
+          "expected": "All three files should upload successfully",
+          "actual": "All three files uploaded successfully with 'File uploaded' status and checkmarks displayed for each",
+          "screenshot": "File Upload_step06_multiple_files_uploaded.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Upload document file",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select test_document.txt for upload",
+          "expected": "Document should upload successfully with appropriate icon",
+          "actual": "Document uploaded successfully with TXT icon displayed and 'File uploaded' status",
+          "screenshot": "File Upload_step07_document_uploaded.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Upload file with special characters in name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Upload file named 'test_file_@#$%_special.txt'",
+          "expected": "File with special characters should upload successfully",
+          "actual": "File uploaded successfully. System handled special characters (@#$%) in filename correctly",
+          "screenshot": "File Upload_step08_special_chars_uploaded.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Upload file exceeding size limit",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to upload 50MB file (large_test_50mb.bin)",
+          "expected": "Upload should be rejected with size limit error",
+          "actual": "Upload was rejected with error message 'File size bigger than 28. Mb' and red X indicator",
+          "screenshot": "File Upload_step09_size_limit_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Upload unsupported file type",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to upload test_file.exe",
+          "expected": "Upload should be rejected due to blocked file extension",
+          "actual": "Upload was rejected with error message 'File extension not allowed.' and red X indicator",
+          "screenshot": "File Upload_step10_unsupported_extension.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Upload file with duplicate name - Replace option",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Upload file that already exists in folder",
+          "expected": "System should detect duplicate and offer Keep/Replace options",
+          "actual": "Dialog appeared showing 'The file you want to upload already exists in this folder.' with Keep and Replace links",
+          "screenshot": "File Upload_step04_duplicate_file_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Replace option",
+          "expected": "Existing file should be replaced with new upload",
+          "actual": "File was replaced successfully, showing 'File uploaded' status",
+          "screenshot": "File Upload_step05_upload_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Upload file with duplicate name - Keep option",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Upload duplicate file and click Keep option",
+          "expected": "Upload should be cancelled and existing file kept",
+          "actual": "Upload was cancelled with 'File upload stopped' message, existing file preserved",
+          "screenshot": "File Upload_step12_keep_option.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Decompress Zip Files functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enable 'Decompress Zip Files' toggle and upload test_archive.zip",
+          "expected": "Zip file should be uploaded and automatically extracted",
+          "actual": "Zip file uploaded and 'Unzip Information' dialog displayed showing '1 of 1 file(s) were extracted successfully.'",
+          "screenshot": "File Upload_step13_zip_decompressed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Search files functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for 'test_document' in assets",
+          "expected": "Search should find matching files",
+          "actual": "Search returned test_document.docx file matching the search query",
+          "screenshot": "File Upload_step11_search_results.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The upload system uses anti-forgery token validation via [IFrameSupportedValidateAntiForgeryToken] attribute as seen in FileUploadController.cs",
+    "File size limit is configured at 28 MB for this portal",
+    "Executable files (.exe) are blocked by default for security",
+    "The system supports multipart file uploads for images, documents, and generic files",
+    "Drag-and-drop upload zone is present in the UI with clear visual indicator",
+    "The Decompress Zip Files toggle allows automatic extraction of uploaded zip archives"
+  ],
+  "summary": {
+    "total_scenarios": 10,
+    "passed": 10,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Templates",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Delete Template",
+    "feature_description": "Delete templates from the system with confirmation dialog, except default templates",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Delete non-default template",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Manage > Templates",
+          "expected": "Templates page displays list of available templates",
+          "actual": "Templates page displays empty with error message 'There was an error retrieving your content' and API returns 500 Internal Server Error",
+          "screenshot": "Delete_Template_step01_templates_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to view templates list",
+          "expected": "Templates should be visible in the list",
+          "actual": "No templates visible due to GetPageTemplates API returning 500 Internal Server Error consistently",
+          "screenshot": "Delete_Template_step04_api_500_error.png"
+        }
+      ],
+      "issues": ["GetPageTemplates API endpoint returns HTTP 500 Internal Server Error, preventing template list from loading"]
+    },
+    {
+      "scenario_name": "Confirm deletion dialog appears",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Templates page to access delete button",
+          "expected": "Templates should be displayed with delete option available",
+          "actual": "Cannot access templates due to API 500 error - template list does not load",
+          "screenshot": "Delete_Template_step02_templates_empty_with_error.png"
+        }
+      ],
+      "issues": ["Cannot test deletion dialog - templates not accessible due to server error"]
+    },
+    {
+      "scenario_name": "Cancel deletion",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access template delete functionality",
+          "expected": "Should be able to click delete and then cancel",
+          "actual": "Cannot access templates due to GetPageTemplates API returning 500 Internal Server Error",
+          "screenshot": "Delete_Template_step04_api_500_error.png"
+        }
+      ],
+      "issues": ["Cannot test cancel deletion - templates not accessible due to server error"]
+    },
+    {
+      "scenario_name": "Verify default template cannot be deleted",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access templates to identify default template",
+          "expected": "Should see templates with default template identifiable",
+          "actual": "Cannot access templates due to GetPageTemplates API returning 500 Internal Server Error",
+          "screenshot": "Delete_Template_step04_api_500_error.png"
+        }
+      ],
+      "issues": ["Cannot test default template protection - templates not accessible due to server error"]
+    },
+    {
+      "scenario_name": "Verify template with default skin cannot be deleted",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access templates to find one with default skin",
+          "expected": "Should see templates and identify one using default skin",
+          "actual": "Cannot access templates due to GetPageTemplates API returning 500 Internal Server Error",
+          "screenshot": "Delete_Template_step04_api_500_error.png"
+        }
+      ],
+      "issues": ["Cannot test default skin template protection - templates not accessible due to server error. Code review shows UseDefaultSkin check in TemplatesController.cs:256-260"]
+    },
+    {
+      "scenario_name": "Update list after successful deletion",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to delete a template and verify list updates",
+          "expected": "After deletion, template should be removed from list",
+          "actual": "Cannot test - template list never loads due to GetPageTemplates API returning 500 Internal Server Error",
+          "screenshot": "Delete_Template_step04_api_500_error.png"
+        }
+      ],
+      "issues": ["Cannot test list update - templates not accessible due to server error"]
+    }
+  ],
+  "observations": [
+    "The Page Templates UI (Manage > Templates) exists and is accessible",
+    "The GetPageTemplates API endpoint consistently returns HTTP 500 Internal Server Error",
+    "Attempted to create a template via 'Save Page Template' from Pages > BulkTestPage1, named 'Delete Test Template', but template retrieval still fails",
+    "Code review confirms delete functionality exists: TemplatesController.cs:248-268 handles DeletePage endpoint",
+    "Code review confirms deletion protection: templates using default skin cannot be deleted (TemplatesController.cs:256-260)",
+    "Code review confirms confirmation dialog: templatesHierarchy.js:276-334 shows _deletePageClickHandler with utility.confirm() call",
+    "All delete template tests FAIL because the underlying GetPageTemplates API is broken, not because the delete feature itself is non-functional",
+    "This appears to be a server-side bug in the GetPageTemplates endpoint that should be investigated"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 0,
+    "failed": 6,
+    "pass_rate": "0%"
+  }
+}

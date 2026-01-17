@@ -1,0 +1,141 @@
+{
+  "metadata": {
+    "extension_name": "Publisher",
+    "extension_type": "Module",
+    "feature_name": "Author Management",
+    "feature_description": "Manage post authors, change authorship, and filter content by author",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Filter posts by author",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to News page with Publisher module",
+          "expected": "Authors filter widget visible in right pane",
+          "actual": "Authors filter widget visible showing 'Authors:' heading with SuperUser Account (2) and Test User2 (1)",
+          "screenshot": "Author_Management_step01_publisher_overview.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Test User2 in the Authors filter",
+          "expected": "Posts filtered to show only posts by Test User2",
+          "actual": "URL changed to ?author=7, posts filtered correctly showing only Test User2's posts with 'Viewing: Test User2' indicator",
+          "screenshot": "Author_Management_step02_filter_by_author.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View Change Author panel",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to post edit mode for a post by Test User2",
+          "expected": "Change Author panel visible",
+          "actual": "Change Author panel visible showing 'Post Author: Test User2' with table headers: Name, Email, Joined",
+          "screenshot": "Author_Management_step03_change_author_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Trigger ChangeAuthorManager.show() to load authors",
+          "expected": "Authors list populated",
+          "actual": "Authors list populated with one author (Test User2) showing display name, username, email, and join date",
+          "screenshot": "Author_Management_step05_change_author_single_user.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Change post author",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open Change Author panel and attempt to change author",
+          "expected": "Multiple authors available to select from, allowing author change",
+          "actual": "Only current author (Test User2) appears in the list. Cannot change author because no other users have explicit module permissions.",
+          "screenshot": "Author_Management_step05_change_author_single_user.png"
+        }
+      ],
+      "issues": [
+        "Only one author (Test User2) available in the Change Author panel because authors are determined by explicit module permissions. SuperUser Account has implicit superuser access but does not appear in the permission-based author list."
+      ]
+    },
+    {
+      "scenario_name": "Author sorting in Change Author panel",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on Name column header",
+          "expected": "Sort indicator appears on Name column",
+          "actual": "Sort indicator (arrow) visible on Name column header",
+          "screenshot": "Author_Management_step05_change_author_single_user.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Email column header",
+          "expected": "Sort column changes to Email",
+          "actual": "Sort indicator moved to Email column header, no errors occurred",
+          "screenshot": "Author_Management_step06_sorting_tested.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify author display name formats",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examine author information in Change Author panel",
+          "expected": "Display name and username shown correctly",
+          "actual": "Author row shows: Avatar, Display Name (Test User2), Username (testuser2), Email (testuser2@test.com), Join Date (12/30/2025)",
+          "screenshot": "Author_Management_step05_change_author_single_user.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify email is clickable",
+          "expected": "Email should be a mailto link",
+          "actual": "Email address is a clickable mailto link (mailto:testuser2@test.com)",
+          "screenshot": "Author_Management_step05_change_author_single_user.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Author Filter widget displays post counts",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View Authors filter widget on News page",
+          "expected": "Author names with post counts displayed",
+          "actual": "Authors filter shows: SuperUser Account (2), Test User2 (1) - correctly reflecting the number of published posts per author",
+          "screenshot": "Author_Management_step08_authors_filter_view.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Authors in the Change Author panel are determined by explicit module permissions (AllowAccess in ModulePermissionController), not by user roles or superuser status.",
+    "SuperUser Account does not appear in the Change Author list because they have implicit superuser access rather than explicit module permissions. This is by design based on the AuthorManager.GetAuthors() implementation.",
+    "The Author Filter widget (AuthorFilter.ascx) correctly counts and displays all post authors regardless of permissions.",
+    "Pagination in Author Filter was not testable due to insufficient number of authors (only 2 authors with posts).",
+    "Search functionality for authors was not found in the Change Author panel UI - the code shows sorting but no search feature.",
+    "Author profile information view is not a dedicated feature - author info is displayed inline on posts (avatar, name, 'More from this author' link)."
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 5,
+    "failed": 1,
+    "pass_rate": "83%"
+  }
+}

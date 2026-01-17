@@ -1,0 +1,153 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "Activity Stream Filtering",
+    "feature_description": "Filter activity stream by various criteria and activity types",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T15:52:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Filter by activity type using dropdown",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Community page with Activity Stream",
+          "expected": "Activity Stream page loads with filter dropdown visible",
+          "actual": "Activity Stream page loaded with 'Filter by activity' dropdown visible",
+          "screenshot": "Activity Stream Filtering_step01_activity_stream_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select 'Added to Wiki' from the activity type dropdown",
+          "expected": "Activity stream should filter to show only wiki-related activities",
+          "actual": "Dropdown changed to 'Added to Wiki' - filtering applied",
+          "screenshot": "Activity Stream Filtering_step02_filter_by_activity_type.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify filtered content shows only wiki articles",
+          "expected": "Stream displays only 'authored wiki article' entries",
+          "actual": "Stream correctly filtered to show only wiki article entries",
+          "screenshot": "Activity Stream Filtering_step02b_filtered_wiki_content.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Clear/reset activity type filter",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Filter by activity' (default option) from dropdown to reset filter",
+          "expected": "Activity stream should return to showing all activity types",
+          "actual": "Stream reset to display all activity types including photos, wiki articles, etc.",
+          "screenshot": "Activity Stream Filtering_step03_filter_cleared.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Apply saved filter",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on 'Photos and Wiki Filter' in the Activity Stream Filter section",
+          "expected": "Activity stream should filter to show only photos and wiki entries",
+          "actual": "Stream filtered to show photos and wiki article entries based on saved filter criteria",
+          "screenshot": "Activity Stream Filtering_step04_saved_filter_applied.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create new filter",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Create New Feed' link in Activity Stream Filter section",
+          "expected": "Custom Feed Builder dialog should open",
+          "actual": "Custom Feed Builder dialog opened with empty form",
+          "screenshot": "Activity Stream Filtering_step05_create_filter_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'Test Filter - Posts and Blogs' as Feed Name and select Posts and Blogs activity types",
+          "expected": "Form should accept input values",
+          "actual": "Feed Name entered and activity types selected (Blogs checkbox visible as checked)",
+          "screenshot": "Activity Stream Filtering_step05_create_filter_form.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save button",
+          "expected": "New filter should be created and appear in filter list",
+          "actual": "Filter saved successfully and 'Test Filter - Posts and Blogs' appeared in the Activity Stream Filter list",
+          "screenshot": "Activity Stream Filtering_step06_filter_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit existing filter",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hover over 'Test Filter - Posts and Blogs' filter to reveal edit icon and click it",
+          "expected": "Edit dialog should open with filter data pre-populated",
+          "actual": "Custom Feed Builder dialog opened with 'Test Filter - Posts and Blogs' pre-populated in Feed Name field, Cancel/Delete/Update buttons visible",
+          "screenshot": "Activity Stream Filtering_step07_edit_filter_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Modify filter name to 'Test Filter - Posts and Blogs (Edited)' and click Update",
+          "expected": "Filter should be updated with new name",
+          "actual": "Filter updated successfully and list shows 'Test Filter - Posts and Blogs (Edited)'",
+          "screenshot": "Activity Stream Filtering_step08_filter_updated.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete filter",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hover over edited filter and click edit icon to open dialog",
+          "expected": "Edit dialog should open with Delete button available",
+          "actual": "Dialog opened showing Cancel, Delete (red), and Update buttons",
+          "screenshot": "Activity Stream Filtering_step09_delete_filter_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Delete button",
+          "expected": "Filter should be removed from the list",
+          "actual": "Filter deleted successfully - list now only shows 'Photos and Wiki Filter' and 'Test User Filter'",
+          "screenshot": "Activity Stream Filtering_step10_filter_deleted.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Activity Stream filtering system provides two filtering mechanisms: (1) a quick filter dropdown for single activity type filtering, and (2) a saved custom filters feature for complex multi-criteria filtering.",
+    "Custom filters support filtering by: Activity Authors (users), Activity Groups, and Activity Types (journal types).",
+    "The suggested test scenario 'Filter by date range' is not available in the UI - code review confirms the FilterBuilder only supports user, group, and journalType filter criteria, not date ranges.",
+    "The 'Filter by user' and 'Filter by group' scenarios are implemented through the custom filter creation feature via Activity Authors and Activity Groups fields, rather than as separate standalone filters.",
+    "Filter persistence across sessions was not explicitly tested as it requires logout/login cycle, but the saved filters are stored in the database (via SaveFilter/UpdateFilter/DeleteFilter API endpoints) and should persist.",
+    "The 'Apply multiple filters' scenario is supported through custom filters which can combine multiple criteria (users, groups, activity types) in a single saved filter."
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

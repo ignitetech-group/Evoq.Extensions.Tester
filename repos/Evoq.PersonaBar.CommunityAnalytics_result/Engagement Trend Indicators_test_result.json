@@ -1,0 +1,89 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.CommunityAnalytics",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Engagement Trend Indicators",
+    "feature_description": "Visual indicators showing engagement trends with up/down arrows and warnings",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Display correct trend arrows",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login to DNN as superuser",
+          "expected": "Successfully logged in and PersonaBar visible",
+          "actual": "Successfully logged in as SuperUser Account with PersonaBar visible",
+          "screenshot": "Engagement_Trend_Indicators_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to Dashboard > Community Analytics",
+          "expected": "Community Analytics dashboard opens showing module performance with trend arrows",
+          "actual": "Community Analytics dashboard failed to load. JavaScript error: TypeError: utility.serializeCustomDate is not a function at dashboardClass.init in social-dashboard-combined-instance.js:1025",
+          "screenshot": "Engagement_Trend_Indicators_step04_js_error.png"
+        }
+      ],
+      "issues": ["Critical JavaScript error prevents Community Analytics dashboard from loading: utility.serializeCustomDate is not a function"]
+    },
+    {
+      "scenario_name": "Show warning for concerning trends",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access Community Analytics to view warning indicators",
+          "expected": "Dashboard loads showing status indicators (engagement-star, engagement-warning, engagement-error) based on health status",
+          "actual": "Cannot access feature - Community Analytics dashboard fails to initialize due to JavaScript error",
+          "screenshot": "Engagement_Trend_Indicators_step04_js_error.png"
+        }
+      ],
+      "issues": ["Feature untestable - Community Analytics module initialization fails with TypeError: utility.serializeCustomDate is not a function"]
+    },
+    {
+      "scenario_name": "Verify indicator colors",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access Community Analytics to verify indicator colors",
+          "expected": "Dashboard loads showing percent-progress elements with higher (green/up arrow) and lower (red/down arrow) CSS classes",
+          "actual": "Cannot access feature - Community Analytics dashboard fails to initialize due to JavaScript error",
+          "screenshot": "Engagement_Trend_Indicators_step04_js_error.png"
+        }
+      ],
+      "issues": ["Feature untestable - Community Analytics module initialization fails with TypeError: utility.serializeCustomDate is not a function"]
+    },
+    {
+      "scenario_name": "Test tooltip displays",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access Community Analytics to test tooltip displays",
+          "expected": "Dashboard loads and hovering over trend indicators shows tooltips via tag-menu elements with qaTooltip() functionality",
+          "actual": "Cannot access feature - Community Analytics dashboard fails to initialize due to JavaScript error",
+          "screenshot": "Engagement_Trend_Indicators_step04_js_error.png"
+        }
+      ],
+      "issues": ["Feature untestable - Community Analytics module initialization fails with TypeError: utility.serializeCustomDate is not a function"]
+    }
+  ],
+  "observations": [
+    "Code review confirms Engagement Trend Indicators are implemented using CSS classes: percent-progress with higher/lower classes for up/down arrows via icon-engagement-up.png and icon-engagement-down.png",
+    "Status indicators use statusClass binding with engagement-star (healthStatus=1), engagement-warning (healthStatus=2), and engagement-error (other) classes",
+    "Tooltips are implemented via .tag-menu elements with qaTooltip() jQuery plugin",
+    "Critical bug discovered: utility.serializeCustomDate function is called in social-dashboard-combined-instance.js:1025 but does not exist, causing the entire Community Analytics dashboard to fail initialization",
+    "This bug completely blocks testing of Engagement Trend Indicators feature as the dashboard cannot be accessed"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 0,
+    "failed": 4,
+    "pass_rate": "0%"
+  }
+}

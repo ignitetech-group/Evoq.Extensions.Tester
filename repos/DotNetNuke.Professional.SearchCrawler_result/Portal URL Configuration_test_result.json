@@ -1,0 +1,121 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Portal URL Configuration",
+    "feature_description": "Manages portal-specific URLs and aliases for crawling operations.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T13:40:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View list of portal crawl URLs",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Settings > Site Settings > Search > Crawling tab",
+          "expected": "Portal URL configuration section should be visible",
+          "actual": "URL PATHS section is displayed with list of configured portal URLs",
+          "screenshot": "Portal URL Configuration_step01_navigate.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verified URL list displays multiple portal URLs",
+          "expected": "List should show URLs with their configuration options",
+          "actual": "URL list shows multiple URLs including http://localhost:8081, https://localhost:8443/, and other test URLs with Enable Spidering, DNN Impersonation, and Windows Auth columns",
+          "screenshot": "Portal URL Configuration_step07_delete_attempt.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add portal URL for crawling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked 'Add Url' button in URL PATHS section",
+          "expected": "Add URL form should appear",
+          "actual": "Add URL form appeared with fields for URL, Sitemap URL, DNN Role Impersonation, Enable Spidering, Windows Auth settings",
+          "screenshot": "Portal URL Configuration_step02_add_url_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Entered URL 'http://localhost:8081/test-portal-config-jan2026' and clicked Save",
+          "expected": "New URL should be added to the list",
+          "actual": "URL was successfully added and appears in the URL list",
+          "screenshot": "Portal URL Configuration_step03_add_url_success.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verified the new URL appears in the list",
+          "expected": "URL should be visible in URL PATHS list",
+          "actual": "URL 'http://localhost:8081/test-portal-config-jan2026' is visible in the list with edit and delete icons",
+          "screenshot": "Portal URL Configuration_step04_url_added_verified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Remove portal URL",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Located the test URL 'http://localhost:8081/test-portal-config-jan2026' in the list",
+          "expected": "URL row should be visible with edit (pencil) and delete (trash) icons",
+          "actual": "URL row is visible with two icons - pencil and trash",
+          "screenshot": "Portal URL Configuration_step05_delete_test.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked the trash/delete icon for the test URL",
+          "expected": "URL should be deleted or a confirmation dialog should appear",
+          "actual": "Clicking the trash icon opens the edit form instead of deleting the URL. The edit form only has Cancel and Save buttons - no Delete button is available.",
+          "screenshot": "Portal URL Configuration_step08_no_delete_button.png"
+        }
+      ],
+      "issues": [
+        "Delete (trash) icon does not delete URLs - it opens the edit form instead",
+        "No Delete button available within the edit form to remove URLs",
+        "Unable to remove portal URLs through the UI despite the delete icon being visible"
+      ]
+    },
+    {
+      "scenario_name": "SSL detection for URLs",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examined the URL list for SSL (HTTPS) URLs",
+          "expected": "SSL URLs should be displayed correctly",
+          "actual": "HTTPS URL 'https://localhost:8443/' is visible in the URL list, confirming SSL URLs are supported and displayed",
+          "screenshot": "Portal URL Configuration_step06_ssl_url_visible.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verified both HTTP and HTTPS URLs can coexist in the list",
+          "expected": "Multiple URL protocols should be supported",
+          "actual": "URL list shows both http://localhost:8081 and https://localhost:8443/ URLs, confirming multi-protocol support",
+          "screenshot": "Portal URL Configuration_step07_delete_attempt.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Auto-initialize primary portal alias: Code in SearchSpiderHelper.cs shows GetPortalUrlCrawlAliases() auto-initializes portal URL aliases if not set (InitializePortalUrlCrawlAliases method). This is a backend feature that cannot be directly tested via UI without creating a new portal.",
+    "SSL detection in initialization: Code shows InitializePortalUrlCrawlAliases checks 'SSLEnabled' portal setting to determine http:// or https:// prefix when auto-initializing URLs.",
+    "Multi-portal URL management: The code supports managing URLs for different portals via GetActivePortalId(), but testing requires multiple portals to be configured which is not available in this single-portal test environment.",
+    "Portal ID resolution from URL: SearchSpiderHelper.GetPortalId(url, portalAliases) method exists in code but cannot be directly tested through UI interactions.",
+    "Delete functionality issue: The trash icon in the URL list appears to be non-functional or incorrectly bound - clicking it opens the edit form instead of triggering a delete action. This appears to be a UI bug."
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 3,
+    "failed": 1,
+    "pass_rate": "75%"
+  }
+}

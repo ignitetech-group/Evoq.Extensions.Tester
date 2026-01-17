@@ -1,0 +1,103 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Users",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "View User Assets",
+    "feature_description": "Access and view files in a user's personal folder",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T20:25:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify View Assets menu item visibility for admin",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged in as SuperUser and navigated to Users panel",
+          "expected": "Users panel opens with list of users",
+          "actual": "Users panel opened showing all authorized users",
+          "screenshot": "View_User_Assets_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked on More menu (three dots icon) for Test Regular User",
+          "expected": "More menu opens showing View Assets option",
+          "actual": "More menu opened with View Assets option visible along with other options (View Profile, Change Password, etc.)",
+          "screenshot": "View_User_Assets_step01_more_menu_open.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify error notification for user without assets",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked View Assets for Test Regular User who has no files",
+          "expected": "Error notification should appear indicating user has no assets",
+          "actual": "Error notification appeared: 'Test Regular User does not own any assets.'",
+          "screenshot": "View_User_Assets_step02_error_no_assets.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked View Assets for Claude TestUser who has no files",
+          "expected": "Error notification should appear indicating user has no assets",
+          "actual": "Error notification appeared: 'Claude TestUser does not own any assets.'",
+          "screenshot": "View_User_Assets_step03_error_notification_claude.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Open assets panel for user with files",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for 'host' SuperUser account",
+          "expected": "SuperUser Account should appear in search results",
+          "actual": "SuperUser Account (host) found in search results",
+          "screenshot": "View_User_Assets_step04_superuser_menu.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked More menu and selected View Assets for SuperUser",
+          "expected": "Assets panel should open showing the user's personal folder with files",
+          "actual": "Evoq.Assets panel opened successfully showing folder path 'USERS > 001 > 01 > 1' with multiple files including cavalier-logo.png, cavalier-tv.png, full-star.png, test_document.pdf, and others",
+          "screenshot": "View_User_Assets_step05_assets_panel_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Admin access without explicit VIEW_ASSETS permission",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verified admin (SuperUser) can see View Assets menu for all users",
+          "expected": "Admin should have access to View Assets without explicit permission",
+          "actual": "View Assets menu item visible for all users when logged in as admin. Code review confirmed: canViewAssets() returns true for isAdmin OR permissions.VIEW_ASSETS",
+          "screenshot": "View_User_Assets_step01_more_menu_open.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The View Assets menu option has fewer items for the SuperUser's own account (no Login As User, Delete User, Make Super User, Un-Authorize User options) since these actions cannot be performed on oneself",
+    "The user folder structure follows the pattern: Users/[folder_id_segment1]/[folder_id_segment2]/[user_id]",
+    "Error notifications auto-dismiss after a short time (approximately 2-3 seconds)",
+    "The Assets panel integrates with Evoq.Assets module and displays files in a grid view with thumbnails",
+    "Code suggests VIEW_ASSETS permission can be granted explicitly to non-admin users via permissions.VIEW_ASSETS setting"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

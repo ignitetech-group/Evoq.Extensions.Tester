@@ -1,0 +1,89 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Analytics Service Routes",
+    "feature_description": "Web API service routes for connector functionality including configuration and data retrieval.",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Test GetPagePickerOptions endpoint",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate directly to /DesktopModules/DNNCorp/GoogleAnalyticsConnector/API/Services/GetPagePickerOptions while authenticated",
+          "expected": "API should return page picker configuration options",
+          "actual": "API returned XML response containing DnnDropDownListOptions with services configuration including ItemListService/GetPages, ItemListService/GetPageDescendants, ItemListService/SearchPages, and ItemListService/SortPages methods",
+          "screenshot": "Analytics_Service_Routes_step01_GetPagePickerOptions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test GetRoles endpoint",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Call GetRoles API via JavaScript fetch from within DNN page context",
+          "expected": "API should return list of roles",
+          "actual": "API returned JSON array with 11 roles: All Users (RoleId: -1), Administrators (0), Community Manager (1), Content Editors (2), Content Managers (3), Moderators (4), Registered Users (5), Subscribers (6), Test Activity Group (9), Translator en-US (7), Unverified Users (8)",
+          "screenshot": "Analytics_Service_Routes_step03_GetRoles_via_JS.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test GetPlugins endpoint",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Call GetPlugins API via JavaScript fetch from within DNN page context",
+          "expected": "API should return list of available JavaScript plugins",
+          "actual": "API returned JSON array [\"authorize\"] containing one plugin from the Scripts folder",
+          "screenshot": "Analytics_Service_Routes_step04_GetPlugins_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test API authentication requirements",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logout from DNN website by navigating to /Logoff.aspx",
+          "expected": "User should be logged out",
+          "actual": "User was successfully logged out - page shows Register and Login links instead of SuperUser Account",
+          "screenshot": "Analytics_Service_Routes_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to GetPagePickerOptions API endpoint without authentication",
+          "expected": "API should deny access with 401 Unauthorized",
+          "actual": "API returned 401 Unauthorized with XML error response: Authorization has been denied for this request",
+          "screenshot": "Analytics_Service_Routes_step05_auth_required.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The ServiceRouteMapper.cs correctly registers routes under 'DNNCorp/GoogleAnalyticsConnector' namespace with pattern '{controller}/{action}'",
+    "All three endpoints (GetPagePickerOptions, GetRoles, GetPlugins) are protected by the [DnnContentManager] attribute which requires Content Manager permissions",
+    "GetRoles endpoint requires PortalSettings context and returns 500 error when accessed directly via browser URL - this is expected as the API is designed to be called from within the DNN application via AJAX",
+    "GetPagePickerOptions works with direct browser access but returns XML format by default",
+    "GetPlugins scans the Scripts folder for JavaScript files and excludes 'connector.js' from the results"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

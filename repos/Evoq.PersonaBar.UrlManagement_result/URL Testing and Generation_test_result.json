@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.UrlManagement",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "URL Testing and Generation",
+    "feature_description": "Test URL generation for specific pages with custom parameters and query strings",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T19:02:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Test URL generation for existing page",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > SEO > URL Management > TEST URL tab",
+          "expected": "Test URL panel should be displayed with Page to Test dropdown",
+          "actual": "Test URL panel displayed with Page to Test dropdown, Query String field, Custom Page Name field, and Test URL button",
+          "screenshot": "URL_Testing_and_Generation_step01_test_url_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select 'Home' page from Page to Test dropdown and click Test URL",
+          "expected": "URLs should be generated for all portal aliases/locales",
+          "actual": "Generated 6 URLs for all locales: http://localhost:8081/, http://localhost:8081/en-us/, http://localhost:8081/es-ar/, http://localhost:8081/fr-fr/, http://localhost:8081/de-de/, http://localhost:8081/ar-er/",
+          "screenshot": "URL_Testing_and_Generation_step02_existing_page_result.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with custom page name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Our Products' page, enter 'my-custom-page.aspx' in Custom Page Name field, and click Test URL",
+          "expected": "URLs should include the custom page name appended to the page URL",
+          "actual": "Generated URLs with custom page name: http://localhost:8081/Our-Products/my-custom-page, http://localhost:8081/en-us/Our-Products/my-custom-page, etc. for all locales",
+          "screenshot": "URL_Testing_and_Generation_step04_custom_page_name_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with query string parameters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Our Products' page, enter '&category=electronics&sort=price' in Add Query String field, and click Test URL",
+          "expected": "URLs should include the query string parameters",
+          "actual": "Generated URLs with query string: http://localhost:8081/Our-Products?category=electronics&sort=price, http://localhost:8081/en-us/Our-Products?category=electronics&sort=price, etc. for all locales",
+          "screenshot": "URL_Testing_and_Generation_step05_query_string.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test URL for different locales",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Generate URLs for any page and verify locale-specific URLs",
+          "expected": "URLs should be generated for all configured locales (en-us, es-ar, fr-fr, de-de, ar-er)",
+          "actual": "All URL generation tests showed URLs for 6 different locales/portal aliases: root, en-us, es-ar, fr-fr, de-de, ar-er",
+          "screenshot": "URL_Testing_and_Generation_step02_existing_page_result.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test URL Rewriting for valid URL",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'http://localhost:8081/en-us/Our-Products' in URL to Test field and click Test URL Rewriting",
+          "expected": "System should identify the page and language/culture from the URL",
+          "actual": "Rewriting Result: Default.aspx?TabId=22&language=en-US, Identified Language/Culture: en-US, Identified Page: Our Products, Operation Messages: ActiveTab: 22/Our Products IsSecure: False",
+          "screenshot": "URL_Testing_and_Generation_step06_url_rewriting.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with invalid/non-existent page URL",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'http://localhost:8081/en-us/NonExistentPage12345' in URL to Test field and click Test URL Rewriting",
+          "expected": "System should handle the non-existent page gracefully",
+          "actual": "System handled gracefully: Rewriting Result: Default.aspx?TabId=75&language=en-US&NonExistentPage12345, Identified Language/Culture: en-US, Identified Page: (empty - not found), Operation Messages: ActiveTab: 75/ IsSecure: False",
+          "screenshot": "URL_Testing_and_Generation_step07_invalid_page.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "URL generation automatically produces URLs for all configured portal aliases and locales",
+    "Custom page name is appended to the URL without the .aspx extension",
+    "Query strings are properly appended to generated URLs with the '?' separator",
+    "The Page to Test dropdown only shows valid pages, so testing with an invalid page ID directly is not possible via the UI. Invalid page testing was performed through URL Rewriting with a non-existent page URL",
+    "URL Rewriting test correctly identifies page, language, and TabId from friendly URLs",
+    "Admin-only access restriction is enforced - the feature is only accessible through the Persona Bar Settings panel"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

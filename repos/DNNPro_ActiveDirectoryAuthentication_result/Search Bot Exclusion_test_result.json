@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Search Bot Exclusion",
+    "feature_description": "Exclude search engine crawlers from Active Directory authentication",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Search Bot Exclusion feature is accessible",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Extensions > Authentication Systems > DNNPro_ActiveDirectoryAuthentication > Site Settings",
+          "expected": "Search Bot settings should be accessible in the Site Settings tab",
+          "actual": "Successfully navigated to the Site Settings tab and found the 'Allowed Search Bots' field",
+          "screenshot": "Search Bot Exclusion_step01_settings_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify the Allowed Search Bots field is visible and contains default values",
+          "expected": "Field should be visible with default bot user agents",
+          "actual": "Field displayed with default value 'gsa-crawler;MS Search 5.0 Robot'",
+          "screenshot": "Search Bot Exclusion_step02_search_bots_field.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure and save search bot user agents",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Modify the Allowed Search Bots field by adding 'Googlebot'",
+          "expected": "Field should accept the new value",
+          "actual": "Successfully added 'Googlebot' to the search bots list, value became 'gsa-crawler;MS Search 5.0 Robot;Googlebot'",
+          "screenshot": "Search Bot Exclusion_step03_modified_value.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Update Authentication Settings' to save the changes",
+          "expected": "Settings should be saved successfully",
+          "actual": "Settings saved successfully. LDAP connection status messages appeared (expected in test environment without AD server). The modified search bots value was persisted.",
+          "screenshot": "Search Bot Exclusion_step04_settings_saved.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify the saved value is retained",
+          "expected": "The modified search bots list should be displayed",
+          "actual": "The 'Allowed Search Bots' field shows 'gsa-crawler;MS Search 5.0 Robot;Googlebot' confirming the save was successful",
+          "screenshot": "Search Bot Exclusion_step05_saved_value_confirmed.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Search Bot Exclusion feature uses a semicolon-separated list of user agent strings to identify search engine crawlers",
+    "Default search bots configured are 'gsa-crawler' and 'MS Search 5.0 Robot'",
+    "The feature is implemented in AuthenticationModule.cs which checks HTTP_USER_AGENT against configured bots and bypasses AD authentication if matched",
+    "LDAP connection status errors are expected in the test environment since no actual Active Directory server is configured - this does not affect the Search Bot configuration functionality",
+    "Code review confirmed the feature works by checking if request user agent contains any of the configured bot strings (case-insensitive)"
+  ],
+  "summary": {
+    "total_scenarios": 2,
+    "passed": 2,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

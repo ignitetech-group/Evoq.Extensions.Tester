@@ -1,0 +1,113 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "User Mentions",
+    "feature_description": "Mention users in articles and comments with @ notation and notifications",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T16:46:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Mention user in article",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki module and click Create article",
+          "expected": "Article creation dialog should open",
+          "actual": "Article creation dialog opened with title, content editor, tags, and publish options",
+          "screenshot": "User Mentions_step01_wiki_module_overview.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Fill in article title, select article type, and enter content with @SuperUser Account mention",
+          "expected": "Content should accept user mention with @ notation",
+          "actual": "Content entered with @SuperUser Account displayed in cyan color indicating it's a mention",
+          "screenshot": "User Mentions_step01_article_creation_with_mention.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Add tag and click Publish",
+          "expected": "Article should be published with the user mention displayed",
+          "actual": "Article published successfully. URL changed to /Community/Wiki/User-Mention-Test-Jan-16-2026",
+          "screenshot": "User Mentions_step02_article_published_with_mention.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Verify article content shows user mention",
+          "expected": "User mention should be displayed in article content",
+          "actual": "Article content shows 'This article tests User Mentions. Hello @SuperUser Account' with mention displayed in bold",
+          "screenshot": "User Mentions_step03_article_content_with_mention.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Mention user in comment",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add a Comment on the article page",
+          "expected": "Comment input area should appear",
+          "actual": "Comment input area appeared with Reply and Cancel buttons",
+          "screenshot": "User Mentions_step04_comment_input_area.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter comment text with @SuperUser Account mention",
+          "expected": "Comment should accept user mention with @ notation",
+          "actual": "Comment entered with 'Testing comment with user mention. Hello @SuperUser Account!' displayed with mention in cyan",
+          "screenshot": "User Mentions_step05_comment_with_mention_before_submit.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Reply to submit the comment",
+          "expected": "Comment should be posted with user mention converted to profile link",
+          "actual": "Comment posted successfully. The @SuperUser Account mention was converted to a clickable link pointing to /Activity-Feed/userId/1",
+          "screenshot": "User Mentions_step06_comment_posted_with_mention_link.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test mention auto-complete",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add a Comment to open comment input",
+          "expected": "Comment input area should appear",
+          "actual": "Comment input area appeared",
+          "screenshot": "User Mentions_step07_autocomplete_test.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Type @ followed by 'Sup' to trigger autocomplete",
+          "expected": "Autocomplete dropdown should appear with matching users",
+          "actual": "@Sup was typed in the comment box but NO autocomplete dropdown appeared",
+          "screenshot": "User Mentions_step08_autocomplete_typing.png"
+        }
+      ],
+      "issues": [
+        "Autocomplete dropdown does not appear when typing @ followed by characters in the comment editor"
+      ]
+    }
+  ],
+  "observations": [
+    "User mentions are stored using the format [UM_ID:{userId}] internally and converted to profile links on display",
+    "In articles, the mention is displayed as bold text (@SuperUser Account) but NOT as a clickable link",
+    "In comments, the mention IS properly converted to a clickable profile link (/Activity-Feed/userId/1)",
+    "The autocomplete feature for selecting users when typing @ does not appear to be functioning in the comment editor",
+    "Code suggests autocomplete should work via UserMentionsController.cs parsing the [UM_ID:{userId}] token format",
+    "Notification sending is handled by UserMentionNotificationsController.SendUserMentionedInCommentNotification() for comments"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 2,
+    "failed": 1,
+    "pass_rate": "67%"
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "IFilter Document Content Extraction",
+    "feature_description": "Extracts searchable content from documents using IFilter providers for PDF and Office files.",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T13:20:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View IFilter configuration for Word documents",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Site Settings > Search > File Extensions tab",
+          "expected": "File Extensions tab should display list of included file extensions with IFilter status",
+          "actual": "File Extensions tab displayed with list of included extensions showing File Extension, File Type, and Content Crawling columns",
+          "screenshot": "IFilter Document Content Extraction_step02_file_extensions_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify .doc extension shows IFilter information",
+          "expected": ".doc should show available IFilter provider name",
+          "actual": ".doc shows 'Microsoft Office Filter' with content crawling enabled checkbox",
+          "screenshot": "IFilter Document Content Extraction_step02_file_extensions_tab.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify .docx extension shows IFilter information",
+          "expected": ".docx should show available IFilter provider name",
+          "actual": ".docx shows 'Wordpad DOCX Filter' with content crawling enabled checkbox",
+          "screenshot": "IFilter Document Content Extraction_step02_file_extensions_tab.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View IFilter configuration for Excel files",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify .xls extension shows IFilter information",
+          "expected": ".xls should show available IFilter provider name",
+          "actual": ".xls shows 'Microsoft Office Filter' with content crawling enabled checkbox",
+          "screenshot": "IFilter Document Content Extraction_step02_file_extensions_tab.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View IFilter configuration for PowerPoint files",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify .ppt extension shows IFilter information",
+          "expected": ".ppt should show available IFilter provider name",
+          "actual": ".ppt shows 'Microsoft Office Filter' with content crawling enabled checkbox",
+          "screenshot": "IFilter Document Content Extraction_step02_file_extensions_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify .pptx extension shows unavailable status",
+          "expected": ".pptx should indicate IFilter is not available",
+          "actual": ".pptx shows info icon indicating content crawling is unavailable (no IFilter installed)",
+          "screenshot": "IFilter Document Content Extraction_step02_file_extensions_tab.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify PDF IFilter unavailable handling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check .pdf extension status in File Extensions list",
+          "expected": "System should clearly indicate PDF IFilter is not available",
+          "actual": ".pdf row shows an info icon in the Content Crawling column indicating content crawling is unavailable because no IFilter provider is installed for PDF files",
+          "screenshot": "IFilter Document Content Extraction_step03_pdf_unavailable_tooltip.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add file extension with available IFilter",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Add File Type' button in Included File Extensions section",
+          "expected": "Add extension dialog should appear with input field",
+          "actual": "Dialog appeared with File Extension text input and Save/Cancel buttons",
+          "screenshot": "IFilter Document Content Extraction_step04_add_extension_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter '.txt' in the file extension field and click Save",
+          "expected": "Extension should be added and IFilter should be auto-detected",
+          "actual": ".txt extension was added successfully. System automatically detected 'Plain Text filter' as the IFilter provider",
+          "screenshot": "IFilter Document Content Extraction_step05_txt_extension_added.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Remove file extension",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click delete icon on .txt extension row",
+          "expected": "Confirmation dialog should appear",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete .txt?' with Yes/No buttons",
+          "screenshot": "IFilter Document Content Extraction_step06_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Yes to confirm deletion",
+          "expected": ".txt extension should be removed from the list",
+          "actual": ".txt extension was successfully removed from the Included File Extensions list",
+          "screenshot": "IFilter Document Content Extraction_step07_extension_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test extraction failure handling for unsupported extension",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Add '.xyz' extension (no IFilter available)",
+          "expected": "System should show user-friendly error message indicating no IFilter is available",
+          "actual": "System returned 500 Internal Server Error instead of a user-friendly error message",
+          "screenshot": "IFilter Document Content Extraction_step08_xyz_error.png"
+        }
+      ],
+      "issues": ["Adding an extension without IFilter support returns HTTP 500 error instead of graceful user-friendly error message"]
+    },
+    {
+      "scenario_name": "Verify directory configuration for file crawling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Crawling tab to view directory configuration",
+          "expected": "Should display Included and Excluded Directories sections",
+          "actual": "Crawling tab shows Included Directories and Excluded Directories sections with Add Directory buttons",
+          "screenshot": "IFilter Document Content Extraction_step09_crawling_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Add Directory to view folder picker",
+          "expected": "Directory picker should allow selecting folders for file crawling",
+          "actual": "Directory picker displayed with folder tree showing Site Root and subfolders (Badges, Groups, Images, etc.) with Cancel/Save buttons",
+          "screenshot": "IFilter Document Content Extraction_step10_directory_picker.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "IFilter providers are detected from Windows registry at runtime - availability depends on installed Windows IFilter components",
+    "PDF IFilter requires Adobe PDF IFilter or similar third-party IFilter to be installed on the server",
+    "PPTX IFilter is also not available on this test system, indicating Office Open XML format filters may need separate installation",
+    "The code in FilterLoader.cs shows IFilter detection uses Windows Registry lookups under HKLM\\Software\\Classes\\CLSID for persistent handlers",
+    "DocxToText.cs provides a fallback extraction mechanism for DOCX files using direct XML parsing without requiring IFilter",
+    "IFilterDocumentIndexer.cs has a 25MB file size limit for text files (configurable via sc_MaxTextFilterBytes host setting)"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 7,
+    "failed": 1,
+    "pass_rate": "87.5%"
+  }
+}

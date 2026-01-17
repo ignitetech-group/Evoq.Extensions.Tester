@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Templates",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Template Drag and Drop",
+    "feature_description": "Reorder templates in hierarchy by dragging and dropping them to new positions",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Templates section and verify drag handle visibility",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login as SuperUser and navigate to Manage > Templates",
+          "expected": "Templates section should load with a list of available page templates",
+          "actual": "Templates section UI loads but shows error: 'There was an error retrieving your content. Please check your internet connection.' Console logs show HTTP 500 Internal Server Error responses from the server API",
+          "screenshot": "Template Drag and Drop_step01_templates_error.png"
+        }
+      ],
+      "issues": [
+        "Server returns 500 Internal Server Error when fetching templates via GetPageTemplates API",
+        "Templates list is empty/not displayed due to backend error",
+        "Drag and drop functionality cannot be tested without visible templates"
+      ]
+    }
+  ],
+  "observations": [
+    "The Templates UI at Manage > Templates loads successfully showing the 'Page Templates' header, search box, and 'Add Template' button",
+    "Code review confirms drag and drop is implemented via jQuery UI sortable/droppable in templatesHierarchy.js",
+    "The drag handle element (span.drag-area) should appear on each template item when templates are loaded",
+    "According to code, drag is disabled when search keyword is not empty (drag-area visibility bound to searchKeyword() == '')",
+    "The MovePage API is called to persist position changes after drag and drop",
+    "Backend API error (500) prevents templates from loading, blocking all drag and drop testing"
+  ],
+  "summary": {
+    "total_scenarios": 1,
+    "passed": 0,
+    "failed": 1,
+    "pass_rate": "0%"
+  }
+}

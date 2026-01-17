@@ -1,0 +1,83 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "My Work Tasks",
+    "feature_description": "View and manage assigned workflow tasks for content review and approval",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access My Work Feature via Module Actions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged in as SuperUser and navigated to Workflow Test Page",
+          "expected": "Page loads with HTML module visible",
+          "actual": "Page loaded successfully with HTML module containing test workflow content",
+          "screenshot": "My Work Tasks_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Accessed My Work control via URL (ctl/MyWork/ModuleId/1054)",
+          "expected": "My Work page should display with list of workflow tasks",
+          "actual": "Page loaded but content area was completely empty - no My Work interface rendered",
+          "screenshot": "My Work Tasks_step01_mywork_page_empty.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Investigated cleanup files and code to understand feature status",
+          "expected": "Feature should be available in HTML Pro module",
+          "actual": "File 08.02.00.txt confirms MyWork.ascx was marked for cleanup/removal in version 08.02.00",
+          "screenshot": "My Work Tasks_step01_mywork_page_empty.png"
+        }
+      ],
+      "issues": ["The My Work Tasks feature (MyWork.ascx) has been deprecated and removed in version 08.02.00. The module control is still registered in the manifest but the actual file was cleaned up, resulting in an empty page when accessed."]
+    },
+    {
+      "scenario_name": "Search for Alternative My Work Location in PersonaBar",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Opened Content menu in PersonaBar",
+          "expected": "Should find My Work or Tasks option in Content menu",
+          "actual": "Content menu shows only: Assets, Pages, Forms, Content Library, Recycle Bin. No My Work or Tasks option available.",
+          "screenshot": "My Work Tasks_step02_content_menu.png"
+        }
+      ],
+      "issues": ["No 'My Work' or 'Tasks' option exists in the PersonaBar Content menu. The legacy My Work feature has not been replaced with an equivalent standalone UI."]
+    },
+    {
+      "scenario_name": "Identify Modern Workflow Management Approach",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Entered page edit mode on workflow-enabled page",
+          "expected": "Should see workflow-related controls",
+          "actual": "Edit bar shows Discard, Reject, and Close buttons for managing workflow state of the current page",
+          "screenshot": "My Work Tasks_step03_modern_workflow_management.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code evidence confirms the My Work feature was deprecated: The file 08.02.00.txt explicitly lists 'DesktopModules\\HTML\\MyWork.ascx' for cleanup/removal.",
+    "The module control registration for 'MyWork' still exists in dnn_HtmlPro.dnn manifest, but the actual .ascx file has been removed, causing the control to render nothing.",
+    "Workflow management functionality has been migrated to an integrated approach within the page editing experience using the EditBar (Discard/Reject/Close buttons).",
+    "The modern workflow approach manages workflow at the page level rather than through a separate module-level 'My Work' interface.",
+    "The suggested test scenarios (View assigned tasks list, Filter tasks by status, Sort tasks by date/priority, Navigate to content from task, Complete task approval, View task details, Bulk approve/reject tasks) cannot be tested as the legacy My Work UI feature no longer exists.",
+    "Dependency features 'Content Workflow Management' and 'Content Approval Process' have also been modernized and integrated into the page workflow system."
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 1,
+    "failed": 2,
+    "pass_rate": "33%"
+  }
+}

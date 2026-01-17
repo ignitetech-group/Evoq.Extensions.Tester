@@ -1,0 +1,76 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Sitemap Processing",
+    "feature_description": "Processes XML sitemaps to seed URL crawling operations.",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Configure Sitemap URL",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Site Settings > Search > Crawling tab",
+          "expected": "Crawling configuration page should display with URL Paths section",
+          "actual": "Crawling tab displayed with URL Paths section showing existing configured URLs",
+          "screenshot": "Sitemap Processing_step01_crawling_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Add Url button to open URL configuration form",
+          "expected": "Form should display with Sitemap URL field",
+          "actual": "Add URL form opened with Sitemap URL text field visible below the main URL field",
+          "screenshot": "Sitemap Processing_step02_sitemap_url_field.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Enter test URL and sitemap URL in the form",
+          "expected": "Both fields should accept text input",
+          "actual": "Successfully entered 'http://localhost:8081/test' as URL and 'http://localhost:8081/sitemap.xml' as Sitemap URL",
+          "screenshot": "Sitemap Processing_step03_sitemap_url_entered.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle Sitemap Errors",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Save button with invalid sitemap URL configured",
+          "expected": "System should validate sitemap and show appropriate error if invalid",
+          "actual": "Validation error displayed: 'Unable to validate Sitemap file. Check the Sitemap is available, well formed and a valid Sitemap file.'",
+          "screenshot": "Sitemap Processing_step04_sitemap_validation_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Cancel to close form without saving invalid configuration",
+          "expected": "Form should close and return to URL Paths list",
+          "actual": "Form closed successfully, returned to URL Paths list with original configurations intact",
+          "screenshot": "Sitemap Processing_step05_final_state.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Sitemap URL field is available in the Add/Edit URL configuration form under Site Settings > Search > Crawling",
+    "Sitemap validation occurs when saving the URL configuration - the system attempts to download and validate the XML sitemap against the sitemaps.org schema",
+    "Code review of SitemapHelper.cs confirms: parsing XML sitemaps, extracting URLs from <loc> elements, handling sitemap index files recursively, and supporting .gz compressed sitemaps",
+    "Code review of Spider.cs confirms: AddInitialUris method uses SitemapHelper to seed crawl URLs; if sitemap is invalid, falls back to base URI",
+    "Actual sitemap parsing (Parse XML sitemap, Extract URLs from sitemap, Process sitemap index files, Test large sitemap handling) occurs during scheduled crawler execution, not directly testable via UI",
+    "The suggested test scenarios for URL extraction accuracy and large sitemap handling are backend operations that execute during the scheduled Search Spider job"
+  ],
+  "summary": {
+    "total_scenarios": 2,
+    "passed": 2,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

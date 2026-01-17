@@ -365,7 +365,7 @@ if __name__ == "__main__":
     # Example: Full test (Step 1 + Step 2)
     results = parallelizer.test_extensions(
         extensions_to_test_name_list=[
-            # 'DNN_HTML',
+            'DNN_HTML',
             'ContentLayout',
             'DotNetNuke.Professional.SearchCrawler',
             'Evoq.GoogleAnalyticsConnector',

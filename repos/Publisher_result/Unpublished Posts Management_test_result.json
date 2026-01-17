@@ -1,0 +1,153 @@
+{
+  "metadata": {
+    "extension_name": "Publisher",
+    "extension_type": "Module",
+    "feature_name": "Unpublished Posts Management",
+    "feature_description": "View and manage all unpublished posts including drafts and posts under review",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View list of unpublished posts",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to News page which contains the Publisher module",
+          "expected": "Page loads with Publisher features visible",
+          "actual": "News page loaded successfully with Featured and Latest posts visible",
+          "screenshot": "Unpublished_Posts_Management_step02_unpublished_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked on Unpublished Posts button in the bottom toolbar",
+          "expected": "Unpublished posts panel opens showing list of draft posts",
+          "actual": "Unpublished panel opened displaying table with 3 unpublished posts: 'Test Post for Social Media Sharing', 'Test Post for Author Management', 'Test Blog Post for Publisher Feature'",
+          "screenshot": "Unpublished_Posts_Management_step03_view_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Filter unpublished by status (draft/review)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examined Unpublished posts panel for filter controls",
+          "expected": "Filter dropdown or buttons to filter by draft/review status",
+          "actual": "No filter UI elements found in the Unpublished panel. Panel only shows a simple table with Name, Date Created, Author, and Actions columns",
+          "screenshot": "Unpublished_Posts_Management_step03_view_list.png"
+        }
+      ],
+      "issues": ["Filter by status functionality is not implemented in the UI. Code review confirms UnpublishedPosts.ascx only displays a static table without filtering capabilities."]
+    },
+    {
+      "scenario_name": "Sort unpublished posts by date",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked on 'DATE CREATED' column header to attempt sorting",
+          "expected": "Posts should be sorted by date (ascending or descending toggle)",
+          "actual": "Clicking the column header had no effect. The order remained unchanged. Column headers are not interactive/clickable for sorting.",
+          "screenshot": "Unpublished_Posts_Management_step05_sort_not_available.png"
+        }
+      ],
+      "issues": ["Sort functionality is not implemented. Column headers are static text without click handlers. Posts are displayed in a fixed order (newest first by default based on creation date)."]
+    },
+    {
+      "scenario_name": "Bulk select posts for action",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examined Unpublished posts table for bulk selection controls",
+          "expected": "Checkboxes in each row to select multiple posts for bulk actions",
+          "actual": "No checkboxes or bulk selection UI elements found. Each row only contains Name, Date Created, Author, and Actions columns with no selection capability.",
+          "screenshot": "Unpublished_Posts_Management_step03_view_list.png"
+        }
+      ],
+      "issues": ["Bulk selection functionality is not implemented. Code review of UnpublishedPosts.ascx confirms no checkbox elements or bulk action handlers exist."]
+    },
+    {
+      "scenario_name": "Quick edit from unpublished list",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hovered over first unpublished post row to reveal action buttons",
+          "expected": "Action buttons should appear on hover",
+          "actual": "View Post and Edit Post icons appeared in the Actions column on hover",
+          "screenshot": "Unpublished_Posts_Management_step04_hover_actions.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Edit Post icon",
+          "expected": "Post edit page should open for editing",
+          "actual": "Navigated to edit page (http://localhost:8081/en-us/News/view/edit/Test-Post-for-Social-Media-Sharing) with full post editing interface including title, content, image upload, and publishing controls",
+          "screenshot": "Unpublished_Posts_Management_step06_quick_edit.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete draft posts",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examined Unpublished posts panel for delete functionality",
+          "expected": "Delete button or option in action menu to delete draft posts",
+          "actual": "No delete option found. Actions column only contains View Post and Edit Post links. No delete action is available from the unpublished posts list.",
+          "screenshot": "Unpublished_Posts_Management_step04_hover_actions.png"
+        }
+      ],
+      "issues": ["Delete functionality is not available from the Unpublished Posts panel. Code review confirms only View and Edit actions are implemented in UnpublishedPosts.ascx."]
+    },
+    {
+      "scenario_name": "View workflow state details",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examined Unpublished posts table for workflow state information",
+          "expected": "Column or indicator showing workflow state (draft, pending review, etc.)",
+          "actual": "No workflow state column or indicator found. Table only shows Name, Date Created, Author, and Actions columns. No workflow status information is displayed.",
+          "screenshot": "Unpublished_Posts_Management_step03_view_list.png"
+        }
+      ],
+      "issues": ["Workflow state details are not displayed in the Unpublished Posts panel. UnpublishedPostDto only contains PostId, ContentItemId, AuthorUserId, Title, and CreatedOnDate - no workflow state field."]
+    },
+    {
+      "scenario_name": "Export unpublished posts list",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examined Unpublished posts panel for export functionality",
+          "expected": "Export button to download unpublished posts list as CSV/Excel",
+          "actual": "No export button or option found anywhere in the Unpublished Posts panel. The panel only contains the close button (X) in the header and the posts table.",
+          "screenshot": "Unpublished_Posts_Management_step03_view_list.png"
+        }
+      ],
+      "issues": ["Export functionality is not implemented. No export button or mechanism exists in the UI or code."]
+    }
+  ],
+  "observations": [
+    "The Unpublished Posts panel is accessed via a button in the Publisher module toolbar on pages containing the Publisher module (e.g., News page)",
+    "Code review confirms UnpublishedPosts.ascx is a simple panel with minimal functionality - only displays posts in a table with View/Edit actions",
+    "UnpublishedPostDto entity only contains basic fields: PostId, ContentItemId, AuthorUserId, Title, CreatedOnDate - no workflow state or status field",
+    "Several suggested test scenarios (filter, sort, bulk select, delete, workflow details, export) correspond to features that do not exist in the current implementation",
+    "The feature name 'Unpublished Posts Management' suggests more comprehensive management capabilities than what is actually implemented",
+    "Actions (View Post, Edit Post) only appear on hover over table rows - not immediately visible"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 2,
+    "failed": 6,
+    "pass_rate": "25%"
+  }
+}

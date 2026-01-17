@@ -1,0 +1,98 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.CommunityAnalytics",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Tag Statistics Analytics",
+    "feature_description": "Displays statistics about tag usage across community content with pagination support",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Community Analytics Dashboard",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to PersonaBar > Dashboard > Community Analytics",
+          "expected": "Community Analytics dashboard loads with Tag Statistics visible in the Trending Tags section",
+          "actual": "Community Analytics panel fails to load - content area remains blank due to JavaScript error: TypeError: utility.serializeCustomDate is not a function at dashboardClass.init (social-dashboard-combined-instance.js:1025:39)",
+          "screenshot": "Tag_Statistics_Analytics_step02_panel_load_failure.png"
+        }
+      ],
+      "issues": ["Critical JavaScript error prevents Community Analytics dashboard from loading: utility.serializeCustomDate is not a function"]
+    },
+    {
+      "scenario_name": "View tag statistics for different time periods",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access Tag Statistics section to change time period",
+          "expected": "Should be able to select Day, Week, Month, Year, or Custom time periods to filter tag statistics",
+          "actual": "Cannot test - Community Analytics panel fails to load due to JavaScript error",
+          "screenshot": "Tag_Statistics_Analytics_step02_panel_load_failure.png"
+        }
+      ],
+      "issues": ["UI inaccessible due to JavaScript initialization error in Community Analytics module"]
+    },
+    {
+      "scenario_name": "Navigate through paginated tag results",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access Trending Tags section and use pagination controls",
+          "expected": "Should be able to navigate through tag results using prev/next pagination buttons (6 items per page)",
+          "actual": "Cannot test - Community Analytics panel fails to load due to JavaScript error",
+          "screenshot": "Tag_Statistics_Analytics_step02_panel_load_failure.png"
+        }
+      ],
+      "issues": ["UI inaccessible due to JavaScript initialization error in Community Analytics module"]
+    },
+    {
+      "scenario_name": "Verify tag count accuracy and display",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to view tag statistics horizontal bar chart",
+          "expected": "Tags should be displayed as a horizontal bar chart with usage counts",
+          "actual": "Cannot test - Community Analytics panel fails to load due to JavaScript error",
+          "screenshot": "Tag_Statistics_Analytics_step02_panel_load_failure.png"
+        }
+      ],
+      "issues": ["UI inaccessible due to JavaScript initialization error in Community Analytics module"]
+    },
+    {
+      "scenario_name": "Test empty state when no tags exist",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to view tag statistics when no tags are present",
+          "expected": "Should display 'No Trending Tags' message when no tag data is available",
+          "actual": "Cannot test - Community Analytics panel fails to load due to JavaScript error",
+          "screenshot": "Tag_Statistics_Analytics_step02_panel_load_failure.png"
+        }
+      ],
+      "issues": ["UI inaccessible due to JavaScript initialization error in Community Analytics module"]
+    }
+  ],
+  "observations": [
+    "Critical Bug: Community Analytics dashboard fails to initialize due to JavaScript error 'TypeError: utility.serializeCustomDate is not a function' at social-dashboard-combined-instance.js:1025:39",
+    "The utility.serializeCustomDate function is called in the dashboardClass.init method but appears to be undefined, suggesting a missing dependency or incorrect utility object initialization",
+    "Code review confirms tag statistics are displayed as a horizontal bar chart in the 'Trending Tags' section (social-dashboard.html lines 240-249)",
+    "Pagination is implemented with 6 items per page using prev/next buttons (social-dashboard-instance.js line 991)",
+    "Time period filtering supports Day, Week, Month, Year, and Custom date ranges (social-dashboard.html lines 17-29)",
+    "Code suggests 'Sort tags by usage count' is not a user-controllable UI feature - tags are returned pre-sorted by count from the GetTagStats API endpoint",
+    "Empty state handling exists in code: displays 'No Trending Tags' message when totalResults < 1 (social-dashboard-instance.js lines 858-860)"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 0,
+    "failed": 5,
+    "pass_rate": "0%"
+  }
+}

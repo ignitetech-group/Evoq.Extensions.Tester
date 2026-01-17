@@ -1,0 +1,131 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Workflow State Permissions",
+    "feature_description": "Configure granular permissions for each workflow state",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T10:30:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Navigate to Workflow State Permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Workflow in persona bar",
+          "expected": "Workflow management page should open",
+          "actual": "Workflow management page opened showing all available workflows",
+          "screenshot": "Workflow_State_Permissions_step01_workflow_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit (E) button on 'Ready For Review' state in Content Approval workflow",
+          "expected": "Workflow State Edit dialog should open with permissions settings",
+          "actual": "Workflow State Edit dialog opened showing state name, reviewers (roles and users), and notification settings",
+          "screenshot": "Workflow_State_Permissions_step02_state_permissions_found.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test role-based permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View the Reviewers section in Workflow State Edit dialog",
+          "expected": "Should display roles table with Review checkboxes",
+          "actual": "Roles table displayed with Review permission checkboxes. Administrators locked (always has permission), All Users and Content Editors checked, Moderators with deny icon",
+          "screenshot": "Workflow_State_Permissions_step04_permissions_dialog.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add new role permission",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Community Manager' from Select Role dropdown and click Add button",
+          "expected": "Community Manager role should be added to the permissions table",
+          "actual": "Community Manager role was successfully added to the table with Review checkbox checked and Delete action available",
+          "screenshot": "Workflow_State_Permissions_step05_role_added.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Remove role permission",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Delete link for Community Manager role",
+          "expected": "Community Manager role should be removed from the permissions table",
+          "actual": "Community Manager role was successfully removed from the table and is now available again in the Select Role dropdown",
+          "screenshot": "Workflow_State_Permissions_step06_role_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test user-specific permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View the Users section in Workflow State Edit dialog",
+          "expected": "Should display users table with Review checkboxes and Add User functionality",
+          "actual": "Users table displayed with SuperUser Account and Test Admin, both with Review permission checked. Add User input field and Add button available",
+          "screenshot": "Workflow_State_Permissions_step08_notify_admin_checked.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test notification settings",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View notification checkboxes and click 'Notify Administrators of state changes' checkbox",
+          "expected": "Notify Admin checkbox should become checked",
+          "actual": "Both notification checkboxes are now checked: 'Notify Author and Reviewers of state changes' and 'Notify Administrators of state changes'",
+          "screenshot": "Workflow_State_Permissions_step08_notify_admin_checked.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save workflow state permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Accept button to save changes",
+          "expected": "Dialog should close and changes should be saved",
+          "actual": "Dialog closed successfully and returned to workflow management page. Changes were saved without errors",
+          "screenshot": "Workflow_State_Permissions_step09_changes_saved.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Workflow State Permissions feature is accessed via Settings > Workflow in the persona bar, then editing a workflow state (E button), not via Module Settings as stated in the task description",
+    "Administrators role is locked and always has permission - this is by design as confirmed in code (WorkflowStatePermissionsGrid.cs line 254-256)",
+    "The system supports both grant and deny permissions (SupportsDenyPermissions returns true in code)",
+    "The REVIEW permission key is the primary permission used for workflow state approvals",
+    "Filter By Group dropdown allows filtering roles by group (<All Roles> or <Global Roles>)"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 7,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

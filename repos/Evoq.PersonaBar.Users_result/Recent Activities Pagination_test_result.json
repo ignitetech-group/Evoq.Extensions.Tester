@@ -1,0 +1,175 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Users",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Recent Activities Pagination",
+    "feature_description": "Browse through paginated list of user's recent activities with details about area, action, and timestamp",
+    "feature_priority": "High",
+    "test_date": "2026-01-16T12:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Load first page of activities",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Manage > Users",
+          "expected": "Users panel opens with list of users",
+          "actual": "Users panel opened successfully showing 20 users with pagination (10 users per page)",
+          "screenshot": "Recent_Activities_Pagination_step01_user_activity_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on User Activity icon for a user (Claude TestUser)",
+          "expected": "User activity details panel expands showing recent activities",
+          "actual": "Activity panel expanded showing Last Active, Rank, Reputation, Experience, Engagement, Influence, Total Contributions, and Recent Activity section",
+          "screenshot": "Recent_Activities_Pagination_step08_claude_user_activity.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify relative date formatting for activities",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View activity for newly created user (EmptyTest User)",
+          "expected": "Activity timestamp shows relative date format",
+          "actual": "Activity shows 'Joined Site moments ago' - relative date formatting working correctly",
+          "screenshot": "Recent_Activities_Pagination_step10_new_user_activity.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View activity for Claude TestUser",
+          "expected": "Activity timestamp shows relative date format",
+          "actual": "Activity shows 'Joined Site 1 week ago' - relative date formatting working correctly",
+          "screenshot": "Recent_Activities_Pagination_step08_claude_user_activity.png"
+        },
+        {
+          "step_number": 3,
+          "action": "View activity for Test User123",
+          "expected": "Activity timestamp shows relative date format",
+          "actual": "Activity shows 'Joined Site 2 weeks ago' - relative date formatting working correctly",
+          "screenshot": "Recent_Activities_Pagination_step09_testuser123_activity.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify activity area display",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View Recent Activity section for multiple users",
+          "expected": "Activity shows area information (e.g., library name)",
+          "actual": "All activities show 'EVOQ CONTENT LIBRARY' as the area, correctly displaying the activity context",
+          "screenshot": "Recent_Activities_Pagination_step08_claude_user_activity.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Auto-refresh when switching users",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click User Activity for Claude TestUser, then click User Activity for Test User123",
+          "expected": "Activity panel refreshes with the selected user's activities",
+          "actual": "Activity panel correctly refreshed showing different user data (different Rank, Reputation, Experience values and activity timestamps)",
+          "screenshot": "Recent_Activities_Pagination_step09_testuser123_activity.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Navigate to next page of activities",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to find user with more than 10 activities to test pagination",
+          "expected": "Find a user with >10 activities to enable pagination controls",
+          "actual": "All users in the test environment have only 1 activity (Joined Site). Pagination controls do not appear because no user has more than 10 activities. Code review confirms Pager component is configured with pageSize=10 and would display pagination when totalRecords > pageSize.",
+          "screenshot": "Recent_Activities_Pagination_step08_claude_user_activity.png"
+        }
+      ],
+      "issues": ["Cannot test pagination navigation - no user in test environment has more than 10 activities. All users only have the automatic 'Joined Site' activity created on registration."]
+    },
+    {
+      "scenario_name": "Navigate to previous page of activities",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to test previous page navigation",
+          "expected": "Navigate to page 2 first, then click previous to return to page 1",
+          "actual": "Cannot test - same limitation as next page test. No user has enough activities to enable pagination.",
+          "screenshot": "Recent_Activities_Pagination_step08_claude_user_activity.png"
+        }
+      ],
+      "issues": ["Cannot test previous page navigation - insufficient activity data in test environment"]
+    },
+    {
+      "scenario_name": "Verify page size fixed at 10 items",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify that page displays maximum 10 activities at a time",
+          "expected": "Recent Activities section shows 10 items per page",
+          "actual": "Cannot verify through UI - all users have only 1 activity. Code review confirms pageSize is hardcoded to 10 in RecentActivities component (line 69: pageSize={10}).",
+          "screenshot": "Recent_Activities_Pagination_step08_claude_user_activity.png"
+        }
+      ],
+      "issues": ["Cannot verify page size visually - requires user with >10 activities. Code confirms pageSize=10 is correctly configured."]
+    },
+    {
+      "scenario_name": "Verify total activities count display",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check for total activities count in pager summary",
+          "expected": "Pager shows summary text with total activities count",
+          "actual": "Cannot verify - pager summary only appears when there are multiple pages. Code shows summaryText is configured using RecentActivityPagingSummaryText localization key.",
+          "screenshot": "Recent_Activities_Pagination_step08_claude_user_activity.png"
+        }
+      ],
+      "issues": ["Cannot verify total count display - requires pagination to be active"]
+    },
+    {
+      "scenario_name": "Test empty activities list (No recent activities message)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Create a new user and check their activities immediately",
+          "expected": "New user should show 'No recent activities' message before any activity",
+          "actual": "Newly created user 'EmptyTest User' immediately shows 'Joined Site moments ago' activity. The 'Joined Site' activity is automatically created during user creation, not on first login. Code shows empty state message 'No recent activities' exists (line 75 of index.jsx) but cannot be triggered through normal user creation.",
+          "screenshot": "Recent_Activities_Pagination_step10_new_user_activity.png"
+        }
+      ],
+      "issues": ["Cannot test empty activities state - 'Joined Site' activity is automatically created on user creation, preventing the empty state from being achieved through normal testing"]
+    }
+  ],
+  "observations": [
+    "Code review confirms RecentActivities component uses Pager with pageSize=10 and showSummary=true",
+    "The component correctly handles empty state with 'No recent activities' message, but this state cannot be reached through normal user creation",
+    "Relative date formatting is implemented via Utilities.RelativeDateFromUtcDate() and works correctly (moments ago, 1 week ago, 2 weeks ago, etc.)",
+    "Activity title HTML stripping is implemented via Utilities.RemoveHtmlTags() in UserActivityDto.cs",
+    "Activity title truncation with ellipsis is implemented via Utilities.TrimWithEllipsis() in UserActivityDto.cs",
+    "The 'Joined Site' activity is the only activity type observed in the test environment, suggesting limited activity data for comprehensive pagination testing",
+    "API endpoint GetUserRecentActivities accepts userId, pageIndex, and pageSize parameters and is correctly configured"
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 4,
+    "failed": 5,
+    "pass_rate": "44%"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Assets",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "User and Role Search",
+    "feature_description": "Searches and selects users and roles for permission assignment and sharing",
+    "feature_priority": "Low",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Permissions Tab for User/Role Search",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Assets panel and select My Website folder",
+          "expected": "Folder list should display with available folders",
+          "actual": "Folder list displayed successfully with folders including Images, PermissionsTestFolder, etc.",
+          "screenshot": "User_and_Role_Search_step01_folder_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Hover on a folder to reveal action icons",
+          "expected": "Action icons (edit, move, delete) should appear on the folder card",
+          "actual": "Action icons appeared correctly on hover",
+          "screenshot": "User_and_Role_Search_step02_folder_hover.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click edit icon to open folder details panel",
+          "expected": "Folder details panel should open with Details and Permissions tabs",
+          "actual": "Folder details panel opened, but an error appeared: 'Could not load type Dnn.PersonaBar.Library.Dto.Permissions from assembly Dnn.PersonaBar.Library, Version=10.1.1.0'",
+          "screenshot": "User_and_Role_Search_step03_folder_details.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click on Permissions tab to access User/Role Search functionality",
+          "expected": "Permissions tab should display role permissions grid and user search functionality",
+          "actual": "Permissions tab content is completely empty - no role grid, no user search box, no permissions controls visible due to the type loading error",
+          "screenshot": "User_and_Role_Search_step04_permissions_tab.png"
+        }
+      ],
+      "issues": [
+        "Critical Error: 'Could not load type Dnn.PersonaBar.Library.Dto.Permissions from assembly Dnn.PersonaBar.Library, Version=10.1.1.0, Culture=neutral, PublicKeyToken=null'",
+        "Permissions tab fails to load - content area is completely empty",
+        "User and Role Search functionality is inaccessible due to permissions panel loading failure"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review confirms SearchUser() endpoint exists at Services/AssetsController.cs:790-809 which searches users by DisplayName and returns up to 5 results",
+    "Code review confirms GetRoles() endpoint exists at Services/AssetsController.cs:778-788 which returns all roles for permission assignment",
+    "The folder details panel opens correctly with Details tab functional (Name, Workflow, Versioning settings work)",
+    "The type loading error suggests a version mismatch or missing assembly reference in the Dnn.PersonaBar.Library assembly",
+    "This appears to be an infrastructure/deployment issue rather than a feature code bug"
+  ],
+  "summary": {
+    "total_scenarios": 1,
+    "passed": 0,
+    "failed": 1,
+    "pass_rate": "0%"
+  }
+}

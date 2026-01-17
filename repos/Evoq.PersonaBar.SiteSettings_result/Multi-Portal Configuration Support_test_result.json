@@ -1,0 +1,102 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.SiteSettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Multi-Portal Configuration Support",
+    "feature_description": "Supports configuration of settings across multiple portals in a DNN installation",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Switch between different portals",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Site Settings and locate the portal selector dropdown",
+          "expected": "Portal selector dropdown should be visible with 'EDITING SITE' label",
+          "actual": "Portal selector dropdown found at top of Site Settings panel showing 'EDITING SITE: MY WEBSITE'",
+          "screenshot": "Multi-Portal_Configuration_Support_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on portal selector dropdown to view available portals",
+          "expected": "Dropdown should expand showing list of available portals",
+          "actual": "Dropdown expanded showing two portals: 'My Website' and 'Test Portal'",
+          "screenshot": "Multi-Portal_Configuration_Support_step01_portal_selector_dropdown.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Select 'Test Portal' from the dropdown",
+          "expected": "Site Settings should load for Test Portal with different settings",
+          "actual": "Successfully switched to Test Portal. Settings changed: Site Title='Test Portal', Description='Test Portal for Multi-Portal Configuration Testing', Home Directory='Portals/1', GUID='99D361B4-4A4B-41C7-9611-0FD8CC777F32'",
+          "screenshot": "Multi-Portal_Configuration_Support_step02_switched_to_test_portal.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify settings are portal-specific",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Compare settings between My Website (Portal 0) and Test Portal (Portal 1)",
+          "expected": "Each portal should have unique settings including GUID and Home Directory",
+          "actual": "Confirmed portal-specific settings: My Website has GUID='5CC8BD37-15D6-4F0D-A000-B8740E57C851', Home Directory='Portals/0'. Test Portal has GUID='99D361B4-4A4B-41C7-9611-0FD8CC777F32', Home Directory='Portals/1'. Site titles, descriptions, and keywords are also different.",
+          "screenshot": "Multi-Portal_Configuration_Support_step02_switched_to_test_portal.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save settings for non-current portal",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "While editing Test Portal (non-current portal), modify the Keywords field",
+          "expected": "Keywords field should be editable and Save button should become enabled",
+          "actual": "Modified Keywords from ', isolation-test' to ', isolation-test, multi-portal-test-2026'. Save button became enabled.",
+          "screenshot": "Multi-Portal_Configuration_Support_step03_modified_keywords.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button to save changes",
+          "expected": "Settings should save successfully with confirmation message",
+          "actual": "Save completed successfully. Success notification appeared: 'Settings have been updated.' Save button became disabled after save.",
+          "screenshot": "Multi-Portal_Configuration_Support_step04_save_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify settings isolation between portals",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After saving changes to Test Portal, switch back to My Website portal",
+          "expected": "My Website settings should be unchanged (Keywords should still be empty)",
+          "actual": "Switched back to My Website. Keywords field is empty (original value), confirming changes to Test Portal did NOT affect My Website. All other settings also unchanged: GUID='5CC8BD37-15D6-4F0D-A000-B8740E57C851', Home Directory='Portals/0'",
+          "screenshot": "Multi-Portal_Configuration_Support_step05_isolation_verified.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The portal selector dropdown (EDITING SITE) is prominently displayed at the top of the Site Settings panel, making it easy for administrators to switch between portals.",
+    "The code supports 'portalId=-1' as default which uses the current portal ID, and accepts any valid portalId for cross-portal configuration. This is implemented in GetSettingsPortalId() method.",
+    "Testing with invalid portal ID is not possible via UI as the portal selector dropdown only displays valid portals. This scenario would require direct API testing. Code analysis shows the API methods accept portalId parameter which could theoretically accept invalid values, but the UI prevents this.",
+    "Settings are properly isolated per portal - changes made while editing one portal do not affect other portals, as confirmed by the isolation test."
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

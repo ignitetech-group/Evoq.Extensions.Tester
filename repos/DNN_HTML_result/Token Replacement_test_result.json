@@ -1,0 +1,145 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Token Replacement",
+    "feature_description": "Replace dynamic tokens in content with actual values at runtime",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T13:01:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Enable token replacement setting",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Module Settings > HTML Module Settings tab",
+          "expected": "HTML Module Settings tab with Replace Tokens checkbox visible",
+          "actual": "HTML Module Settings tab displayed with Replace Tokens checkbox",
+          "screenshot": "Token Replacement_step02_module_settings_enabled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify Replace Tokens checkbox is available and can be toggled",
+          "expected": "Replace Tokens checkbox can be checked/unchecked",
+          "actual": "Replace Tokens checkbox is present and was already checked (enabled)",
+          "screenshot": "Token Replacement_step02_module_settings_enabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Update module settings with token replacement enabled",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Update button to save module settings",
+          "expected": "Settings should save successfully",
+          "actual": "Error dialog appeared: 'Object reference not set to an instance of an object'",
+          "screenshot": "Token Replacement_step03_settings_update_error.png"
+        }
+      ],
+      "issues": ["Module settings update fails with NullReferenceException error"]
+    },
+    {
+      "scenario_name": "Test user tokens replacement",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View module content containing user tokens [User:DisplayName], [User:Email], [User:UserID], etc.",
+          "expected": "Tokens should be replaced with actual user values (SuperUser Account, email, etc.)",
+          "actual": "Tokens displayed as raw text: [User:DisplayName], [User:Email], [User:UserID], etc.",
+          "screenshot": "Token Replacement_step10_token_module_visible.png"
+        }
+      ],
+      "issues": ["User tokens are not replaced with actual values despite Replace Tokens being enabled"]
+    },
+    {
+      "scenario_name": "Test portal tokens replacement",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View module content containing portal tokens [Portal:PortalName], [Portal:URL], [Portal:PortalID], etc.",
+          "expected": "Tokens should be replaced with actual portal values",
+          "actual": "Tokens displayed as raw text: [Portal:PortalName], [Portal:URL], [Portal:PortalID], [Portal:HomeDirectory]",
+          "screenshot": "Token Replacement_step10_token_module_visible.png"
+        }
+      ],
+      "issues": ["Portal tokens are not replaced with actual values"]
+    },
+    {
+      "scenario_name": "Test page/tab tokens replacement",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View module content containing tab tokens [Tab:TabName], [Tab:TabPath], [Tab:TabID]",
+          "expected": "Tokens should be replaced with actual page/tab values",
+          "actual": "Tokens displayed as raw text: [Tab:TabName], [Tab:TabPath], [Tab:TabID]",
+          "screenshot": "Token Replacement_step10_token_module_visible.png"
+        }
+      ],
+      "issues": ["Tab/Page tokens are not replaced with actual values"]
+    },
+    {
+      "scenario_name": "Test date/time tokens replacement",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View module content containing date/time token [DateTime:Now]",
+          "expected": "Token should be replaced with current date/time value",
+          "actual": "Token displayed as raw text: [DateTime:Now]",
+          "screenshot": "Token Replacement_step10_token_module_visible.png"
+        }
+      ],
+      "issues": ["DateTime token is not replaced with actual date/time value"]
+    },
+    {
+      "scenario_name": "Test token in published content (View mode)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page in View mode (exit Edit mode)",
+          "expected": "Module with tokens should be visible and tokens replaced",
+          "actual": "Token Replacement Test Module is NOT visible in View mode - only visible in Edit mode",
+          "screenshot": "Token Replacement_step08_view_mode_full.png"
+        }
+      ],
+      "issues": ["Module containing token test content is not visible in normal View mode, preventing token replacement verification in published view"]
+    },
+    {
+      "scenario_name": "Handle invalid tokens",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View module content containing invalid tokens [Invalid:Token] and [Unknown:TestToken]",
+          "expected": "Invalid tokens should either be replaced with empty string or displayed with appropriate error handling",
+          "actual": "Invalid tokens displayed as raw text: [Invalid:Token], [Unknown:TestToken] - same as valid tokens, no differentiation",
+          "screenshot": "Token Replacement_step10_token_module_visible.png"
+        }
+      ],
+      "issues": ["Cannot determine if invalid token handling works correctly because all tokens (valid and invalid) are displayed as raw text"]
+    }
+  ],
+  "observations": [
+    "Code analysis (HtmlTextController.cs) shows token replacement requires BOTH 'blnReplaceTokens' setting AND 'viewWithReplacedTokens' parameter to be true. The viewWithReplacedTokens parameter may not be passed correctly in all rendering contexts.",
+    "The Token Replacement setting UI exists in Module Settings > HTML Module Settings and can be toggled, but clicking Update causes a NullReferenceException error.",
+    "According to Settings.ascx.cs, enabling token replacement also disables module caching (CacheTime = 0) as a side effect.",
+    "The Token Replacement Test Module is only visible in Edit mode, not in normal View mode, suggesting module visibility/permission settings prevent testing in the actual published view context.",
+    "All tokens (user, portal, tab, datetime, and invalid) display as raw text in both Edit and View modes when the module is visible, indicating the token replacement functionality is not executing."
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 1,
+    "failed": 7,
+    "pass_rate": "12.5%"
+  }
+}

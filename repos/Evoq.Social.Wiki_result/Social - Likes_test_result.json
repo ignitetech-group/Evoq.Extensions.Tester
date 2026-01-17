@@ -1,0 +1,102 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Social - Likes",
+    "feature_description": "Like and unlike wiki articles with like count display",
+    "feature_priority": "Medium",
+    "test_date": "2026-01-16T16:27:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Like an article",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to wiki article 'Published Test Article - Jan 16 2026'",
+          "expected": "Article page loads with Like button visible",
+          "actual": "Article page loaded successfully with 'Like this' button visible in the action toolbar",
+          "screenshot": "Social - Likes_step01_article_before_like.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click the 'Like this' button",
+          "expected": "Article is liked and button changes to 'Unlike this'",
+          "actual": "Button changed to 'Unlike this' and 'You like this' text appeared below the article content",
+          "screenshot": "Social - Likes_step02_article_after_like.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View like count",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After liking the article, observe the like indicator",
+          "expected": "Like count or like status is displayed",
+          "actual": "'You like this' text is displayed below the article content, confirming the like was registered",
+          "screenshot": "Social - Likes_step03_you_like_this.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Unlike an article",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click the 'Unlike this' button on a previously liked article",
+          "expected": "Article is unliked, button changes back to 'Like this', and like indicator is removed",
+          "actual": "Button changed back to 'Like this' and 'You like this' text was removed from the page",
+          "screenshot": "Social - Likes_step04_after_unlike.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify the like indicator is no longer visible",
+          "expected": "No like indicator shown",
+          "actual": "Confirmed - no 'You like this' text visible after unlike action",
+          "screenshot": "Social - Likes_step05_unlike_no_indicator.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Like state persistence",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Like the article again",
+          "expected": "Article is liked with 'You like this' displayed",
+          "actual": "Article liked successfully with 'You like this' text visible",
+          "screenshot": "Social - Likes_step06_before_refresh.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Refresh the page by navigating to the same URL",
+          "expected": "Like state persists - button should show 'Unlike this' and 'You like this' should be visible",
+          "actual": "After page refresh, the button still shows 'Unlike this' and 'You like this' text is still displayed, confirming the like state is persisted in the database",
+          "screenshot": "Social - Likes_step07_persistence_after_refresh.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review shows Like functionality is delegated to the Social Library's socialController.like() and socialController.unlike() methods in dnn.wiki.Article.js",
+    "User points increased from 197 to 202 after liking, suggesting the scoring/reputation system is integrated with the Like feature (though not explicitly tested as a separate scenario)",
+    "The Like button uses dnnSocialLike CSS class and toggles to dnnSocialLikeActive when liked",
+    "The UI shows 'You like this' text below the article content when the current user has liked the article"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}
