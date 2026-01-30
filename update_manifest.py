@@ -18,6 +18,7 @@ OUTPUT_FOLDER = "repos"
 
 OUTPUT_DIR = Path(OUTPUT_FOLDER)
 MANIFEST_FILE = Path("manifest.js")
+DISCARD_STATUS_FILE = Path("discard_status.js")
 
 
 def scan():
@@ -149,6 +150,14 @@ def scan():
         f.write('window.MANIFEST_DATA = ')
         json.dump(data, f, indent=2)
         f.write(';\n')
+    
+    # Create discard_status.js if it doesn't exist
+    if not DISCARD_STATUS_FILE.exists():
+        with open(DISCARD_STATUS_FILE, 'w') as f:
+            f.write('// Discard status - save your changes here to persist across sessions\n')
+            f.write('// This file is included when packaging for sharing\n')
+            f.write('window.DISCARD_STATUS = {};\n')
+        print(f"✅ Created {DISCARD_STATUS_FILE}")
     
     print(f"✅ Updated manifest.js")
     print(f"   📦 {len(results)} extensions")

@@ -24,14 +24,15 @@ def package():
     
     # Check required files exist
     manifest = Path("manifest.js")
-    navigator = Path("navigator_share.html")
+    navigator = Path("navigator.html")
+    discard_status = Path("discard_status.js")
     results_dir = Path(OUTPUT_FOLDER)
     
     missing = []
     if not manifest.exists():
         missing.append("manifest.js (run: python3 update_manifest.py)")
     if not navigator.exists():
-        missing.append("navigator_share.html")
+        missing.append("navigator.html")
     if not results_dir.exists():
         missing.append(f"{OUTPUT_FOLDER}/ folder")
     
@@ -48,11 +49,22 @@ def package():
     
     # Copy navigator as index.html for easy opening
     shutil.copy(navigator, package_dir / "index.html")
-    print(f"   ✓ Copied navigator_share.html → index.html")
+    print(f"   ✓ Copied navigator.html → index.html")
     
     # Copy manifest.js
     shutil.copy(manifest, package_dir / "manifest.js")
     print(f"   ✓ Copied manifest.js")
+    
+    # Copy discard_status.js (create empty one if it doesn't exist)
+    if discard_status.exists():
+        shutil.copy(discard_status, package_dir / "discard_status.js")
+        print(f"   ✓ Copied discard_status.js")
+    else:
+        # Create empty discard status file
+        with open(package_dir / "discard_status.js", 'w') as f:
+            f.write('// Discard status - no discarded scenarios\n')
+            f.write('window.DISCARD_STATUS = {};\n')
+        print(f"   ✓ Created empty discard_status.js")
     
     # Copy results folder
     dest_results = package_dir / OUTPUT_FOLDER

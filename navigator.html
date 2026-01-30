@@ -618,6 +618,7 @@
         .badge-priority.low { color: var(--priority-low); }
 
         .badge-pass { background: var(--status-success-soft); color: var(--status-success); }
+        .badge-warning { background: var(--status-warning-soft); color: var(--status-warning); }
         .badge-fail { background: var(--status-error-soft); color: var(--status-error); }
 
         .expand-icon {
@@ -970,6 +971,9 @@
         .summary-stat.pass .num { color: var(--status-success); }
         .summary-stat.fail .num { color: var(--status-error); }
         .summary-stat.total .num { color: var(--accent-primary); }
+        .summary-stat.rate-success .num { color: var(--status-success); }
+        .summary-stat.rate-warning .num { color: var(--status-warning); }
+        .summary-stat.rate-error .num { color: var(--status-error); }
 
         .json-scenarios h3 {
             font-size: 13px;
@@ -1292,6 +1296,7 @@
             </div>
         </div>
         <div class="drawer-actions">
+            <button class="btn-ghost" onclick="saveDiscardStatus()" title="Save discard status to file for sharing">Save</button>
             <button class="btn-ghost" onclick="exportReviewStatus()">Export</button>
             <button class="btn-ghost" onclick="importReviewStatus()">Import</button>
             <button class="btn-ghost danger" onclick="clearAllStatus()">Clear</button>
@@ -1450,6 +1455,26 @@
             script.src = 'manifest.js?t=' + Date.now();
 
             script.onload = () => {
+                // Also load discard_status.js
+                const discardScript = document.createElement('script');
+                discardScript.src = 'discard_status.js?t=' + Date.now();
+                discardScript.onload = () => {
+                    // Merge saved discard status with localStorage
+                    if (window.DISCARD_STATUS && Object.keys(window.DISCARD_STATUS).length > 0) {
+                        const current = getAllStatus();
+                        const merged = { ...window.DISCARD_STATUS, ...current };
+                        saveAllStatus(merged);
+                    }
+                    finishLoading();
+                };
+                discardScript.onerror = () => {
+                    // No discard_status.js file, that's fine
+                    finishLoading();
+                };
+                document.body.appendChild(discardScript);
+            };
+
+            function finishLoading() {
                 btn.classList.remove('loading');
                 if (window.MANIFEST_DATA) {
                     currentData = window.MANIFEST_DATA;
@@ -1459,7 +1484,7 @@
                 } else {
                     showError();
                 }
-            };
+            }
 
             script.onerror = () => {
                 btn.classList.remove('loading');
@@ -1479,10 +1504,21 @@
             `;
         }
 
+        function getPassRateColor(percent) {
+            if (percent >= 90) return 'var(--status-success)';  // Green: 90%+
+            if (percent >= 70) return 'var(--status-warning)';  // Yellow: 70-89%
+            return 'var(--status-error)';                        // Red: below 70%
+        }
+
         function updateProgressRing(percent) {
             const circumference = 2 * Math.PI * 16; // r=16
             const offset = circumference - (percent / 100) * circumference;
-            document.getElementById('progressFill').style.strokeDashoffset = offset;
+            const fill = document.getElementById('progressFill');
+            const text = document.getElementById('stat-passrate');
+            
+            fill.style.strokeDashoffset = offset;
+            fill.style.stroke = getPassRateColor(percent);
+            text.style.color = getPassRateColor(percent);
         }
 
         function renderContent(data) {
@@ -1590,7 +1626,74 @@
 
             saveAllStatus(allStatus);
             updateScenarioUI(scenarioId);
+            updateFeatureBadge(extName, featureName);
+            updateExtensionBadge(extName);
             updateReviewPanel();
+        }
+
+        function updateFeatureBadge(extName, featureName) {
+            if (!currentData?.results?.[extName]?.features?.[featureName]) return;
+            
+            const featureData = currentData.results[extName].features[featureName];
+            const scenarios = featureData.scenarios || [];
+            
+            let activePassed = 0;
+            let activeFailed = 0;
+            scenarios.forEach(s => {
+                const scenarioId = generateScenarioId(extName, featureName, s.name);
+                if (getTestStatus(scenarioId) !== 'discarded') {
+                    if (s.status === 'PASS') activePassed++;
+                    else activeFailed++;
+                }
+            });
+            
+            const featureTotal = activePassed + activeFailed;
+            const featurePassRate = featureTotal > 0 ? (activePassed / featureTotal) * 100 : 0;
+            const featureBadgeClass = featurePassRate >= 90 ? 'badge-pass' : featurePassRate >= 70 ? 'badge-warning' : 'badge-fail';
+            
+            // Find and update the feature's badge
+            const testId = `${extName}::${featureName}`;
+            const testItem = document.querySelector(`[data-test-id="${testId}"]`);
+            if (testItem) {
+                const badge = testItem.querySelector('.test-actions .badge');
+                if (badge) {
+                    badge.className = `badge ${featureBadgeClass}`;
+                    badge.textContent = `${activePassed}/${featureTotal}`;
+                }
+            }
+        }
+
+        function updateExtensionBadge(extName) {
+            if (!currentData?.results?.[extName]?.features) return;
+            
+            const features = currentData.results[extName].features;
+            let extPassed = 0;
+            let extFailed = 0;
+            
+            for (const [featureName, featureData] of Object.entries(features)) {
+                const scenarios = featureData.scenarios || [];
+                for (const s of scenarios) {
+                    const scenarioId = generateScenarioId(extName, featureName, s.name);
+                    if (getTestStatus(scenarioId) !== 'discarded') {
+                        if (s.status === 'PASS') extPassed++;
+                        else extFailed++;
+                    }
+                }
+            }
+            
+            const extTotal = extPassed + extFailed;
+            const extPassRate = extTotal > 0 ? (extPassed / extTotal) * 100 : 0;
+            const extBadgeClass = extPassRate >= 90 ? 'badge-pass' : extPassRate >= 70 ? 'badge-warning' : 'badge-fail';
+            
+            // Find and update the extension's badge in the header
+            const extCard = document.querySelector(`[data-ext-name="${extName}"]`);
+            if (extCard) {
+                const badge = extCard.querySelector('.extension-header .badge');
+                if (badge) {
+                    badge.className = `badge ${extBadgeClass}`;
+                    badge.textContent = `${extPassed}/${extTotal}`;
+                }
+            }
         }
 
         function updateScenarioUI(scenarioId) {
@@ -1718,6 +1821,27 @@
             URL.revokeObjectURL(url);
         }
 
+        function saveDiscardStatus() {
+            const allStatus = getAllStatus();
+            
+            // Generate discard_status.js content
+            const jsContent = `// Discard status - saved ${new Date().toISOString()}
+// Replace the existing discard_status.js file with this one to persist your changes
+window.DISCARD_STATUS = ${JSON.stringify(allStatus, null, 2)};
+`;
+            
+            const blob = new Blob([jsContent], { type: 'application/javascript' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'discard_status.js';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Downloaded discard_status.js\\n\\nReplace the existing file in your project folder to save your discard choices.');
+        }
+
         function importReviewStatus() {
             const input = document.createElement('input');
             input.type = 'file';
@@ -1806,7 +1930,10 @@
                     </div>`;
                 }
 
-                const featureSummary = `<span class="badge ${activePassed > 0 && activeFailed === 0 ? 'badge-pass' : activeFailed > 0 ? 'badge-fail' : ''}">${activePassed}/${activePassed + activeFailed}</span>`;
+                const featureTotal = activePassed + activeFailed;
+                const featurePassRate = featureTotal > 0 ? (activePassed / featureTotal) * 100 : 0;
+                const featureBadgeClass = featurePassRate >= 90 ? 'badge-pass' : featurePassRate >= 70 ? 'badge-warning' : 'badge-fail';
+                const featureSummary = `<span class="badge ${featureBadgeClass}">${activePassed}/${featureTotal}</span>`;
 
                 featuresHtml += `<div class="test-item" data-test-id="${testId}">
                     <div class="test-header">
@@ -1834,8 +1961,10 @@
                 }
             }
             const extTotal = extPassed + extFailed;
+            const extPassRate = extTotal > 0 ? (extPassed / extTotal) * 100 : 0;
+            const extBadgeClass = extPassRate >= 90 ? 'badge-pass' : extPassRate >= 70 ? 'badge-warning' : 'badge-fail';
             const passFailBadge = extTotal > 0
-                ? `<span class="badge ${extFailed === 0 ? 'badge-pass' : 'badge-fail'}">${extPassed}/${extTotal}</span>`
+                ? `<span class="badge ${extBadgeClass}">${extPassed}/${extTotal}</span>`
                 : '';
 
             return `<div class="extension-card" data-name="${name.toLowerCase()}" data-priority="${meta.priority}" data-ext-name="${name}">
@@ -1937,7 +2066,9 @@
                 }
             });
             const activeTotal = activePassed + activeFailed;
-            const activePassRate = activeTotal > 0 ? `${Math.round(activePassed / activeTotal * 100)}%` : '0%';
+            const activePassRateNum = activeTotal > 0 ? Math.round(activePassed / activeTotal * 100) : 0;
+            const activePassRate = `${activePassRateNum}%`;
+            const passRateColorClass = activePassRateNum >= 90 ? 'rate-success' : activePassRateNum >= 70 ? 'rate-warning' : 'rate-error';
 
             let html = `
                 <div class="json-detail">
@@ -1954,7 +2085,7 @@
                     <div class="json-summary">
                         <div class="summary-stat pass"><span class="num">${activePassed}</span><span class="label">Passed</span></div>
                         <div class="summary-stat fail"><span class="num">${activeFailed}</span><span class="label">Failed</span></div>
-                        <div class="summary-stat total"><span class="num">${activePassRate}</span><span class="label">Pass Rate</span></div>
+                        <div class="summary-stat total ${passRateColorClass}"><span class="num">${activePassRate}</span><span class="label">Pass Rate</span></div>
                     </div>
 
                     <div class="json-scenarios">
@@ -2071,15 +2202,25 @@
             });
 
             const activeTotal = activePassed + activeFailed;
-            const activePassRate = activeTotal > 0 ? `${Math.round(activePassed / activeTotal * 100)}%` : '0%';
+            const activePassRateNum = activeTotal > 0 ? Math.round(activePassed / activeTotal * 100) : 0;
+            const activePassRate = `${activePassRateNum}%`;
 
             const passedEl = document.querySelector('.json-detail .summary-stat.pass .num');
             const failedEl = document.querySelector('.json-detail .summary-stat.fail .num');
-            const rateEl = document.querySelector('.json-detail .summary-stat.total .num');
+            const rateStat = document.querySelector('.json-detail .summary-stat.total');
+            const rateEl = rateStat ? rateStat.querySelector('.num') : null;
 
             if (passedEl) passedEl.textContent = activePassed;
             if (failedEl) failedEl.textContent = activeFailed;
             if (rateEl) rateEl.textContent = activePassRate;
+            
+            // Update color class based on pass rate
+            if (rateStat) {
+                rateStat.classList.remove('rate-success', 'rate-warning', 'rate-error');
+                if (activePassRateNum >= 90) rateStat.classList.add('rate-success');
+                else if (activePassRateNum >= 70) rateStat.classList.add('rate-warning');
+                else rateStat.classList.add('rate-error');
+            }
         }
 
         function openDetailLightbox(folder, images, index) {

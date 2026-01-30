@@ -47,21 +47,69 @@ REPO_PATHS = {
 }
 
 # =============================================================================
-# BEDROCK CONFIGURATION
+# CLAUDE PROVIDER CONFIGURATION
 # =============================================================================
+# 
+# Available providers:
+#   "bedrock"  - AWS Bedrock (requires AWS credentials configured in environment)
+#   "api_key"  - Anthropic API Key (requires ANTHROPIC_API_KEY env var)
+#   "console"  - Anthropic Console login (run `claude /login` before starting tester)
+#
+# To use "console" provider:
+#   1. Run `claude /login` in your terminal first
+#   2. Complete the browser-based authentication
+#   3. Then run the tester
+#
+PROVIDER = "console"  # Change this to switch providers
 
-# Model ID for Bedrock
-# BEDROCK_MODEL = "us.anthropic.claude-opus-4-1-20250805-v1:0"  # Use for final test runs
-# BEDROCK_MODEL = "us.anthropic.claude-sonnet-4-5-20250929-v1:0"  # Faster for testing
-BEDROCK_MODEL = "global.anthropic.claude-opus-4-5-20251101-v1:0"  # Global model
-
-# Environment variables for Bedrock (set before running)
-BEDROCK_ENV = {
-    "CLAUDE_CODE_USE_BEDROCK": "1",
-    # AWS credentials should already be configured in your environment
-    # "AWS_REGION": "us-east-1",  # Uncomment if needed
-    # "AWS_PROFILE": "your-profile",  # Uncomment if needed
+# -----------------------------------------------------------------------------
+# Model names per provider (Bedrock uses different naming than Anthropic direct)
+# -----------------------------------------------------------------------------
+MODELS = {
+    "bedrock": {
+        "primary": "global.anthropic.claude-opus-4-5-20251101-v1:0",
+        "fast": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+    },
+    "api_key": {
+        "primary": "claude-opus-4-5-20251101",
+        "fast": "claude-sonnet-4-5-20250929",
+    },
+    "console": {
+        "primary": "claude-opus-4-5-20251101",
+        "fast": "claude-sonnet-4-5-20250929",
+    },
 }
+
+# -----------------------------------------------------------------------------
+# Auto-configured based on PROVIDER selection
+# -----------------------------------------------------------------------------
+def _get_provider_env() -> dict:
+    """Returns environment variables required for the selected provider."""
+    if PROVIDER == "bedrock":
+        return {"CLAUDE_CODE_USE_BEDROCK": "1"}
+    elif PROVIDER == "api_key":
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise EnvironmentError(
+                "ANTHROPIC_API_KEY environment variable is required when using 'api_key' provider.\n"
+                "Set it with: export ANTHROPIC_API_KEY='your-key-here'"
+            )
+        return {}  # API key is read from env automatically by claude CLI
+    elif PROVIDER == "console":
+        # Console provider uses interactive login - no env vars needed
+        # User must run `claude /login` before starting
+        return {}
+    else:
+        raise ValueError(f"Unknown PROVIDER: {PROVIDER}. Use 'bedrock', 'api_key', or 'console'")
+
+
+# Exported config values (used by tester.py)
+CLAUDE_MODEL = MODELS[PROVIDER]["primary"]
+CLAUDE_ENV = _get_provider_env()
+
+# Legacy aliases for backwards compatibility
+BEDROCK_MODEL = CLAUDE_MODEL
+BEDROCK_ENV = CLAUDE_ENV
 
 # =============================================================================
 # CLAUDE CODE SETTINGS

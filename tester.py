@@ -8,7 +8,7 @@ from evoq_types import ExtensionInfo, FeatureInfo, ExtensionFeatures
 import subprocess
 import time
 from datetime import datetime
-from config import BEDROCK_MODEL, BEDROCK_ENV, CLAUDE_TIMEOUT
+from config import CLAUDE_MODEL, CLAUDE_ENV, CLAUDE_TIMEOUT, PROVIDER
 from dotenv import load_dotenv
 from utils import format_claude_output_line
 from prompts import (
@@ -200,7 +200,7 @@ class EvoqExtensionTester:
             extension=extension,
             features=features_list,
             extraction_timestamp=datetime.now().isoformat(),
-            extraction_model=BEDROCK_MODEL,
+            extraction_model=CLAUDE_MODEL,
         )
 
     # =========================================================================
@@ -390,7 +390,7 @@ class EvoqExtensionTester:
                 "extension": extension.name,
                 "feature": feature_name,
                 "timestamp": datetime.now().isoformat(),
-                "model": BEDROCK_MODEL,
+                "model": CLAUDE_MODEL,
             }
 
             start_time = time.time()
@@ -410,7 +410,7 @@ class EvoqExtensionTester:
             cmd = [
                 claude_cmd,
                 "-p", simple_prompt,
-                "--model", BEDROCK_MODEL,
+                "--model", CLAUDE_MODEL,
                 "--output-format", output_format,
                 "--verbose",
                 "--dangerously-skip-permissions",
@@ -421,7 +421,7 @@ class EvoqExtensionTester:
             
             # Environment with Bedrock settings
             env = os.environ.copy()
-            env.update(BEDROCK_ENV)
+            env.update(CLAUDE_ENV)
             
             # Run Claude Code
             process = subprocess.Popen(
