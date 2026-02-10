@@ -5,7 +5,7 @@
     "feature_name": "Tag Management",
     "feature_description": "Create, edit, and manage post tags for categorization and filtering",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:30:00Z",
+    "test_date": "2026-02-09T15:25:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,24 +15,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Post Editor at http://localhost:8081/en-us/News/view/create",
-          "expected": "Post editor page loads with Tags section visible",
-          "actual": "Post editor page loaded successfully with Edit Post Details panel showing Tags input field",
-          "screenshot": "Tag Management_step01_post_editor_tags_field.png"
+          "action": "Navigate to News page and click Create Post",
+          "expected": "Post editor should open with title and body fields",
+          "actual": "Post editor opened successfully with Edit Post Details panel showing Tags section",
+          "screenshot": "Tag Management_step01_post_editor_tags_section.png"
         },
         {
           "step_number": 2,
-          "action": "Enter tags 'technology, testing, publisher' in Tags input field",
-          "expected": "Tags text is entered in the input field",
-          "actual": "Tags text was entered successfully",
-          "screenshot": "Tag Management_step03_tags_entered_wide.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Press comma/Enter to convert tags to chips",
-          "expected": "Tags are converted to removable tag chips",
-          "actual": "Tags were successfully converted to blue chips with X buttons: 'technology', 'testing', 'publisher'",
-          "screenshot": "Tag Management_step04_tags_as_chips.png"
+          "action": "Fill in title and click on Tags input field, type 'technology' and press comma, then type 'news' and press comma",
+          "expected": "Tags should be added to the post as chips/badges",
+          "actual": "Tags 'technology' and 'news' were successfully added and displayed as styled tag chips with remove (x) buttons",
+          "screenshot": "Tag Management_step02_panel_expanded.png"
         }
       ],
       "issues": []
@@ -43,10 +36,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "With existing tags displayed, click the X button on 'testing' tag chip",
-          "expected": "The 'testing' tag is removed from the list",
-          "actual": "The 'testing' tag was successfully removed, leaving only 'technology' and 'publisher' tags",
-          "screenshot": "Tag Management_step05_tag_removed.png"
+          "action": "Click the remove (x) button on the 'news' tag",
+          "expected": "The 'news' tag should be removed from the post",
+          "actual": "The 'news' tag was successfully removed, leaving only 'technology' tag",
+          "screenshot": "Tag Management_step03_tag_removed.png"
         }
       ],
       "issues": []
@@ -57,34 +50,27 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Enter a new tag 'newtesttag2026' that doesn't exist in the system",
-          "expected": "New tag can be entered",
-          "actual": "New tag text was entered successfully",
-          "screenshot": "Tag Management_step06_new_tag_created.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Press comma to create the new tag",
-          "expected": "New tag is created and displayed as a chip",
-          "actual": "New tag 'newtesttag2026' was successfully created and displayed as a removable chip",
-          "screenshot": "Tag Management_step06_new_tag_created.png"
+          "action": "Type a new tag name 'brand-new-tag-2026' in the tags input and press comma",
+          "expected": "A new tag should be created and added to the post",
+          "actual": "New tag 'brand-new-tag-2026' was successfully created and displayed alongside existing 'technology' tag",
+          "screenshot": "Tag Management_step04_new_tag_created.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Test tag character limits",
-      "status": "PASS",
+      "scenario_name": "Auto-suggest existing tags",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Enter a very long tag exceeding 50 characters: 'ThisIsAVeryLongTagNameThatExceedsNormalLengthLimitsToTestIfTheSystemHandlesLongTags...'",
-          "expected": "System enforces character limit or truncates tag",
-          "actual": "System displayed warning 'A tag cannot be more than 50 characters long' and truncated the tag to exactly 50 characters: 'ThisIsAVeryLongTagNameThatExceedsNormalLengthLimit'",
-          "screenshot": "Tag Management_step09_tag_character_limit.png"
+          "action": "Type partial tag text 'tech' in the tags input field",
+          "expected": "Autocomplete dropdown should appear with matching existing tags",
+          "actual": "No autocomplete dropdown appeared. The input field accepted the text but did not show any tag suggestions",
+          "screenshot": "Tag Management_step06_auto_suggest_test.png"
         }
       ],
-      "issues": []
+      "issues": ["Auto-suggest/autocomplete functionality is not implemented in the tags input field. Users must manually type the full tag name."]
     },
     {
       "scenario_name": "Handle duplicate tags",
@@ -92,47 +78,40 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "With 'testtag' already added as a tag chip, attempt to add 'testtag' again",
-          "expected": "System prevents duplicate tag from being added",
-          "actual": "System prevented duplicate by not converting the text to a chip and highlighting the duplicate text in red/pink background as visual feedback",
-          "screenshot": "Tag Management_step10_duplicate_tag_prevented.png"
+          "action": "Attempt to add 'technology' tag when it already exists on the post",
+          "expected": "System should prevent duplicate tags or show a warning",
+          "actual": "System displayed the duplicate tag entry with a red/magenta background indicating it's a duplicate, and the tag was not added twice to the tag list",
+          "screenshot": "Tag Management_step05_duplicate_tag_handled.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Test special characters in tags",
+      "scenario_name": "View tag cloud",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Enter tag with special characters: 'test@special#tag$123'",
-          "expected": "Tag with special characters is either accepted or handled appropriately",
-          "actual": "Tag 'test@special#tag$123' was successfully created - characters @, #, $ are accepted",
-          "screenshot": "Tag Management_step11_special_characters.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Enter tag with HTML-like characters: 'tag&amp<test>'",
-          "expected": "System handles HTML characters safely",
-          "actual": "System stripped the HTML-like characters '<test>' for XSS prevention, creating tag 'tag&amp' instead. This demonstrates proper security handling.",
-          "screenshot": "Tag Management_step11_special_characters.png"
+          "action": "Navigate to the News page listing",
+          "expected": "Tags filter/cloud should be visible showing available tags with counts",
+          "actual": "Tags section visible on right sidebar showing: technology (2), news (2), innovation (1), gadgets (1), sports (1) - each tag clickable for filtering",
+          "screenshot": "Tag Management_step08_tag_cloud_clean.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Auto-suggest existing tags: Code in TagsFilterManager.js shows tag filtering capability exists, but no auto-suggest dropdown appeared when typing partial tag names in the Tags input field. The tagsInput binding uses basic text input without autocomplete. This feature may not be implemented in the current UI.",
-    "View tag cloud: The TagsFilter module (TagsFilterManager.js) exists and provides GetTopTags API functionality, but this module is not added to the News page. Only 'Authors' filter is visible on the page sidebar. The tag cloud feature would need the TagsFilter module to be added to the page to be testable.",
-    "Bulk tag operations: No UI element found for bulk tag operations. Tags can only be added/removed one at a time through the post editor interface.",
-    "Tags are stored using DNN's taxonomy system via PostManager.cs UpdatePostTags method which uses TermController.",
-    "Tag input accepts comma-separated values and converts them to removable tag chips on comma press or blur."
+    "The tags input uses a jQuery-based tagsInput plugin with comma-separated entry",
+    "Tags are displayed as styled chips with count badges in the tag cloud view",
+    "Duplicate tag prevention works via visual feedback (red highlighting) rather than blocking input",
+    "Auto-suggest functionality for existing tags is not implemented - this could be a potential enhancement",
+    "The TagsFilterManager.js code shows there's an API endpoint for GetTopTags but it's used for the filter display, not for autocomplete suggestions in the input field"
   ],
   "summary": {
     "total_scenarios": 6,
-    "passed": 6,
-    "failed": 0,
-    "pass_rate": "100%"
+    "passed": 5,
+    "failed": 1,
+    "pass_rate": "83%"
   }
 }

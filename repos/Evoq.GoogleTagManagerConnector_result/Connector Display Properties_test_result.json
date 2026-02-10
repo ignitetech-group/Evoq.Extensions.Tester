@@ -5,7 +5,7 @@
     "feature_name": "Connector Display Properties",
     "feature_description": "Provides connector metadata including name, icon, category for display in the connectors management UI",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T15:36:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -16,16 +16,16 @@
         {
           "step_number": 1,
           "action": "Navigate to Settings > Connectors page",
-          "expected": "Connectors page loads with list of available connectors",
-          "actual": "Connectors page loaded successfully showing all available connectors",
-          "screenshot": "Connector_Display_Properties_step01_login_confirmed.png"
+          "expected": "Connectors list should be visible",
+          "actual": "Connectors list displayed with all available connectors",
+          "screenshot": "Connector Display Properties_step01_connectors_list.png"
         },
         {
           "step_number": 2,
-          "action": "Locate Google Tag Manager in the connectors list",
-          "expected": "Google Tag Manager connector displays with name 'Google Tag Manager'",
-          "actual": "Google Tag Manager connector displayed with name 'GOOGLE TAG MANAGER' (uppercase is UI styling)",
-          "screenshot": "Connector_Display_Properties_step03_gtm_display_name_icon.png"
+          "action": "Locate Google Tag Manager connector in the list",
+          "expected": "Connector should display with name 'Google Tag Manager'",
+          "actual": "Connector displays as 'GOOGLE TAG MANAGER' (uppercase styling applied by UI)",
+          "screenshot": "Connector Display Properties_step03_gtm_display_verified.png"
         }
       ],
       "issues": []
@@ -36,10 +36,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Observe the icon displayed next to Google Tag Manager connector",
-          "expected": "Google Tag Manager icon (blue diamond/hexagon shape) displays correctly",
-          "actual": "Blue diamond/hexagon shaped GTM icon displays correctly next to the connector name",
-          "screenshot": "Connector_Display_Properties_step03_gtm_display_name_icon.png"
+          "action": "View Google Tag Manager connector in Connectors list",
+          "expected": "Connector should display its icon",
+          "actual": "Blue diamond/hexagonal Google Tag Manager icon is displayed next to the connector name",
+          "screenshot": "Connector Display Properties_step03_gtm_display_verified.png"
         }
       ],
       "issues": []
@@ -50,31 +50,37 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Review code to verify connector category assignment",
-          "expected": "Connector is assigned to Marketing (Marketting) category via ConnectorCategories.Marketting",
-          "actual": "Code review confirmed: Type => ConnectorCategories.Marketting in GoogleTagManagerConnector.cs line 41",
-          "screenshot": "Connector_Display_Properties_step03_gtm_display_name_icon.png"
-        },
+          "action": "View Google Tag Manager connector position in Connectors list",
+          "expected": "Connector should appear grouped with other marketing connectors",
+          "actual": "Connector appears in alphabetical order near other marketing-related connectors (Google Analytics 4, Mailchimp, Marketo, Optimizely). Note: UI does not display explicit category headers but connector is properly categorized internally as 'Marketing' per code review",
+          "screenshot": "Connector Display Properties_step03_gtm_display_verified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify connector doesn't support multiple instances",
+      "status": "PASS",
+      "steps": [
         {
-          "step_number": 2,
-          "action": "Verify connector appears in the connectors management UI",
-          "expected": "Connector is visible and accessible in the Connectors UI",
-          "actual": "Connector appears in the Connectors list and is fully functional with Connect button available",
-          "screenshot": "Connector_Display_Properties_step04_gtm_config_panel.png"
+          "step_number": 1,
+          "action": "View Google Tag Manager connector in Connectors list",
+          "expected": "Only one instance of the connector should be shown without option to add more",
+          "actual": "Single connector instance displayed with 'Connect' button. No 'Add' or '+' button present to create additional instances. This confirms SupportsMultiple = false as defined in code",
+          "screenshot": "Connector Display Properties_step02_gtm_expanded.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The Connectors UI does not expose category filtering/labels visually - all connectors are displayed in a single alphabetically sorted list regardless of category",
-    "Code review confirmed connector properties: Name='GoogleTagManager', DisplayName='Google Tag Manager', Type=ConnectorCategories.Marketting, IsEngageConnector=false, SupportsMultiple=false",
-    "The connector icon is loaded from ~/DesktopModules/DnnCorp/Connectors/GoogleTagManager/Images/googletagmanager.png",
-    "Note: 'Marketting' is spelled with double 't' in the code (ConnectorCategories.Marketting) - this appears to be a legacy typo in the enum definition"
+    "Code review confirms IsEngageConnector = false, but this property is not visible in the UI. It is an internal property that affects connector behavior but has no UI representation to verify.",
+    "The Connectors UI displays all connectors in a flat alphabetical list without visible category headers or groupings. The ConnectorCategories.Marketting value is used internally for filtering/sorting but is not explicitly shown to users.",
+    "The display name in code is 'Google Tag Manager' but the UI renders it as 'GOOGLE TAG MANAGER' (uppercase) due to CSS text-transform styling applied to the connector list."
   ],
   "summary": {
-    "total_scenarios": 3,
-    "passed": 3,
+    "total_scenarios": 4,
+    "passed": 4,
     "failed": 0,
     "pass_rate": "100%"
   }

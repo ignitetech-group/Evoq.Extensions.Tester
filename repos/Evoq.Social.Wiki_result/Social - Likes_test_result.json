@@ -5,98 +5,97 @@
     "feature_name": "Social - Likes",
     "feature_description": "Like and unlike wiki articles with like count display",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T16:27:00Z",
+    "test_date": "2026-02-09T15:47:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
       "scenario_name": "Like an article",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to wiki article 'Published Test Article - Jan 16 2026'",
-          "expected": "Article page loads with Like button visible",
-          "actual": "Article page loaded successfully with 'Like this' button visible in the action toolbar",
-          "screenshot": "Social - Likes_step01_article_before_like.png"
+          "action": "Login to DNN site as superuser",
+          "expected": "Successfully logged in",
+          "actual": "Successfully logged in as SuperUser Account",
+          "screenshot": "Social - Likes_step00_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Click the 'Like this' button",
-          "expected": "Article is liked and button changes to 'Unlike this'",
-          "actual": "Button changed to 'Unlike this' and 'You like this' text appeared below the article content",
-          "screenshot": "Social - Likes_step02_article_after_like.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "View like count",
-      "status": "PASS",
-      "steps": [
+          "action": "Navigate to Wiki Test page",
+          "expected": "Wiki Test page with wiki articles displayed",
+          "actual": "Wiki Test page appears empty in view mode - wiki modules not visible without edit mode",
+          "screenshot": "Social - Likes_step02_wiki_page_content.png"
+        },
         {
-          "step_number": 1,
-          "action": "After liking the article, observe the like indicator",
-          "expected": "Like count or like status is displayed",
-          "actual": "'You like this' text is displayed below the article content, confirming the like was registered",
-          "screenshot": "Social - Likes_step03_you_like_this.png"
+          "step_number": 3,
+          "action": "Enable Edit mode to view wiki modules",
+          "expected": "Wiki modules with articles visible",
+          "actual": "Edit mode shows wiki modules with 5 articles in LeftPane",
+          "screenshot": "Social - Likes_step11_articles_list_visible.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click on article link to access article detail view with Like button",
+          "expected": "Article detail view with Like, Bookmark, Subscribe buttons visible",
+          "actual": "Article detail page (Wiki-Test/Test-Article-for-Search) loads but shows empty content - the Wiki module is not configured on article detail pages to display the article content and social actions",
+          "screenshot": "Social - Likes_step06_article_detail_view.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Article detail pages do not have the Wiki module configured to display article content",
+        "The Article.ascx control which contains the Like button is not rendered on article URLs",
+        "Wiki modules only show article list view, not article detail view with social actions"
+      ]
     },
     {
       "scenario_name": "Unlike an article",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Click the 'Unlike this' button on a previously liked article",
-          "expected": "Article is unliked, button changes back to 'Like this', and like indicator is removed",
-          "actual": "Button changed back to 'Like this' and 'You like this' text was removed from the page",
-          "screenshot": "Social - Likes_step04_after_unlike.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Verify the like indicator is no longer visible",
-          "expected": "No like indicator shown",
-          "actual": "Confirmed - no 'You like this' text visible after unlike action",
-          "screenshot": "Social - Likes_step05_unlike_no_indicator.png"
+          "action": "Attempt to access article detail view to find Unlike button",
+          "expected": "Article detail view with Unlike button visible (when already liked)",
+          "actual": "Cannot access article detail view - same issue as Like test",
+          "screenshot": "Social - Likes_step07_article_page_loading.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Cannot test Unlike functionality because article detail view is not accessible",
+        "The Unlike button is part of Article.ascx which is not rendered on article pages"
+      ]
     },
     {
-      "scenario_name": "Like state persistence",
-      "status": "PASS",
+      "scenario_name": "View like count",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Like the article again",
-          "expected": "Article is liked with 'You like this' displayed",
-          "actual": "Article liked successfully with 'You like this' text visible",
-          "screenshot": "Social - Likes_step06_before_refresh.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Refresh the page by navigating to the same URL",
-          "expected": "Like state persists - button should show 'Unlike this' and 'You like this' should be visible",
-          "actual": "After page refresh, the button still shows 'Unlike this' and 'You like this' text is still displayed, confirming the like state is persisted in the database",
-          "screenshot": "Social - Likes_step07_persistence_after_refresh.png"
+          "action": "Navigate to article detail view to see like count display",
+          "expected": "Like count displayed below article content (e.g., '0 people like this' or 'X people like this')",
+          "actual": "Article detail view not accessible - like count display (controlled by model.likeString()) cannot be verified",
+          "screenshot": "Social - Likes_step13_leftpane_articles_list.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Like count display is part of Article.ascx which requires the Wiki module on article detail pages",
+        "The likeString binding in the template is not rendered because the module is not present"
+      ]
     }
   ],
   "observations": [
-    "Code review shows Like functionality is delegated to the Social Library's socialController.like() and socialController.unlike() methods in dnn.wiki.Article.js",
-    "User points increased from 197 to 202 after liking, suggesting the scoring/reputation system is integrated with the Like feature (though not explicitly tested as a separate scenario)",
-    "The Like button uses dnnSocialLike CSS class and toggles to dnnSocialLikeActive when liked",
-    "The UI shows 'You like this' text below the article content when the current user has liked the article"
+    "Code review confirms Like functionality exists in Article.ascx (lines 33-38 for like/unlike buttons, line 115 for like count display)",
+    "The JavaScript file dnn.wiki.Article.js contains like(), unlike(), and likes() methods that integrate with the Social Library",
+    "The Wiki module on the Wiki Test page correctly displays article list with titles and 'View Full Page' links",
+    "Clicking article links navigates to article-specific URLs (e.g., /Wiki-Test/Test-Article-for-Tagging) but these pages do not have the Wiki module configured",
+    "The article detail pages only show the trial warning message and footer - no article content or social actions are displayed",
+    "This appears to be a page template/module configuration issue in the test environment rather than a code defect",
+    "The Like feature requires the Wiki module to be added to article detail page templates with the Article.ascx control"
   ],
   "summary": {
-    "total_scenarios": 4,
-    "passed": 4,
-    "failed": 0,
-    "pass_rate": "100%"
+    "total_scenarios": 3,
+    "passed": 0,
+    "failed": 3,
+    "pass_rate": "0%"
   }
 }

@@ -5,7 +5,7 @@
     "feature_name": "Content Preview",
     "feature_description": "Preview content before publishing with token replacement and formatting applied",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T05:01:00Z",
+    "test_date": "2026-02-09T14:49:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,17 +15,38 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Home page and enable edit mode",
-          "expected": "Edit mode enabled with module panes visible",
-          "actual": "Edit mode enabled successfully, module panes and Actions links visible",
-          "screenshot": "Content Preview_step01_edit_mode.png"
+          "action": "Logged in as host user and navigated to Home page",
+          "expected": "Login successful and page loads",
+          "actual": "Login successful, Home page loaded with HTML modules visible",
+          "screenshot": "Content Preview_step00_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Click VIEW SITE dropdown in bottom toolbar and select Preview",
-          "expected": "Preview mode opens showing draft content",
-          "actual": "Preview mode opened successfully with page content displayed in preview iframe",
-          "screenshot": "Content Preview_step05_preview_mode_tokens_replaced.png"
+          "action": "Entered Edit mode using the edit bar",
+          "expected": "Edit mode activates showing module panes and edit controls",
+          "actual": "Edit mode activated, module panes visible with Add Module buttons",
+          "screenshot": "Content Preview_step01_edit_mode.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Clicked on HTML module (468:Text/HTML) to open inline editor",
+          "expected": "Inline editor opens with current content",
+          "actual": "Inline editor opened showing current content with formatting toolbar",
+          "screenshot": "Content Preview_step03_inline_editor.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Clicked Advanced Editor button to open full editor dialog",
+          "expected": "CKEditor dialog opens with content",
+          "actual": "Advanced editor dialog opened with CKEditor showing full content editing interface",
+          "screenshot": "Content Preview_step04_advanced_editor.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Clicked CKEditor Preview button in toolbar",
+          "expected": "Preview opens showing formatted content",
+          "actual": "Preview opened in new browser tab showing formatted content with styling applied",
+          "screenshot": "Content Preview_step05_ckeditor_preview.png"
         }
       ],
       "issues": []
@@ -36,62 +57,76 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "View Token Replacement Test Module in edit mode",
-          "expected": "Module displays raw tokens like [User:DisplayName], [Portal:PortalName]",
-          "actual": "Module correctly shows raw token placeholders in edit mode",
-          "screenshot": "Content Preview_step12_token_module_edit_view.png"
+          "action": "With edit mode active, clicked on VIEW SITE dropdown in edit bar",
+          "expected": "Preview dropdown shows preview options",
+          "actual": "VIEW SITE dropdown displayed with Preview, Tablet, and Phone options",
+          "screenshot": "Content Preview_step07_preview_dropdown.png"
         },
         {
           "step_number": 2,
-          "action": "Open Preview mode via VIEW SITE dropdown",
-          "expected": "Tokens should be replaced with actual values",
-          "actual": "All tokens correctly replaced: [User:DisplayName] became 'SuperUser Account', [User:Email] became 'chetan.verma@ignitetech.com', [Portal:PortalName] became 'My Website', [DateTime:Now] became '1/16/2026 5:00 AM'",
-          "screenshot": "Content Preview_step05_preview_mode_tokens_replaced.png"
+          "action": "Selected Preview option to enter page-level preview mode",
+          "expected": "Page preview mode activates showing content as visitors would see it",
+          "actual": "Preview mode activated, page displayed without edit controls, tokens replaced with actual values",
+          "screenshot": "Content Preview_step08_preview_mode.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Preview mobile view",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked Phone option in VIEW SITE dropdown",
+          "expected": "Phone preview mode activates showing mobile view",
+          "actual": "Phone preview mode activated showing page in phone-shaped device frame",
+          "screenshot": "Content Preview_step10_phone_preview_current.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Tablet option in VIEW SITE dropdown",
+          "expected": "Tablet preview mode activates showing tablet view",
+          "actual": "Tablet preview mode activated showing page in tablet-shaped device frame with appropriate responsive layout",
+          "screenshot": "Content Preview_step11_tablet_preview.png"
         }
       ],
       "issues": []
     },
     {
       "scenario_name": "Preview different versions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Closed preview mode and clicked Page History button in edit bar",
+          "expected": "Page History panel opens showing version list",
+          "actual": "Page History panel opened showing 3 versions: Version 3 (Draft), Version 2 (Published), Version 1 (Published)",
+          "screenshot": "Content Preview_step13_page_history.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Show action for Version 2",
+          "expected": "Version 2 preview loads in preview mode",
+          "actual": "Version 2 preview loaded showing published content with 'Version 2' label displayed in corner",
+          "screenshot": "Content Preview_step14_version2_preview.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Preview as different user role",
       "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Pages panel in Persona Bar to find version history",
-          "expected": "Version history should be accessible for previewing different versions",
-          "actual": "Page shows 'Versioning: Off' - versioning is disabled on this page, no UI element available to access version history or preview different versions",
-          "screenshot": "Content Preview_step08_edit_mode_live_view.png"
+          "action": "Searched UI for 'Preview as user role' or impersonation functionality",
+          "expected": "Option to preview page as different user role",
+          "actual": "No UI element found to preview content as different user role. Feature not exposed in HTML module Content Preview UI.",
+          "screenshot": "Content Preview_step12_edit_mode_toolbar.png"
         }
       ],
-      "issues": ["Versioning is disabled on the Home page. Code suggests version preview exists via DnnTabVersion URL parameter, but no UI element found to select and preview different versions when versioning is disabled."]
-    },
-    {
-      "scenario_name": "Preview mobile view - Tablet",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "In Preview mode, click VIEW SITE dropdown and select Tablet",
-          "expected": "Page should display in tablet-sized viewport with responsive layout",
-          "actual": "Tablet preview mode activated successfully - page displayed in narrower viewport with hamburger Menu button, responsive layout applied",
-          "screenshot": "Content Preview_step06_tablet_preview.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Preview mobile view - Phone",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "In Preview mode, click VIEW SITE dropdown and select Phone",
-          "expected": "Page should display in phone-sized viewport with mobile layout",
-          "actual": "Phone preview mode activated successfully - page displayed in narrow phone viewport with device frame, mobile-responsive layout with Menu button",
-          "screenshot": "Content Preview_step07_phone_preview.png"
-        }
-      ],
-      "issues": []
+      "issues": ["No 'Preview as different user role' functionality found in the Content Preview UI. This feature may require platform-level impersonation capabilities not exposed in the HTML module."]
     },
     {
       "scenario_name": "Compare preview with live",
@@ -99,28 +134,28 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "View Token Replacement Test Module in edit mode (live view)",
-          "expected": "Module shows raw tokens as stored in content",
-          "actual": "Edit mode displays raw tokens: [User:DisplayName], [User:Email], [Portal:PortalName], [Tab:TabName], [DateTime:Now], etc.",
-          "screenshot": "Content Preview_step12_token_module_edit_view.png"
+          "action": "In Page History panel, checked Compare checkboxes for Version 3 (Draft) and Version 2 (Published)",
+          "expected": "Both versions selected for comparison",
+          "actual": "Both checkboxes checked, Compare button became enabled",
+          "screenshot": "Content Preview_step15_compare_selected.png"
         },
         {
           "step_number": 2,
-          "action": "Compare with Preview mode view",
-          "expected": "Preview mode shows tokens replaced with actual runtime values",
-          "actual": "Preview mode correctly replaces all tokens with actual values. Clear difference visible between edit mode (raw tokens) and preview mode (replaced values)",
-          "screenshot": "Content Preview_step05_preview_mode_tokens_replaced.png"
+          "action": "Clicked Compare button",
+          "expected": "Side-by-side comparison view opens showing differences",
+          "actual": "Comparison view opened showing Version 3 and Version 2 side-by-side with inserted content highlighted in cyan and deleted content in red",
+          "screenshot": "Content Preview_step16_compare_versions.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Code suggests version preview feature exists (EditHtml.ascx has VersionPreview button functionality, preview URL uses DnnTabVersion parameter), but no UI element found to test version preview when page versioning is disabled",
-    "CKEditor's built-in Preview button opens content in a new tab showing raw HTML without token replacement - this is expected behavior as it's a CKEditor feature, not DNN preview",
-    "Page-level Preview mode (VIEW SITE > Preview) correctly applies token replacement using FormatHtmlText method in HtmlTextController.cs",
-    "Portrait/Landscape toggle options available in mobile preview modes (Tablet/Phone)",
-    "Invalid tokens like [Invalid:Token] display error messages in preview: 'Error accessing [Invalid:Token], Invalid is an unknown datasource'"
+    "Code in HtmlTextController.cs shows token replacement is controlled by the HtmlText_ReplaceTokens setting and uses TokenReplace class for substitution",
+    "CKEditor provides built-in Preview button that opens content in new tab",
+    "Page-level preview mode (VIEW SITE dropdown) provides Preview, Tablet, and Phone responsive views",
+    "Page History provides version preview (Show) and version comparison features",
+    "Preview as different user role functionality is not available in the HTML module Content Preview UI - this would require platform-level user impersonation features"
   ],
   "summary": {
     "total_scenarios": 6,

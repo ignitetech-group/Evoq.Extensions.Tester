@@ -5,168 +5,227 @@
     "feature_name": "Article Editing and Updates",
     "feature_description": "Edit existing wiki articles with version tracking and approval workflow",
     "feature_priority": "Top",
-    "test_date": "2026-01-16T16:19:00Z",
+    "test_date": "2026-02-09T15:52:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Edit article content",
+      "scenario_name": "Navigate to existing articles",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Wiki module in Test Activity Group",
-          "expected": "Wiki module displays with list of articles",
-          "actual": "Wiki module displayed with 7 articles including Welcome to the Wiki primary article",
-          "screenshot": "Article Editing and Updates_step01_wiki_module_found.png"
+          "action": "Logged in as host user and navigated to Wiki Test page",
+          "expected": "Wiki Test page loads successfully",
+          "actual": "Wiki Test page loaded but no Wiki module was visible in view mode",
+          "screenshot": "Article Editing and Updates_step00_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Click on Group Wiki Test Article to view details",
-          "expected": "Article detail page opens",
-          "actual": "Article detail page displayed with content, tags, and Edit button",
-          "screenshot": "Article Editing and Updates_step02_article_detail_page.png"
+          "action": "Entered Edit mode to view Wiki modules",
+          "expected": "Wiki modules become visible with article list",
+          "actual": "Wiki modules visible - LeftPane Wiki module shows 6 articles",
+          "screenshot": "Article Editing and Updates_step04_wiki_articles_found.png"
         },
         {
           "step_number": 3,
-          "action": "Click Edit button to open edit dialog",
-          "expected": "Edit dialog opens with article fields",
-          "actual": "Edit dialog opened with Title, Article Type, TOC checkbox, Content editor, Approved checkbox, and Tags fields",
-          "screenshot": "Article Editing and Updates_step03_edit_dialog_opened.png"
-        },
-        {
-          "step_number": 4,
-          "action": "Edit content in the rich text editor",
-          "expected": "Content can be edited",
-          "actual": "Content editor allows text editing with Redactor WYSIWYG editor",
-          "screenshot": "Article Editing and Updates_step04_content_edited.png"
+          "action": "Verified article list with titles and metadata",
+          "expected": "Articles display with titles, last updated time, summary, and tags",
+          "actual": "All articles display correctly with metadata (Test Article Draft, Test Article for Tagging, etc.)",
+          "screenshot": "Article Editing and Updates_step05_articles_list.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Edit article title",
-      "status": "PASS",
+      "scenario_name": "Access article detail pages for editing",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "In the edit dialog, modify the Title field",
-          "expected": "Title field is editable",
-          "actual": "Title changed from 'Group Wiki Test Article - Title Edited' to 'Group Wiki Test Article - Updated Title Jan 16'",
-          "screenshot": "Article Editing and Updates_step05_title_edited.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Edit article metadata (tags)",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Add a new tag 'new-test-tag' to the Tags field",
-          "expected": "New tag is added to the article",
-          "actual": "New tag 'new-test-tag' was added successfully, now showing 4 tags: group-wiki, testing, edited-tag, new-test-tag",
-          "screenshot": "Article Editing and Updates_step06_tag_added.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Save as draft vs publish",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Uncheck the Approved checkbox",
-          "expected": "Approved checkbox becomes unchecked",
-          "actual": "Approved checkbox was unchecked successfully",
-          "screenshot": "Article Editing and Updates_step07_approved_unchecked.png"
+          "action": "Clicked on article link 'Test Article for Tagging' from article list",
+          "expected": "Article detail page opens with content and Edit button visible",
+          "actual": "404 Error Page - 'Sorry, the page you are looking for cannot be found'",
+          "screenshot": "Article Editing and Updates_step10_article_404_error.png"
         },
         {
           "step_number": 2,
-          "action": "Click Publish button with Approved unchecked",
-          "expected": "Article is saved as draft (pending) instead of published",
-          "actual": "Article was saved. Tags were immediately visible on the article page, confirming save worked. Title changes remain pending as draft.",
-          "screenshot": "Article Editing and Updates_step08_draft_saved.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Verify article page shows saved tags",
-          "expected": "New tag should be visible on article",
-          "actual": "Article page displays all 4 tags including the newly added 'new-test-tag'",
-          "screenshot": "Article Editing and Updates_step09_draft_result_with_tags.png"
+          "action": "Tried navigating directly to article URL http://localhost:8081/en-us/Wiki-Test/Test-Article-for-Tagging",
+          "expected": "Article detail page loads with Wiki module rendering content",
+          "actual": "404 Error - Wiki module URL routing not configured properly",
+          "screenshot": "Article Editing and Updates_step07_article_page_empty.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Article detail pages return 404 errors - Wiki module URL routing is not properly configured",
+        "Cannot access article edit functionality through normal UI navigation",
+        "This blocks testing of: Edit article content, Edit article title, Edit article metadata, Save as draft vs publish, Concurrent editing scenarios, Edit permissions"
+      ]
     },
     {
-      "scenario_name": "Edit primary article",
+      "scenario_name": "Primary article creation/editing (Front page article)",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Click Edit button on the primary article 'Welcome to the Wiki'",
-          "expected": "Edit dialog opens with simplified UI for primary article",
-          "actual": "Edit dialog opened with only Content field visible. Title, Article Type, TOC, and Tags fields are hidden for primary articles. Delete button is available for moderators.",
-          "screenshot": "Article Editing and Updates_step10_primary_article_edit_dialog.png"
+          "action": "Clicked 'Create article for front page...' link in Wiki module",
+          "expected": "Content editor dialog opens for primary article",
+          "actual": "Dialog opened with title 'Create an article' and Content field with Publish/Cancel buttons",
+          "screenshot": "Article Editing and Updates_step11_create_front_page_dialog.png"
         },
         {
           "step_number": 2,
-          "action": "Edit the primary article content",
-          "expected": "Content can be edited",
-          "actual": "Content was editable. Test text was entered to verify editing works.",
-          "screenshot": "Article Editing and Updates_step11_primary_article_content_edited.png"
+          "action": "Entered test content in the Content field",
+          "expected": "Content is accepted and displayed in the textbox",
+          "actual": "Content 'This is test content for the Wiki front page article. Testing the Article Editing and Updates feature.' was entered successfully",
+          "screenshot": "Article Editing and Updates_step12_content_entered.png"
         },
         {
           "step_number": 3,
-          "action": "Click Cancel to discard changes",
-          "expected": "Changes are discarded, original content preserved",
-          "actual": "Cancel button worked correctly, original primary article content was preserved"
+          "action": "Verified Cancel button closes dialog",
+          "expected": "Dialog closes without saving changes",
+          "actual": "Cancel button successfully closed the dialog",
+          "screenshot": "Article Editing and Updates_step13_dialog_cancelled.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Primary article editor only has Content field (no Title, Tags, or Article Type fields as expected for front page articles)",
+        "Publish button did not trigger visible API response (may require additional module initialization)"
+      ]
     },
     {
-      "scenario_name": "Empty title validation",
-      "status": "PASS",
+      "scenario_name": "Edit article content functionality",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Open edit dialog for a regular article",
-          "expected": "Edit dialog opens",
-          "actual": "Edit dialog opened for Group Wiki Test Article"
-        },
-        {
-          "step_number": 2,
-          "action": "Clear the Title field completely",
-          "expected": "Title field becomes empty",
-          "actual": "Title field was cleared using Ctrl+A and Backspace",
-          "screenshot": "Article Editing and Updates_step12_empty_title.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Click Publish button with empty title",
-          "expected": "Validation error prevents saving",
-          "actual": "Validation triggered - 'Text is required' error message displayed below the Title field. Publish was blocked.",
-          "screenshot": "Article Editing and Updates_step14_validation_error_visible.png"
+          "action": "Attempted to access article detail page to edit content",
+          "expected": "Article detail page with Edit button or inline edit functionality",
+          "actual": "404 Error - Cannot access article detail pages due to URL routing configuration issue",
+          "screenshot": "Article Editing and Updates_step10_article_404_error.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Cannot test edit article content - article detail pages return 404"
+      ]
+    },
+    {
+      "scenario_name": "Edit article title functionality",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access article detail page to edit title",
+          "expected": "Article editor with Title field editable",
+          "actual": "Cannot access - article detail pages return 404",
+          "screenshot": "Article Editing and Updates_step10_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test edit article title - article detail pages return 404"
+      ]
+    },
+    {
+      "scenario_name": "Edit article metadata functionality",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access article detail page to edit metadata (tags, article type, TOC setting)",
+          "expected": "Article editor with metadata fields (Tags, Article Type, Table of Contents) editable",
+          "actual": "Cannot access - article detail pages return 404",
+          "screenshot": "Article Editing and Updates_step10_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test edit article metadata - article detail pages return 404"
+      ]
+    },
+    {
+      "scenario_name": "Save as draft vs publish functionality",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access article editor to test Save Draft vs Publish options",
+          "expected": "Editor with Save Draft and Publish options based on user permissions and approval settings",
+          "actual": "Cannot access full article editor - only primary article dialog available which has Publish only",
+          "screenshot": "Article Editing and Updates_step11_create_front_page_dialog.png"
+        }
+      ],
+      "issues": [
+        "Cannot test save as draft - article detail pages return 404",
+        "Primary article dialog only shows Publish button, not Save Draft option"
+      ]
+    },
+    {
+      "scenario_name": "Concurrent editing scenarios",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to test concurrent editing detection (sequence/revision check)",
+          "expected": "System detects when article has been modified by another user and prompts appropriately",
+          "actual": "Cannot test - article detail pages return 404, preventing access to editor",
+          "screenshot": "Article Editing and Updates_step10_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test concurrent editing - article detail pages return 404",
+        "Code review shows getLastSequence function exists for revision conflict detection but cannot verify UI behavior"
+      ]
+    },
+    {
+      "scenario_name": "Edit permissions for different user roles",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to verify role-based edit permissions (canModerate, canPublish, canEditOtherFields)",
+          "expected": "Different UI elements shown based on user permissions",
+          "actual": "Cannot test - article detail pages return 404, preventing access to editor",
+          "screenshot": "Article Editing and Updates_step10_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test edit permissions - article detail pages return 404",
+        "Code review shows permission checks exist (CanModerate, canPublish, canEditOtherFields) but cannot verify UI behavior"
+      ]
+    },
+    {
+      "scenario_name": "Validation messages and error feedback",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to test validation for empty inputs, required fields",
+          "expected": "Validation messages appear for required fields (Title, Tags, Article Type, Content)",
+          "actual": "Cannot test full validation - article detail pages return 404",
+          "screenshot": "Article Editing and Updates_step10_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test validation messages - article detail pages return 404",
+        "Code review shows validators exist (validateArticleTitle, validateArticleType, validateArticleTag) but cannot verify UI behavior"
+      ]
     }
   ],
   "observations": [
-    "Primary article editing has a simplified UI that only shows the Content field - Title, Article Type, TOC checkbox, and Tags are hidden",
-    "The Approved checkbox controls whether changes are published immediately or saved as draft (pending approval)",
-    "Tags are saved immediately even when saving as draft, while title/content changes go to pending state",
-    "Article Type field is disabled for existing articles - cannot be changed after creation",
-    "The rich text editor uses Redactor WYSIWYG with formatting toolbar including Bold, Italic, Lists, Links, HTML, and Image insertion",
-    "Form validation prevents saving with empty required fields (Title, Content, Tags)"
+    "Code review confirms ContentEditor.ascx has fields for: Title, Article Type, Table of Contents, Content, Summary, Tags, Approved checkbox (for moderators)",
+    "Code review confirms dnn.wiki.ContentEditor.js has validation for required fields and revision conflict detection",
+    "Code review confirms ArticleController.cs handles CRUD operations with revision management through RevisionController",
+    "Code review confirms ContentController.cs has Publish() and SaveDraft() API endpoints with proper permission checks",
+    "Article detail page URL routing is not configured - all article URLs return 404 Error",
+    "Wiki module instances exist on the page (IDs 473, 478, etc.) and display article lists correctly",
+    "Primary article dialog (Create article for front page) works but has limited functionality (Content field only)",
+    "The 'Create article' functionality appears to work for regular articles but navigating to view/edit them fails",
+    "Assets panel from PersonaBar interferes with modal dialogs",
+    "PersonaBar iframe intercepts click events, requiring JavaScript evaluation for many interactions"
   ],
   "summary": {
-    "total_scenarios": 6,
-    "passed": 6,
-    "failed": 0,
-    "pass_rate": "100%"
+    "total_scenarios": 10,
+    "passed": 2,
+    "failed": 8,
+    "pass_rate": "20%"
   }
 }

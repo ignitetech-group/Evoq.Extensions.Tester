@@ -5,56 +5,79 @@
     "feature_name": "Print and Popup Mode Support",
     "feature_description": "Handles special rendering modes for print view and popup windows.",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T04:40:00Z",
+    "test_date": "2026-02-09T15:01:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Print mode rendering",
+      "scenario_name": "Print Mode Rendering",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Entered Edit mode on Home page to observe normal edit controls",
-          "expected": "Edit mode shows admin sidebar, pane names, Actions links, Add Existing Module links, and Discard/Publish buttons",
-          "actual": "Edit mode displayed with admin sidebar, ContentLayout pane names (F30A_Pane1, F30A_Pane2, 9977_Pane1, etc.), Actions links, Add Existing Module links, and Discard/Publish buttons visible",
-          "screenshot": "Print and Popup Mode Support_step01_edit_mode_controls.png"
+          "action": "Logged in as host user and confirmed login with Evoq control panel visible",
+          "expected": "Login successful with edit controls visible",
+          "actual": "Login successful - Evoq control panel visible on left side, edit mode available",
+          "screenshot": "Print and Popup Mode Support_step00_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Navigated to Home page with ?dnnprintmode=true query parameter",
-          "expected": "Page renders without ContentLayout edit controls, admin sidebar hidden, content displayed cleanly",
-          "actual": "Page rendered in print mode with URL http://localhost:8081/en-us/Home/dnnprintmode/true. No admin sidebar visible, no pane names, no Actions links, no Add Existing Module links. Content displayed cleanly without edit controls. Layout preserved correctly.",
+          "action": "Enabled Edit Mode to verify edit controls are present in normal mode",
+          "expected": "Edit mode controls should be visible including pane labels, action buttons, and edit bar",
+          "actual": "Edit mode controls visible - pane labels (TOPHERODARK, F30A_Pane1-4, 9977_Pane1-4), module action icons, Discard/Publish buttons in edit bar",
+          "screenshot": "Print and Popup Mode Support_step01_edit_mode_controls.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Navigated to page with dnnprintmode=true query parameter",
+          "expected": "Page should render in print mode with edit controls hidden and layout preserved",
+          "actual": "Print mode rendered correctly - no Evoq control panel, no edit bar, no pane labels, no module action buttons. Content layout preserved with 4-column product grid displaying correctly. Tokens resolved (User, Portal, Date shown).",
           "screenshot": "Print and Popup Mode Support_step02_print_mode.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Popup mode rendering",
+      "scenario_name": "Popup Mode Rendering",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigated to Home page with ?popUp=true query parameter",
-          "expected": "Page renders in simplified popup format without full navigation, ContentLayout edit scripts not loaded",
-          "actual": "Page rendered in popup mode with URL http://localhost:8081/en-us/?popUp=true. Page title changed to 'My Website > Home (Trial)' indicating popup mode. No admin sidebar visible, no full navigation header. Content modules displayed. Layout preserved with ContentLayout modules (LAPTOPS, etc.) visible. Code confirms ContentLayout's LayoutEditor.js and LayoutEditor.css are not loaded when IsSpecialPageMode is true.",
+          "action": "Navigated to page with popUp=true query parameter",
+          "expected": "Page should render in popup mode with edit controls hidden, page chrome removed, and content preserved",
+          "actual": "Popup mode rendered correctly - no header/navigation (CAVALIER logo and menu removed), no footer (copyright removed), no Evoq control panel, no edit controls. Content layout preserved with products displaying in clean popup presentation.",
           "screenshot": "Print and Popup Mode Support_step03_popup_mode.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit Controls Hidden in Special Modes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Compared normal edit mode with print mode and popup mode",
+          "expected": "Edit controls (pane labels, action buttons, edit bar, LayoutEditor.js) should be hidden in special modes",
+          "actual": "Verified: In normal edit mode - pane labels visible (F30A_Pane1-4, 9977_Pane1-4), action buttons visible, edit bar with Discard/Publish visible. In print mode - all edit controls hidden. In popup mode - all edit controls hidden plus page chrome (header/footer) removed. Code confirms IsSpecialPageMode property prevents RegisterResources from loading LayoutEditor.js and LayoutEditor.css.",
+          "screenshot": "Print and Popup Mode Support_step01_edit_mode_controls.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "ContentLayout uses IsSpecialPageMode property (View.ascx.cs:78-84) to detect print mode (dnnprintmode=true) or popup mode (popUp=true) query parameters",
-    "When IsSpecialPageMode is true and user is in Edit mode, ContentLayout does NOT load LayoutEditor.js and LayoutEditor.css (View.ascx.cs:247-254)",
-    "When IsSpecialPageMode is true, the EditorScript is NOT made visible (View.ascx.cs:256-259)",
-    "Standard DNN module action menus are separate from ContentLayout's specific edit controls and may still appear in popup mode",
-    "LoadLayout method (View.ascx.cs:202-221) uses published layout instead of latest version when in special page mode, ensuring consistent content display"
+    "Print mode is triggered by dnnprintmode=true query parameter - URL is converted to friendly format /Home/dnnprintmode/true",
+    "Popup mode is triggered by popUp=true query parameter - URL remains as querystring format",
+    "Print mode preserves page header/navigation but removes edit controls and control panel",
+    "Popup mode removes all page chrome (header, footer, navigation) in addition to edit controls - designed for clean content-only presentation",
+    "The IsSpecialPageMode property (View.ascx.cs:78-84) checks for both dnnprintmode=true OR popUp=true parameters",
+    "In special page modes, versioning is bypassed - LoadLayout loads published layout directly instead of draft versions",
+    "Code in RegisterResources (View.ascx.cs:247-262) explicitly skips loading LayoutEditor.js and LayoutEditor.css when IsSpecialPageMode is true"
   ],
   "summary": {
-    "total_scenarios": 2,
-    "passed": 2,
+    "total_scenarios": 3,
+    "passed": 3,
     "failed": 0,
     "pass_rate": "100%"
   }

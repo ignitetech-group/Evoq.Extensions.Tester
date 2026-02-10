@@ -5,7 +5,7 @@
     "feature_name": "Folder Tree Navigation",
     "feature_description": "Provides hierarchical folder tree navigation with expand/collapse functionality and path breadcrumbs",
     "feature_priority": "High",
-    "test_date": "2026-01-16T17:30:00Z",
+    "test_date": "2026-02-09T16:15:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,31 +15,45 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Assets module and view root folder content",
-          "expected": "Root folder content should display with folder cards",
-          "actual": "Root folder displayed showing folders: Badges, Groups, Images, PermissionsTestFolder, SecureFolderTest, Templates, Users, WorkflowTestFolder and files",
-          "screenshot": "Folder_Tree_Navigation_step01_initial_folder_view.png"
+          "action": "Navigated to Assets panel and clicked on Home folder dropdown to open the folder tree picker",
+          "expected": "Folder tree dropdown should open showing hierarchical folder structure",
+          "actual": "Folder tree dropdown opened showing Site Root with child folders (Badges, Groups, Images, Templates, TestFolder01, ToDelete, Users) and expand arrows for folders with children",
+          "screenshot": "Folder Tree Navigation_step02_folder_tree_dropdown.png"
         },
         {
           "step_number": 2,
-          "action": "Click on 'Images' folder to expand/navigate into it",
-          "expected": "Should navigate into Images folder showing its contents",
-          "actual": "Successfully navigated into Images folder, showing subfolders (MoveTestFolder, Publisher, SecureFolderTest2026, TestNewFolder2026) and files (CTA-1.jpg through CTA-8.jpg, etc.)",
-          "screenshot": "Folder_Tree_Navigation_step02_expand_folder.png"
+          "action": "Clicked on expand arrow (Node) for Images folder",
+          "expected": "Images folder should expand showing child folders",
+          "actual": "Images folder expanded showing 'Publisher' subfolder. Results count increased from 8 to 9",
+          "screenshot": "Folder Tree Navigation_step03_expand_images.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Test deep folder hierarchies",
+      "scenario_name": "Collapse folder tree",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate deeper into Publisher subfolder within Images",
-          "expected": "Should show 3-level deep navigation (Home > Images > Publisher)",
-          "actual": "Successfully navigated 3 levels deep. Breadcrumb shows HOME > IMAGES > PUBLISHER. Publisher folder contents displayed with various image files",
-          "screenshot": "Folder_Tree_Navigation_step03_deep_hierarchy.png"
+          "action": "Clicked on expand arrow (Node) for Images folder again to collapse it",
+          "expected": "Images folder should collapse, hiding child folders",
+          "actual": "Images folder collapsed. Publisher subfolder is no longer visible. Results count returned to 8",
+          "screenshot": "Folder Tree Navigation_step04_collapse_images.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Navigate using folder tree selection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked on Images folder link in the folder tree picker",
+          "expected": "Should navigate to Images folder and show its contents",
+          "actual": "Navigated to Images folder. Breadcrumb updated to 'HOME > IMAGES'. Content area shows Publisher subfolder and image files (cavalier-tv.png, CTA-*.jpg, etc.)",
+          "screenshot": "Folder Tree Navigation_step05_navigated_to_images.png"
         }
       ],
       "issues": []
@@ -50,17 +64,31 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click 'IMAGES' in the breadcrumb while at Publisher folder",
-          "expected": "Should navigate back one level to Images folder",
-          "actual": "Successfully navigated back to Images folder. Breadcrumb updated to HOME > IMAGES, showing Images folder contents",
-          "screenshot": "Folder_Tree_Navigation_step04_breadcrumb_back.png"
+          "action": "Clicked on 'Home' in the breadcrumb while in Images folder",
+          "expected": "Should navigate back to Home/root folder",
+          "actual": "Navigated back to Home folder. Breadcrumb shows only 'HOME'. Content area shows root folders (Badges, Groups, Images, Templates, Users) and files",
+          "screenshot": "Folder Tree Navigation_step06_breadcrumb_back_home.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Navigate deep folder hierarchies",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated from Home > Images > Publisher (3 levels deep)",
+          "expected": "Should be able to navigate to deeply nested folders with breadcrumb trail",
+          "actual": "Successfully navigated to Publisher folder. Breadcrumb shows 'HOME > IMAGES > PUBLISHER'. Content shows files in Publisher folder",
+          "screenshot": "Folder Tree Navigation_step07_deep_hierarchy.png"
         },
         {
           "step_number": 2,
-          "action": "Click 'HOME' in the breadcrumb to return to root",
-          "expected": "Should navigate to root folder",
-          "actual": "Successfully navigated to root folder. Breadcrumb shows HOME only, displaying all root folders",
-          "screenshot": "Folder_Tree_Navigation_step05_breadcrumb_home.png"
+          "action": "Clicked on 'IMAGES' in breadcrumb to navigate back one level",
+          "expected": "Should navigate back to Images folder",
+          "actual": "Successfully navigated back to Images folder. Breadcrumb updated to 'HOME > IMAGES'",
+          "screenshot": "Folder Tree Navigation_step08_breadcrumb_back_to_images.png"
         }
       ],
       "issues": []
@@ -71,52 +99,29 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Change sort order from 'Alphabetical' to 'Last Modified'",
-          "expected": "Folder order should change based on last modified date",
-          "actual": "Successfully changed sort to 'Last Modified'. Folder order changed from alphabetical (Badges, Groups, Images...) to modification order (Templates, PermissionsTestFolder, Groups, ThisIsAVeryLong..., Badges, Users, Images, WorkflowTestFolder...)",
-          "screenshot": "Folder_Tree_Navigation_step06_sort_changed.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Navigate to empty folder",
-      "status": "PASS",
-      "steps": [
+          "action": "Observed initial sort order with 'Alphabetical' sort selected",
+          "expected": "Folders should be sorted alphabetically",
+          "actual": "Folders displayed in alphabetical order: Badges, Groups, Images, Templates, Users, followed by files in alphabetical order",
+          "screenshot": "Folder Tree Navigation_step09_sort_alphabetical.png"
+        },
         {
-          "step_number": 1,
-          "action": "Navigate into PermissionsTestFolder which is empty",
-          "expected": "Should display empty folder message",
-          "actual": "Successfully navigated to empty folder. UI displays 'This Folder is Empty' message with instruction to use tools above to add an asset or create a folder",
-          "screenshot": "Folder_Tree_Navigation_step07_empty_folder.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Verify folder tree permissions",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Hover over folder to view action icons for permissions access",
-          "expected": "Action icons (edit, move, delete) should appear on hover",
-          "actual": "Action icons appeared when hovering over the Images folder card, showing edit pencil, move arrow, and delete trash icons on the right side of the selected card",
-          "screenshot": "Folder_Tree_Navigation_step08_pre_details.png"
+          "step_number": 2,
+          "action": "Changed sort dropdown from 'Alphabetical' to 'Last Modified'",
+          "expected": "Folders and files should reorder based on last modification date",
+          "actual": "Folder order changed to: Templates, Badges, Users, Groups, Images, SecureFolder. Sort dropdown shows all three options (Last Modified, Date Uploaded, Alphabetical). Order is now based on modification time",
+          "screenshot": "Folder Tree Navigation_step10_sort_last_modified.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Code confirms folder permissions are displayed through GetFolderDetails API endpoint (AssetsController.cs line 548-574) which returns permissions data including role and user permissions",
-    "The buildPermissionGrid function in Assets.js (line 911-942) creates a permissions grid UI when viewing folder details",
-    "Action icons on folder cards appear on hover/selection but accessing them programmatically was challenging due to their dynamic/CSS-driven rendering",
-    "The folder tree supports 3 sort options: Last Modified, Date Uploaded, and Alphabetical (default)",
-    "Breadcrumb navigation provides visual path and clickable links for quick navigation to any parent folder",
-    "Empty folders display a helpful message encouraging users to add content",
-    "Long folder names are truncated with ellipsis in the UI but full names are accessible",
-    "Secure folders show a lock icon indicator on the folder card"
+    "The folder tree picker is accessible via the folder dropdown next to breadcrumbs",
+    "Folders with children display expand/collapse arrows (Node links)",
+    "The results count at the bottom of the folder picker updates dynamically as folders are expanded/collapsed",
+    "Sort functionality affects both folders and files in the content view, with three sort options: Last Modified, Date Uploaded, and Alphabetical",
+    "SecureFolder displays with a lock icon indicating it's a secure folder type",
+    "Breadcrumbs support deep navigation with clickable path segments for any level"
   ],
   "summary": {
     "total_scenarios": 6,

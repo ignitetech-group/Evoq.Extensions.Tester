@@ -5,44 +5,65 @@
     "feature_name": "Social - Bookmarks",
     "feature_description": "Bookmark and unbookmark articles for later reference",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T08:30:00Z",
+    "test_date": "2026-02-09T15:40:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
       "scenario_name": "Bookmark an article",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Wiki article 'Published Test Article - Jan 16 2026'",
-          "expected": "Article page loads with bookmark button visible",
-          "actual": "Article page loaded successfully with 'Bookmark this' button visible",
-          "screenshot": "Social - Bookmarks_step01_article_view_bookmark_button.png"
+          "action": "Navigate to Wiki Test page",
+          "expected": "Wiki module displays with articles list",
+          "actual": "Wiki page loads but content only visible in Edit mode",
+          "screenshot": "Social - Bookmarks_step01_wiki_page_initial.png"
         },
         {
           "step_number": 2,
-          "action": "Click 'Bookmark this' button",
-          "expected": "Article is bookmarked, button changes to 'Remove bookmark', bookmark count increases",
-          "actual": "Button changed to 'Remove bookmark', sidebar bookmark count increased from (2) to (3)",
-          "screenshot": "Social - Bookmarks_step02_article_bookmarked.png"
+          "action": "Enable Edit mode to view Wiki module",
+          "expected": "Wiki module with articles becomes visible",
+          "actual": "Wiki module visible in edit mode showing article list",
+          "screenshot": "Social - Bookmarks_step02_wiki_edit_mode.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Create test article for bookmarking",
+          "expected": "Article creation dialog appears",
+          "actual": "Article creation dialog opened successfully with title, type, content fields",
+          "screenshot": "Social - Bookmarks_step03_create_article_dialog.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Publish article and navigate to article detail view",
+          "expected": "Article detail page shows with bookmark button visible",
+          "actual": "Article created but detail page renders empty - no Wiki module content displayed",
+          "screenshot": "Social - Bookmarks_step07_article_view.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Attempt to locate bookmark button on article page",
+          "expected": "Bookmark button should be visible in article detail view",
+          "actual": "Article detail page is blank - Wiki module not rendering on child pages. Bookmark button exists in code (Article.ascx lines 39-43) but UI not accessible",
+          "screenshot": "Social - Bookmarks_step08_wiki_articles_list.png"
         }
       ],
-      "issues": []
+      "issues": ["Article detail view page does not render Wiki module content - the bookmark UI element exists in code but is not accessible because the article view doesn't load on child pages"]
     },
     {
       "scenario_name": "Remove bookmark",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Click 'Remove bookmark' button on bookmarked article",
-          "expected": "Bookmark is removed, button changes back to 'Bookmark this', bookmark count decreases",
-          "actual": "Button changed back to 'Bookmark this', sidebar bookmark count decreased from (3) back to (2)",
-          "screenshot": "Social - Bookmarks_step03_bookmark_removed.png"
+          "action": "Prerequisite: Need to bookmark an article first",
+          "expected": "Have a bookmarked article to unbookmark",
+          "actual": "Cannot complete prerequisite - bookmark functionality UI not accessible due to article detail page not rendering",
+          "screenshot": "Social - Bookmarks_step07_article_view.png"
         }
       ],
-      "issues": []
+      "issues": ["Cannot test unbookmark feature as bookmark feature UI is not accessible - article detail view not rendering"]
     },
     {
       "scenario_name": "View bookmarked articles list",
@@ -50,68 +71,27 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Wiki main page and locate bookmarks section in sidebar",
-          "expected": "Bookmarks section is visible showing count",
-          "actual": "Bookmarks (2) is displayed in sidebar",
-          "screenshot": "Social - Bookmarks_step04_bookmarks_sidebar.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click on 'Bookmarks (2)' in sidebar to view bookmarked articles list",
-          "expected": "A list of bookmarked articles is displayed",
-          "actual": "Clicking on 'Bookmarks (2)' did not navigate to a list view or display bookmarked articles. The click had no visible effect on the page.",
-          "screenshot": "Social - Bookmarks_step05_after_bookmarks_click.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Navigate to Activity Feed page to look for bookmarks tab/section",
-          "expected": "Bookmarks tab or filter available in Activity Feed",
-          "actual": "Activity Feed has tabs for Activity Feed, Friends, Messages, and My Profile - no Bookmarks tab exists",
-          "screenshot": "Social - Bookmarks_step06_activity_feed_no_bookmarks.png"
+          "action": "Look for bookmarked articles list in Wiki module",
+          "expected": "Find option to view user's bookmarked articles",
+          "actual": "No bookmarked articles list UI found in Wiki module. Code review shows bookmark data is stored but there is no dedicated UI for viewing bookmarked articles in the standard Wiki views",
+          "screenshot": "Social - Bookmarks_step08_wiki_articles_list.png"
         }
       ],
-      "issues": ["No UI element exists to view the list of bookmarked articles. The 'Bookmarks (X)' in the sidebar only displays a count and does not provide navigation to a list view."]
-    },
-    {
-      "scenario_name": "Bookmark persistence",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Navigate to Wiki article and bookmark it",
-          "expected": "Article is bookmarked",
-          "actual": "Article bookmarked successfully, button shows 'Remove bookmark', Bookmarks count shows (3)",
-          "screenshot": "Social - Bookmarks_step07_bookmark_added_for_persistence.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Navigate away to Home page",
-          "expected": "Navigation successful",
-          "actual": "Successfully navigated to Home page",
-          "screenshot": null
-        },
-        {
-          "step_number": 3,
-          "action": "Navigate back to the same Wiki article",
-          "expected": "Bookmark state should persist - button should show 'Remove bookmark' and count should still be (3)",
-          "actual": "Bookmark persisted successfully - button shows 'Remove bookmark' and Bookmarks count shows (3)",
-          "screenshot": "Social - Bookmarks_step08_bookmark_persisted.png"
-        }
-      ],
-      "issues": []
+      "issues": ["No dedicated UI found for viewing bookmarked articles list. Bookmarks are stored but appear to be accessed through user profile or activity feed integration rather than directly in Wiki module"]
     }
   ],
   "observations": [
-    "Code review shows bookmarking does not award scoring points (0 reputation, 0 experience points) as defined in Mechanics.cs line 56",
-    "The bookmark functionality requires authentication (DnnAuthorize attribute) as shown in SocialController.cs",
-    "The 'Bookmarks (X)' counter in the sidebar only shows the count of bookmarked items but does not provide a link to view the actual list of bookmarked articles",
-    "No dedicated 'Bookmarks' tab or filter exists in the Wiki module listing page or Activity Feed page",
-    "The bookmark and unbookmark operations are logged as scoring actions (BookmarkedArticle and RemovedArticleBookmark) for activity tracking purposes"
+    "Code confirms bookmark functionality exists in SocialController.cs with Bookmark() and Unbookmark() API methods (lines 46-77)",
+    "Bookmark/unbookmark buttons are defined in Article.ascx control (lines 39-43, 146-150) using dnnSocialBookmark CSS classes",
+    "Scoring action 'BookmarkedArticle' is defined in Mechanics.cs but awards 0 points by default",
+    "The test environment has a configuration issue where article detail pages do not render the Wiki module content - pages show only header/footer",
+    "Articles can be created and listed successfully in the Wiki module, but navigating to individual article URLs results in blank pages",
+    "The bookmark feature appears to be functional in code but the UI is not accessible in this test environment due to module rendering issues on child pages"
   ],
   "summary": {
-    "total_scenarios": 4,
-    "passed": 3,
-    "failed": 1,
-    "pass_rate": "75%"
+    "total_scenarios": 3,
+    "passed": 0,
+    "failed": 3,
+    "pass_rate": "0%"
   }
 }

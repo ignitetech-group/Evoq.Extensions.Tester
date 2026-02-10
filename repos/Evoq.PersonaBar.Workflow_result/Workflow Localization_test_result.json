@@ -5,64 +5,55 @@
     "feature_name": "Workflow Localization",
     "feature_description": "Multi-language support for workflow names, states, and notification messages.",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T17:05:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Verify Workflow UI loads with localized strings",
+      "scenario_name": "Verify workflow UI displays with localized resources",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Settings > Workflow in English (en-US) context",
-          "expected": "Workflow UI loads with English text from resource file",
-          "actual": "Workflow UI loaded successfully displaying all localized strings in English including: 'Workflows' heading, 'Create New Workflow' button, column headers (WORKFLOW TYPE, IN USE, ACTIONS, DEFAULT), and workflow descriptions",
-          "screenshot": "Workflow_Localization_step01_workflow_english.png"
+          "action": "Login as superuser and navigate to Settings > Workflow",
+          "expected": "Workflow page loads with all UI elements displaying localized text from Workflow.resx",
+          "actual": "Workflow page loaded successfully with all localized UI elements: 'Workflows' title, description text, 'Create New Workflow' button, table headers (WORKFLOW TYPE, IN USE, ACTIONS, DEFAULT), 'Workflow States' section, 'Workflow Name', 'Description' labels, 'Cancel' and 'Save' buttons",
+          "screenshot": "Workflow Localization_step01_workflow_page_english.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify localized text matches resource file entries",
+          "expected": "UI text should match entries in Workflow.resx file",
+          "actual": "All UI elements match the localization resource file: settings_title.Text='Workflows', workflows_page_description.Text matches description, workflows_new_btn.Text='Create New Workflow', workflows_header_workflow_type.Text='WORKFLOW TYPE', workflows_header_in_use.Text='IN USE', workflows_header_actions.Text='ACTIONS', workflows_common_title_lbl.Text='Workflow Name', workflows_common_description_lbl.Text='Description', workflows_common_cancel_btn.Text='Cancel', workflows_common_save_btn.Text='Save'",
+          "screenshot": "Workflow Localization_step01_workflow_page_english.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Verify Workflow UI in different language context",
+      "scenario_name": "Verify localization fallback behavior for unsupported language",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Switch site language to German (de-DE) and view Workflow settings",
-          "expected": "Workflow UI displays - either with German translations or English fallback if no translations exist",
-          "actual": "Workflow UI displayed with English text. The localization framework correctly falls back to English (default language) because no German translation file (Workflow.de-DE.resx) exists in the codebase. This is expected behavior for the DNN localization framework.",
-          "screenshot": "Workflow_Localization_step02_workflow_german_context.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Verify workflow state labels are localized",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Expand Content Approval workflow to view state labels and descriptions",
-          "expected": "State labels and UI text display correctly from resource file",
-          "actual": "All localized labels displayed correctly: 'Workflow States' heading, 'Once a workflow state is in use you cannot delete it...' description, table headers (ORDER, STATE, ACTIONS, MOVE), 'This workflow is currently in use' message, 'View Usage' link, 'Add a State' button. State names (Draft, Ready For Review, Published) are user-created content stored in database.",
-          "screenshot": "Workflow_Localization_step03_workflow_states_labels.png"
+          "action": "Navigate to Spanish site (es-es) and access Settings > Workflow",
+          "expected": "Workflow page should load, falling back to default English resources since no Spanish translation exists",
+          "actual": "Workflow page loaded on Spanish site with English text displayed correctly. The DNN Localization Framework correctly falls back to the default Workflow.resx file when no Workflow.es-ES.resx translation file exists",
+          "screenshot": "Workflow Localization_step02_workflow_spanish_fallback.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Code review revealed only one localization file exists: Workflow.resx (English). No language-specific files (e.g., Workflow.de-DE.resx, Workflow.es-ES.resx) were found in the codebase at src/Modules/Evoq.PersonaBar.Workflow/admin/personaBar/App_LocalResources/",
-    "The DNN localization framework is properly integrated - strings are correctly loaded from the .resx resource file",
-    "When switching to non-English languages (German tested), the UI correctly falls back to English since no translations are available",
-    "Workflow names, descriptions, and state names are user-created content stored in the database, not localized resource strings",
-    "To support multi-language workflow UI, administrators would need to deploy language-specific resource files (e.g., Workflow.de-DE.resx)",
-    "The localization infrastructure is fully functional; the absence of translations is a content/deployment consideration, not a code defect"
+    "The Workflow.resx file contains comprehensive localization entries for all workflow UI elements including: navigation labels, button texts, validation messages, form labels, table headers, workflow state labels, notification settings, and error messages",
+    "No Spanish translation file (Workflow.es-ES.resx) exists in the codebase - only the default English resource file is present",
+    "The localization infrastructure is properly implemented and working - when accessed from the Spanish site, the UI correctly falls back to the default English resources",
+    "State names like 'Draft', 'Published', 'Ready For Review' are stored as workflow data rather than localized resources - these would need database-level localization support for multi-language display"
   ],
   "summary": {
-    "total_scenarios": 3,
-    "passed": 3,
+    "total_scenarios": 2,
+    "passed": 2,
     "failed": 0,
     "pass_rate": "100%"
   }

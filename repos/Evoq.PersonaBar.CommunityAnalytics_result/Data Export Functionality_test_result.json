@@ -5,53 +5,50 @@
     "feature_name": "Data Export Functionality",
     "feature_description": "Export analytics data to various formats for external analysis",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:44:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Access Data Export Functionality",
-      "status": "FAIL",
+      "scenario_name": "Export to Excel format",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Login to DNN as SuperUser and navigate to PersonaBar",
-          "expected": "PersonaBar should be visible with Dashboard menu",
-          "actual": "PersonaBar displayed correctly with Dashboard, Content, Manage, Page Analytics, Settings options visible",
-          "screenshot": "Data_Export_Functionality_step00_login_confirmed.png"
+          "action": "Logged in as SuperUser and navigated to PersonaBar > Dashboard",
+          "expected": "Dashboard panel should open with analytics options",
+          "actual": "Dashboard panel opened showing Site Analytics and Community Analytics options",
+          "screenshot": "Data Export Functionality_step00_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Click on Dashboard > Community Analytics",
-          "expected": "Community Analytics dashboard should load with Export button visible in the header",
-          "actual": "Community Analytics menu item was selected but the dashboard panel remained empty/blank",
-          "screenshot": "Data_Export_Functionality_step01_community_analytics.png"
+          "action": "Hovered over Dashboard and selected Community Analytics",
+          "expected": "Community Analytics dashboard should load with module tabs and Export button",
+          "actual": "Community Analytics dashboard loaded showing Answers, Blogs, Discussions, Events, Ideas, Wiki tabs with Export button visible at top right",
+          "screenshot": "Data Export Functionality_step01_community_analytics_dashboard.png"
         },
         {
           "step_number": 3,
-          "action": "Wait for dashboard to load and locate Export button",
-          "expected": "Dashboard should display analytics data with Export button accessible",
-          "actual": "Dashboard failed to load. Browser console shows JavaScript error: TypeError: utility.serializeCustomDate is not a function at dashboardClass.init",
-          "screenshot": "Data_Export_Functionality_step02_community_analytics_panel.png"
+          "action": "Clicked the Export button in the Answers module section",
+          "expected": "Excel file should download with analytics data",
+          "actual": "File 'Answers.xlsx' (10,245 bytes) was successfully downloaded to the browser",
+          "screenshot": "Data Export Functionality_step02_export_clicked.png"
         }
       ],
-      "issues": [
-        "Community Analytics dashboard fails to initialize due to JavaScript error: TypeError: utility.serializeCustomDate is not a function",
-        "Export button cannot be accessed because the entire dashboard panel does not render",
-        "Error occurs in social-dashboard-combined-instance.js at line 1025 during dashboard initialization"
-      ]
+      "issues": []
     }
   ],
   "observations": [
-    "Code review confirms Export button exists in social-dashboard.html (line 13) with class 'dashboard-export-btn'",
-    "Export functionality in code only supports Excel format via api/dnncorp/cmx/SpreadsheetExport/Excel endpoint - no CSV option exists",
-    "The suggested test scenarios mention CSV export, but code analysis shows only Excel export is implemented",
-    "The JavaScript error preventing dashboard load is in the utility.serializeCustomDate function call which appears to be undefined or not properly loaded"
+    "The export functionality exports to Excel format (.xlsx) only - no CSV option visible in the UI",
+    "Each module section (Answers, Blogs, Discussions, Events, Ideas, Wiki) has its own Export button that exports data specific to that module",
+    "The exported filename is automatically generated based on the module name (e.g., 'Answers.xlsx' for the Answers module)",
+    "The export uses the SpreadsheetExport/Excel API endpoint with parameters for period, date range, and module name",
+    "Export permissions are implicitly handled through the PersonaBar menu permissions (Administrators and Community Manager roles)"
   ],
   "summary": {
     "total_scenarios": 1,
-    "passed": 0,
-    "failed": 1,
-    "pass_rate": "0%"
+    "passed": 1,
+    "failed": 0,
+    "pass_rate": "100%"
   }
 }

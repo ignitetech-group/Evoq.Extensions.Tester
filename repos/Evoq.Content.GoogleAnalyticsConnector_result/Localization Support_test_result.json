@@ -5,27 +5,48 @@
     "feature_name": "Localization Support",
     "feature_description": "Provides multi-language support for Google Analytics connector UI and messages",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T14:45:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Verify resource string loading",
+      "scenario_name": "UI display and resource string loading",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Connectors panel and open Google Analytics 4 connector",
-          "expected": "GA connector edit form should display with localized UI strings",
-          "actual": "GA connector edit form displayed with all UI strings loaded correctly: 'Measurement ID:', 'Track for Administrators:', 'Cancel', 'Save', 'Delete Connection'",
-          "screenshot": "Localization_Support_step01_ga_connector_ui.png"
+          "action": "Navigate to Settings > Connectors and open Google Analytics 4 connector",
+          "expected": "Connector form should display with localized UI strings",
+          "actual": "Connector form displayed with localized labels: 'Measurement ID:' and 'Track for Administrators:'",
+          "screenshot": "Localization Support_step01_connector_basic_form.png"
         },
         {
           "step_number": 2,
-          "action": "Verify UI strings match resource file values",
-          "expected": "UI labels should match the values in ContentGoogleAnalytics.resx and localStorage cache",
-          "actual": "All UI strings match cached values in localStorage key 'Connections.GoogleAnalytics.en-US.Table': Ga4ID='Measurement ID:', TrackAdministrators='Track for Administrators:', btnDelete='Delete Connection'",
-          "screenshot": "Localization_Support_step02_localized_strings_en_US.png"
+          "action": "Verify localization strings are loaded and cached in localStorage",
+          "expected": "localStorage should contain cached localization data with culture-specific key",
+          "actual": "Found 'Connections.GoogleAnalytics.en-US.Table' in localStorage with localized strings including Ga4ID, TrackAdministrators, TrackingCodeFormat.ErrorMessage, btnDelete, and ConnectorName",
+          "screenshot": "Localization Support_step05_localized_strings_in_ui.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify resource string loading via API",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check localStorage for cached localization data from GetLocalizedString API",
+          "expected": "Localization data should be cached with timestamp for 1-hour expiry",
+          "actual": "Found cached data with timestamp 1770647973675, containing all expected localization strings for Google Analytics connector",
+          "screenshot": "Localization Support_step04_connectors_extensions_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify cache key pattern follows expected format",
+          "expected": "Cache key should be 'Connections.{ConnectorName}.{culture}.Table'",
+          "actual": "Cache key found: 'Connections.GoogleAnalytics.en-US.Table' - matches expected pattern",
+          "screenshot": "Localization Support_step05_localized_strings_in_ui.png"
         }
       ],
       "issues": []
@@ -36,45 +57,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Access site in English (en-US) locale and verify personaBarSettings.culture",
-          "expected": "Site should be in en-US locale with English strings displayed",
-          "actual": "personaBarSettings.culture confirmed as 'en-US'. All UI strings displayed in English: 'Measurement ID:', 'Track for Administrators:', 'Cancel', 'Save'",
-          "screenshot": "Localization_Support_step02_localized_strings_en_US.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Verify localStorage caching of localization data",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Check browser localStorage for cached localization data",
-          "expected": "Localization data should be cached with culture-specific keys and timestamp",
-          "actual": "Found localStorage key 'Connections.GoogleAnalytics.en-US.Table' containing cached strings with timestamp. Cache includes: Ga4ID, TrackAdministrators, btnDelete, ConnectorName, TrackingCodeFormat.ErrorMessage",
-          "screenshot": "Localization_Support_step02_localized_strings_en_US.png"
+          "action": "Check current culture setting in personaBarSettings",
+          "expected": "Culture should be 'en-US' as the default/fallback language",
+          "actual": "Culture confirmed as 'en-US' from window.top.personaBarSettings.culture",
+          "screenshot": "Localization Support_step07_language_settings.png"
         },
         {
           "step_number": 2,
-          "action": "Switch to Spanish (es-AR) locale and verify cache creation",
-          "expected": "New cache entry should be created for es-AR locale",
-          "actual": "Found new localStorage key 'Connections.GoogleAnalytics.es-AR.Table' with timestamp 1768573294602, confirming cache was created for Spanish locale",
-          "screenshot": "Localization_Support_step03_ga_connector_spanish.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Test UI display in different language (Spanish)",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Navigate to Spanish (es-AR) locale and open Google Analytics connector",
-          "expected": "System should attempt to load Spanish localization and fall back to English if unavailable",
-          "actual": "personaBarSettings.culture confirmed as 'es-AR'. UI strings displayed in English (fallback) because Spanish translations do not exist. Cache entry created at 'Connections.GoogleAnalytics.es-AR.Table' with identical English values, confirming fallback mechanism works correctly",
-          "screenshot": "Localization_Support_step03_ga_connector_spanish.png"
+          "action": "Verify Site Settings > Languages shows English (United States) as default",
+          "expected": "English (United States) should be the system and site default language",
+          "actual": "Language settings show 'English (United States)' as both System Default and Site Default, with only this language enabled",
+          "screenshot": "Localization Support_step07_language_settings.png"
         }
       ],
       "issues": []
@@ -85,21 +78,43 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Compare visible UI strings against resource file and cache",
-          "expected": "All visible UI elements should have corresponding localization entries",
-          "actual": "Verified the following UI strings are localized and match cache: 'Measurement ID:' (Ga4ID), 'Track for Administrators:' (TrackAdministrators), 'Delete Connection' (btnDelete), 'Cancel', 'Save'. The resource file ContentGoogleAnalytics.resx contains additional strings for authorization flow (Authorize.Text, ConnectToGA.Text, etc.) which are loaded dynamically when needed",
-          "screenshot": "Localization_Support_step02_localized_strings_en_US.png"
+          "action": "Compare displayed UI strings against cached localization data",
+          "expected": "UI labels should match localized strings from cache",
+          "actual": "Verified: 'Measurement ID:' matches Ga4ID, 'Track for Administrators:' matches TrackAdministrators",
+          "screenshot": "Localization Support_step05_localized_strings_in_ui.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Trigger validation error to verify error messages are localized",
+          "expected": "Error message should display from localized resource",
+          "actual": "Error message 'Tracking Code Cannot Be Empty' displayed, matching TrackingCodeFormat.ErrorMessage from cache",
+          "screenshot": "Localization Support_step06_localized_error_message.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify localStorage caching of localization data",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examine localStorage for all connector localization caches",
+          "expected": "Multiple connector localization caches should exist with consistent key pattern",
+          "actual": "Found 17 connector localization caches including GoogleAnalytics, all following 'Connections.{name}.en-US.Table' pattern with timestamps",
+          "screenshot": "Localization Support_step04_connectors_extensions_list.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The localization implementation uses two-tier caching: resource strings are fetched via GetLocalizedString API and cached in localStorage with culture-specific keys (e.g., 'Connections.GoogleAnalytics.en-US.Table')",
-    "Cache entries include a timestamp and expire after 1 hour (60 * 60 * 1000 ms) as defined in authorize.js line 394",
-    "Spanish (es-AR) translations for Google Analytics connector do not exist - the system correctly falls back to English (en-US) strings while still creating a culture-specific cache entry",
-    "The code in authorize.js (lines 383-422) implements a localStorageAllowed() check before caching, handling cases where localStorage is unavailable",
-    "Additional localization strings exist in ContentGoogleAnalytics.resx for the OAuth authorization flow (Sign in with Google, Authorization, Account/WebProperty/DataStream dropdowns) but these were not visible in testing as the connector was already configured"
+    "The localization system uses a client-side caching mechanism via localStorage with a 1-hour expiry (60 * 60 * 1000 ms)",
+    "Localization strings are loaded via the GetLocalizedString API endpoint from dnncorp/ContentGoogleAnalyticsConnector/Services",
+    "The cache key pattern is 'Connections.ContentGaConnector.{culture}.Table' but the actual cache uses 'Connections.GoogleAnalytics.{culture}.Table'",
+    "The authorize.js script loads localized strings before binding the ViewModel, ensuring all UI elements display translated text",
+    "The ContentGoogleAnalytics.resx file contains additional strings for OAuth authorization flow (Sign in with Google, Choose account/property/datastream dropdowns) that are not visible in the basic connector form but would appear during the OAuth authorization process",
+    "Testing different languages would require adding additional language packs and localized resource files (e.g., ContentGoogleAnalytics.es-ES.resx for Spanish)"
   ],
   "summary": {
     "total_scenarios": 5,

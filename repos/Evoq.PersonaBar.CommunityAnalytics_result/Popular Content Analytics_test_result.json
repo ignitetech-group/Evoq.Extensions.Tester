@@ -5,57 +5,65 @@
     "feature_name": "Popular Content Analytics",
     "feature_description": "Shows most popular content across the community with view counts and engagement metrics",
     "feature_priority": "High",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:41:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Access Community Analytics Module",
-      "status": "FAIL",
+      "scenario_name": "View popular content for different time periods",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Login as SuperUser (host/Pass123456)",
-          "expected": "User successfully logged in with access to PersonaBar",
-          "actual": "User successfully logged in. PersonaBar visible with Dashboard, Content, Manage, Settings options.",
-          "screenshot": "Popular_Content_Analytics_step00_login_confirmed.png"
+          "action": "Navigate to PersonaBar > Dashboard > Community Analytics",
+          "expected": "Community Analytics page loads with content type tabs and time period controls",
+          "actual": "Community Analytics page loaded successfully showing Answers, Blogs, Discussions, Events, Ideas, Wiki tabs with date range picker and Comparative Term dropdown",
+          "screenshot": "Popular Content Analytics_step01_community_analytics_page.png"
         },
         {
           "step_number": 2,
-          "action": "Navigate to PersonaBar > Dashboard and hover to reveal submenu",
-          "expected": "Dashboard submenu shows Site Analytics and Community Analytics options",
-          "actual": "Dashboard submenu expanded showing 'Site Analytics' and 'Community Analytics' menu items",
-          "screenshot": "Popular_Content_Analytics_step01_dashboard_menu.png"
+          "action": "View Popular Content section for Answers content type",
+          "expected": "Popular Content section displays with content list or empty state message",
+          "actual": "Popular Content section displayed with 'No popular content available in selected period' message (empty state)",
+          "screenshot": "Popular Content Analytics_step02_popular_content_section.png"
         },
         {
           "step_number": 3,
-          "action": "Click on Community Analytics to open the module",
-          "expected": "Community Analytics dashboard loads with Popular Content section visible",
-          "actual": "Community Analytics panel is completely blank/white. Module fails to load due to JavaScript error: 'TypeError: utility.serializeCustomDate is not a function' in social-dashboard-combined-instance.js:1025",
-          "screenshot": "Popular_Content_Analytics_step02_community_analytics.png"
-        }
-      ],
-      "issues": [
-        "CRITICAL BUG: Community Analytics module fails to initialize due to JavaScript error",
-        "Error: TypeError: utility.serializeCustomDate is not a function",
-        "Error location: dashboardClass.init() in social-dashboard-combined-instance.js:1025",
-        "The utility object does not have the serializeCustomDate method available when the module initializes",
-        "This prevents ALL Community Analytics functionality including Popular Content Analytics from being accessible"
-      ]
-    },
-    {
-      "scenario_name": "View popular content for different time periods",
-      "status": "FAIL",
-      "steps": [
+          "action": "Change Comparative Term dropdown from '1 w' to '1 m'",
+          "expected": "Comparative Term updates and data refreshes",
+          "actual": "Comparative Term dropdown successfully changed to '1 m' and data refreshed",
+          "screenshot": "Popular Content Analytics_step03_time_period_change.png"
+        },
         {
-          "step_number": 1,
-          "action": "Attempt to access Popular Content section in Community Analytics",
-          "expected": "Popular Content section visible with time period options (Day/Week/Month/Year/Custom)",
-          "actual": "Unable to test - Community Analytics module fails to load due to JavaScript error",
-          "screenshot": "Popular_Content_Analytics_step02_community_analytics.png"
+          "step_number": 4,
+          "action": "Switch to Blogs content type tab",
+          "expected": "Blogs analytics section displays with Popular Content",
+          "actual": "Blogs section displayed with separate Popular Content area showing empty state",
+          "screenshot": "Popular Content Analytics_step04_blogs_content_type.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Change Comparative Term to '1 y' (1 year)",
+          "expected": "Comparative Term updates to yearly comparison",
+          "actual": "Comparative Term successfully changed to '1 y' for yearly comparison",
+          "screenshot": "Popular Content Analytics_step05_comparative_term_1y.png"
+        },
+        {
+          "step_number": 6,
+          "action": "Click on date range to open time period picker",
+          "expected": "Time period options menu appears with Day, Week, Month, Year, Custom options",
+          "actual": "Time period dropdown appeared with Day, Week (selected), Month, Year, Custom options",
+          "screenshot": "Popular Content Analytics_step08_time_period_options.png"
+        },
+        {
+          "step_number": 7,
+          "action": "Select 'Month' from time period options",
+          "expected": "Date range changes to 1 month period and charts update",
+          "actual": "Date range changed from '2 Feb 2026 - 8 Feb 2026' to '9 Jan 2026 - 8 Feb 2026' (1 month), Comparative Term auto-updated to '1 m', chart X-axis updated with daily intervals",
+          "screenshot": "Popular Content Analytics_step09_month_period_selected.png"
         }
       ],
-      "issues": ["Blocked by critical bug preventing Community Analytics module from loading"]
+      "issues": []
     },
     {
       "scenario_name": "Navigate through paginated content results",
@@ -63,56 +71,126 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to access Popular Content pagination controls",
-          "expected": "Pagination controls (prev/next) visible for navigating content results",
-          "actual": "Unable to test - Community Analytics module fails to load due to JavaScript error",
-          "screenshot": "Popular_Content_Analytics_step02_community_analytics.png"
+          "action": "Locate pagination controls in Popular Content section",
+          "expected": "Pagination controls (prev/next) visible when content exceeds page size of 5 items",
+          "actual": "No pagination controls visible because Popular Content section displays 'No popular content available in selected period' - no data to paginate",
+          "screenshot": "Popular Content Analytics_step10_popular_content_empty.png"
         }
       ],
-      "issues": ["Blocked by critical bug preventing Community Analytics module from loading"]
+      "issues": ["Cannot test pagination - no content data available in test environment. Code review shows pagination exists with page size of 5 items (social-dashboard-instance.js:990) but requires actual content to display"]
     },
     {
-      "scenario_name": "Test content sorting by popularity",
+      "scenario_name": "Click through to actual content items",
       "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to view popular content sorted by engagement metrics",
-          "expected": "Content items displayed with engagement percentages, sorted by popularity",
-          "actual": "Unable to test - Community Analytics module fails to load due to JavaScript error",
-          "screenshot": "Popular_Content_Analytics_step02_community_analytics.png"
+          "action": "Attempt to click on content item in Popular Content list",
+          "expected": "Content item links to actual content page",
+          "actual": "Cannot test - Popular Content section shows 'No popular content available in selected period'. No content items to click.",
+          "screenshot": "Popular Content Analytics_step10_popular_content_empty.png"
         }
       ],
-      "issues": ["Blocked by critical bug preventing Community Analytics module from loading"]
+      "issues": ["Cannot test click-through functionality - no content data available in test environment"]
     },
     {
-      "scenario_name": "Test empty data state",
+      "scenario_name": "Verify view count display and accuracy",
       "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to view Popular Content section with no data available",
-          "expected": "Message 'No Popular Content' displayed when no data available",
-          "actual": "Unable to test - Community Analytics module fails to load due to JavaScript error",
-          "screenshot": "Popular_Content_Analytics_step02_community_analytics.png"
+          "action": "Verify view counts displayed in Popular Content section",
+          "expected": "View counts displayed for each content item",
+          "actual": "Cannot verify - Popular Content section shows empty state with no content items or view counts to verify",
+          "screenshot": "Popular Content Analytics_step10_popular_content_empty.png"
         }
       ],
-      "issues": ["Blocked by critical bug preventing Community Analytics module from loading"]
+      "issues": ["Cannot verify view count accuracy - no content data available in test environment. Code shows 'count' field with 'countTooltip' in pageActivities.js but requires data to display"]
+    },
+    {
+      "scenario_name": "Content sorting by popularity",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify content is sorted by popularity (view count)",
+          "expected": "Content items displayed in descending order of popularity",
+          "actual": "Cannot verify sorting - Popular Content section shows empty state. Code review confirms API returns popular content sorted by views (CommunityAnalyticsController.cs GetPopularContent endpoint)",
+          "screenshot": "Popular Content Analytics_step10_popular_content_empty.png"
+        }
+      ],
+      "issues": ["Cannot verify sorting - no content data available in test environment"]
+    },
+    {
+      "scenario_name": "Test with various content types",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify Popular Content section exists for Answers content type",
+          "expected": "Popular Content section visible in Answers analytics",
+          "actual": "Popular Content section visible with 'No popular content available in selected period' message",
+          "screenshot": "Popular Content Analytics_step02_popular_content_section.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify Popular Content section exists for Blogs content type",
+          "expected": "Popular Content section visible in Blogs analytics",
+          "actual": "Popular Content section visible with empty state message for Blogs",
+          "screenshot": "Popular Content Analytics_step04_blogs_content_type.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify all content type tabs available (Answers, Blogs, Discussions, Events, Ideas, Wiki)",
+          "expected": "All 6 content type tabs accessible with their own Popular Content sections",
+          "actual": "All 6 content type tabs present and accessible. Each has its own Popular Content section with empty state handling",
+          "screenshot": "Popular Content Analytics_step01_community_analytics_page.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Empty state handling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify empty state message when no popular content exists",
+          "expected": "User-friendly message displayed when no data available",
+          "actual": "Message 'No popular content available in selected period' displayed clearly in Popular Content section",
+          "screenshot": "Popular Content Analytics_step10_popular_content_empty.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify empty state persists across different time periods",
+          "expected": "Empty state message updates appropriately when changing time periods",
+          "actual": "Empty state message displayed consistently across Week, Month, and Year time periods",
+          "screenshot": "Popular Content Analytics_step09_month_period_selected.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify empty state across different content types",
+          "expected": "Each content type shows appropriate empty state when no data",
+          "actual": "Verified Answers and Blogs both show 'No popular content available in selected period' message. UI code shows empty state placeholder images in pageActivities.js",
+          "screenshot": "Popular Content Analytics_step04_blogs_content_type.png"
+        }
+      ],
+      "issues": []
     }
   ],
   "observations": [
-    "CRITICAL: The Community Analytics module has a JavaScript initialization error that prevents it from loading entirely",
-    "The error 'TypeError: utility.serializeCustomDate is not a function' occurs in social-dashboard-combined-instance.js at line 1025",
-    "Code review shows the analytics.js file calls utility.serializeCustomDate() during initialization, but this method is not available on the utility object",
-    "The Popular Content section is defined in social-dashboard.html with a 'popularContent' Knockout.js binding that displays content items with engagement percentages",
-    "The backend API (CommunityAnalyticsController.cs) has GetPopularContent and GetModulePopularContent endpoints that appear to be correctly implemented",
-    "This is a frontend JavaScript dependency issue, not a backend API issue",
-    "All planned test scenarios for Popular Content Analytics are blocked by this critical bug"
+    "Test environment has no community content data (no questions, blogs, discussions, events, ideas, or wiki articles), so Popular Content sections consistently show empty state",
+    "Code review confirms Popular Content functionality exists with proper API endpoints (GetPopularContent in CommunityAnalyticsController.cs) and UI components (pageActivities.js with pagination support)",
+    "Pagination is implemented with page size of 5 items (social-dashboard-instance.js:990) and prev/next navigation, but cannot be tested without data",
+    "Time period filtering works correctly with options: Day, Week, Month, Year, and Custom date range",
+    "Comparative Term dropdown allows comparison with previous period (1 y, 1 m, 1 w, 1 d)",
+    "All 6 content types (Answers, Blogs, Discussions, Events, Ideas, Wiki) have their own Popular Content sections",
+    "The pageActivities.js component shows truncated labels with tooltips for long content titles (titleLength: 25 characters)"
   ],
   "summary": {
-    "total_scenarios": 5,
-    "passed": 0,
-    "failed": 5,
-    "pass_rate": "0%"
+    "total_scenarios": 7,
+    "passed": 3,
+    "failed": 4,
+    "pass_rate": "43%"
   }
 }

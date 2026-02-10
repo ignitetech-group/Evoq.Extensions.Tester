@@ -5,77 +5,85 @@
     "feature_name": "Scoring and Gamification",
     "feature_description": "Award points for wiki activities like creating articles, commenting, and interactions",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T08:45:00Z",
+    "test_date": "2026-02-09T15:45:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Points Display on User Profile",
+      "scenario_name": "Points display in user profile",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to User Profile page (Activity-Feed/userId/1)",
-          "expected": "User profile page loads with points display visible",
-          "actual": "User profile page loaded successfully showing SuperUser Account with Points: 218 displayed prominently alongside Friends, Following, and Followers counts",
-          "screenshot": "Scoring and Gamification_step02_user_profile_points.png"
+          "action": "Navigate to User Profile (Activity Feed) page",
+          "expected": "User profile displays points/reputation score",
+          "actual": "User profile displays 'Points: 16' (later increased to 21) prominently in the profile header section",
+          "screenshot": "Scoring and Gamification_step01_user_profile_points.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Observe points value after wiki activities",
+          "expected": "Points value reflects accumulated scoring from wiki activities",
+          "actual": "Points increased from 16 to 21 during testing session, confirming active scoring system",
+          "screenshot": "Scoring and Gamification_step04_notifications_privileges.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Community Leaderboard Accessible",
+      "scenario_name": "Activity feed shows wiki scoring activities",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Community Leaderboard page (Home/Leaderboard)",
-          "expected": "Leaderboard page loads showing ranked users with reputation points",
-          "actual": "Leaderboard page loaded successfully showing table with columns: Rank, Member Name, Reputation Points, Badge, Member Since. Test User123 shown at Rank 1 with 601 Reputation Points. Multiple users displayed with their points and badges.",
-          "screenshot": "Scoring and Gamification_step03_leaderboard.png"
+          "action": "View Activity Feed in user profile",
+          "expected": "Activity feed displays wiki-related scoring activities",
+          "actual": "Activity feed shows 'authored wiki article' entries for Test Article for Bookmarks, Test Article for Revision Management, Test Article for Metadata",
+          "screenshot": "Scoring and Gamification_step02_activity_feed_wiki_actions.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Filter activity by 'Privilege Earned'",
+          "expected": "Only privilege-related activities should be displayed",
+          "actual": "Filter correctly shows only privilege earned activities: 'Edit own comments' and 'Create articles'",
+          "screenshot": "Scoring and Gamification_step03_privilege_earned_filter.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Wiki Scoring Activities Configured",
+      "scenario_name": "Privilege notifications for wiki activities",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Community Activities page (Home/Activities) to view scoring actions",
-          "expected": "Activities page shows Wiki-related scoring actions with point values",
-          "actual": "Activities page loaded showing 60 total scoring activities. Wiki-specific scoring actions confirmed: Created article (5 points), Edited article (1 point), Associated article metadata (1 point), Edited article metadata (1 point), Facebook Share Wiki (1 point), Google Share Wiki (1 point), LinkedIn Share Wiki (1 point). Top Contributors sidebar also displayed.",
-          "screenshot": "Scoring and Gamification_step04_activities_wiki_points.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Top Contributors Widget Accessible",
-      "status": "PASS",
-      "steps": [
+          "action": "Check notification popup after login",
+          "expected": "Notification shows privilege earned from wiki activities",
+          "actual": "Popup notification displayed: 'Wiki - Congratulations! You have earned a new Privilege - Create articles'",
+          "screenshot": "Scoring and Gamification_step00_login_confirmed.png"
+        },
         {
-          "step_number": 1,
-          "action": "View Top Contributors section on Community page",
-          "expected": "Top Contributors widget displays users ranked by points",
-          "actual": "Top Contributors widget visible on Community page showing ranked users including Test User123, Test User10, Test Admin, Regular TestUser, and others. Widget links to full Leaderboard page.",
-          "screenshot": "Scoring and Gamification_step01_community_leaderboard.png"
+          "step_number": 2,
+          "action": "Navigate to Notifications page",
+          "expected": "All privilege notifications from Wiki module should be listed",
+          "actual": "Notifications page shows 3 notifications including: 'Wiki - Congratulations! You have earned a new Privilege - Edit own comments' and 'Wiki - Congratulations! You have earned a new Privilege - Create articles'",
+          "screenshot": "Scoring and Gamification_step05_all_notifications.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Code review confirms Wiki scoring actions are defined in Mechanics.cs with point values: CreatedArticle (5 rep/5 exp), EditedArticle (1 rep/1 exp), CreatedMetaData (1 rep/1 exp), EditedMetaData (1 rep/1 exp)",
-    "Negative scoring also implemented for deleted/flagged articles: CreatedDeletedArticle (-5 rep), CreatedFlaggedArticle (-1 rep)",
-    "Privilege system based on reputation: CreateArticles (10 pts), EditMetadata (50 pts), EditContentUnmoderated (100 pts)",
-    "SuperUser Account shows 218 points accumulated from various activities",
-    "Scoring is integrated through SocialMechanicsController.Instance.LogUserActivity() in ContentController.cs and SocialController.cs"
+    "Code review confirms scoring actions are defined in Mechanics.cs with specific point values: CreatedArticle (5 rep, 5 exp), EditedArticle (1 rep, 1 exp), BookmarkedArticle (0 points), etc.",
+    "Privileges are tied to reputation thresholds: CreateArticles (10 points), EditContentUnmoderated (100 points), EditMetadata (50 points), CreateContentUnmoderated (100 points)",
+    "The SocialMechanicsController.Instance.LogUserActivity() method is called when publishing articles, editing articles, bookmarking, and other wiki actions",
+    "Points are accumulated and displayed in real-time - observed increase from 16 to 21 points during testing",
+    "Activity feed has specific filter options for wiki activities: 'Added to Wiki', 'Updated Wiki', 'Privilege Earned'",
+    "XSS alert dialog appeared when navigating to notifications page - this may be a security test or potential issue in the notification system"
   ],
   "summary": {
-    "total_scenarios": 4,
-    "passed": 4,
+    "total_scenarios": 3,
+    "passed": 3,
     "failed": 0,
     "pass_rate": "100%"
   }

@@ -5,152 +5,171 @@
     "feature_name": "Google Analytics 4 (GA4) Support",
     "feature_description": "Provides support for Google Analytics 4 with updated tracking code and configuration",
     "feature_priority": "Top",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T14:46:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Configure GA4 measurement ID",
+      "scenario_name": "GA4 Connector UI Availability",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Persona Bar > Settings > Connectors > Google Analytics",
-          "expected": "Google Analytics connector panel should open",
-          "actual": "Google Analytics 4 connector panel opened with Edit button",
-          "screenshot": "GA4_Support_step01_current_config.png"
+          "action": "Navigate to Persona Bar > Settings > Connectors",
+          "expected": "Google Analytics 4 connector should be visible in the connectors list",
+          "actual": "Google Analytics 4 connector is displayed in the list with a 'Connect' button",
+          "screenshot": "Google Analytics 4 (GA4) Support_step01_connectors_page.png"
         },
         {
           "step_number": 2,
-          "action": "Click Edit button on Google Analytics 4 connector",
-          "expected": "Configuration form should expand showing Measurement ID field",
-          "actual": "Configuration form expanded showing existing G-TEST123456 measurement ID",
-          "screenshot": "GA4_Support_step01_current_config.png"
+          "action": "Click on Google Analytics 4 Connect button",
+          "expected": "Configuration form should expand with Measurement ID field",
+          "actual": "Configuration form expanded showing 'Measurement ID' field and 'Track for Administrators' checkbox",
+          "screenshot": "Google Analytics 4 (GA4) Support_step02_ga4_connector_form.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure GA4 Measurement ID",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter valid GA4 Measurement ID 'G-TEST123456' in the field",
+          "expected": "Measurement ID should be accepted",
+          "actual": "Value 'G-TEST123456' was entered successfully in the Measurement ID field",
+          "screenshot": "Google Analytics 4 (GA4) Support_step03_measurement_id_entered.png"
         },
         {
-          "step_number": 3,
-          "action": "Change measurement ID to G-NEWTEST789",
-          "expected": "New GA4 measurement ID should be entered",
-          "actual": "G-NEWTEST789 entered in the Measurement ID field",
-          "screenshot": "GA4_Support_step02_change_measurement_id.png"
-        },
-        {
-          "step_number": 4,
+          "step_number": 2,
           "action": "Click Save button",
-          "expected": "Configuration should save successfully",
-          "actual": "Success message displayed: Item successfully saved",
-          "screenshot": "GA4_Support_step03_save_success.png"
+          "expected": "Configuration should save with success message",
+          "actual": "Success message 'Item successfully saved.' displayed, green checkmark appeared next to connector, and 'Delete Connection' button appeared",
+          "screenshot": "Google Analytics 4 (GA4) Support_step04_save_success.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Verify GA4 gtag.js script injection",
+      "scenario_name": "Empty Input Validation",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Enable Track for Administrators checkbox and save",
-          "expected": "Setting should save to allow admin to see tracking scripts",
-          "actual": "Track for Administrators enabled and saved successfully",
-          "screenshot": "GA4_Support_step05_config_saved_track_admin_off.png"
+          "action": "Attempt to save connector with empty Measurement ID",
+          "expected": "Validation error should be displayed",
+          "actual": "Error message 'Tracking Code Cannot Be Empty' displayed correctly",
+          "screenshot": "Google Analytics 4 (GA4) Support_step07_empty_input_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Universal Analytics Format Acceptance",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter Universal Analytics format 'UA-12345678-1' in Measurement ID field",
+          "expected": "Format should be validated (accepted or rejected)",
+          "actual": "UA format was accepted and saved successfully",
+          "screenshot": "Google Analytics 4 (GA4) Support_step08_ua_format_entered.png"
         },
         {
           "step_number": 2,
-          "action": "Navigate to home page and check page source for gtag.js",
-          "expected": "gtag.js script from googletagmanager.com should be present",
-          "actual": "Script found: https://www.googletagmanager.com/gtag/js?id=G-NEWTEST789",
-          "screenshot": "GA4_Support_step04_gtag_script_found.png"
+          "action": "Click Save button",
+          "expected": "Configuration should save",
+          "actual": "Configuration saved successfully with message 'Item successfully saved.'",
+          "screenshot": "Google Analytics 4 (GA4) Support_step09_ua_format_saved.png"
         }
       ],
-      "issues": []
+      "issues": ["The connector accepts Universal Analytics (UA-XXXXXXXX-X) format in a GA4-labeled field. Consider adding format validation to ensure only GA4 measurement IDs (G-XXXXXXX) are accepted."]
     },
     {
-      "scenario_name": "Verify GA4 tracking code format",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Check page source for GA4 gtag configuration code",
-          "expected": "GA4 tracking code should include gtag('config', 'G-XXXXXXX') format",
-          "actual": "GA4 tracking code format verified with gtag.js async script and config initialization",
-          "screenshot": "GA4_Support_step06_new_id_verified.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Empty input validation",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Clear the Measurement ID field and click Save",
-          "expected": "Validation error should appear preventing empty tracking ID",
-          "actual": "Error message displayed: Tracking Code Cannot Be Empty",
-          "screenshot": "GA4_Support_step08_empty_validation_error.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Invalid format validation",
+      "scenario_name": "Special Characters and XSS Input Handling",
       "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Enter invalid tracking ID format 'INVALID-123' and click Save",
-          "expected": "System should reject invalid format (no G- or UA- prefix)",
-          "actual": "System accepted and saved 'INVALID-123' without any validation error",
-          "screenshot": "GA4_Support_step11_invalid_format_accepted.png"
+          "action": "Enter XSS script '<script>alert('xss')</script>' in Measurement ID field",
+          "expected": "Input should be rejected or sanitized",
+          "actual": "XSS script content was accepted and saved without validation or sanitization",
+          "screenshot": "Google Analytics 4 (GA4) Support_step10_special_chars_xss.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Validation error or input sanitization",
+          "actual": "Content saved successfully with message 'Item successfully saved.' - potential security vulnerability",
+          "screenshot": "Google Analytics 4 (GA4) Support_step11_xss_saved.png"
         }
       ],
-      "issues": [
-        "No validation for tracking ID format - system accepts any string without G- or UA- prefix",
-        "Invalid tracking IDs could result in non-functional analytics tracking"
-      ]
+      "issues": ["SECURITY CONCERN: The Measurement ID field accepts arbitrary content including script tags without validation or sanitization. This could potentially lead to XSS vulnerabilities if the tracking ID is rendered without proper escaping."]
     },
     {
-      "scenario_name": "Universal Analytics vs GA4 switching",
+      "scenario_name": "Track for Administrators Checkbox",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Change measurement ID to Universal Analytics format UA-12345678-1",
-          "expected": "System should accept UA tracking ID",
-          "actual": "UA-12345678-1 entered successfully",
-          "screenshot": "GA4_Support_step09_ua_id_test.png"
+          "action": "Enter valid GA4 ID 'G-ABCDEF1234' and check 'Track for Administrators' checkbox",
+          "expected": "Checkbox should be toggleable and configuration should save",
+          "actual": "Checkbox successfully checked, visible with blue checkmark",
+          "screenshot": "Google Analytics 4 (GA4) Support_step12_track_admins_checked.png"
         },
         {
           "step_number": 2,
-          "action": "Save and verify script injection",
-          "expected": "Universal Analytics script should be injected",
-          "actual": "analytics.js script injected alongside gtag.js for UA tracking",
-          "screenshot": "GA4_Support_step10_ua_config_verification.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Switch back to GA4 format G-TEST123456",
-          "expected": "System should switch back to GA4 tracking",
-          "actual": "GA4 measurement ID restored successfully",
-          "screenshot": "GA4_Support_step12_ga4_restored.png"
+          "action": "Click Save button",
+          "expected": "Configuration with admin tracking enabled should save",
+          "actual": "Configuration saved successfully with admin tracking enabled",
+          "screenshot": "Google Analytics 4 (GA4) Support_step13_config_saved_with_admin_tracking.png"
         }
       ],
       "issues": []
+    },
+    {
+      "scenario_name": "Delete Connection Functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Delete Connection' button",
+          "expected": "Connection should be deleted and connector should reset to unconfigured state",
+          "actual": "Connection deleted successfully with message 'Item successfully deleted.' Connector reset to 'Connect' button state",
+          "screenshot": "Google Analytics 4 (GA4) Support_step14_connection_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "GA4 Script Injection Verification",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After configuring GA4 Measurement ID, navigate to homepage and inspect page source for gtag.js script",
+          "expected": "GA4 gtag.js script should be injected with the configured Measurement ID",
+          "actual": "No gtag.js script found in page source. DNN uses its own analytics service (qa.dnnapi.com/analytics/js/) rather than direct gtag.js injection. The configured Measurement ID 'G-TEST123456' was not found in page HTML.",
+          "screenshot": "Google Analytics 4 (GA4) Support_step05_homepage_after_config.png"
+        }
+      ],
+      "issues": ["GA4 tracking script (gtag.js) is not directly injected into the page. The analytics appear to be handled via DNN's API service. The connector saves the Measurement ID but actual tracking implementation may require additional configuration or OAuth authorization with Google."]
     }
   ],
   "observations": [
-    "Code suggests GA4 data stream configuration feature exists (authorize.js references data streams), but this requires Google Analytics authorization which was not available in test environment",
-    "GA4 event tracking is not directly testable via UI - requires actual Google Analytics account verification",
-    "Migration from Universal Analytics to GA4 is achieved by simply changing the tracking ID prefix from UA- to G-",
-    "The system automatically detects analytics version based on tracking ID prefix: G- for GA4, UA- for Universal Analytics",
-    "Track for Administrators checkbox controls whether admin users see tracking scripts - important for testing",
-    "No format validation exists for tracking IDs - system accepts any string value which could lead to misconfiguration"
+    "The Google Analytics 4 connector uses a simple configuration form with 'Measurement ID' and 'Track for Administrators' fields",
+    "The connector code in authorize.js shows support for Data Streams (GA4 concept) with Account > Web Property > Data Stream selection when OAuth authorized",
+    "The field is labeled 'Measurement ID' which is GA4 terminology (GA4 uses G-XXXXXXX format)",
+    "Analytics script injection uses DNN's API service (qa.dnnapi.com/analytics/js/) rather than direct gtag.js injection",
+    "The connector accepts any text input for the Measurement ID without format validation - both GA4 (G-XXXXXX) and Universal Analytics (UA-XXXXXXXX-X) formats are accepted",
+    "No input sanitization for special characters or script tags in the Measurement ID field",
+    "OAuth integration with Google is available but requires valid Google API credentials to test fully"
   ],
   "summary": {
-    "total_scenarios": 6,
-    "passed": 5,
-    "failed": 1,
-    "pass_rate": "83%"
+    "total_scenarios": 8,
+    "passed": 6,
+    "failed": 2,
+    "pass_rate": "75%"
   }
 }

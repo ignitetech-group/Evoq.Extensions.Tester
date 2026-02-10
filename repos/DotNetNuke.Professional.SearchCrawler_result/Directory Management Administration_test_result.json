@@ -5,7 +5,7 @@
     "feature_name": "Directory Management Administration",
     "feature_description": "Configures which directories to include or exclude from file crawling operations.",
     "feature_priority": "High",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T15:31:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,10 +15,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Settings > Site Settings > Search > Crawling tab",
-          "expected": "Included Directories section should be visible with list of directories",
-          "actual": "Included Directories section visible showing 'Badges/' folder",
-          "screenshot": "Directory_Management_Administration_step02_directories_section.png"
+          "action": "Navigate to Site Settings > Search > Crawling tab",
+          "expected": "Included Directories section displays with current directories",
+          "actual": "Included Directories section displayed showing 'Site Root' as an included directory",
+          "screenshot": "Directory Management Administration_step03_included_directories.png"
         }
       ],
       "issues": []
@@ -30,86 +30,30 @@
         {
           "step_number": 1,
           "action": "View Excluded Directories section on Crawling tab",
-          "expected": "Excluded Directories section should be visible with list of directories",
-          "actual": "Excluded Directories section visible showing 'Badges/' folder",
-          "screenshot": "Directory_Management_Administration_step02_directories_section.png"
+          "expected": "Excluded Directories section displays with current directories",
+          "actual": "Excluded Directories section displayed, initially empty",
+          "screenshot": "Directory Management Administration_step02_directories_sections.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Add included directory",
+      "scenario_name": "Verify parent/child folder conflict prevention",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Click 'Add Directory' button in Included Directories section",
-          "expected": "Folder picker dialog should appear",
-          "actual": "Folder picker dialog appeared with folder tree",
-          "screenshot": "Directory_Management_Administration_step03_add_included_folder_picker.png"
+          "action": "With Site Root already included, click Add Directory for Included Directories",
+          "expected": "Folder picker opens",
+          "actual": "Folder picker opened showing folder tree",
+          "screenshot": "Directory Management Administration_step04_add_directory_picker.png"
         },
         {
           "step_number": 2,
-          "action": "Expand folder tree and select 'Images' folder",
-          "expected": "Images folder should be selectable",
-          "actual": "Folder tree expanded showing available folders including Images",
-          "screenshot": "Directory_Management_Administration_step04_folder_tree.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Save the selection",
-          "expected": "Images folder should be added to included directories list",
-          "actual": "Images folder successfully added to Included Directories list",
-          "screenshot": "Directory_Management_Administration_step05_images_added.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Add excluded directory",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Click 'Add Directory' button in Excluded Directories section",
-          "expected": "Folder picker dialog should appear",
-          "actual": "Folder picker dialog appeared",
-          "screenshot": "Directory_Management_Administration_step05_images_added.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Select 'Templates' folder and save",
-          "expected": "Templates folder should be added to excluded directories list",
-          "actual": "Templates folder successfully added to Excluded Directories list",
-          "screenshot": "Directory_Management_Administration_step06_templates_excluded.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Duplicate directory prevention",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Attempt to add 'Badges/' folder again to Included Directories (already exists)",
-          "expected": "System should prevent duplicate and show error message",
-          "actual": "Error message displayed: 'Directory duplicated. This directory 'Badges/' is already added.'",
-          "screenshot": "Directory_Management_Administration_step07_duplicate_error.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Parent/child folder conflict prevention",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Review code implementation for parent/child folder conflict detection",
-          "expected": "Code should contain logic to prevent adding child folders when parent is already included",
-          "actual": "Code confirmed: SearchSpiderHelper.cs contains existsAParentFolder() method that checks if new folder path starts with existing folder paths, throwing DirectoryIncludedException when conflict detected",
-          "screenshot": "Directory_Management_Administration_step07_duplicate_error.png"
+          "action": "Select Images folder (child of Site Root) and click Save",
+          "expected": "Error message about parent folder already included",
+          "actual": "Error displayed: 'Directory included. This directory Images/ is already included by an ancestor directory'",
+          "screenshot": "Directory Management Administration_step06_parent_child_conflict_error.png"
         }
       ],
       "issues": []
@@ -120,17 +64,73 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click delete button next to 'Images' in Included Directories",
-          "expected": "Confirmation dialog should appear",
-          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete Images?'",
-          "screenshot": "Directory_Management_Administration_step09_delete_confirmation.png"
+          "action": "Click delete icon for Site Root in Included Directories",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete Site Root?'",
+          "screenshot": "Directory Management Administration_step07_delete_confirmation.png"
         },
         {
           "step_number": 2,
-          "action": "Confirm deletion by clicking 'Yes'",
-          "expected": "Images folder should be removed from included directories list",
-          "actual": "Images folder successfully removed from Included Directories list",
-          "screenshot": "Directory_Management_Administration_step10_images_removed.png"
+          "action": "Click Yes to confirm deletion",
+          "expected": "Site Root removed from Included Directories",
+          "actual": "Site Root was removed, Included Directories section now empty",
+          "screenshot": "Directory Management Administration_step08_site_root_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add included directory",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add Directory for Included Directories",
+          "expected": "Folder picker opens",
+          "actual": "Folder picker opened showing folder tree (Site Root > Badges, Images, Templates, Users)",
+          "screenshot": "Directory Management Administration_step05_images_folder_selected.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select Images folder and click Save",
+          "expected": "Images directory added to Included Directories",
+          "actual": "Images successfully added to Included Directories list with delete icon",
+          "screenshot": "Directory Management Administration_step09_images_added.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test duplicate directory prevention",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "With Images already included, try to add Images again via Add Directory",
+          "expected": "Error message about duplicate directory",
+          "actual": "Error displayed: 'Directory duplicated. This directory Images/ is already added'",
+          "screenshot": "Directory Management Administration_step10_duplicate_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add excluded directory",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add Directory for Excluded Directories",
+          "expected": "Folder picker opens",
+          "actual": "Folder picker opened showing folder tree",
+          "screenshot": "Directory Management Administration_step11_add_excluded_template.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select Templates folder and click Save",
+          "expected": "Templates directory added to Excluded Directories",
+          "actual": "Templates successfully added to Excluded Directories list with delete icon",
+          "screenshot": "Directory Management Administration_step12_templates_excluded.png"
         }
       ],
       "issues": []
@@ -141,44 +141,31 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click delete button next to 'Templates' in Excluded Directories",
-          "expected": "Confirmation dialog should appear",
+          "action": "Click delete icon for Templates in Excluded Directories",
+          "expected": "Confirmation dialog appears",
           "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete Templates?'",
-          "screenshot": "Directory_Management_Administration_step12_delete_excluded_confirmation.png"
+          "screenshot": "Directory Management Administration_step14_delete_excluded_confirmation.png"
         },
         {
           "step_number": 2,
-          "action": "Confirm deletion by clicking 'Yes'",
-          "expected": "Templates folder should be removed from excluded directories list",
-          "actual": "Templates folder successfully removed from Excluded Directories list",
-          "screenshot": "Directory_Management_Administration_step13_templates_removed.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Verify folder path resolution",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Observe directory path display in Included/Excluded directories lists",
-          "expected": "Folder paths should be displayed correctly with trailing slash",
-          "actual": "Folder paths displayed correctly (e.g., 'Badges/', 'Images/', 'Templates')",
-          "screenshot": "Directory_Management_Administration_step06_templates_excluded.png"
+          "action": "Click Yes to confirm deletion",
+          "expected": "Templates removed from Excluded Directories",
+          "actual": "Templates was removed, Excluded Directories section now empty",
+          "screenshot": "Directory Management Administration_step15_templates_removed.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Code confirms automatic exclusion of Containers and Skins folders exists in FileCrawlerController.cs (lines 340-341). Files from folders starting with 'Containers/' or 'Skins/' are automatically excluded from crawling via hardcoded filter. These folders do not appear in the portal's folder picker for manual configuration.",
-    "Parent/child folder conflict prevention is implemented in SearchSpiderHelper.cs via existsAParentFolder() method. UI testing was limited due to folder picker not allowing easy expansion of nested folders, but code review confirms the functionality exists.",
-    "DirectoryIncludedException and DirectoryExcludedException classes handle error messaging for parent folder conflicts when attempting to add directories that would conflict with existing entries."
+    "Code in SearchSpiderHelper.cs confirms automatic exclusion of Containers and Skins folders is implemented but this functionality works at the API level during crawling, not visible in the UI configuration.",
+    "Folder path resolution works correctly - folder IDs are resolved to human-readable paths like 'Images/' in the UI.",
+    "The folder picker UI has some interaction challenges with overlapping elements, but the functionality works correctly.",
+    "Parent/child conflict prevention throws DirectoryIncludedException with localized error message when attempting to add a child folder when parent is already included."
   ],
   "summary": {
-    "total_scenarios": 9,
-    "passed": 9,
+    "total_scenarios": 8,
+    "passed": 8,
     "failed": 0,
     "pass_rate": "100%"
   }

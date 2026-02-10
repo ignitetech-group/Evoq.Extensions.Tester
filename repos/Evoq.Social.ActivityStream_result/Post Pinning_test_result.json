@@ -5,7 +5,7 @@
     "feature_name": "Post Pinning",
     "feature_description": "Pin important posts to the top of the activity stream (moderator feature)",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T15:42:00Z",
+    "test_date": "2026-02-09T16:24:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -16,23 +16,23 @@
         {
           "step_number": 1,
           "action": "Navigate to Community page with Activity Stream",
-          "expected": "Activity Stream module is visible with posts",
-          "actual": "Activity Stream module loaded with multiple posts visible",
-          "screenshot": "Post_Pinning_step01_activity_stream_overview.png"
+          "expected": "Activity Stream displays with posts",
+          "actual": "Activity Stream displayed with multiple posts visible",
+          "screenshot": "Post Pinning_step02_activity_stream_posts_visible.png"
         },
         {
           "step_number": 2,
-          "action": "Identify a post with Pin option (Test text-only post - January 16, 2026)",
-          "expected": "Post shows Pin link for moderator user",
-          "actual": "Post displayed with Pin link available in the actions row",
-          "screenshot": "Post_Pinning_step03_before_pinning_post.png"
+          "action": "Locate Pin link on a post (as moderator/superuser)",
+          "expected": "Pin link should be visible for moderators",
+          "actual": "Pin links visible on posts for the superuser account",
+          "screenshot": "Post Pinning_step02_activity_stream_posts_visible.png"
         },
         {
           "step_number": 3,
-          "action": "Click Pin link on the selected post",
-          "expected": "Post is pinned and Pin link changes to Unpin",
-          "actual": "Post was pinned successfully, Pin link changed to Unpin link",
-          "screenshot": "Post_Pinning_step04_post_pinned_shows_unpin.png"
+          "action": "Click Pin link on a post",
+          "expected": "Post should be pinned, Pin link changes to Unpin, blue pin icon appears",
+          "actual": "Post was pinned successfully, Pin link changed to Unpin, blue pin icon appeared on post, post moved to top of activity stream",
+          "screenshot": "Post Pinning_step03_post_pinned_successfully.png"
         }
       ],
       "issues": []
@@ -43,68 +43,80 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "After pinning the post, observe the Activity Stream order",
-          "expected": "Pinned post should move to the top of the activity stream",
-          "actual": "The pinned post moved to the first position in the activity stream with Unpin link visible",
-          "screenshot": "Post_Pinning_step05_pinned_post_at_top.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Verify the pinned post displays Unpin option",
-          "expected": "Pinned post shows Unpin link instead of Pin",
-          "actual": "Post correctly displays Unpin link, confirming pinned status",
-          "screenshot": "Post_Pinning_step06_pinned_post_visible_with_unpin.png"
+          "action": "After pinning a post, observe its position in activity stream",
+          "expected": "Pinned post should move to top of activity stream",
+          "actual": "Pinned post immediately moved to the top of the activity stream with blue pin icon visible",
+          "screenshot": "Post Pinning_step03_post_pinned_successfully.png"
         }
       ],
       "issues": []
     },
     {
       "scenario_name": "Unpin a previously pinned post",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Unpin link on a pinned post",
+          "expected": "Post should be unpinned, Unpin link changes back to Pin, pin icon disappears",
+          "actual": "API error occurred - alert dialog with 'undefined' message appeared, console showed 500 error from TogglePin endpoint",
+          "screenshot": "Post Pinning_step04_unpin_error.png"
+        }
+      ],
+      "issues": [
+        "Unpin operation fails with API error - TogglePin endpoint returns 500 error with 'undefined' message when attempting to unpin a post"
+      ]
+    },
+    {
+      "scenario_name": "Pin multiple posts",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Click Unpin link on the pinned post",
-          "expected": "Post is unpinned and returns to its natural chronological position",
-          "actual": "Post was unpinned, Unpin link changed back to Pin link, and post moved back to its natural position in the stream",
-          "screenshot": "Post_Pinning_step07_post_unpinned.png"
+          "action": "Pin first post using Pin link",
+          "expected": "First post should be pinned with Unpin link visible",
+          "actual": "First post pinned successfully, shows Unpin link and blue pin icon",
+          "screenshot": "Post Pinning_step06_multiple_posts_pinned.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Pin second post using Pin link",
+          "expected": "Second post should be pinned and move to top, both posts show as pinned",
+          "actual": "Second post pinned successfully, moved to top of stream, both pinned posts visible with blue pin icons and Unpin links",
+          "screenshot": "Post Pinning_step06_multiple_posts_pinned.png"
         }
       ],
       "issues": []
     },
     {
       "scenario_name": "Verify pin status across page refresh",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Refresh the page using browser navigation",
-          "expected": "Page reloads and pin status is preserved",
-          "actual": "Page reloaded successfully",
-          "screenshot": "Post_Pinning_step08_pin_status_after_refresh.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Verify pinned posts still show Unpin link and remain at top",
-          "expected": "Pinned posts retain their pinned status after refresh",
-          "actual": "Pinned posts (Test post from Claude automated testing - January 9, 2026) still displayed at top with Unpin link; previously unpinned post (Test text-only post - January 16, 2026) remained unpinned with Pin link",
-          "screenshot": "Post_Pinning_step08_pin_status_persisted.png"
+          "action": "After pinning a post, refresh the page",
+          "expected": "Pinned post should still be pinned and appear at top of stream",
+          "actual": "After page refresh, the previously pinned post was NOT pinned anymore - all posts showed Pin links instead of Unpin, no blue pin icons visible",
+          "screenshot": "Post Pinning_step05_after_refresh_no_pin.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Pin status does not persist across page refresh - pinned posts lose their pinned state after browser refresh, indicating either database transaction not committed or retrieval bug"
+      ]
     }
   ],
   "observations": [
-    "The TogglePin API endpoint in ActivityStreamServicesController.cs requires DnnAuthorize and ValidateAntiForgeryToken attributes for security",
-    "Pin functionality uses ActivityModuleSecurity.CanModerate permission check to restrict pinning to moderators only",
-    "The UpdatePinStatus method in ActivityStreamController.cs toggles the pin status in the database via stored procedure ActivityStream_Toggle_Pin",
-    "UI uses .actStr_pinLink class for the pin/unpin button and adds journal-row-pinned CSS class when a post is pinned",
-    "Multiple posts can be pinned simultaneously - they all appear at the top of the stream"
+    "Pin functionality UI works correctly in the browser session - posts are pinned, move to top, show blue pin icons, and Pin link changes to Unpin",
+    "Code review shows UpdatePinStatus method in ActivityStreamController.cs toggles pin status via stored procedure 'ActivityStream_Toggle_Pin'",
+    "Code requires CanModerate permission to access pin functionality (verified in ActivityStreamServicesController.cs line 354)",
+    "Pin links are only rendered when _isAdmin is true (verified in ActivityStreamParser.cs line 299)",
+    "Unpin API call fails with 500 error - may indicate database or permission issue when toggling off",
+    "Pin persistence issue suggests possible database transaction rollback or stored procedure failure"
   ],
   "summary": {
-    "total_scenarios": 4,
-    "passed": 4,
-    "failed": 0,
-    "pass_rate": "100%"
+    "total_scenarios": 5,
+    "passed": 3,
+    "failed": 2,
+    "pass_rate": "60%"
   }
 }

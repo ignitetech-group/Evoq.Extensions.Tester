@@ -5,7 +5,7 @@
     "feature_name": "Content Page Size Settings",
     "feature_description": "Configure pagination size for content lists across social modules with options from 5 to 100 items per page.",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:52:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,76 +15,109 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigated to Settings > Community Settings",
-          "expected": "Community Settings panel opens with Page Size dropdown visible",
-          "actual": "Community Settings panel opened successfully showing Miscellaneous Community Settings section with Page Size dropdown",
-          "screenshot": "Content_Page_Size_Settings_step01_login_and_settings.png"
+          "action": "Navigate to Admin > Settings > Community Settings",
+          "expected": "Community Settings page loads with Page Size section visible",
+          "actual": "Community Settings page loaded successfully showing Influence section and Miscellaneous Community Settings",
+          "screenshot": "Content Page Size Settings_step01_community_settings.png"
         },
         {
           "step_number": 2,
-          "action": "Clicked on Page Size dropdown to expand options",
-          "expected": "Dropdown should show all 6 options: 5, 10, 15, 25, 50, 100 items",
-          "actual": "Dropdown expanded showing all 6 options: 5 items, 10 items, 15 items, 25 items, 50 items, 100 items. Current selection was 50 items.",
-          "screenshot": "Content_Page_Size_Settings_step02_dropdown_options.png"
+          "action": "Click on Page Size dropdown to expand options",
+          "expected": "Dropdown shows all 6 options: 5, 10, 15, 25, 50, 100 items",
+          "actual": "Dropdown expanded showing all 6 options: 5 Items, 10 Items, 15 Items, 25 Items, 50 Items, 100 Items",
+          "screenshot": "Content Page Size Settings_step02_dropdown_options.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Set page size to different value and save",
+      "scenario_name": "Verify default value is 5 items",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Changed Page Size from 50 items to 25 items",
-          "expected": "Dropdown value should change to 25 items",
-          "actual": "Successfully selected 25 items from dropdown",
-          "screenshot": "Content_Page_Size_Settings_step03_value_changed_to_25.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Clicked Save button",
-          "expected": "Settings should save with success notification",
-          "actual": "Save completed successfully with 'Item successfully saved.' notification displayed",
-          "screenshot": "Content_Page_Size_Settings_step04_save_success.png"
+          "action": "Check initial value of Page Size dropdown",
+          "expected": "Default value should be 5 items",
+          "actual": "Page Size dropdown showed '5 Items' as the default selected value",
+          "screenshot": "Content Page Size Settings_step02_dropdown_options.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Verify persistence after save",
-      "status": "FAIL",
+      "scenario_name": "Set page size to 100 items and save",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigated away from Community Settings (clicked Dashboard)",
-          "expected": "Dashboard panel opens",
-          "actual": "Dashboard panel opened successfully",
-          "screenshot": "Content_Page_Size_Settings_step05_persistence_check.png"
+          "action": "Select '100 items' from the Page Size dropdown",
+          "expected": "Dropdown value changes to 100 items",
+          "actual": "Successfully selected 100 Items from dropdown",
+          "screenshot": "Content Page Size Settings_step03_selected_100_items.png"
         },
         {
           "step_number": 2,
-          "action": "Navigated back to Settings > Community Settings",
-          "expected": "Page Size should still show 25 items (the saved value)",
-          "actual": "Page Size shows 50 items instead of the saved value of 25 items. The setting did not persist despite showing a success message during save.",
-          "screenshot": "Content_Page_Size_Settings_step06_persistence_failed.png"
+          "action": "Click Save button",
+          "expected": "Settings saved successfully with confirmation message",
+          "actual": "Settings saved successfully. 'Item successfully saved.' message appeared",
+          "screenshot": "Content Page Size Settings_step04_saved_100_items.png"
         }
       ],
-      "issues": [
-        "Page Size setting does not persist after save. Value reverts to 50 items after navigating away and returning, even though the save operation showed a success message."
-      ]
+      "issues": []
+    },
+    {
+      "scenario_name": "Set page size to 50 items and save",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select '50 items' from the Page Size dropdown",
+          "expected": "Dropdown value changes to 50 items",
+          "actual": "Successfully selected 50 Items from dropdown",
+          "screenshot": "Content Page Size Settings_step06_saved_50_items.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Settings saved successfully",
+          "actual": "Settings saved successfully with success notification",
+          "screenshot": "Content Page Size Settings_step06_saved_50_items.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save page size and verify persistence",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Set Page Size to 100 items and save",
+          "expected": "Settings saved successfully",
+          "actual": "Settings saved with success message",
+          "screenshot": "Content Page Size Settings_step04_saved_100_items.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Reload page and navigate back to Community Settings",
+          "expected": "Page Size should still show 100 items",
+          "actual": "After page reload and navigating back to Community Settings, Page Size dropdown showed '100 Items' confirming persistence",
+          "screenshot": "Content Page Size Settings_step07_persistence_verified_scrolled.png"
+        }
+      ],
+      "issues": []
     }
   ],
   "observations": [
-    "The save operation displays a success message 'Item successfully saved.' but the Page Size value does not actually persist to the database.",
-    "Both Page Size and Comments Page Size dropdowns display all expected options (5, 10, 15, 25, 50, 100 items).",
-    "The default value for Page Size appears to be 50 items (though code shows default should be 5).",
-    "This appears to be a backend persistence issue - the API may not be correctly saving the PageSize field to the database."
+    "The Page Size dropdown correctly displays all 6 options as defined in the HTML template: 5, 10, 15, 25, 50, and 100 items",
+    "There is also a separate Comments Page Size dropdown with the same options",
+    "The settings are saved via the CommunitySettingsController SaveSettings API endpoint",
+    "Settings persistence was verified - values are correctly retained after page reload"
   ],
   "summary": {
-    "total_scenarios": 3,
-    "passed": 2,
-    "failed": 1,
-    "pass_rate": "67%"
+    "total_scenarios": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": "100%"
   }
 }

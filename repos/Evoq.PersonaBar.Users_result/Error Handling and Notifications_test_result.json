@@ -5,95 +5,116 @@
     "feature_name": "Error Handling and Notifications",
     "feature_description": "Display appropriate error messages and handle failures gracefully",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:30:00Z",
+    "test_date": "2026-02-09T16:20:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Validation Error Display for Invalid Email",
+      "scenario_name": "Display error notification for missing user assets",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Opened Add User form",
-          "expected": "Add User form appears with all fields",
-          "actual": "Add User form appeared with First Name, Last Name, User Name, Email Address, Password fields",
-          "screenshot": "Error Handling and Notifications_step01_add_user_form.png"
+          "action": "Navigate to Admin > Users panel",
+          "expected": "Users panel opens with list of users",
+          "actual": "Users panel opened successfully with list of users displayed",
+          "screenshot": "Error Handling and Notifications_step01_users_panel.png"
         },
         {
           "step_number": 2,
-          "action": "Entered invalid email format 'invalidemail' without @ symbol and clicked Save",
-          "expected": "Validation error indicator should appear",
-          "actual": "Red exclamation mark validation error icon appeared next to Email Address field, form was not submitted",
-          "screenshot": "Error Handling and Notifications_step03_validation_error.png"
+          "action": "Expand user activity panel for Test User06",
+          "expected": "User activity details displayed",
+          "actual": "User activity details displayed showing Rank, Reputation, Experience, Engagement, Influence, and Recent Activity",
+          "screenshot": "Error Handling and Notifications_step02_user_activity_panel.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click user menu and select View Assets for user without files",
+          "expected": "Error notification should appear indicating user has no assets",
+          "actual": "Error notification displayed with message 'Test User06 does not own any assets.' with error icon (red X)",
+          "screenshot": "Error Handling and Notifications_step09_notification_captured.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Error Notification for View Assets (Missing User Folder)",
+      "scenario_name": "Test 5-second auto-dismiss for error notifications",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Opened user menu for 'EmptyTest User'",
-          "expected": "Dropdown menu with user actions appears",
-          "actual": "Dropdown menu appeared with options including View Profile, View Assets, Change Password, etc.",
-          "screenshot": "Error Handling and Notifications_step04_user_menu_options.png"
+          "action": "Trigger error notification by clicking View Assets for user without files",
+          "expected": "Error notification appears",
+          "actual": "Error notification appeared with message 'Test User06 does not own any assets.'",
+          "screenshot": "Error Handling and Notifications_step09_notification_captured.png"
         },
         {
           "step_number": 2,
-          "action": "Clicked 'View Assets' for user without any assets",
-          "expected": "Error notification should display with appropriate message",
-          "actual": "Error notification appeared with message 'EmptyTest User does not own any assets.' - confirmed in page state before auto-dismiss",
-          "screenshot": "Error Handling and Notifications_step06_error_toast_visible.png"
+          "action": "Wait 6 seconds",
+          "expected": "Error notification should auto-dismiss after 5 seconds",
+          "actual": "Error notification auto-dismissed after approximately 5 seconds as expected (code shows utilities.notifyError with 5000ms timeout)",
+          "screenshot": "Error Handling and Notifications_step10_notification_dismissed.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "5-Second Auto-Dismiss for Error Notifications",
+      "scenario_name": "Test graceful degradation for invalid data input",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Triggered View Assets error notification",
-          "expected": "Notification should appear and auto-dismiss after approximately 5 seconds",
-          "actual": "Error notification appeared and auto-dismissed before screenshot could capture it visually, confirming auto-dismiss functionality (code shows 5000ms timer)",
-          "screenshot": "Error Handling and Notifications_step06_error_toast_visible.png"
+          "action": "Open Edit Points form for Test User06",
+          "expected": "Edit Points form opens with current values",
+          "actual": "Edit Points form opened showing Reputation: 5, Experience: 5 with Notes textarea and Cancel/Save buttons",
+          "screenshot": "Error Handling and Notifications_step03_edit_points_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter invalid text 'invalid' in Reputation field (expecting numeric)",
+          "expected": "Field accepts input",
+          "actual": "Field accepted 'invalid' text input",
+          "screenshot": "Error Handling and Notifications_step04_invalid_input.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save button",
+          "expected": "System handles invalid data gracefully",
+          "actual": "System gracefully converted invalid text to 0, Rank recalculated from 3 to 16, Reputation set to 0, Experience unchanged at 5. No error shown - graceful degradation pattern",
+          "screenshot": "Error Handling and Notifications_step05_graceful_conversion.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Server-Side Error (500) with User-Friendly Message",
+      "scenario_name": "Verify specific error messages include user context",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Filled Add User form with duplicate username 'claudetest'",
-          "expected": "Form filled with existing username",
-          "actual": "Form filled with First Name: Duplicate, Last Name: User, User Name: claudetest (existing), Email: duplicate@test.com, Password: Test123456",
-          "screenshot": "Error Handling and Notifications_step07_duplicate_username_form.png"
+          "action": "Open user context menu for Test User06",
+          "expected": "Context menu with user actions appears",
+          "actual": "Context menu appeared with options: View Profile, View Assets, Change Password, Force Password Change, Send Password Reset Link, Un-Authorize User, Delete User, Make Super User, Login As User",
+          "screenshot": "Error Handling and Notifications_step06_user_menu.png"
         },
         {
           "step_number": 2,
-          "action": "Clicked Save to trigger server-side validation error",
-          "expected": "Server should return 500 error with user-friendly message",
-          "actual": "Console showed 500 Internal Server Error. Error notification appeared with message 'The username is already in use.' - confirmed in page state",
-          "screenshot": "Error Handling and Notifications_step08_server_error_duplicate.png"
+          "action": "Click View Assets for user without files",
+          "expected": "Error message should include user's name for context",
+          "actual": "Error notification displayed: 'Test User06 does not own any assets.' - The message correctly includes the user's display name (Test User06) for context",
+          "screenshot": "Error Handling and Notifications_step09_notification_captured.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Error notifications use utilities.notifyError() function with 5000ms (5-second) auto-dismiss timer as confirmed in code review of usersActivity.js",
-    "Inline validation errors display red exclamation mark icons next to invalid fields",
-    "Server-side errors return HTTP 500 status with user-friendly error messages that are displayed in toast notifications",
-    "Error messages are properly formatted with user context (e.g., including username in 'does not own any assets' message)",
-    "Console error logging confirmed via browser console messages showing 500 errors for server-side validation failures",
-    "Auto-dismiss functionality is working as designed - notifications disappear automatically after the configured timeout"
+    "Code analysis confirms error handling uses utilities.notifyError() with 5000ms (5 second) auto-dismiss timeout in usersActivity.js",
+    "Error callback function parses JSON response: JSON.parse(message.responseText).Message to extract error message",
+    "The View Assets feature shows a user-friendly error when user has no files (err_NoUserFolder localization key)",
+    "Edit Points form handles invalid numeric input by gracefully converting to 0 instead of showing validation error",
+    "The EvoqUsersController.cs returns localized error messages for 404 (UserNotFound) and 401 (InSufficientPermissions) scenarios",
+    "Error notifications appear as toast-style popups with error icon and auto-dismiss after 5 seconds"
   ],
   "summary": {
     "total_scenarios": 4,

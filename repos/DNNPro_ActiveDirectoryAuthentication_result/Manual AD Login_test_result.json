@@ -5,138 +5,193 @@
     "feature_name": "Manual AD Login",
     "feature_description": "Allows users to manually login using their Active Directory credentials through a login form",
     "feature_priority": "Top",
-    "test_date": "2026-01-16T14:28:00Z",
+    "test_date": "2026-02-09T15:32:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Empty Input Fields Validation",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Navigate to Login page and click Windows Login tab",
-          "expected": "AD Login form should be displayed with Username and Password fields",
-          "actual": "AD Login form displayed correctly with Username and Password fields marked as required (*)",
-          "screenshot": "Manual_AD_Login_step02_ad_login_form.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click Login button without entering any credentials",
-          "expected": "Validation messages should appear for both required fields",
-          "actual": "Validation messages appeared: 'You need provide your username.' and 'You need provide your password.'",
-          "screenshot": "Manual_AD_Login_step03_empty_validation.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Asterisk Character Validation",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Enter username containing asterisk character (test*user)",
-          "expected": "Validation should block asterisk character per regex ^[^*]+$",
-          "actual": "Validation message appeared: 'Your username contains invalid chars.'",
-          "screenshot": "Manual_AD_Login_step04_asterisk_validation.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Password Field Security (Masking)",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Enter password in the Password field",
-          "expected": "Password should be masked (displayed as dots/asterisks)",
-          "actual": "Password was masked correctly showing dots instead of actual characters",
-          "screenshot": "Manual_AD_Login_step04_asterisk_validation.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Login with Invalid Credentials (domain\\username format)",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Enter credentials in DOMAIN\\username format (TESTDOMAIN\\invaliduser)",
-          "expected": "Form should accept the DOMAIN\\username format",
-          "actual": "Form accepted the credentials in DOMAIN\\username format",
-          "screenshot": "Manual_AD_Login_step05_domain_username_format.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click Login button",
-          "expected": "Login should fail with appropriate error message since no AD is configured",
-          "actual": "Login failed with message: 'Login Failed. Please remember that passwords are case sensitive.'",
-          "screenshot": "Manual_AD_Login_step06_invalid_credentials_error.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Login with username@domain Format",
+      "scenario_name": "Verify AD Authentication Provider Installation",
       "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Enter credentials in username@domain format (testuser@testdomain.com)",
-          "expected": "Form should accept and process the username@domain format",
-          "actual": "Form accepted the credentials visually",
-          "screenshot": "Manual_AD_Login_step07_email_format_username.png"
+          "action": "Logged in as host superuser to access admin settings",
+          "expected": "Login successful, admin features accessible",
+          "actual": "Login successful, Site Settings panel opened",
+          "screenshot": "Manual AD Login_step00_setup_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Click Login button",
-          "expected": "Login should fail with appropriate error message",
-          "actual": "Page silently redirected to Standard login form without any error message. Code analysis shows ManualLogon is only called when username contains backslash (\\). The username@domain format is only converted to DOMAIN\\user if the domain matches the default domain setting.",
-          "screenshot": "Manual_AD_Login_step08_email_format_result.png"
+          "action": "Navigated to Settings > Security > Authentication to check for AD provider",
+          "expected": "Active Directory authentication provider should be available in Default Authentication Provider dropdown",
+          "actual": "Only 'DNN' authentication provider is available in the dropdown - no Active Directory option exists",
+          "screenshot": "Manual AD Login_step01_security_settings.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Checked Extensions > Installed Extensions > Authentication Systems",
+          "expected": "Active Directory authentication should be listed as an installed authentication system",
+          "actual": "Only 'Default Authentication' is listed - Active Directory authentication provider is not installed",
+          "screenshot": "Manual AD Login_step02_auth_systems_list.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Checked Extensions > Available Extensions > Authentication Systems for AD provider availability",
+          "expected": "Active Directory authentication should be available for installation",
+          "actual": "Available authentication systems include Facebook, Google, Live, and Twitter only - Active Directory is not available for installation",
+          "screenshot": "Manual AD Login_step03_available_auth_no_AD.png"
         }
       ],
       "issues": [
-        "Silent failure when using username@domain format that doesn't match default domain - no error feedback to user",
-        "Poor user experience: user receives no indication of why login didn't work"
+        "Active Directory Authentication provider is not installed on this Evoq instance",
+        "AD Authentication provider is not available in the Available Extensions list for installation"
       ]
     },
     {
-      "scenario_name": "Special Characters in Credentials (non-asterisk)",
-      "status": "PASS",
+      "scenario_name": "Verify AD Login Form on Login Page",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Enter username with special characters: TEST\\user!#$%^&()_+-=",
-          "expected": "Form should accept special characters other than asterisk",
-          "actual": "Form accepted the username with special characters without validation error",
-          "screenshot": "Manual_AD_Login_step09_special_chars.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click Login button",
-          "expected": "Login should be attempted and fail (no AD configured)",
-          "actual": "Login was attempted and failed with expected error message: 'Login Failed. Please remember that passwords are case sensitive.'",
-          "screenshot": "Manual_AD_Login_step10_special_chars_result.png"
+          "action": "Logged out and navigated to the login page",
+          "expected": "Login page should show multiple authentication tabs including 'Active Directory' or 'Windows' login option",
+          "actual": "Login page only shows standard DNN username/password form - no Active Directory authentication tab is present",
+          "screenshot": "Manual AD Login_step05_login_page_no_AD_tab.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "AD login form is not visible on the login page because the AD authentication provider is not installed/enabled"
+      ]
+    },
+    {
+      "scenario_name": "Login with valid AD credentials",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to locate AD login form to enter credentials",
+          "expected": "AD login form with username and password fields should be accessible",
+          "actual": "Cannot test - AD authentication provider is not installed, no AD login form exists",
+          "screenshot": "Manual AD Login_step05_login_page_no_AD_tab.png"
+        }
+      ],
+      "issues": [
+        "Feature cannot be tested - AD authentication provider not installed"
+      ]
+    },
+    {
+      "scenario_name": "Login with invalid credentials",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to locate AD login form to test invalid credentials",
+          "expected": "AD login form should show error message for invalid credentials",
+          "actual": "Cannot test - AD authentication provider is not installed, no AD login form exists",
+          "screenshot": "Manual AD Login_step05_login_page_no_AD_tab.png"
+        }
+      ],
+      "issues": [
+        "Feature cannot be tested - AD authentication provider not installed"
+      ]
+    },
+    {
+      "scenario_name": "Login with domain\\username format",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to locate AD login form to test domain\\username format",
+          "expected": "AD login should accept DOMAIN\\username format and process authentication",
+          "actual": "Cannot test - AD authentication provider is not installed, no AD login form exists",
+          "screenshot": "Manual AD Login_step05_login_page_no_AD_tab.png"
+        }
+      ],
+      "issues": [
+        "Feature cannot be tested - AD authentication provider not installed"
+      ]
+    },
+    {
+      "scenario_name": "Login with username@domain format",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to locate AD login form to test username@domain format",
+          "expected": "AD login should accept username@domain format and convert to DOMAIN\\username internally",
+          "actual": "Cannot test - AD authentication provider is not installed, no AD login form exists",
+          "screenshot": "Manual AD Login_step05_login_page_no_AD_tab.png"
+        }
+      ],
+      "issues": [
+        "Feature cannot be tested - AD authentication provider not installed"
+      ]
+    },
+    {
+      "scenario_name": "Test empty credential validation",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to locate AD login form to test empty field validation",
+          "expected": "AD login form should show RequiredFieldValidator messages for empty username/password",
+          "actual": "Cannot test - AD authentication provider is not installed, no AD login form exists",
+          "screenshot": "Manual AD Login_step05_login_page_no_AD_tab.png"
+        }
+      ],
+      "issues": [
+        "Feature cannot be tested - AD authentication provider not installed"
+      ]
+    },
+    {
+      "scenario_name": "Test asterisk validation in username",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to locate AD login form to test asterisk (*) validation in username",
+          "expected": "AD login form should reject usernames containing asterisk (*) based on RegularExpressionValidator (pattern: ^[^*]+$)",
+          "actual": "Cannot test - AD authentication provider is not installed, no AD login form exists",
+          "screenshot": "Manual AD Login_step05_login_page_no_AD_tab.png"
+        }
+      ],
+      "issues": [
+        "Feature cannot be tested - AD authentication provider not installed"
+      ]
+    },
+    {
+      "scenario_name": "Verify password field security",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to locate AD login form to verify password field has textmode=Password",
+          "expected": "Password field should mask input characters",
+          "actual": "Cannot test - AD authentication provider is not installed, no AD login form exists",
+          "screenshot": "Manual AD Login_step05_login_page_no_AD_tab.png"
+        }
+      ],
+      "issues": [
+        "Feature cannot be tested - AD authentication provider not installed"
+      ]
     }
   ],
   "observations": [
-    "CAPTCHA control exists in code (ctlCaptcha) but is not visible in UI - controlled by portal setting 'Security_CaptchaLogin'",
-    "Code review shows login failure events are logged to the event log via AddEventLog method",
-    "The ManualLogon method is only called when username contains backslash (\\) - this creates silent failure for username@domain format when domain doesn't match default",
-    "Default domain prefix functionality exists in code but requires AD configuration to test properly",
-    "Code supports both automatic Windows authentication (AuthenticationLogon) and manual form authentication (ManualLogon)",
-    "Test environment does not have Active Directory configured, so successful login scenarios could not be tested"
+    "The Active Directory Authentication code exists in the codebase at: Evoq Platform/Providers/AuthenticationProviders/DotNetNuke.Authentication.ActiveDirectory/",
+    "The code includes Login.ascx (UI), Login.ascx.cs (code-behind), and AuthenticationController.cs (authentication logic)",
+    "The code shows the AD login form has: Username field with RequiredFieldValidator, RegularExpressionValidator (rejects asterisks), Password field with RequiredFieldValidator, CAPTCHA support (controlled by Security_CaptchaLogin setting), Login button with AD_Auth validation group",
+    "The code supports both DOMAIN\\username and username@domain formats, with automatic conversion to standard format",
+    "The code supports default domain prefix functionality when configured",
+    "The Authentication module exists in the Modules list (version 9.3.2) but shows 'In Use: No'",
+    "The Authentication Systems extension list only shows 'Default Authentication' - the AD provider package is not installed",
+    "Available Extensions for Authentication Systems do not include Active Directory (only Facebook, Google, Live, Twitter are available)",
+    "The login page does not show any AD/Windows authentication tab because the provider is not installed/enabled",
+    "To test this feature, the DotNetNuke.Authentication.ActiveDirectory provider would need to be installed as an authentication system extension"
   ],
   "summary": {
-    "total_scenarios": 6,
-    "passed": 5,
-    "failed": 1,
-    "pass_rate": "83%"
+    "total_scenarios": 9,
+    "passed": 0,
+    "failed": 9,
+    "pass_rate": "0%"
   }
 }

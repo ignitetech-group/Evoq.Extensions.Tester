@@ -5,7 +5,7 @@
     "feature_name": "Engagement and Influence Metrics",
     "feature_description": "Calculate and display user engagement and influence percentages (Social SKU only)",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T20:36:00Z",
+    "test_date": "2026-02-09T16:20:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,17 +15,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Admin > Manage > Users",
+          "action": "Navigate to Admin > Users panel",
           "expected": "Users panel should open with list of users",
-          "actual": "Users panel opened successfully showing 21 users",
-          "screenshot": "Engagement_and_Influence_Metrics_step00_login_success.png"
+          "actual": "Users panel opened successfully showing list of authorized users",
+          "screenshot": "Engagement and Influence Metrics_step00_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Click on User Activity icon for Claude TestCreate user",
-          "expected": "User Activity panel should expand showing engagement metrics",
-          "actual": "User Activity panel expanded showing ENGAGEMENT label with progress bar and value '0'",
-          "screenshot": "Engagement_and_Influence_Metrics_step01_activity_panel_visible.png"
+          "action": "Click on User Activity button for Test User02",
+          "expected": "User Activity details should expand showing engagement section",
+          "actual": "User Activity details expanded showing ENGAGEMENT label with progress bar at 0%",
+          "screenshot": "Engagement and Influence Metrics_step01_activity_tab.png"
         }
       ],
       "issues": []
@@ -36,17 +36,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "View User Activity panel for Claude TestCreate user",
+          "action": "View User Activity panel for Test User02",
           "expected": "Influence percentage should be displayed with progress bar",
-          "actual": "INFLUENCE label displayed with progress bar showing value '0'",
-          "screenshot": "Engagement_and_Influence_Metrics_step01_activity_panel_visible.png"
-        },
-        {
-          "step_number": 2,
-          "action": "View User Activity panel for NoActivity TestUser",
-          "expected": "Influence percentage should be displayed",
-          "actual": "INFLUENCE label displayed with value '1' - confirming non-zero influence values display correctly",
-          "screenshot": "Engagement_and_Influence_Metrics_step03_noactivity_user_engagement_0_influence_1.png"
+          "actual": "INFLUENCE label displayed with progress bar showing value 0",
+          "screenshot": "Engagement and Influence Metrics_step01_activity_tab.png"
         }
       ],
       "issues": []
@@ -57,24 +50,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "View User Activity for NoActivity TestUser (user with minimal activity)",
-          "expected": "System should handle missing/minimal engagement data without errors",
-          "actual": "Engagement displayed as '0' gracefully, Influence displayed as '1'. No errors or UI issues. User joined 2 weeks ago with 0 contributions.",
-          "screenshot": "Engagement_and_Influence_Metrics_step03_noactivity_user_engagement_0_influence_1.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Test with 0% engagement",
-      "status": "PASS",
-      "steps": [
+          "action": "View User Activity for newly created user (Test User02)",
+          "expected": "System should handle missing data and display 0%",
+          "actual": "Engagement shows 0, Influence shows 0, Total Contributions shows 0 - system handles missing data gracefully",
+          "screenshot": "Engagement and Influence Metrics_step01_activity_tab.png"
+        },
         {
-          "step_number": 1,
-          "action": "View User Activity for user with 0% engagement (Claude TestCreate)",
-          "expected": "Engagement progress bar should show 0% correctly",
-          "actual": "Engagement progress bar displayed correctly with value '0'. Progress bar is empty (gray) as expected for 0%.",
-          "screenshot": "Engagement_and_Influence_Metrics_step01_activity_panel_visible.png"
+          "step_number": 2,
+          "action": "View User Activity for Content Editor user",
+          "expected": "System should consistently display 0% for users without engagement data",
+          "actual": "Content Editor also shows Engagement: 0, Influence: 0 - consistent handling across users",
+          "screenshot": "Engagement and Influence Metrics_step03_another_user_activity.png"
         }
       ],
       "issues": []
@@ -85,34 +71,61 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Verify test environment is Evoq Engage (Social SKU)",
-          "expected": "Trial banner should confirm Evoq Engage",
-          "actual": "Trial banner shows 'You are using a trial version of Evoq Engage' - confirming DNNSOCIAL SKU",
-          "screenshot": "Engagement_and_Influence_Metrics_step00_login_success.png"
+          "action": "Verify current SKU and check engagement/influence visibility",
+          "expected": "Engagement and Influence sections should be visible on Social SKU (Evoq Engage)",
+          "actual": "Trial version shows 'Evoq Engage' which is the Social SKU. Both Engagement and Influence progress bars are visible in User Activity panel, confirming the SKU check works correctly",
+          "screenshot": "Engagement and Influence Metrics_step04_progress_bars.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with 0% engagement",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View engagement for users without analytics data",
+          "expected": "Engagement should display as 0% with empty progress bar",
+          "actual": "Test User02 shows Engagement: 0 with empty progress bar. Content Editor also shows Engagement: 0. Code correctly handles division by zero and missing XML data by returning 0",
+          "screenshot": "Engagement and Influence Metrics_step03_another_user_activity.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Edit Points functionality for user metrics",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Edit Points link in User Activity panel",
+          "expected": "Edit mode should allow editing Reputation and Experience points",
+          "actual": "Edit Points mode activated showing editable fields for Reputation (5) and Experience (5), Notes text area, and Cancel/Save buttons",
+          "screenshot": "Engagement and Influence Metrics_step02_edit_points_mode.png"
         },
         {
           "step_number": 2,
-          "action": "Verify Engagement and Influence sections are visible in User Activity",
-          "expected": "Engagement and Influence metrics should be visible for Social SKU users",
-          "actual": "Both ENGAGEMENT and INFLUENCE sections are visible with progress bars and values. Code confirms visibility controlled by: this.showSocial = utilities.getSKU() === 'DNNSOCIAL'",
-          "screenshot": "Engagement_and_Influence_Metrics_step01_activity_panel_visible.png"
+          "action": "Click Cancel to exit edit mode",
+          "expected": "Edit mode should close without saving changes",
+          "actual": "Edit mode closed successfully, returning to view mode with Edit Points link visible again",
+          "screenshot": "Engagement and Influence Metrics_step04_progress_bars.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "SuperUser Account (host) does not display User Activity tab in quick actions - only Profile Settings and Account Settings are shown. This appears to be by design for superuser accounts.",
-    "The 'Calculate engagement percentage from XML time series' scenario is a backend calculation (UsersController.cs lines 172-204) that cannot be directly verified via UI. The calculation uses CalculateEngagement() and GetCurrentYearsValueFromXml() methods.",
-    "The 'Handle malformed XML data' scenario is handled in backend code with try/catch block that logs exceptions and returns 0 - cannot be tested via UI without database manipulation.",
-    "The 'Test with 100% engagement' scenario was not testable - no users in the system have 100% engagement. The engagement is calculated as: (calculatedValue / optimalEngagementScore) * 100.",
-    "The 'Verify optimal engagement score comparison' is a backend calculation where engagement percentage = (XML time series value / optimal engagement score) * 100, handled in GetUserActivityDetail method.",
-    "Engagement and Influence progress bars use inline styling with paddingLeft to create visual fill effect based on percentage values.",
-    "Additional Social SKU features visible: Rank, Reputation, Experience, Edit Points functionality, and Total Contributions counter."
+    "Code in UsersController.cs (lines 83-92) calculates engagement from XML time series data divided by optimal engagement score, displayed as percentage",
+    "Code in index.jsx (line 26) checks for DNNSOCIAL SKU before showing engagement/influence metrics: this.showSocial = utilities.getSKU() === 'DNNSOCIAL'",
+    "Engagement calculation handles empty/malformed XML by returning 0 (line 174: return string.IsNullOrEmpty(document) ? 0 : GetCurrentYearsValueFromXml(document))",
+    "Progress bars use CSS styling with paddingLeft to represent percentage filled (lines 206-208 in index.jsx)",
+    "SuperUser Account row does not display User Activity button - this may be intentional to restrict certain actions on superuser accounts",
+    "Testing 100% engagement and non-zero engagement values requires analytics data accumulation which is not present in this test environment"
   ],
   "summary": {
-    "total_scenarios": 5,
-    "passed": 5,
+    "total_scenarios": 6,
+    "passed": 6,
     "failed": 0,
     "pass_rate": "100%"
   }

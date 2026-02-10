@@ -5,99 +5,99 @@
     "feature_name": "View User Assets",
     "feature_description": "Access and view files in a user's personal folder",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T20:25:00Z",
+    "test_date": "2026-02-09T16:15:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Verify View Assets menu item visibility for admin",
+      "scenario_name": "Menu item visibility based on permissions",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Logged in as SuperUser and navigated to Users panel",
-          "expected": "Users panel opens with list of users",
-          "actual": "Users panel opened showing all authorized users",
-          "screenshot": "View_User_Assets_step00_login_confirmed.png"
+          "action": "Navigate to Manage > Users from the Persona Bar",
+          "expected": "Users list is displayed",
+          "actual": "Users list displayed with Content Editor and SuperUser Account",
+          "screenshot": "View User Assets_step01_users_list.png"
         },
         {
           "step_number": 2,
-          "action": "Clicked on More menu (three dots icon) for Test Regular User",
-          "expected": "More menu opens showing View Assets option",
-          "actual": "More menu opened with View Assets option visible along with other options (View Profile, Change Password, etc.)",
-          "screenshot": "View_User_Assets_step01_more_menu_open.png"
+          "action": "Click on the More menu (three dots) for Content Editor user",
+          "expected": "Menu dropdown should appear with View Assets option visible",
+          "actual": "Menu dropdown appeared showing View Assets along with other actions (View Profile, Change Password, etc.)",
+          "screenshot": "View User Assets_step02_more_menu_visible.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click on the More menu (three dots) for SuperUser Account",
+          "expected": "Menu dropdown should appear with View Assets option visible",
+          "actual": "Menu dropdown appeared showing View Assets option (with fewer options since it's the current user's own account)",
+          "screenshot": "View User Assets_step04_superuser_menu.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Verify error notification for user without assets",
+      "scenario_name": "Verify error notification for user without folder/files",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Clicked View Assets for Test Regular User who has no files",
+          "action": "Click View Assets for Content Editor user from the More menu",
           "expected": "Error notification should appear indicating user has no assets",
-          "actual": "Error notification appeared: 'Test Regular User does not own any assets.'",
-          "screenshot": "View_User_Assets_step02_error_no_assets.png"
+          "actual": "Error notification appeared: 'Content Editor does not own any assets.' (captured in browser snapshot, notification is transient)",
+          "screenshot": "View User Assets_step03_error_no_assets.png"
         },
         {
           "step_number": 2,
-          "action": "Clicked View Assets for Claude TestUser who has no files",
+          "action": "Click View Assets for SuperUser Account from the More menu",
           "expected": "Error notification should appear indicating user has no assets",
-          "actual": "Error notification appeared: 'Claude TestUser does not own any assets.'",
-          "screenshot": "View_User_Assets_step03_error_notification_claude.png"
+          "actual": "Error notification appeared: 'SuperUser Account does not own any assets.' (captured in browser snapshot, notification is transient)",
+          "screenshot": "View User Assets_step05_superuser_no_assets_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test admin access without explicit permission",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged in as SuperUser (admin) and verified View Assets option is available for all users",
+          "expected": "Admin should see View Assets option for all users based on canViewAssets() permission check (isAdmin OR VIEW_ASSETS permission)",
+          "actual": "View Assets option was visible in the More menu for both Content Editor and SuperUser Account, confirming admin access works correctly",
+          "screenshot": "View User Assets_step02_more_menu_visible.png"
         }
       ],
       "issues": []
     },
     {
       "scenario_name": "Open assets panel for user with files",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Searched for 'host' SuperUser account",
-          "expected": "SuperUser Account should appear in search results",
-          "actual": "SuperUser Account (host) found in search results",
-          "screenshot": "View_User_Assets_step04_superuser_menu.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Clicked More menu and selected View Assets for SuperUser",
-          "expected": "Assets panel should open showing the user's personal folder with files",
-          "actual": "Evoq.Assets panel opened successfully showing folder path 'USERS > 001 > 01 > 1' with multiple files including cavalier-logo.png, cavalier-tv.png, full-star.png, test_document.pdf, and others",
-          "screenshot": "View_User_Assets_step05_assets_panel_success.png"
+          "action": "Attempted to find a user with files in their personal folder to test successful Assets panel opening",
+          "expected": "Assets panel should open showing user's files when user has a folder with files (folderId > 0 AND hasUserFiles = true)",
+          "actual": "No users in the test environment have files in their personal folders. Both users (Content Editor and SuperUser Account) returned the 'does not own any assets' error",
+          "screenshot": "View User Assets_step05_superuser_no_assets_error.png"
         }
       ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Admin access without explicit VIEW_ASSETS permission",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Verified admin (SuperUser) can see View Assets menu for all users",
-          "expected": "Admin should have access to View Assets without explicit permission",
-          "actual": "View Assets menu item visible for all users when logged in as admin. Code review confirmed: canViewAssets() returns true for isAdmin OR permissions.VIEW_ASSETS",
-          "screenshot": "View_User_Assets_step01_more_menu_open.png"
-        }
-      ],
-      "issues": []
+      "issues": ["Unable to test successful Assets panel opening due to no users having files in their personal folders in this test environment"]
     }
   ],
   "observations": [
-    "The View Assets menu option has fewer items for the SuperUser's own account (no Login As User, Delete User, Make Super User, Un-Authorize User options) since these actions cannot be performed on oneself",
-    "The user folder structure follows the pattern: Users/[folder_id_segment1]/[folder_id_segment2]/[user_id]",
-    "Error notifications auto-dismiss after a short time (approximately 2-3 seconds)",
-    "The Assets panel integrates with Evoq.Assets module and displays files in a grid view with thumbnails",
-    "Code suggests VIEW_ASSETS permission can be granted explicitly to non-admin users via permissions.VIEW_ASSETS setting"
+    "Code analysis confirms the View Assets feature checks two conditions: folderId > 0 AND userDetails.hasUserFiles must both be true to open the Assets panel",
+    "The error message format uses user's displayName: '[DisplayName] does not own any assets.'",
+    "Permission check (canViewAssets) correctly grants access to admins automatically (settings.isAdmin OR settings.permissions.VIEW_ASSETS)",
+    "The SuperUser Account's More menu shows fewer options than regular users because certain actions (Delete User, Login As User, etc.) are not available for the current logged-in user or SuperUsers",
+    "Error notifications are transient toast messages that fade automatically - they were captured in browser snapshots but not always visible in screenshot images"
   ],
   "summary": {
     "total_scenarios": 4,
-    "passed": 4,
-    "failed": 0,
-    "pass_rate": "100%"
+    "passed": 3,
+    "failed": 1,
+    "pass_rate": "75%"
   }
 }

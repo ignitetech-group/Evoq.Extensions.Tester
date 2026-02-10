@@ -5,7 +5,7 @@
     "feature_name": "Notification System",
     "feature_description": "Receive notifications for various activity stream events",
     "feature_priority": "High",
-    "test_date": "2026-01-16T08:05:00Z",
+    "test_date": "2026-02-09T16:31:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,83 +15,119 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to User Profile > Messages > Notifications tab",
-          "expected": "Notifications panel displays with list of notifications",
-          "actual": "Notifications panel displayed showing 3 notifications (1 Comment Reported, 2 Wiki privilege notifications)",
-          "screenshot": "Notification System_step05_notifications_list.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Mark notification as read (Dismiss single notification)",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Click Dismiss link on a Wiki privilege notification",
-          "expected": "Notification should be dismissed and count should decrease",
-          "actual": "Notification was dismissed successfully. Count changed from 3 to 2. Success message displayed: 'The action has been performed successfully.'",
-          "screenshot": "Notification System_step06_dismiss_single_success.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Clear all notifications",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Click 'Dismiss All Notifications' link",
-          "expected": "Confirmation dialog should appear",
-          "actual": "Confirmation dialog appeared asking 'Are you sure you want to dismiss all 2 notification(s)?'",
-          "screenshot": "Notification System_step07_dismiss_all_confirmation.png"
+          "action": "Navigate to Activity Feed > Messages > Notifications tab",
+          "expected": "Notifications list should be displayed",
+          "actual": "Notifications tab found in Messages page showing 4 notifications with content (Comment awaiting approval, Post approval request, etc.)",
+          "screenshot": "Notification System_step03_notifications_list.png"
         },
         {
           "step_number": 2,
-          "action": "Click 'Yes' to confirm dismissal",
+          "action": "View notification details",
+          "expected": "Notification details should show sender, subject, and action buttons",
+          "actual": "Notifications displayed with details including sender info, approval/reject buttons, and dismiss option",
+          "screenshot": "Notification System_step04_notifications_details.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Dismiss individual notification",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click the X (dismiss) button on an individual notification",
+          "expected": "The notification should be dismissed and removed from the list",
+          "actual": "Notification was dismissed successfully, count changed from 4 to 3",
+          "screenshot": "Notification System_step05_dismiss_notification.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Notification action buttons (Approve)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click the Approve button on a post approval notification",
+          "expected": "The notification should be processed and removed from list",
+          "actual": "Clicking Approve on the Post Approval notification processed it successfully, count changed from 3 to 2",
+          "screenshot": "Notification System_step06_approve_action.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Dismiss all notifications",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Dismiss All Notifications button",
+          "expected": "A confirmation dialog should appear",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to dismiss all notifications?'",
+          "screenshot": "Notification System_step07_dismiss_all_confirm.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Confirm the dismiss all action",
           "expected": "All notifications should be cleared",
-          "actual": "All notifications were cleared. Notifications tab now shows 'Notifications' without count badge, and panel shows '0-0 of 0'",
-          "screenshot": "Notification System_step09_all_notifications_cleared.png"
+          "actual": "All notifications were cleared, notification count is now 0",
+          "screenshot": "Notification System_step09_empty_notifications.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Configure notification preferences",
+      "scenario_name": "Subscribe to post for notifications",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Edit Profile > Communications tab",
-          "expected": "Notification/subscription preferences should be available",
-          "actual": "Communications tab displayed with 'Manage Subscriptions' section showing 164 subscriptions and 'Email Delivery Schedule' section",
-          "screenshot": "Notification System_step10_notification_preferences.png"
+          "action": "Navigate to Activity Feed and identify posts with Subscribe links",
+          "expected": "Posts should show Subscribe/Unsubscribe toggle links",
+          "actual": "Activity Feed posts display Subscribe or Unsubscribe links based on current subscription status",
+          "screenshot": "Notification System_step12_posts_with_subscribe.png"
         },
         {
           "step_number": 2,
-          "action": "View subscription management table",
-          "expected": "Should display list of subscriptions with ability to unsubscribe",
-          "actual": "Table displayed with columns: Item, Subscription Type, Action. Each subscription has an Unsubscribe option. Subscription types include: Ideas Subscriptions, Wiki Subscriptions",
-          "screenshot": "Notification System_step11_subscriptions_table.png"
+          "action": "Click Subscribe link on an unsubscribed post",
+          "expected": "The Subscribe link should change to Unsubscribe",
+          "actual": "Clicking Subscribe successfully changed the link to Unsubscribe, indicating subscription was created",
+          "screenshot": "Notification System_step13_subscribed_to_post.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Unsubscribe from post notifications",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Unsubscribe link on a subscribed post",
+          "expected": "The Unsubscribe link should change back to Subscribe",
+          "actual": "Clicking Unsubscribe successfully changed the link back to Subscribe, indicating unsubscription was successful",
+          "screenshot": "Notification System_step14_unsubscribed_from_post.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Code review confirmed notification system supports: NewPostNotifications, NewCommentNotifications for Activity Stream events",
-    "Notification types include: PostNotificationTypeName, CommentNotificationTypeName as defined in ActivityStreamNotifications.cs",
-    "Users are automatically subscribed to posts when they comment (confirmed in code: _subscriptionController.SubscribeToPost is called in NewCommentNotifications method)",
-    "Notification preferences are managed via the Communications tab in Edit Profile, not through a dedicated Activity Stream notification settings page",
-    "The following suggested test scenarios require multi-user interaction and were not directly testable in single-user session: Receive notification for post comment, Receive notification for post like, Receive notification for user mention, Receive notification for subscribed post activity. Code confirms these features exist.",
-    "Subscription controller supports: SubscribeToPost, UnsubscribeFromPost, SubscribeToWall, UnsubscribeFromWall, SubscribeToUserWall, SubscribeToGroup, SubscribeToActivityStream (confirmed in SubscriptionsController.cs)",
-    "Test notification delivery methods was not testable - would require email server configuration verification"
+    "Notifications are displayed in the Messages > Notifications tab within the Activity Feed/Profile area",
+    "The notification system uses DNN Core Services (NotificationsController.Instance) for notification management",
+    "Code in ActivityStreamNotifications.cs shows notifications are sent for new posts (NewPostNotifications) and new comments (NewCommentNotifications)",
+    "Users are automatically subscribed to posts when they comment on them (line 211 of ActivityStreamNotifications.cs)",
+    "Notification types include PostNotificationTypeName and CommentNotificationTypeName",
+    "Subscribe/Unsubscribe toggles work via AJAX calls without page reload",
+    "Notification preferences configuration UI was not found in the tested area - code suggests subscription is handled at the post level rather than a global notification preferences panel",
+    "Testing notification delivery for specific events (comment notification, like notification, user mention notification) would require a second user account to verify cross-user notification delivery"
   ],
   "summary": {
-    "total_scenarios": 4,
-    "passed": 4,
+    "total_scenarios": 6,
+    "passed": 6,
     "failed": 0,
     "pass_rate": "100%"
   }

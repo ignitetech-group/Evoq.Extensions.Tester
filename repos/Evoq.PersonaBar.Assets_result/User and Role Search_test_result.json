@@ -5,61 +5,85 @@
     "feature_name": "User and Role Search",
     "feature_description": "Searches and selects users and roles for permission assignment and sharing",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:03:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Access Permissions Tab for User/Role Search",
-      "status": "FAIL",
+      "scenario_name": "Search users by name",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Assets panel and select My Website folder",
-          "expected": "Folder list should display with available folders",
-          "actual": "Folder list displayed successfully with folders including Images, PermissionsTestFolder, etc.",
-          "screenshot": "User_and_Role_Search_step01_folder_list.png"
+          "action": "Navigated to Assets > Home folder and clicked edit icon on Images folder",
+          "expected": "Folder details panel should open",
+          "actual": "Folder details panel opened with Details and Permissions tabs",
+          "screenshot": "User and Role Search_step02_folder_details_panel.png"
         },
         {
           "step_number": 2,
-          "action": "Hover on a folder to reveal action icons",
-          "expected": "Action icons (edit, move, delete) should appear on the folder card",
-          "actual": "Action icons appeared correctly on hover",
-          "screenshot": "User_and_Role_Search_step02_folder_hover.png"
+          "action": "Clicked on Permissions tab",
+          "expected": "Permissions panel should display with user/role search options",
+          "actual": "Permissions panel displayed showing role permissions grid and Add User section",
+          "screenshot": "User and Role Search_step03_permissions_tab.png"
         },
         {
           "step_number": 3,
-          "action": "Click edit icon to open folder details panel",
-          "expected": "Folder details panel should open with Details and Permissions tabs",
-          "actual": "Folder details panel opened, but an error appeared: 'Could not load type Dnn.PersonaBar.Library.Dto.Permissions from assembly Dnn.PersonaBar.Library, Version=10.1.1.0'",
-          "screenshot": "User_and_Role_Search_step03_folder_details.png"
+          "action": "Typed 'super' in the Add User token input field",
+          "expected": "Search should return matching users",
+          "actual": "Dropdown appeared showing 'SuperUser Account' as a matching result with profile picture",
+          "screenshot": "User and Role Search_step04_user_search_results.png"
         },
         {
           "step_number": 4,
-          "action": "Click on Permissions tab to access User/Role Search functionality",
-          "expected": "Permissions tab should display role permissions grid and user search functionality",
-          "actual": "Permissions tab content is completely empty - no role grid, no user search box, no permissions controls visible due to the type loading error",
-          "screenshot": "User_and_Role_Search_step04_permissions_tab.png"
+          "action": "Clicked on 'SuperUser Account' in search results",
+          "expected": "User should be selected and appear as a token",
+          "actual": "SuperUser Account was added as a token/tag in the Add User field with an X to remove",
+          "screenshot": "User and Role Search_step05_user_selected.png"
         }
       ],
-      "issues": [
-        "Critical Error: 'Could not load type Dnn.PersonaBar.Library.Dto.Permissions from assembly Dnn.PersonaBar.Library, Version=10.1.1.0, Culture=neutral, PublicKeyToken=null'",
-        "Permissions tab fails to load - content area is completely empty",
-        "User and Role Search functionality is inaccessible due to permissions panel loading failure"
-      ]
+      "issues": []
+    },
+    {
+      "scenario_name": "Search and select roles",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Changed Filter By Group dropdown from '<Global Roles>' to '<All Roles>'",
+          "expected": "Role filter should update to show all roles",
+          "actual": "Filter By Group dropdown changed to '<All Roles>' successfully",
+          "screenshot": "User and Role Search_step06_role_selection.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Selected 'Subscribers' from the Select Role dropdown",
+          "expected": "Subscribers role should be selected",
+          "actual": "Subscribers role was selected in the dropdown",
+          "screenshot": "User and Role Search_step06_role_selection.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Clicked ADD button to add the Subscribers role",
+          "expected": "Subscribers role should be added to the permissions grid",
+          "actual": "Subscribers role was added to the permissions table with View Folder permission enabled by default, and a delete option in Actions column",
+          "screenshot": "User and Role Search_step07_role_added.png"
+        }
+      ],
+      "issues": []
     }
   ],
   "observations": [
-    "Code review confirms SearchUser() endpoint exists at Services/AssetsController.cs:790-809 which searches users by DisplayName and returns up to 5 results",
-    "Code review confirms GetRoles() endpoint exists at Services/AssetsController.cs:778-788 which returns all roles for permission assignment",
-    "The folder details panel opens correctly with Details tab functional (Name, Workflow, Versioning settings work)",
-    "The type loading error suggests a version mismatch or missing assembly reference in the Dnn.PersonaBar.Library assembly",
-    "This appears to be an infrastructure/deployment issue rather than a feature code bug"
+    "User search uses a token/autocomplete input that searches by display name with partial matching",
+    "Role selection uses two dropdown menus: Filter By Group (filters by role group) and Select Role (selects from filtered roles)",
+    "Once a role is added to permissions, it is removed from the Select Role dropdown to prevent duplicates",
+    "The API endpoint SearchUser in AssetsController.cs returns up to 5 results with user ID, display name, and profile picture URL",
+    "The GetRoles API endpoint returns roles filtered by portal ID using PermissionHelper.GetRoles"
   ],
   "summary": {
-    "total_scenarios": 1,
-    "passed": 0,
-    "failed": 1,
-    "pass_rate": "0%"
+    "total_scenarios": 2,
+    "passed": 2,
+    "failed": 0,
+    "pass_rate": "100%"
   }
 }

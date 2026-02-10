@@ -5,56 +5,73 @@
     "feature_name": "View Tracking",
     "feature_description": "Track and display article view counts",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T15:55:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "View Count Display",
+      "scenario_name": "Sort by view count",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Wiki module and view article list",
-          "expected": "Wiki list page loads with articles",
-          "actual": "Wiki list page loaded showing articles including 'User Mention Test - Jan 16 2026'",
-          "screenshot": "View Tracking_step01_wiki_list_page.png"
+          "action": "Navigate to Wiki Test page and enter Edit mode",
+          "expected": "Wiki module should display with articles list and sorting options",
+          "actual": "Wiki module displayed with 6 articles and sorting dropdown visible",
+          "screenshot": "View Tracking_step06_sort_by_views_dropdown.png"
         },
         {
           "step_number": 2,
-          "action": "Click on article 'User Mention Test - Jan 16 2026' to view details",
-          "expected": "Article detail page shows view count",
-          "actual": "Article detail page displayed with '2 Views' shown in the info panel area",
-          "screenshot": "View Tracking_step02_article_view_count_display.png"
+          "action": "Select 'Sort by views' from the dropdown",
+          "expected": "Articles should be sorted by view count and URL should update with sort=views parameter",
+          "actual": "Sort by views option selected successfully. URL updated to include 'sort=views' parameter. Articles displayed in view count order.",
+          "screenshot": "View Tracking_step09_sort_by_views_selected.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Sort by View Count",
-      "status": "PASS",
+      "scenario_name": "Test view count display on article view",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Wiki list page and use Sort dropdown to select 'Sort by views'",
-          "expected": "Articles should be reordered by view count",
-          "actual": "Sort dropdown activated, URL changed to include 'sort=views' parameter, and article list was reordered by view count",
-          "screenshot": "View Tracking_step03_sort_by_views.png"
+          "action": "Click on 'View Full Page' link for Test Article Draft",
+          "expected": "Article detail page should display with view count visible (e.g., 'X Views')",
+          "actual": "Article detail page displayed empty - no content rendered. This is because the article is in draft (unpublished) state and view count display only works for published articles.",
+          "screenshot": "View Tracking_step07_article_detail_page.png"
         }
       ],
-      "issues": []
+      "issues": ["All wiki articles in the test environment are in draft/unpublished state. View count display requires published articles. Code review confirms view count is displayed in Article.ascx lines 71-73 with proper pluralization, but only for approved/published articles."]
+    },
+    {
+      "scenario_name": "Test view count increment on page refresh",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to view article detail page to verify view count increment",
+          "expected": "View count should increment each time the article is viewed",
+          "actual": "Cannot verify view count increment because article detail pages are not rendering content. All articles are in draft state, and per code review (ArticleContent.ascx.cs line 185, DataService.cs line 65-68), view count is only incremented for published articles (SQL condition checks Revision State = 2).",
+          "screenshot": "View Tracking_step08_wiki_view_mode.png"
+        }
+      ],
+      "issues": ["View count increment requires published articles. The SQL stored procedure Wiki_Article_UpdateViewCount includes a condition that only increments view count for articles with a published revision (State = 2)."]
     }
   ],
   "observations": [
-    "View count is displayed in the article detail page info panel using ArticleInfo.ViewCount property (Article.ascx lines 71-72)",
-    "View count correctly pluralizes: '1 View' vs 'N Views'",
-    "Backend uses IncreaseViewCount method in ArticleController.cs (lines 186-189) to increment view count via data provider",
-    "Sort by views functionality available in the Wiki list page dropdown menu"
+    "Code review confirms view tracking feature is fully implemented in the codebase",
+    "View count display exists in Article.ascx (lines 71-73) with proper singular/plural localization ('View' vs 'Views')",
+    "View count increment logic exists in ArticleContent.ascx.cs (line 185) calling ArticleController.Instance.IncreaseViewCount()",
+    "SQL stored procedure Wiki_Article_UpdateViewCount only increments count for published articles (Revision State = 2)",
+    "Sort by views is supported via SQL (Wiki_Article_Search procedure lines 55-56) and works correctly via the UI dropdown",
+    "The system does NOT track unique views - view count increments on every page load regardless of visitor",
+    "Test environment contains only draft articles, preventing full verification of view display and increment on article detail pages"
   ],
   "summary": {
-    "total_scenarios": 2,
-    "passed": 2,
-    "failed": 0,
-    "pass_rate": "100%"
+    "total_scenarios": 3,
+    "passed": 1,
+    "failed": 2,
+    "pass_rate": "33%"
   }
 }

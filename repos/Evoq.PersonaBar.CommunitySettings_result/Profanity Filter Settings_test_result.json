@@ -5,7 +5,7 @@
     "feature_name": "Profanity Filter Settings",
     "feature_description": "Configure profanity handling across all modules with options to filter content, prohibit content, or allow all content.",
     "feature_priority": "High",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:57:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,24 +15,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Admin > Settings > Community Settings",
-          "expected": "Community Settings panel opens showing Profanity Filtering dropdown",
-          "actual": "Community Settings panel opened with Profanity Filtering dropdown visible under 'Miscellaneous Community Settings' section",
-          "screenshot": "Profanity_Filter_Settings_step02_dropdown_visible.png"
+          "action": "Navigate to Settings > Community in Persona Bar",
+          "expected": "Community Settings page opens with Profanity Filtering dropdown visible",
+          "actual": "Community Settings page loaded successfully with Profanity Filtering dropdown showing 'Filter Content' as the current value",
+          "screenshot": "Profanity Filter Settings_step02_profanity_filter_visible.png"
         },
         {
           "step_number": 2,
-          "action": "Select 'Filter Content' from the Profanity Filtering dropdown",
-          "expected": "'Filter Content' option is selected in the dropdown",
-          "actual": "'Filter Content' was successfully selected from the dropdown",
-          "screenshot": "Profanity_Filter_Settings_step03_filter_content_selected.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Click Save button",
-          "expected": "Settings are saved and success message appears",
-          "actual": "Success notification 'Item successfully saved.' appeared confirming the setting was saved",
-          "screenshot": "Profanity_Filter_Settings_step04_filter_content_saved.png"
+          "action": "Click on Profanity Filtering dropdown to view all options",
+          "expected": "Dropdown expands showing all three filter options",
+          "actual": "Dropdown expanded showing 'Filter Content', 'Prohibit Content', and 'No Filtering' options",
+          "screenshot": "Profanity Filter Settings_step03_dropdown_options.png"
         }
       ],
       "issues": []
@@ -43,17 +36,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Select 'Prohibit Content' from the Profanity Filtering dropdown",
-          "expected": "'Prohibit Content' option is selected in the dropdown",
-          "actual": "'Prohibit Content' was successfully selected from the dropdown",
-          "screenshot": "Profanity_Filter_Settings_step05_prohibit_content_selected.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click Save button",
-          "expected": "Settings are saved and success message appears",
-          "actual": "Success notification 'Item successfully saved.' appeared confirming the setting was saved",
-          "screenshot": "Profanity_Filter_Settings_step06_prohibit_content_saved.png"
+          "action": "Select 'Prohibit Content' from Profanity Filtering dropdown",
+          "expected": "Dropdown value changes to 'Prohibit Content'",
+          "actual": "Dropdown value successfully changed to 'Prohibit Content'",
+          "screenshot": "Profanity Filter Settings_step04_prohibit_content_selected.png"
         }
       ],
       "issues": []
@@ -64,55 +50,82 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Select 'No Filtering' from the Profanity Filtering dropdown",
-          "expected": "'No Filtering' option is selected in the dropdown",
-          "actual": "'No Filtering' was successfully selected from the dropdown",
-          "screenshot": "Profanity_Filter_Settings_step07_no_filtering_selected.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click Save button",
-          "expected": "Settings are saved and success message appears",
-          "actual": "Success notification 'Item successfully saved.' appeared confirming the setting was saved",
-          "screenshot": "Profanity_Filter_Settings_step08_no_filtering_saved.png"
+          "action": "Select 'No Filtering' from Profanity Filtering dropdown",
+          "expected": "Dropdown value changes to 'No Filtering'",
+          "actual": "Dropdown value successfully changed to 'No Filtering'",
+          "screenshot": "Profanity Filter Settings_step05_no_filtering_selected.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Verify profanity filter setting persistence after page reload",
-      "status": "PASS",
+      "scenario_name": "Save profanity filter setting and verify persistence",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Reload the page after saving 'No Filtering' setting",
-          "expected": "Page reloads and navigates back to Community Settings",
-          "actual": "Page reloaded successfully and Community Settings panel was accessible",
-          "screenshot": "Profanity_Filter_Settings_step09_persistence_verified.png"
+          "action": "With 'No Filtering' selected, click Save button",
+          "expected": "Settings saved successfully with confirmation message",
+          "actual": "Success message 'Item successfully saved.' appeared",
+          "screenshot": "Profanity Filter Settings_step06_save_success.png"
         },
         {
           "step_number": 2,
-          "action": "Verify Profanity Filtering dropdown value after reload",
-          "expected": "'No Filtering' should still be selected after page reload",
-          "actual": "'No Filtering' remained selected after page reload, confirming settings persistence",
-          "screenshot": "Profanity_Filter_Settings_step10_persistence_dropdown_visible.png"
+          "action": "Change to 'Prohibit Content' and save again",
+          "expected": "Settings saved successfully",
+          "actual": "Success message 'Item successfully saved.' appeared",
+          "screenshot": "Profanity Filter Settings_step09_prohibit_saved.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Navigate away from Community Settings (full page reload)",
+          "expected": "Page navigates away successfully",
+          "actual": "Navigated to home page successfully",
+          "screenshot": "Profanity Filter Settings_step10_persistence_failed.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Return to Settings > Community and verify Profanity Filtering value",
+          "expected": "Profanity Filtering should show 'Prohibit Content' (the last saved value)",
+          "actual": "Profanity Filtering shows 'Filter Content' instead - the setting did NOT persist despite success message",
+          "screenshot": "Profanity Filter Settings_step11_value_reverted.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Settings save shows success message but does not actually persist to database",
+        "After navigating away and returning, the profanity filter value reverts to 'Filter Content' instead of the saved value",
+        "This is a critical bug - users will think their settings are saved but they are not"
+      ]
+    },
+    {
+      "scenario_name": "Verify default value (2 - No Filtering) for new installations",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observe the current default value shown on initial page load",
+          "expected": "Default value should be '2 - No Filtering' as per feature description",
+          "actual": "Current value is '0 - Filter Content', not '2 - No Filtering'. Cannot verify true default as this is not a new installation, but current behavior contradicts documented default.",
+          "screenshot": "Profanity Filter Settings_step02_profanity_filter_visible.png"
+        }
+      ],
+      "issues": [
+        "Cannot definitively test default value without a fresh installation",
+        "Current installation shows 'Filter Content' (value 0) as the stored value, while documentation indicates default should be 'No Filtering' (value 2)"
+      ]
     }
   ],
   "observations": [
-    "The Profanity Filtering dropdown has three options: 'Filter Content', 'Prohibit Content', and 'No Filtering'",
-    "All three profanity filter modes can be successfully selected and saved",
-    "Settings persist correctly after page reload",
-    "Success notifications appear after each save operation",
-    "The default value for this installation was 'Prohibit Content' (not 'No Filtering' as mentioned in the feature description for new installations - this may be because the installation is not new)",
-    "Testing actual profanity filtering behavior would require creating content with profanity in a community module (Discussions, Ideas, etc.) which was outside the scope of this settings configuration test"
+    "The UI for selecting profanity filter options works correctly - all three options (Filter Content, Prohibit Content, No Filtering) are accessible and selectable",
+    "The Save functionality appears to work (shows success message) but the data does not persist to the database",
+    "Code review shows the SaveSettings API endpoint calls CmxSettingsController.Instance.SaveCmxSettings() - the issue may be in the backend data persistence layer",
+    "The profanity filter setting is part of a larger CmxSettings object that includes ContentModeration, CommentModeration, EditorChoice, PageSize, and other settings",
+    "Testing actual profanity filtering behavior (masking/blocking content) was not possible as the persistence bug prevents setting the filter mode"
   ],
   "summary": {
-    "total_scenarios": 4,
-    "passed": 4,
-    "failed": 0,
-    "pass_rate": "100%"
+    "total_scenarios": 5,
+    "passed": 3,
+    "failed": 2,
+    "pass_rate": "60%"
   }
 }

@@ -5,7 +5,7 @@
     "feature_name": "User Activity Icon Display",
     "feature_description": "Show activity indicator icon for users with viewable activities",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:15:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,10 +15,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigated to Users panel in PersonaBar",
-          "expected": "User list should display with activity icons visible for regular users",
-          "actual": "User list displayed correctly with activity icons (running person icon) visible for all regular users including EmptyTest User, Test Regular User, Test NewUser, Regular TestUser, Claude TestUser, etc.",
-          "screenshot": "User_Activity_Icon_Display_step01_users_panel_with_activity_icons.png"
+          "action": "Navigate to Admin > Users via PersonaBar Manage menu",
+          "expected": "Users list should display with action icons for each user",
+          "actual": "Users list displayed with Content Editor and SuperUser Account rows visible with action icons",
+          "screenshot": "User Activity Icon Display_step01_users_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify User Activity icon is visible for Content Editor (regular user)",
+          "expected": "User Activity icon should be displayed in the action icons column",
+          "actual": "User Activity icon (labeled 'User Activity' with title attribute) is visible for Content Editor user alongside Profile Settings, Account Settings, and User Roles icons",
+          "screenshot": "User Activity Icon Display_step02_activity_icon_visible.png"
         }
       ],
       "issues": []
@@ -29,10 +36,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Searched for 'host' to find SuperUser Account",
-          "expected": "SuperUser should NOT have activity icon displayed",
-          "actual": "SuperUser Account (host) displayed with only Profile Settings, Account Settings, and menu icons - NO activity icon was shown, confirming the code logic that returns false for isSuperUser",
-          "screenshot": "User_Activity_Icon_Display_step02_superuser_no_activity_icon.png"
+          "action": "Examine the SuperUser Account row in the Users list",
+          "expected": "User Activity icon should NOT be displayed for SuperUser",
+          "actual": "SuperUser Account row shows only 3 icons (Profile Settings, Account Settings, and menu) - NO User Activity icon is present. This matches code logic: showUserActivity returns false when user.isSuperUser is true",
+          "screenshot": "User Activity Icon Display_step02_activity_icon_visible.png"
         }
       ],
       "issues": []
@@ -43,20 +50,19 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Clicked on User Activity icon for Claude TestCreate user",
-          "expected": "User Activity details panel should open showing activity information",
-          "actual": "User Activity panel expanded showing: Last Active (1 minute ago), Rank (14), Reputation (5), Experience (5), Edit Points button, Engagement (0), Influence (0), Total Contributions (0), and Recent Activity (Joined Site 1 minute ago - EVOQ CONTENT LIBRARY)",
-          "screenshot": "User_Activity_Icon_Display_step03_activity_tab_opened.png"
+          "action": "Click on the User Activity icon for Content Editor user",
+          "expected": "User Activity details tab should expand showing activity information",
+          "actual": "Activity tab expanded successfully showing: Last Active (1 minute ago), Rank (2), Reputation (7), Experience (11), Engagement (0), Influence (0), Total Contributions (0), Edit Points button, and Recent Activity section with 'Joined Site 1 hour ago - EVOQ CONTENT LIBRARY'",
+          "screenshot": "User Activity Icon Display_step04_activity_tab_opened.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Code in permissionHelpers.js:20-22 shows showUserActivity() returns false when user.isSuperUser is true, which matches observed behavior",
-    "Activity icon uses SvgIcons.ActivityIcon from dnn-react-common library",
-    "UserActivityDetails component renders the full activity panel with Last Active, Rank, Reputation, Experience, Engagement, Influence, Total Contributions, and Recent Activity",
-    "SHOW_USER_ACTIVITY permission is required for non-admin users to see activity icons (not tested as logged in as admin)"
+    "The SHOW_USER_ACTIVITY permission requirement is implemented in permissionHelpers.js - showUserActivity function checks (settings.isAdmin || settings.permissions.SHOW_USER_ACTIVITY). Since testing as SuperUser (admin), permission was granted.",
+    "Icon tooltip/hover state: The icon has a 'title' attribute set to the localized 'ShowUserActivity.title' value. Hover state visually highlights the icon.",
+    "The activity icon is implemented using SvgIcons.ActivityIcon from @dnnsoftware/dnn-react-common library."
   ],
   "summary": {
     "total_scenarios": 3,

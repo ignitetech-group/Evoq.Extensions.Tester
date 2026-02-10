@@ -5,7 +5,7 @@
     "feature_name": "Included File Extension Management",
     "feature_description": "Manages file extensions that are allowed to be indexed and crawled by the search system",
     "feature_priority": "High",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:30:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,38 +15,45 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Site Settings > Search > File Extensions",
-          "expected": "Display list of included file extensions with File Extension, File Type, and Content Crawling columns",
-          "actual": "List displayed correctly showing 5 extensions (.doc, .docx, .pdf, .ppt, .pptx) with all columns visible",
-          "screenshot": "Included_File_Extension_Management_step01_file_extensions_list.png"
+          "action": "Navigate to Site Settings > Search > File Extensions tab",
+          "expected": "Included File Extensions list is displayed with columns: File Extension, File Type, Content Crawling",
+          "actual": "List displayed showing 7 included extensions (.doc, .docx, .pdf, .ppt, .pptx, .txt, .xls) with File Type and Content Crawling columns",
+          "screenshot": "Included File Extension Management_step01_file_extensions_page.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Add new included file extension with leading dot",
+      "scenario_name": "Add new included file extension",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Click Add File Type button",
-          "expected": "Add form opens with File Extension input field",
-          "actual": "Add form opened with File Extension textbox and Cancel/Save buttons",
-          "screenshot": "Included_File_Extension_Management_step02_add_form_open.png"
+          "action": "Click 'Add File Type' button",
+          "expected": "Add form appears with File Extension input field",
+          "actual": "Add form appeared with File Extension label, input field, Cancel and Save buttons",
+          "screenshot": "Included File Extension Management_step02_add_form_opened.png"
         },
         {
           "step_number": 2,
-          "action": "Enter .txt in the File Extension field",
-          "expected": "Value .txt appears in the textbox",
-          "actual": ".txt entered successfully",
-          "screenshot": "Included_File_Extension_Management_step03_add_txt_extension.png"
-        },
+          "action": "Enter '.xlsx' in the File Extension field and click Save",
+          "expected": "Extension is added to the list",
+          "actual": "Extension .xlsx was successfully added to the list with 'Content crawling is unavailable' status",
+          "screenshot": "Included File Extension Management_step05_xlsx_added.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add extension with leading dot format",
+      "status": "PASS",
+      "steps": [
         {
-          "step_number": 3,
-          "action": "Click Save button",
-          "expected": "Extension added to the list with IFilter information",
-          "actual": ".txt extension added with 'Plain Text filter' as File Type and content crawling checkmark",
-          "screenshot": "Included_File_Extension_Management_step04_txt_added_success.png"
+          "step_number": 1,
+          "action": "Add extension using format '.xlsx' (with leading dot)",
+          "expected": "Extension is accepted and added successfully",
+          "actual": "Extension .xlsx with leading dot was successfully added to the list",
+          "screenshot": "Included File Extension Management_step05_xlsx_added.png"
         }
       ],
       "issues": []
@@ -57,38 +64,38 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to add .txt again (duplicate)",
-          "expected": "Error message displayed indicating duplicate extension",
-          "actual": "Server returned 500 error rejecting the duplicate. The .txt extension was not added twice.",
-          "screenshot": "Included_File_Extension_Management_step05_duplicate_error.png"
+          "action": "Attempt to add '.xlsx' extension which already exists",
+          "expected": "System rejects the duplicate and shows error",
+          "actual": "Server returned error (HTTP 500), form remained open, extension was not duplicated. Console error confirms duplicate was rejected.",
+          "screenshot": "Included File Extension Management_step06_duplicate_error.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Add extension without leading dot (validation error)",
+      "scenario_name": "Add extension not in whitelist and verify error",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Enter 'pdf' (without leading dot) in the File Extension field and click Save",
-          "expected": "Validation error displayed - extension must start with dot",
-          "actual": "Red validation error icon appeared next to the textbox, save was prevented",
-          "screenshot": "Included_File_Extension_Management_step06_no_leading_dot_error.png"
+          "action": "Attempt to add '.abc' extension which is not in the allowed whitelist",
+          "expected": "System rejects the extension and shows error message about not being in whitelist",
+          "actual": "Server returned error (HTTP 500), form remained open, extension was not added. The system correctly rejected the non-whitelisted extension.",
+          "screenshot": "Included File Extension Management_step08_whitelist_error.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Add empty extension value (validation error)",
+      "scenario_name": "Test extension validation with empty value",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
           "action": "Clear the File Extension field and click Save",
-          "expected": "Validation error displayed - extension cannot be empty",
-          "actual": "Red validation error icon appeared next to the empty textbox, save was prevented",
-          "screenshot": "Included_File_Extension_Management_step07_empty_value_error.png"
+          "expected": "Validation error displayed, form not submitted",
+          "actual": "Input field showed red border with error icon, form submission was prevented by client-side validation",
+          "screenshot": "Included File Extension Management_step10_empty_validation_error.png"
         }
       ],
       "issues": []
@@ -99,17 +106,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click delete icon for .txt extension",
+          "action": "Click delete icon for .xlsx extension",
           "expected": "Confirmation dialog appears",
-          "actual": "Confirmation dialog displayed: 'Are you sure you want to delete .txt?' with No/Yes buttons",
-          "screenshot": "Included_File_Extension_Management_step08_delete_confirmation.png"
+          "actual": "Confirmation dialog appeared: 'Are you sure you want to delete .xlsx?' with No and Yes buttons",
+          "screenshot": "Included File Extension Management_step11_delete_confirmation.png"
         },
         {
           "step_number": 2,
-          "action": "Click Yes to confirm deletion",
-          "expected": ".txt extension removed from the list",
-          "actual": ".txt extension was successfully removed. List now shows only 5 original extensions",
-          "screenshot": "Included_File_Extension_Management_step09_txt_deleted.png"
+          "action": "Click 'Yes' to confirm deletion",
+          "expected": "Extension is removed from the list",
+          "actual": "Extension .xlsx was successfully removed from the list, list now shows 7 extensions",
+          "screenshot": "Included File Extension Management_step12_xlsx_deleted.png"
         }
       ],
       "issues": []
@@ -120,26 +127,23 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "View the File Type and Content Crawling columns for all extensions",
-          "expected": "Extensions with IFilters show filter name and checkmark; extensions without IFilters show warning",
-          "actual": "IFilter information displayed correctly: .doc/.ppt show 'Microsoft Office Filter' with checkmark, .docx shows 'Wordpad DOCX Filter' with checkmark, .pdf/.pptx show info icon indicating 'Content crawling is unavailable'",
-          "screenshot": "Included_File_Extension_Management_step10_ifilter_info_display.png"
+          "action": "Examine the FILE TYPE and CONTENT CRAWLING columns in the extensions list",
+          "expected": "IFilter type displayed in FILE TYPE column, availability shown in CONTENT CRAWLING column",
+          "actual": "FILE TYPE column correctly shows: .doc/.ppt/.xls = 'Microsoft Office Filter', .docx = 'Wordpad DOCX Filter', .txt = 'Plain Text filter'. CONTENT CRAWLING column shows green checkbox for available IFilters and info icon for unavailable (.pdf, .pptx)",
+          "screenshot": "Included File Extension Management_step13_ifilter_display.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The validation regex requires extensions to start with a dot (.) and contain only letters (A-Za-z) after the dot",
-    "Backend validates for duplicate extensions and returns appropriate error via SearchSpiderHelper.AddExtensionResult.Duplicate",
-    "Backend validates against a whitelist of allowed extensions via SearchSpiderHelper.AddExtensionResult.NotInWhitelist",
-    "IFilter availability is determined by FileCrawlerHelper.Instance.GetIFilterExtensionInfo() which checks if an IFilter is installed for the extension",
-    "Delete operation shows a confirmation dialog before removing the extension",
-    "The feature correctly displays both included and excluded file extensions sections"
+    "The .html extension could not be added - appears to not be in the allowed file extension whitelist despite being a common web file type",
+    "Error messages from the server are displayed via toast notifications but fade quickly - may be difficult for users to read the full error message",
+    "Extensions without IFilters (like .pdf, .pptx) can still be added to the included list, but their content cannot be crawled without installing appropriate IFilters on the server"
   ],
   "summary": {
-    "total_scenarios": 7,
-    "passed": 7,
+    "total_scenarios": 8,
+    "passed": 8,
     "failed": 0,
     "pass_rate": "100%"
   }

@@ -5,92 +5,118 @@
     "feature_name": "Role Synchronization",
     "feature_description": "Synchronizes user roles in DNN with Active Directory security groups",
     "feature_priority": "High",
-    "test_date": "2026-01-16T00:00:00Z",
+    "test_date": "2026-02-09T12:00:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Enable role synchronization",
-      "status": "PASS",
+      "scenario_name": "Enable Role Synchronization Setting",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Extensions > Authentication Systems > DNNPro_ActiveDirectoryAuthentication > Site Settings",
-          "expected": "Site Settings tab should display with AD authentication configuration options",
-          "actual": "Site Settings tab displayed with all AD configuration options including Synchronize Role checkbox",
-          "screenshot": "Role_Synchronization_step04_site_settings.png"
+          "action": "Login as host user and navigate to Settings > Extensions > Authentication Systems",
+          "expected": "Authentication Systems page should display with list of authentication providers",
+          "actual": "Authentication Systems page displayed successfully with 'Default Authentication' in installed list",
+          "screenshot": "Role Synchronization_step01_auth_systems_list.png"
         },
         {
           "step_number": 2,
-          "action": "Click on the Synchronize Role? checkbox to enable it",
-          "expected": "Checkbox should become checked",
-          "actual": "Checkbox successfully checked, showing role synchronization is enabled",
-          "screenshot": "Role_Synchronization_step05_role_sync_enabled.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Admin role mapping functionality",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Locate the Administrators Role Mapping field in Site Settings",
-          "expected": "Text field for Administrators Role Mapping should be visible",
-          "actual": "Administrators Role Mapping text field is visible and editable",
-          "screenshot": "Role_Synchronization_step06_admin_role_mapping.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Enter 'Domain Admins' in the Administrators Role Mapping field",
-          "expected": "Text should be accepted in the field",
-          "actual": "Successfully entered 'Domain Admins' in the Administrators Role Mapping field",
-          "screenshot": "Role_Synchronization_step06_admin_role_mapping.png"
+          "action": "Locate DNNPro_ActiveDirectoryAuthentication extension to access its settings",
+          "expected": "AD Authentication extension should be available to configure",
+          "actual": "Extension found in 'Available Extensions' tab, not yet installed",
+          "screenshot": "Role Synchronization_step02_ad_available_not_installed.png"
         },
         {
           "step_number": 3,
-          "action": "Click Update Authentication Settings to save",
-          "expected": "Settings should be saved without error",
-          "actual": "Settings saved successfully, page reloaded with saved values",
-          "screenshot": "Role_Synchronization_step07_settings_saved.png"
+          "action": "Install DNNPro_ActiveDirectoryAuthentication extension",
+          "expected": "Extension should install successfully",
+          "actual": "Installation showed error message 'An unknown error has occured' but extension was actually installed successfully",
+          "screenshot": "Role Synchronization_step03_install_error.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Verify extension is installed",
+          "expected": "Extension should appear in Installed Extensions list",
+          "actual": "DNNPro_ActiveDirectoryAuthentication confirmed in Installed Extensions list",
+          "screenshot": "Role Synchronization_step05_ad_installed.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Access AD authentication settings to find Role Synchronization checkbox",
+          "expected": "Settings page should show 'Synchronize Role?' checkbox as defined in Settings.ascx",
+          "actual": "No UI path found in Persona Bar to access the AD-specific settings (Settings.ascx control). The Security > Authentication Settings panel only shows a dropdown to select default authentication provider, not the provider-specific settings.",
+          "screenshot": "Role Synchronization_step09_security_auth_panel.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "The Evoq Persona Bar UI does not provide navigation to the authentication provider-specific settings page (Settings.ascx)",
+        "The 'Synchronize Role?' checkbox exists in code (Settings.ascx line 23-24) but is not accessible through the modern admin interface"
+      ]
     },
     {
-      "scenario_name": "Verify settings persistence after save",
-      "status": "PASS",
+      "scenario_name": "Test Admin Role Mapping Configuration",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Verify Synchronize Role? checkbox remains checked after save",
-          "expected": "Checkbox should remain checked",
-          "actual": "Synchronize Role? checkbox remained checked after save",
-          "screenshot": "Role_Synchronization_step08_verification_complete.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Verify Administrators Role Mapping value persisted",
-          "expected": "Value 'Domain Admins' should be retained",
-          "actual": "Administrators Role Mapping value 'Domain Admins' was retained correctly",
-          "screenshot": "Role_Synchronization_step08_verification_complete.png"
+          "action": "Navigate to AD authentication settings to locate Admin Role Mapping field",
+          "expected": "Settings page should show 'Administrators Role Mapping' text field as defined in Settings.ascx",
+          "actual": "Unable to access AD-specific settings. The Admin Role Mapping field (txtAdminRoleMapping) exists in Settings.ascx line 74-77 but no UI navigation path is available in Persona Bar",
+          "screenshot": "Role Synchronization_step08_auth_settings_page.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Admin Role Mapping field is defined in Settings.ascx but not accessible through Persona Bar UI"
+      ]
+    },
+    {
+      "scenario_name": "Verify AD Groups Mapping to DNN Roles",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to configure and test AD group to DNN role mapping",
+          "expected": "Should be able to enable role synchronization and verify AD groups map to DNN roles on login",
+          "actual": "Cannot test - Role Synchronization settings UI is not accessible. Additionally, this test requires an actual Active Directory environment which is not available in the test environment.",
+          "screenshot": "Role Synchronization_step06_security_auth_settings.png"
+        }
+      ],
+      "issues": [
+        "Settings UI not accessible through Persona Bar",
+        "Test requires Active Directory infrastructure not present in test environment"
+      ]
+    },
+    {
+      "scenario_name": "Verify Settings Persistence After Save",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Save AD authentication settings and verify they persist",
+          "expected": "Settings should save and reload correctly",
+          "actual": "Cannot test - unable to access the settings form to modify and save values",
+          "screenshot": "Role Synchronization_step07_extension_icons.png"
+        }
+      ],
+      "issues": [
+        "Cannot access settings form through available UI paths"
+      ]
     }
   ],
   "observations": [
-    "Code review confirms role synchronization logic in UserController.cs:AddUserRoles() method compares AD groups with DNN roles",
-    "Auto-assigned roles are explicitly excluded from synchronization (line 110-113 in UserController.cs)",
-    "Administrator role requires explicit mapping via AdminRoleMapping setting - not directly synchronized to prevent security issues",
-    "The following scenarios require Active Directory infrastructure to test: 'Verify AD groups are mapped to DNN roles on login', 'Test adding user to new AD group and verify role assignment', 'Test removing user from AD group and verify role removal', 'Verify auto-assigned roles are not synchronized', 'Verify role synchronization doesn't affect non-AD roles'",
-    "UI validation confirms all role synchronization settings are accessible and configurable through Admin > Extensions > Authentication Systems > DNNPro_ActiveDirectoryAuthentication > Site Settings"
+    "Code confirms Role Synchronization feature exists in Settings.ascx (chkSynchronizeRole checkbox at line 23-24) but the Evoq Persona Bar UI does not provide navigation to the authentication provider-specific settings page",
+    "Code confirms Admin Role Mapping feature exists in Settings.ascx (txtAdminRoleMapping text field at line 74-77) but is similarly inaccessible",
+    "The Settings.ascx control is registered at DesktopModules/AuthenticationServices/DNNPro_ActiveDirectory/Settings.ascx and extends AuthenticationSettingsBase",
+    "The extension installation process showed a misleading error ('An unknown error has occured') despite successful installation",
+    "The Security > Authentication Settings panel only allows selecting the default authentication provider via dropdown, not configuring provider-specific settings",
+    "Full testing of role synchronization features would require an Active Directory environment with configured domain controller, users, and security groups",
+    "The role synchronization logic exists in UserController.cs and GroupController.cs as referenced in the task specification"
   ],
   "summary": {
-    "total_scenarios": 3,
-    "passed": 3,
-    "failed": 0,
-    "pass_rate": "100%"
+    "total_scenarios": 4,
+    "passed": 0,
+    "failed": 4,
+    "pass_rate": "0%"
   }
 }

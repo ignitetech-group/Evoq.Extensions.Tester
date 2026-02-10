@@ -5,7 +5,7 @@
     "feature_name": "Edit Mode UI Controls",
     "feature_description": "Provides visual editing interface for content layout configuration in page edit mode.",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:45:00Z",
+    "test_date": "2026-02-09T15:06:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,24 +15,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to page with ContentLayout module and enter Edit mode",
-          "expected": "Edit controls should be visible including pane borders, resize handles, and action menus",
-          "actual": "Edit mode displayed ContentLayout panes with dashed borders (e.g., F30A_Pane1, 9977_Pane1-4), Actions links visible on each module, resize handles present between columns",
+          "action": "Logged in as superuser and entered edit mode by clicking Edit button",
+          "expected": "Edit mode should be enabled with pane labels, dashed borders, and resize handles visible",
+          "actual": "Edit mode enabled successfully. Pane labels (F30A_Pane1-4, 9977_Pane1-4), dashed borders around columns, and resize handles between columns are all visible",
           "screenshot": "Edit_Mode_UI_Controls_step01_edit_mode_controls_visible.png"
         },
         {
           "step_number": 2,
-          "action": "Examine ContentLayout panes and controls",
-          "expected": "Pane labels and editing UI elements should be visible",
-          "actual": "ContentLayout panes displayed with visible labels, 4-column layout shown with properly labeled panes (9977_Pane1 through 9977_Pane4)",
+          "action": "Scrolled to view ContentLayout module columns in edit mode",
+          "expected": "ContentLayout 4-column structure visible with edit controls",
+          "actual": "Four-column ContentLayout visible with dashed borders, resize handles (gray circular dots between columns), and pane labels clearly showing edit mode UI controls",
           "screenshot": "Edit_Mode_UI_Controls_step02_contentlayout_panes_visible.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Verify 4-column layout display",
-          "expected": "All four columns should be visible with edit controls",
-          "actual": "4-column layout displayed correctly with all panes visible and edit controls accessible",
-          "screenshot": "Edit_Mode_UI_Controls_step03_four_column_layout.png"
         }
       ],
       "issues": []
@@ -43,10 +36,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Log out and navigate to Our Products page as anonymous user",
-          "expected": "Edit controls should be hidden, page should display content cleanly",
-          "actual": "View mode displayed clean page without edit controls - no dashed borders, no pane labels, no resize handles, no Actions menus visible",
-          "screenshot": "Edit_Mode_UI_Controls_step05_view_mode_no_controls.png"
+          "action": "Exited edit mode by navigating away (edit mode was unlocked)",
+          "expected": "Edit controls should be hidden in view mode",
+          "actual": "All edit controls hidden - no dashed borders, no resize handles, no pane labels, no edit bar. Only clean content grid visible (TELEVISIONS, WEARABLES, TABLETS, LAPTOPS, etc.)",
+          "screenshot": "Edit_Mode_UI_Controls_step03_view_mode_no_controls.png"
         }
       ],
       "issues": []
@@ -57,10 +50,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Observe column heights in edit mode with multiple ContentLayout modules",
-          "expected": "Columns within a ContentLayout should have synchronized heights",
-          "actual": "Column heights are synchronized - code confirms _adjustColumnHeight() method runs every 20ms checking for height changes and adjusts all panes to match the tallest column (minimum 110px)",
-          "screenshot": "Edit_Mode_UI_Controls_step06_column_layout_edit_mode.png"
+          "action": "Entered edit mode and observed column heights in ContentLayout",
+          "expected": "All columns should have equal height matching the tallest column",
+          "actual": "All four columns in the ContentLayout module have equal height despite having different content sizes. The _adjustColumnHeight function equalizes heights to match the tallest column (minimum 110px)",
+          "screenshot": "Edit_Mode_UI_Controls_step04_column_height_adjustment.png"
         }
       ],
       "issues": []
@@ -71,10 +64,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Examine module action menus on ContentLayout modules",
-          "expected": "ContentLayout modules should have modified action menus - Settings, Import, Export removed when module contains other modules",
-          "actual": "Code review and UI observation confirms: _checkActionsState() removes Settings/Import/Export buttons when ContentLayout contains modules, and removes ContentLayout pane move options from menu to prevent nesting",
-          "screenshot": "Edit_Mode_UI_Controls_step01_edit_mode_controls_visible.png"
+          "action": "Hovered over ContentLayout panes to trigger action menu and size viewers",
+          "expected": "Size viewers should appear showing column percentages, and module action menus for child modules should be visible",
+          "actual": "Size viewers appeared showing percentages (38%, 12%, 25%, 25%). Module action menu with Admin/Move options visible for child modules (e.g., Wearables module 359). Pane label F30A_PANE2 displayed on hover",
+          "screenshot": "Edit_Mode_UI_Controls_step05_module_actions_and_size_viewers.png"
         }
       ],
       "issues": []
@@ -85,10 +78,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Review drag state implementation in code and observe UI classes",
-          "expected": "ContentLayout should handle drag states appropriately with visual feedback",
-          "actual": "Code confirms drag state handling: CatchDragState class added to parent module, dragstart/dragend events disable/enable sortable on panes, CSS class 'dragging' applied during drag with border styling and pane margin adjustment. ContentLayout panes hidden during drag of ContentLayout module to prevent invalid nesting",
-          "screenshot": "Edit_Mode_UI_Controls_step02_contentlayout_panes_visible.png"
+          "action": "Verified drag state handling code implementation and observed CatchDragState class setup",
+          "expected": "ContentLayout should have drag state handling configured with CatchDragState class",
+          "actual": "Code verification confirms: CatchDragState class added to ContentLayout container, CSS styles for .dragging state defined (dashed border, pane hiding), and drag event handlers properly configured for mousedown/mouseup and dragstart/dragend events",
+          "screenshot": "Edit_Mode_UI_Controls_step05_module_actions_and_size_viewers.png"
         }
       ],
       "issues": []
@@ -99,21 +92,28 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Review CSS for responsive handling and observe layout at different sizes",
-          "expected": "Edit controls should adapt to different viewport sizes",
-          "actual": "CSS uses Bootstrap grid system (container-fluid, row classes) for responsive layout. Resize handles use relative positioning (right:0, transform:translate) that adapts to column widths. Window resize event handler updates maxWidth options for resizable columns dynamically",
-          "screenshot": "Edit_Mode_UI_Controls_step03_four_column_layout.png"
+          "action": "Captured edit mode at 1280px width (desktop)",
+          "expected": "ContentLayout columns should display in 4-column grid at desktop width",
+          "actual": "Four-column layout displayed correctly with all edit controls visible at 1280px viewport width",
+          "screenshot": "Edit_Mode_UI_Controls_step06_responsive_1280px.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Resized browser to 480px width (mobile)",
+          "expected": "ContentLayout should adapt to narrow viewport while maintaining edit controls",
+          "actual": "Layout compressed to fit 480px width. Columns adjusted and content reflowed. Edit controls (dashed borders, resize handles, edit toolbar) remained visible and functional at mobile width",
+          "screenshot": "Edit_Mode_UI_Controls_step07_responsive_480px_mobile.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "EditorScript panel in View.ascx has Visible='False' by default and is only rendered when page is in edit mode, initializing the dnnLayoutEditor jQuery plugin",
-    "Size viewer tooltip (showing column percentages) appears on hover over resize handles and during resize operations, implemented via _showSizeViewer/_hideSizeViewer functions",
-    "ContentLayout prevents nesting of ContentLayout modules within ContentLayout panes through _removeMoveContentLayoutPanesMenuItems() which removes ContentLayout pane options from move menu",
-    "Column minimum width is enforced at 105px via colMinWidth option in resizable configuration",
-    "The layout uses a unique prefix pattern (4-character hex like 'F30A_', '9977_') for pane naming to avoid conflicts between multiple ContentLayout modules on the same page"
+    "Drag state handling is implemented in code (LayoutEditor.js lines 320-357) but requires manual drag interactions to fully test the visual feedback during drag operations",
+    "Size viewers showing column percentages appear on hover over resize handles, providing visual feedback for column width adjustments",
+    "ContentLayout modules containing child modules have their module actions removed (EditDisabled class added), while child modules retain their own action menus",
+    "The resize handles between columns use jQuery UI resizable with min-width constraint of 105px (colMinWidth)",
+    "Column height adjustment runs on a 20ms interval to detect and synchronize height changes across all columns"
   ],
   "summary": {
     "total_scenarios": 6,

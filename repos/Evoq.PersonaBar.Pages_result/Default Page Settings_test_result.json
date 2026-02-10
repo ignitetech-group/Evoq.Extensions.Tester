@@ -5,7 +5,7 @@
     "feature_name": "Default Page Settings",
     "feature_description": "Get default settings for new pages based on parent or system defaults",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:08:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,17 +15,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Admin > Content > Pages and click Add Page button",
-          "expected": "Add Page form opens with default settings loaded",
-          "actual": "Add Page form opened successfully with default settings displayed",
-          "screenshot": "Default_Page_Settings_step01_defaults_no_parent.png"
+          "action": "Clicked 'Add Page' button to open Add Page form",
+          "expected": "Add Page form should open with default settings populated",
+          "actual": "Add Page form opened with default settings: Page Type=Standard, Parent Page=None Specified, Workflow=Direct Publish, Display in Menu=On, Link Tracking=Off, Enable Scheduling=Off",
+          "screenshot": "Default Page Settings_step01_add_page_no_parent.png"
         },
         {
           "step_number": 2,
-          "action": "Observe the default values populated in the form (no parent selected)",
-          "expected": "Default page type, workflow, and other settings should be populated",
-          "actual": "Form shows Standard page type, no parent (None selected), Test Approval Workflow as default",
-          "screenshot": "Default_Page_Settings_step03_full_page.png"
+          "action": "Verified default values in the form",
+          "expected": "Form should display system defaults for new page",
+          "actual": "Default values confirmed: Page ID=0, Status=Visible, Versioning=Off, Workflow=Off in header; Direct Publish workflow selected in dropdown",
+          "screenshot": "Default Page Settings_step02_defaults_form.png"
         }
       ],
       "issues": []
@@ -36,17 +36,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "In the Add Page form, click on the Parent Page dropdown and select 'Home'",
-          "expected": "Parent page should be selectable and form should update",
-          "actual": "Home was selected as parent page, form updated accordingly",
-          "screenshot": "Default_Page_Settings_step05_with_parent.png"
+          "action": "Clicked Parent Page dropdown and selected 'Home' as parent page",
+          "expected": "Parent page should be updated and form should refresh with appropriate defaults",
+          "actual": "Parent Page changed to 'Home'. Page Parent header updated to show 'Home'. Default settings (Page Type=Standard, Workflow=Direct Publish) remained consistent",
+          "screenshot": "Default Page Settings_step04_with_parent.png"
         },
         {
           "step_number": 2,
-          "action": "Verify the page settings with parent selected",
-          "expected": "Settings should reflect parent page context while maintaining defaults",
-          "actual": "Default settings maintained with parent context applied - workflow remains Test Approval Workflow",
-          "screenshot": "Default_Page_Settings_step06_permissions_with_parent.png"
+          "action": "Verified form header shows new parent page",
+          "expected": "Header should display 'Page Parent: Home'",
+          "actual": "Header correctly displays 'Page Parent: Home' while maintaining all default settings",
+          "screenshot": "Default Page Settings_step05_parent_header.png"
         }
       ],
       "issues": []
@@ -57,38 +57,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Observe the Workflow dropdown in the Add Page form",
-          "expected": "Default workflow should be automatically assigned from system settings",
-          "actual": "Test Approval Workflow is displayed as the default workflow assignment",
-          "screenshot": "Default_Page_Settings_step02_workflow_and_templates.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Review workflow section in full page view",
-          "expected": "Workflow assignment should be visible and correct",
-          "actual": "Workflow section shows 'Test Approval Workflow' which matches TabWorkflowSettings.Instance.GetDefaultTabWorkflowId() from code",
-          "screenshot": "Default_Page_Settings_step03_workflow_section.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Test default permissions inheritance",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Click on the Permissions tab in the Add Page form",
-          "expected": "Default permissions grid should display with system default roles and permissions",
-          "actual": "Permissions tab displayed with default role-based permissions: Administrators (Full Control), Content Editors (Add/Copy/Delete/Edit/Export/Import/Manage Settings/View), Content Managers (Full Control), Everyone (Add/View), Registered Users (Add/View)",
-          "screenshot": "Default_Page_Settings_step04_default_permissions.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Verify permissions with parent page selected",
-          "expected": "Permissions should maintain system defaults",
-          "actual": "Permissions grid maintains the same default permissions when parent page (Home) is selected",
-          "screenshot": "Default_Page_Settings_step06_permissions_with_parent.png"
+          "action": "Opened Workflow dropdown to view default selection",
+          "expected": "Workflow should show 'Direct Publish' as the default selection",
+          "actual": "Workflow dropdown shows 'Direct Publish' as selected default. Available workflows displayed: Direct Publish, Save Draft, Content Approval, Test Workflow",
+          "screenshot": "Default Page Settings_step03_workflow_dropdown.png"
         }
       ],
       "issues": []
@@ -99,33 +71,24 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Observe the Page Type selection in the Add Page form",
-          "expected": "Standard page type should be selected by default",
-          "actual": "Standard page type is selected by default. Other options visible: Existing, URL, File",
-          "screenshot": "Default_Page_Settings_step01_defaults_no_parent.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Verify page type remains Standard for new pages",
-          "expected": "Standard should be the default for new pages per system defaults",
-          "actual": "Standard page type confirmed as default, consistent with the GetDefaultSettings() implementation which sets PageType to normal/standard by default",
-          "screenshot": "Default_Page_Settings_step03_full_page.png"
+          "action": "Verified Page Type radio button selection in Add Page form",
+          "expected": "Default page type should be 'Standard'",
+          "actual": "Page Type 'Standard' radio button is selected by default. Other available options: Existing, URL, File",
+          "screenshot": "Default Page Settings_step06_page_type_default.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The GetDefaultSettings API endpoint correctly returns EvoqPageSettings with TemplateId set to Null.NullInteger, indicating no template is selected by default",
-    "The default workflow is retrieved via TabWorkflowSettings.Instance.GetDefaultTabWorkflowId(portalSettings.PortalId), which returns 'Test Approval Workflow' for this portal",
-    "Template options are populated via _evoqTemplateController.GetTabTemplates(portalSettings) and include various layout templates",
-    "Thumbnail functions (DefaultThumbnail, UrlThumbnail, TabThumbnail, FileThumbnail) are attached to the settings for thumbnail management",
-    "The parent page selection does not change the default workflow - it is always set from system defaults",
-    "Default permissions are inherited from system-level role definitions, not from parent page"
+    "The GetDefaultSettings API endpoint supports an optional pageId parameter for parent-based defaults",
+    "Default workflow is determined by TabWorkflowSettings.Instance.GetDefaultTabWorkflowId() which returns 'Direct Publish'",
+    "Default permissions inheritance is handled at the API level when saving the page, not visible in the UI during page creation",
+    "Template selection defaults to 'Evoq Page Template' mode with 'Cavalier - Main' template pre-selected"
   ],
   "summary": {
-    "total_scenarios": 5,
-    "passed": 5,
+    "total_scenarios": 4,
+    "passed": 4,
     "failed": 0,
     "pass_rate": "100%"
   }

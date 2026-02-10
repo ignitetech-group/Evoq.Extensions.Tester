@@ -5,90 +5,86 @@
     "feature_name": "Template Page Settings",
     "feature_description": "Configure template-specific settings like name, description, keywords, and URL",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:50:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Template creation form UI displays correctly",
+      "scenario_name": "Edit template name",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Content > Pages and select a page",
-          "expected": "Page list should display with action buttons",
-          "actual": "Page list displayed with 'Save Page Template' button visible",
-          "screenshot": "Template_Page_Settings_step02_pages_panel_with_save_template.png"
+          "action": "Navigate to Manage > Templates in PersonaBar",
+          "expected": "Page Templates panel opens with list of existing templates",
+          "actual": "Page Templates panel opened showing 5 existing templates",
+          "screenshot": "Template Page Settings_step00_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Click 'Save Page Template' > 'Evoq Page Template'",
-          "expected": "Template creation form should open with Name and Description fields",
-          "actual": "Template creation form opened with Template Name (required) and Description fields",
-          "screenshot": "Template_Page_Settings_step03_template_creation_form.png"
+          "action": "Click Add Template button",
+          "expected": "Add Template form appears with Template Name field",
+          "actual": "Add Template form appeared with Template Name, Description fields and Page Template selector",
+          "screenshot": "Template Page Settings_step02_add_template_form.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Enter 'Test Settings Template' in Template Name field",
+          "expected": "Template name is entered in the field",
+          "actual": "Template name 'Test Settings Template' was entered successfully",
+          "screenshot": "Template Page Settings_step03_name_description_entered.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Edit template name and description",
+      "scenario_name": "Edit template description",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Enter template name 'Products Page Template' in the Template Name field",
-          "expected": "Template name should be accepted and Save button should become enabled",
-          "actual": "Template name was entered successfully and Save button became enabled",
-          "screenshot": "Template_Page_Settings_step06_products_template_form_filled.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Enter description 'A template based on the Our Products page for testing template settings.'",
-          "expected": "Description should be entered in the textarea",
-          "actual": "Description was entered successfully in the Description textarea",
-          "screenshot": "Template_Page_Settings_step06_products_template_form_filled.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Validate required template name field",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Open template creation form without entering template name",
-          "expected": "Save button should be disabled when template name is empty",
-          "actual": "Save button was disabled when template name field was empty, demonstrating required field validation",
-          "screenshot": "Template_Page_Settings_step03_template_creation_form.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Enter template name in the required field",
-          "expected": "Save button should become enabled after entering template name",
-          "actual": "Save button became enabled after entering 'Products Page Template'",
-          "screenshot": "Template_Page_Settings_step06_products_template_form_filled.png"
+          "action": "Enter description text in Description field",
+          "expected": "Description text is entered",
+          "actual": "Description 'This is a test template created to verify template page settings functionality.' was entered successfully",
+          "screenshot": "Template Page Settings_step03_name_description_entered.png"
         }
       ],
       "issues": []
     },
     {
       "scenario_name": "Save template settings",
-      "status": "FAIL",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Fill template name and description, then click Save",
-          "expected": "Template should be saved and appear in the templates list",
-          "actual": "Server returned 500 Internal Server Error. Error message displayed: 'There was an error retrieving your content. Please check your internet connection.'",
-          "screenshot": "Template_Page_Settings_step05_after_save_attempt.png"
+          "action": "Click Create button after filling template name and description",
+          "expected": "Template is created and appears in the templates list",
+          "actual": "Template 'Test Settings Template' was created successfully and appeared in the templates list",
+          "screenshot": "Template Page Settings_step04_template_created_success.png"
         }
       ],
-      "issues": [
-        "Template save operation fails with 500 Internal Server Error",
-        "Multiple attempts on different pages (Home, Our Products) all resulted in server errors (400 or 500)",
-        "The feature UI works correctly but the backend SavePageDetails API endpoint fails"
-      ]
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate duplicate template names",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add Template and enter existing template name 'Test Settings Template'",
+          "expected": "Duplicate name is entered",
+          "actual": "Entered duplicate name 'Test Settings Template'",
+          "screenshot": "Template Page Settings_step05_duplicate_name_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Create button",
+          "expected": "Validation error displayed for duplicate name",
+          "actual": "Error message displayed: 'The Template Name you chose is already being used for another template.'",
+          "screenshot": "Template Page Settings_step06_duplicate_validation_error.png"
+        }
+      ],
+      "issues": []
     },
     {
       "scenario_name": "Handle validation errors",
@@ -96,34 +92,25 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to access Page Templates without any saved templates",
-          "expected": "System should display appropriate message when no templates exist",
-          "actual": "System displayed message: 'You must save an existing page as a template prior to create a new template'",
-          "screenshot": "Template_Page_Settings_step01_no_templates_message.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Observe validation behavior when required field is empty",
-          "expected": "Save button should be disabled and validation should prevent submission",
-          "actual": "Save button remained disabled when Template Name was empty, preventing invalid form submission",
-          "screenshot": "Template_Page_Settings_step03_template_creation_form.png"
+          "action": "Clear Template Name field and click Create",
+          "expected": "Required field validation error is displayed",
+          "actual": "Validation message 'This field is required.' displayed below the empty Template Name field",
+          "screenshot": "Template Page Settings_step07_required_field_validation_full.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Code suggests 'keywords' field exists in the Template model (templatesCreateManager.js line 57), but no Keywords UI field is visible in the template creation form. Keywords may be inherited from page/portal settings rather than configured per-template.",
-    "The 'Set template keywords for SEO' scenario from suggested tests cannot be tested as no Keywords field exists in the template settings UI.",
-    "The 'Validate duplicate template names' scenario cannot be tested because template creation fails with server errors before any validation can occur.",
-    "Template creation workflow requires: 1) Navigate to Pages section, 2) Select a page, 3) Click 'Save Page Template' > 'Evoq Page Template', 4) Fill form and save.",
-    "The SavePageDetails API endpoint (TemplatesController.cs line 95) appears to have a server-side issue causing 500 errors.",
-    "Code shows validation for script injection prevention (hasScript rule in templatesCreateManager.js) but this could not be tested due to save failures."
+    "Template settings (name, description) are configured during template creation via the Add Template form",
+    "Keywords/SEO settings mentioned in feature description are not visible in the Add Template UI - may be configured elsewhere or not implemented in this module",
+    "URL configuration is not visible in the Add Template form - URLs are auto-generated based on template name",
+    "The Page Template selector requires an existing template to be selected as the base for new templates"
   ],
   "summary": {
     "total_scenarios": 5,
-    "passed": 4,
-    "failed": 1,
-    "pass_rate": "80%"
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": "100%"
   }
 }

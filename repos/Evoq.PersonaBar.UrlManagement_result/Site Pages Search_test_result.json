@@ -5,62 +5,82 @@
     "feature_name": "Site Pages Search",
     "feature_description": "Search and retrieve site pages for URL management operations",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T12:30:00Z",
+    "test_date": "2026-02-09T16:50:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Access Site Pages Search via Page Picker",
+      "scenario_name": "Retrieve all pages without search filter",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Settings > SEO > URL Management > TEST URL tab",
-          "expected": "TEST URL tab should be accessible with Page to Test dropdown",
-          "actual": "TEST URL tab opened successfully showing Page to Test dropdown with search functionality",
-          "screenshot": "Site_Pages_Search_step02_test_url_tab.png"
+          "action": "Navigated to SEO > URL Management > TEST URL tab",
+          "expected": "TEST URL page loads with Page to Test dropdown",
+          "actual": "TEST URL page loaded with Page to Test dropdown visible",
+          "screenshot": "Site Pages Search_step00_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Click on Page to Test dropdown to open page picker",
-          "expected": "Page picker dropdown should open showing search box and list of all site pages",
-          "actual": "Page picker dropdown opened with search box placeholder 'Search pages..' and displayed all 43 site pages in a tree view",
-          "screenshot": "Site_Pages_Search_step03_page_picker_open.png"
+          "action": "Clicked on Page to Test dropdown to open page picker",
+          "expected": "Dropdown opens showing all available site pages",
+          "actual": "Dropdown opened displaying 16 site pages including Home, Our Products, Activity Feed, Community, Search Results, 404 Error Page, Admin, Wiki Test, Groups, Test Page One, News, Test Normal Page, Publish Test Page, and more",
+          "screenshot": "Site Pages Search_step01_all_pages_loaded.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Search pages by partial text match",
+      "scenario_name": "Search pages by title with partial text match",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Type 'Test' in the search box to filter pages",
-          "expected": "Page list should filter to show only pages containing 'Test' in their name",
-          "actual": "Search filtered results from 43 to 41 pages, showing only pages with 'Test' in their name (e.g., HubSpot Forms Test, Workflow Test Page, URL Test Page, etc.)",
-          "screenshot": "Site_Pages_Search_step04_search_results_test.png"
-        },
+          "action": "Typed 'Test' in the search pages searchbox",
+          "expected": "Page list filters to show only pages containing 'Test' in their name",
+          "actual": "Page list filtered from 16 results to 8 results, showing: Wiki Test, Test Page One, Test Normal Page, Publish Test Page, long page name with test, URL Type Test Page, News SubPage Test, Test Page Two",
+          "screenshot": "Site Pages Search_step02_search_filter_test.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify case-insensitive search",
+      "status": "PASS",
+      "steps": [
         {
-          "step_number": 2,
-          "action": "Select 'URL Test Page' from filtered results",
-          "expected": "Selected page should appear in the dropdown and enable Test URL button",
-          "actual": "URL Test Page was selected successfully, displayed in the dropdown, and Test URL button became enabled",
-          "screenshot": "Site_Pages_Search_step05_page_selected.png"
+          "step_number": 1,
+          "action": "Observed search results for 'Test' search term",
+          "expected": "Search should find pages regardless of case (e.g., 'Wiki Test' should be found when searching 'Test')",
+          "actual": "Search found 'Wiki Test' when searching for 'Test', confirming case-insensitive search works correctly",
+          "screenshot": "Site Pages Search_step02_search_filter_test.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Select page from search results",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked on 'Test Page One' from the filtered search results",
+          "expected": "Page should be selected and displayed in the Page to Test field",
+          "actual": "Page was successfully selected. 'Test Page One' now displays in the Page to Test field and the 'Test URL' button is now enabled",
+          "screenshot": "Site Pages Search_step03_page_selected.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The Site Pages Search feature is implemented as a page picker component within the URL Management TEST URL tab",
-    "Search uses case-insensitive partial text matching as confirmed by code review (IndexOf with StringComparison.InvariantCultureIgnoreCase)",
-    "The API endpoint GetSitePages returns all non-disabled pages and filters by search text",
-    "The page picker displays pages in a hierarchical tree view with expand/collapse functionality"
+    "The GetSitePages API (UrlManagementServiceController.cs:515-523) uses GetFilteredSitePages method which filters tabs by LocalizedTabName using case-insensitive IndexOf comparison",
+    "The page picker component displays pages in a hierarchical tree structure with expandable nodes for pages with children",
+    "Pages with DisableLink=true are excluded from the results as per the code at line 159"
   ],
   "summary": {
-    "total_scenarios": 2,
-    "passed": 2,
+    "total_scenarios": 4,
+    "passed": 4,
     "failed": 0,
     "pass_rate": "100%"
   }

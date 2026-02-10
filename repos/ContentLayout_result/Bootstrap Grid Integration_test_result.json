@@ -5,7 +5,7 @@
     "feature_name": "Bootstrap Grid Integration",
     "feature_description": "Integrates Bootstrap responsive grid system for column layouts.",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:30:00Z",
+    "test_date": "2026-02-09T15:05:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,38 +15,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to home page and enter edit mode to view Content Layout",
-          "expected": "Page loads with Content Layout module visible",
-          "actual": "Page loaded successfully with Content Layout panes visible (F30A_Pane1, F30A_Pane2, 9977_Pane1-4)",
-          "screenshot": "Bootstrap Grid Integration_step01_css_loaded_editmode.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Execute JavaScript to check if bootstrap.min.css is loaded",
+          "action": "Navigated to Home page and enabled Edit Mode to view Content Layout modules",
           "expected": "Bootstrap CSS stylesheet should be loaded on the page",
-          "actual": "Bootstrap CSS found at http://localhost:8081/DesktopModules/DnnCorp/ContentLayout/Css/bootstrap.min.css?cdv=132",
-          "screenshot": "Bootstrap Grid Integration_step01_css_loaded_editmode.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Verify column CSS classes",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Execute JavaScript to inspect column elements for Bootstrap classes",
-          "expected": "Column elements should have Bootstrap grid classes (col-lg-*, col-md-*, col-sm-*, col-xs-*)",
-          "actual": "Found 6 column elements with Bootstrap classes: F30A_Pane1 (col-lg-6 col-md-6 col-sm-6 col-xs-12), F30A_Pane2 (col-lg-6 col-md-6 col-sm-6 col-xs-12), 9977_Pane1-4 (col-lg-3 col-md-3 col-sm-3 col-xs-12)",
-          "screenshot": "Bootstrap Grid Integration_step02_columns_visible.png"
+          "actual": "Bootstrap CSS is loaded from /DesktopModules/DnnCorp/ContentLayout/Css/bootstrap.min.css. JavaScript evaluation confirmed bootstrapStylesheetLoaded: true",
+          "screenshot": "Bootstrap Grid Integration_step01_edit_mode_columns.png"
         },
         {
           "step_number": 2,
-          "action": "Verify 2-column layout (50%/50%) and 4-column layout (25%/25%/25%/25%)",
-          "expected": "Columns should display at correct widths based on Bootstrap classes",
-          "actual": "2-column layout shows F30A_Pane1 and F30A_Pane2 at 50% width each. 4-column layout shows 9977_Pane1-4 at 25% width each",
-          "screenshot": "Bootstrap Grid Integration_step03_4column_layout.png"
+          "action": "Verified Bootstrap CSS file contains responsive grid classes namespaced under .dnn-cl",
+          "expected": "CSS file should contain Bootstrap grid classes (col-lg-*, col-md-*, col-sm-*, col-xs-*)",
+          "actual": "Bootstrap CSS contains full grid system with responsive breakpoints at 768px, 992px, and 1200px, all namespaced under .dnn-cl class",
+          "screenshot": "Bootstrap Grid Integration_step02_css_loaded_verified.png"
         }
       ],
       "issues": []
@@ -57,17 +36,38 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Resize viewport to 992px (md breakpoint) and verify layout",
-          "expected": "Columns should maintain their grid layout at medium breakpoint",
-          "actual": "At 992px, columns maintained multi-column layout with col-md-* classes applying (6-column and 3-column widths)",
-          "screenshot": "Bootstrap Grid Integration_step04_992px_md_breakpoint.png"
+          "action": "Viewed page at 1280px width (lg breakpoint)",
+          "expected": "4-column layout should display with columns side by side",
+          "actual": "4-column layout displayed correctly with TELEVISIONS, WEARABLES, TABLETS, LAPTOPS in a row using col-lg-3 classes (25% width each)",
+          "screenshot": "Bootstrap Grid Integration_step05_viewmode_1280px.png"
         },
         {
           "step_number": 2,
-          "action": "Verify Bootstrap breakpoints: lg (>=1200px), md (992-1199px), sm (768-991px), xs (<768px)",
-          "expected": "Layout should adapt based on viewport width",
-          "actual": "Bootstrap CSS contains responsive breakpoints at @media (min-width:768px), (min-width:992px), (min-width:1200px)",
-          "screenshot": "Bootstrap Grid Integration_step04_992px_md_breakpoint.png"
+          "action": "Resized browser to 992px (md breakpoint)",
+          "expected": "Columns should remain side by side with col-md-3 classes",
+          "actual": "4-column layout maintained at 992px width - columns narrower but still side by side",
+          "screenshot": "Bootstrap Grid Integration_step03_992px_md_breakpoint.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify column CSS classes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Used JavaScript evaluation to inspect column CSS classes on Content Layout panes",
+          "expected": "Panes should have Bootstrap grid classes (col-lg-*, col-md-*, col-sm-*, col-xs-12)",
+          "actual": "Verified 8 panes with Bootstrap column classes. Example: F30A_Pane1 has 'pane col-lg-3 col-md-3 col-sm-3 col-xs-12'. Code in ColumnSizesHelper.cs generates these classes based on layout configuration.",
+          "screenshot": "Bootstrap Grid Integration_step02_css_loaded_verified.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verified .dnn-cl namespace class is applied to parent containers",
+          "expected": "Parent containers should have .dnn-cl class to scope Bootstrap styles",
+          "actual": "Found 3 elements with .dnn-cl class on the page, correctly scoping Bootstrap styles to prevent conflicts with other page CSS",
+          "screenshot": "Bootstrap Grid Integration_step02_css_loaded_verified.png"
         }
       ],
       "issues": []
@@ -78,17 +78,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Resize viewport to 480px (xs/mobile breakpoint) in view mode",
-          "expected": "Columns should stack vertically (col-xs-12 = 100% width)",
-          "actual": "At 480px, columns stacked vertically - TELEVISIONS and WEARABLES displayed full-width and stacked",
-          "screenshot": "Bootstrap Grid Integration_step07_viewmode_480px_mobile.png"
+          "action": "Resized browser to 480px (xs breakpoint - mobile)",
+          "expected": "Columns should stack vertically at full width (100%) due to col-xs-12 class",
+          "actual": "Columns correctly stacked to full width on mobile. Navigation collapsed to 'Menu' button. Each product category (TELEVISIONS, WEARABLES, TABLETS, LAPTOPS) now takes 100% width and stacks vertically.",
+          "screenshot": "Bootstrap Grid Integration_step06_480px_mobile_viewmode.png"
         },
         {
           "step_number": 2,
-          "action": "Compare desktop (1280px) vs mobile (480px) layouts",
-          "expected": "Desktop shows multi-column layout, mobile shows single-column stacked layout",
-          "actual": "Desktop (1280px) showed 4-column layout with items side-by-side. Mobile (480px) showed single-column stacked layout",
-          "screenshot": "Bootstrap Grid Integration_step06_viewmode_1280px.png"
+          "action": "Scrolled down to verify stacked column layout on mobile",
+          "expected": "All columns should be stacked vertically in sequence",
+          "actual": "Confirmed vertical stacking: TELEVISIONS, WEARABLES, TABLETS, LAPTOPS each displayed at full width in sequence",
+          "screenshot": "Bootstrap Grid Integration_step07_mobile_stacked_columns.png"
         }
       ],
       "issues": []
@@ -99,35 +99,27 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Verify respond.min.js file exists in ContentLayout module",
-          "expected": "respond.min.js file should exist for IE8 media query polyfill",
-          "actual": "Found respond.min.js (Respond.js v1.4.2 by Scott Jehl) at Evoq Content/Modules/ContentLayout/ClientScripts/respond.min.js",
-          "screenshot": "Bootstrap Grid Integration_step01_css_loaded_editmode.png"
+          "action": "Verified respond.min.js file exists in codebase and is injected via conditional comments",
+          "expected": "respond.js polyfill should be present for IE8 media query support",
+          "actual": "respond.min.js (v1.4.2) exists at ContentLayout/ClientScripts/respond.min.js. Code in View.ascx.cs InjectRespondJsForIE8() method injects it via conditional comment: <!--[if IE 8]><script src='ClientScripts/respond.min.js'></script><![endif]-->",
+          "screenshot": "Bootstrap Grid Integration_step05_viewmode_1280px.png"
         },
         {
           "step_number": 2,
-          "action": "Verify respond.js injection code exists in View.ascx.cs",
-          "expected": "Code should inject respond.js via IE8 conditional comments",
-          "actual": "InjectRespondJsForIE8() method found at View.ascx.cs:172-184 - injects respond.js via IE8 conditional comments: <!--[if IE 8]><script src='{0}ClientScripts/respond.min.js'></script><![endif]-->",
-          "screenshot": "Bootstrap Grid Integration_step01_css_loaded_editmode.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Check page HTML for respond.js reference and IE conditional comments",
-          "expected": "Page should contain respond.js reference in HTML",
-          "actual": "JavaScript evaluation confirmed: hasRespondJsReference=true, hasIEConditionalComments=true. Script not loaded in modern browser as expected (conditional comments only apply to IE)",
-          "screenshot": "Bootstrap Grid Integration_step07_viewmode_480px_mobile.png"
+          "action": "Used JavaScript evaluation to confirm respond.js reference in page header",
+          "expected": "Page header should contain respond.min.js reference",
+          "actual": "Confirmed hasRespondJsInHeader: true. Script is wrapped in IE conditional comment so it only loads in IE8 browsers (as expected).",
+          "screenshot": "Bootstrap Grid Integration_step05_viewmode_1280px.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Bootstrap CSS is customized/scoped under .dnn-cl class to avoid conflicts with site theme styles",
-    "Bootstrap v3.2.0 grid system is used with 12-column responsive grid",
-    "ColumnSizesHelper.cs generates Bootstrap CSS classes based on column size configuration (e.g., '50' generates 'col-lg-6 col-md-6 col-sm-6 col-xs-12')",
-    "All columns use col-xs-12 for mobile, ensuring full-width stacking on small devices",
-    "IE8 compatibility is implemented via conditional comments - respond.js only loads in IE8, cannot be tested via UI in modern browsers"
+    "Bootstrap CSS is customized and namespaced under .dnn-cl class to prevent style conflicts with existing site themes",
+    "The ColumnSizesHelper.cs generates Bootstrap column classes dynamically based on layout configuration (e.g., '25,25,25' generates col-lg-3 col-md-4 col-sm-6 col-xs-12 for 4-column layouts)",
+    "respond.js polyfill is only loaded for IE8 browsers via conditional comments - this is correct behavior for legacy browser support",
+    "In Edit Mode, additional styling is applied for the layout editor UI, but Bootstrap grid classes remain applied and functional"
   ],
   "summary": {
     "total_scenarios": 5,

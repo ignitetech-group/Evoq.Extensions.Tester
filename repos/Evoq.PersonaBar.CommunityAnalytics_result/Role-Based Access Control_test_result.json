@@ -5,100 +5,164 @@
     "feature_name": "Role-Based Access Control",
     "feature_description": "Controls access to analytics based on user roles and permissions",
     "feature_priority": "Top",
-    "test_date": "2026-01-16T19:45:00Z",
+    "test_date": "2026-02-09T12:30:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Verify Host/SuperUser Full Access - Menu Visibility",
+      "scenario_name": "Verify Administrator/Host full access",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Logged in as host (SuperUser) account",
-          "expected": "User should be logged in and see PersonaBar",
-          "actual": "Successfully logged in as SuperUser Account with full PersonaBar visible",
+          "action": "Login as SuperUser (host) with credentials host/Pass123456",
+          "expected": "Login should succeed and user should have access to PersonaBar",
+          "actual": "Successfully logged in as SuperUser Account with full PersonaBar access",
           "screenshot": "Role-Based Access Control_step00_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Hovered over Dashboard menu in PersonaBar",
-          "expected": "Community Analytics should be visible in the submenu",
-          "actual": "Dashboard submenu expanded showing both Site Analytics and Community Analytics options",
-          "screenshot": "Role-Based Access Control_step01_host_menu_visibility.png"
+          "action": "Navigate to Dashboard > Community Analytics via PersonaBar",
+          "expected": "Community Analytics should be accessible with combined dashboard showing all modules",
+          "actual": "Community Analytics dashboard loaded successfully with all 6 module tabs (Answers, Blogs, Discussions, Events, Ideas, Wiki) - confirms combined dashboard view for admin/host users",
+          "screenshot": "Role-Based Access Control_step01_superuser_full_access.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Verify Host/SuperUser Full Access - Panel Access",
+      "scenario_name": "Verify default permission configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Extensions and filter by Persona Bar type",
+          "expected": "Should see Evoq.PersonaBar.CommunityAnalytics in the list",
+          "actual": "CommunityAnalytics extension is visible in PersonaBar extensions list (version 10.1.1)",
+          "screenshot": "Role-Based Access Control_step05_personabar_extensions_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Review extension package information",
+          "expected": "Should see extension details and configuration",
+          "actual": "Extension settings panel shows PersonaBar type with package information (Name: Evoq.PersonaBar.CommunityAnalytics, Version: 10.1.1)",
+          "screenshot": "Role-Based Access Control_step04_extension_settings.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify code-level permission configuration via manifest review",
+          "expected": "Manifest should define default permissions for specific roles",
+          "actual": "Code review confirms: (1) MenuPermission attribute on API controller [MenuPermission(MenuName='Evoq.CommunityAnalytics')], (2) DNN manifest defines defaultPermissions='Administrators,Community Manager', (3) Extension controller provides role-based path logic for combined vs individual module views",
+          "screenshot": "Role-Based Access Control_step04_extension_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify role management infrastructure",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Manage > Roles to view available security roles",
+          "expected": "Should see Community Manager and other roles that affect Community Analytics access",
+          "actual": "Roles page shows all security roles including: Administrators (1 user), Community Manager (0 users), Content Editors (0 users), Content Managers (0 users), Registered Users (3 users), Subscribers (0 users)",
+          "screenshot": "Role-Based Access Control_step02_roles_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to Settings > Security to verify security settings infrastructure",
+          "expected": "Security settings page should be accessible for managing authentication and permissions",
+          "actual": "Security Settings page loaded with tabs for Login Settings, Member Accounts, Authentication Providers, Security Analyzers, IP Filters, SSL Settings",
+          "screenshot": "Role-Based Access Control_step03_security_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Community Manager permissions",
       "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Clicked on Community Analytics menu item",
-          "expected": "Community Analytics panel should open with analytics data",
-          "actual": "Panel failed to load due to JavaScript error: utility.serializeCustomDate is not a function. Panel area appears blank/empty.",
-          "screenshot": "Role-Based Access Control_step02_host_panel_access.png"
+          "action": "Attempt to login as a Community Manager user to test role-specific access",
+          "expected": "Community Manager should have access to Community Analytics per default permissions",
+          "actual": "Could not test - Community Manager role exists but has 0 users assigned. Test user password unknown and role assignment via UI combobox was not functioning as expected",
+          "screenshot": "Role-Based Access Control_step02_roles_page.png"
         }
       ],
-      "issues": ["JavaScript error prevents Community Analytics panel from loading: TypeError: utility.serializeCustomDate is not a function at dashboardClass.init. This is a functional bug in the module, not an RBAC issue."]
+      "issues": ["Unable to test Community Manager role access - no users assigned to role and cannot verify test user credentials"]
     },
     {
-      "scenario_name": "Verify Anonymous User Denial",
-      "status": "PASS",
+      "scenario_name": "Validate Content Manager access",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Logged out and viewed site as anonymous user",
-          "expected": "Anonymous users should not see PersonaBar or have access to Community Analytics",
-          "actual": "PersonaBar is completely hidden for anonymous users. Only Register and Login links visible in top navigation. Message displayed: 'You do not have access to view this page within the site.'",
-          "screenshot": "Role-Based Access Control_step03_anonymous_no_personabar.png"
+          "action": "Attempt to login as a Content Manager user to test role-specific access",
+          "expected": "Content Manager combined with Community Manager should see combined dashboard per code logic",
+          "actual": "Could not test - Content Managers role exists but has 0 users assigned. Test user credentials unknown",
+          "screenshot": "Role-Based Access Control_step02_roles_page.png"
         }
       ],
-      "issues": []
+      "issues": ["Unable to test Content Manager role access - no users assigned to role and cannot verify test user credentials"]
     },
     {
-      "scenario_name": "Verify Regular User Denial (No Admin/Community Manager Role)",
-      "status": "PASS",
+      "scenario_name": "Test Content Editor restrictions",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Registered a new regular user 'testregular'",
-          "expected": "User registration should be submitted for approval",
-          "actual": "Registration submitted successfully, pending admin approval",
-          "screenshot": "Role-Based Access Control_step04_registration_pending.png"
-        },
-        {
-          "step_number": 2,
-          "action": "As admin, authorized the test user account",
-          "expected": "User should be authorized and able to log in",
-          "actual": "User successfully authorized via Manage > Users panel",
-          "screenshot": "Role-Based Access Control_step05_user_authorized.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Logged in as regular user 'testregular'",
-          "expected": "Regular user should NOT see Dashboard menu or Community Analytics",
-          "actual": "Regular user's PersonaBar shows only Content and Edit icons. Dashboard menu is completely absent, preventing any access to Community Analytics. RBAC is enforced correctly.",
-          "screenshot": "Role-Based Access Control_step07_regular_user_limited_personabar.png"
+          "action": "Attempt to login as a Content Editor user to test role-specific access",
+          "expected": "Content Editor combined with Community Manager should see combined dashboard per code logic",
+          "actual": "Could not test - Content Editors role exists but has 0 users assigned. Test user credentials unknown",
+          "screenshot": "Role-Based Access Control_step02_roles_page.png"
         }
       ],
-      "issues": []
+      "issues": ["Unable to test Content Editor role access - no users assigned to role and cannot verify test user credentials"]
+    },
+    {
+      "scenario_name": "Verify unauthorized user denial",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to login as a regular user without admin or community manager roles",
+          "expected": "User should not see Community Analytics in PersonaBar or be denied API access",
+          "actual": "Could not test - attempted to login as testuser12 but password unknown (tried Pass123456 and testuser12, both failed)",
+          "screenshot": "Role-Based Access Control_step02_roles_page.png"
+        }
+      ],
+      "issues": ["Unable to test unauthorized user denial - test user credentials unknown"]
+    },
+    {
+      "scenario_name": "Test permission inheritance",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Test that permissions inherit properly from parent roles",
+          "expected": "Users in Administrators role should automatically have Community Analytics access",
+          "actual": "Could not fully test - SuperUser/host access confirmed, but unable to test with regular Administrator role users due to credential issues",
+          "screenshot": "Role-Based Access Control_step01_superuser_full_access.png"
+        }
+      ],
+      "issues": ["Unable to fully test permission inheritance - only SuperUser access could be verified"]
     }
   ],
   "observations": [
-    "Code analysis confirmed menu permissions are set to 'Administrators,Community Manager' in the .dnn manifest file (defaultPermissions element)",
-    "The Services/CommunityAnalyticsController.cs uses [MenuPermission(MenuName = 'Evoq.CommunityAnalytics')] attribute for API-level access control",
-    "The Components/CommunityAnalyticsController.cs GetPath() method determines view paths based on user roles (Host, Admin, CommunityManager, ContentManager, ContentEditor)",
-    "JavaScript bug exists in social-dashboard-combined-instance.js where utility.serializeCustomDate function is undefined, causing panel load failure. This is a functional bug, not an RBAC issue.",
-    "Could not test Community Manager permissions separately or Content Editor restrictions because creating users with specific roles requires additional configuration. The core RBAC mechanism (Administrators + Community Manager access) was verified through menu visibility testing.",
-    "Permission inheritance was implicitly tested - Host/SuperUser inherits all permissions, while regular users inherit only basic permissions"
+    "Code review confirms role-based access control is implemented via [MenuPermission(MenuName='Evoq.CommunityAnalytics')] attribute in Services/CommunityAnalyticsController.cs",
+    "DNN manifest (Evoq.PersonaBar.CommunityAnalytics.dnn) defines defaultPermissions='Administrators,Community Manager' for the menu item",
+    "Components/CommunityAnalyticsController.cs contains GetPath() method that returns 'social-dashboard-combined' for users who are Host, Admin, or (CommunityManager AND ContentManager) or (CommunityManager AND ContentEditor)",
+    "The role-based path logic suggests different views for different role combinations - combined dashboard vs individual module views",
+    "Security roles exist in the system (Community Manager, Content Editors, Content Managers) but have 0 users assigned, preventing role-specific testing",
+    "Test user credentials were not provided/known, limiting ability to test non-admin access scenarios",
+    "LicenseCheck attribute is also applied to the API controller, which may affect access in non-licensed environments"
   ],
   "summary": {
-    "total_scenarios": 4,
+    "total_scenarios": 8,
     "passed": 3,
-    "failed": 1,
-    "pass_rate": "75%"
+    "failed": 5,
+    "pass_rate": "37.5%"
   }
 }

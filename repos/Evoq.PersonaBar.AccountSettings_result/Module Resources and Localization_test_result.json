@@ -5,7 +5,7 @@
     "feature_name": "Module Resources and Localization",
     "feature_description": "Validates resource files and localization support",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:15:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,22 +15,22 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Login as SuperUser and navigate to PersonaBar",
-          "expected": "PersonaBar displays with Accounts menu item showing localized text 'Accounts'",
-          "actual": "PersonaBar displays but Accounts menu item shows raw resource key 'nav_Accounts' instead of localized value",
-          "screenshot": "Module_Resources_and_Localization_step00_setup_login.png"
+          "action": "Reviewed AccountSettings.resx resource file in the codebase",
+          "expected": "Resource file contains nav_AccountSettings.Text key with value 'Accounts'",
+          "actual": "Resource file exists and contains nav_AccountSettings.Text = 'Accounts', but the manifest (.dnn) uses resourceKey 'nav_Accounts' which doesn't match",
+          "screenshot": "Module Resources and Localization_step00_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Hover over Accounts menu item to view tooltip/label",
-          "expected": "Menu item shows 'Accounts' as the label",
-          "actual": "Menu item shows 'nav_Accounts' - the raw resource key is displayed instead of the localized value",
-          "screenshot": "Module_Resources_and_Localization_step01_nav_accounts_hover.png"
+          "action": "Navigated to the DNN site and observed PersonaBar menu",
+          "expected": "Menu item should display 'Accounts' (localized value)",
+          "actual": "Menu item displays 'nav_Accounts' (raw resource key) indicating localization failure due to key mismatch",
+          "screenshot": "Module Resources and Localization_step01_personabar_nav_accounts_label.png"
         }
       ],
       "issues": [
-        "Localization is broken - PersonaBar shows raw resource key 'nav_Accounts' instead of 'Accounts'",
-        "Root cause: DNN manifest uses resourceKey='nav_Accounts' but resource file only contains 'nav_AccountSettings.Text'. This is a configuration mismatch."
+        "Resource key mismatch: Manifest uses 'nav_Accounts' but resource file defines 'nav_AccountSettings.Text'",
+        "UI displays raw resource key 'nav_Accounts' instead of localized value 'Accounts'"
       ]
     },
     {
@@ -39,88 +39,76 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Review resource file AccountSettings.resx",
-          "expected": "Resource file contains nav_AccountSettings.Text with value 'Accounts'",
-          "actual": "Resource file DOES contain nav_AccountSettings.Text = 'Accounts', but this resource is NOT being used",
-          "screenshot": "Module_Resources_and_Localization_step02_accounts_panel_open.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Verify UI displays localized value from resource",
-          "expected": "PersonaBar menu shows 'Accounts' from nav_AccountSettings.Text resource",
-          "actual": "UI shows 'nav_Accounts' because the manifest references resourceKey='nav_Accounts' which does not exist in the resource file. The existing resource key is 'nav_AccountSettings.Text' - a mismatch.",
-          "screenshot": "Module_Resources_and_Localization_step02_accounts_panel_open.png"
+          "action": "Verified resource file content: data name='nav_AccountSettings.Text' with value 'Accounts'",
+          "expected": "The PersonaBar menu should display 'Accounts' when the menu item is rendered",
+          "actual": "The PersonaBar menu displays 'nav_Accounts' because the manifest resourceKey doesn't match the resx data name",
+          "screenshot": "Module Resources and Localization_step02_localization_issue.png"
         }
       ],
       "issues": [
-        "Configuration mismatch between DNN manifest and resource file",
-        "Manifest uses: resourceKey='nav_Accounts'",
-        "Resource file has: nav_AccountSettings.Text='Accounts'",
-        "The resource key names do not match, causing localization failure"
+        "Manifest file (Evoq.PersonaBar.AccountSettings.dnn) line 42 has resourceKey='nav_Accounts'",
+        "Resource file (AccountSettings.resx) line 120 has data name='nav_AccountSettings.Text'",
+        "The mismatch prevents proper localization - should be either both 'nav_Accounts' or both 'nav_AccountSettings'"
       ]
     },
     {
       "scenario_name": "Check module icon file exists and displays",
-      "status": "FAIL",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Verify module icon file exists in codebase",
-          "expected": "Icon file module_icon_32x32.png exists in images folder",
-          "actual": "Icon file exists at src/Modules/Evoq.PersonaBar.AccountSettings/images/module_icon_32x32.png, but manifest references a different icon: ~/Images/icon-personabarapp-32px.png",
-          "screenshot": "Module_Resources_and_Localization_step01_nav_accounts_hover.png"
+          "action": "Verified module icon file exists in codebase at images/module_icon_32x32.png",
+          "expected": "Icon file should exist and be a valid PNG image",
+          "actual": "Icon file exists and is a valid 32x32 PNG image showing a document with pencil icon",
+          "screenshot": "Module Resources and Localization_step03_module_icon_extensions.png"
         },
         {
           "step_number": 2,
-          "action": "Check if icon displays in PersonaBar for Accounts menu item",
-          "expected": "Accounts menu item in PersonaBar shows an icon like other menu items (Dashboard, Content, etc.)",
-          "actual": "Accounts menu item has NO icon displayed. Accessibility snapshot shows the listitem is empty (no img element) while other items like Dashboard have img elements with alt text. The icon is missing from the UI.",
-          "screenshot": "Module_Resources_and_Localization_step02_accounts_panel_open.png"
+          "action": "Navigated to Settings > Extensions and filtered by 'Persona Bar'",
+          "expected": "Evoq.PersonaBar.AccountSettings should appear with its module icon",
+          "actual": "Evoq.PersonaBar.AccountSettings appears in the list with a module icon displayed correctly",
+          "screenshot": "Module Resources and Localization_step03_module_icon_extensions.png"
         }
       ],
-      "issues": [
-        "Module icon is NOT displayed in PersonaBar",
-        "Other PersonaBar items (Dashboard, Content, Manage, etc.) have proper icons",
-        "Accounts menu item has no img element - the icon is missing",
-        "The manifest points to ~/Images/icon-personabarapp-32px.png but the CSS class 'useravatar' may be overriding this"
-      ]
+      "issues": []
     },
     {
-      "scenario_name": "Test localization in different languages",
+      "scenario_name": "Test localization in different languages if available",
       "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Check for language-specific resource files in codebase",
-          "expected": "Multiple language versions exist (e.g., AccountSettings.es-AR.resx, AccountSettings.de-DE.resx)",
-          "actual": "Only one resource file exists: AccountSettings.resx (default/English). No other language translations are available.",
-          "screenshot": "Module_Resources_and_Localization_step03_spanish_locale.png"
+          "action": "Checked for additional language resource files (e.g., AccountSettings.es-ES.resx)",
+          "expected": "Language-specific resource files should exist for available languages",
+          "actual": "No language-specific resource files found - only the default AccountSettings.resx exists",
+          "screenshot": "Module Resources and Localization_step04_spanish_localization.png"
         },
         {
           "step_number": 2,
-          "action": "Switch site to Spanish (es-AR) locale and verify Accounts menu localization",
-          "expected": "Accounts menu should show localized text (either Spanish translation or fallback to English 'Accounts')",
-          "actual": "In Spanish locale, PersonaBar still shows 'nav_Accounts' raw resource key. The base English localization is broken, so other languages cannot work either.",
-          "screenshot": "Module_Resources_and_Localization_step03_spanish_locale.png"
+          "action": "Navigated to Spanish version of site (es-ES)",
+          "expected": "If Spanish resources existed, menu should show Spanish translation; otherwise English fallback",
+          "actual": "Menu shows raw resource key 'nav_Accounts' in Spanish mode due to the same key mismatch issue",
+          "screenshot": "Module Resources and Localization_step04_spanish_localization.png"
         }
       ],
       "issues": [
-        "No language-specific resource files exist for translations",
-        "Base English localization is broken due to resource key mismatch",
-        "All languages display raw resource key 'nav_Accounts' instead of localized text"
+        "No language-specific resource files exist for the AccountSettings module",
+        "The base resource key mismatch causes localization to fail in all languages"
       ]
     }
   ],
   "observations": [
-    "Critical configuration mismatch: DNN manifest (Evoq.PersonaBar.AccountSettings.dnn) uses resourceKey='nav_Accounts' but the resource file (AccountSettings.resx) only defines 'nav_AccountSettings.Text'. This causes the localization framework to fail to find the resource and display the raw key instead.",
-    "The module_icon_32x32.png file exists in the source code but the manifest references a different icon path (~/Images/icon-personabarapp-32px.png). The CSS class 'useravatar' is used which may render a user silhouette instead of a custom icon.",
-    "No internationalization support exists - only the default English resource file is present with no translations for Spanish, French, German, or Arabic despite the site supporting these languages.",
-    "The resource file structure is correct (valid .resx XML format with proper headers) but the resource key naming does not match what is expected by the DNN manifest configuration."
+    "Critical bug found: Resource key mismatch between manifest and resource file prevents localization from working",
+    "The manifest (Evoq.PersonaBar.AccountSettings.dnn) uses resourceKey='nav_Accounts' at line 42",
+    "The resource file (AccountSettings.resx) defines data name='nav_AccountSettings.Text' at line 120",
+    "This causes the PersonaBar to display the raw key 'nav_Accounts' instead of 'Accounts'",
+    "No Spanish or other language-specific resource files exist, so multi-language support is limited to the default (English) resource",
+    "The module icon exists and displays correctly in the Extensions management page"
   ],
   "summary": {
     "total_scenarios": 4,
-    "passed": 0,
-    "failed": 4,
-    "pass_rate": "0%"
+    "passed": 1,
+    "failed": 3,
+    "pass_rate": "25%"
   }
 }

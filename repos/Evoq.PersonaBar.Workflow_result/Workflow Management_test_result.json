@@ -5,7 +5,7 @@
     "feature_name": "Workflow Management",
     "feature_description": "Create, edit, delete content workflows and set the default workflow for new content items.",
     "feature_priority": "Top",
-    "test_date": "2026-01-16T00:00:00Z",
+    "test_date": "2026-02-09T12:00:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,17 +15,24 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Settings > Workflow in PersonaBar",
-          "expected": "Workflow management panel opens showing list of workflows",
-          "actual": "Workflow panel opened successfully showing workflows list with columns: WORKFLOW TYPE, IN USE, ACTIONS, DEFAULT",
-          "screenshot": "Workflow_Management_step01_workflow_list.png"
+          "action": "Navigate to Settings > Workflow",
+          "expected": "Workflow list should be displayed with all workflows",
+          "actual": "Workflow list displayed showing Direct Publish, Save Draft, Content Approval, and Test Workflow",
+          "screenshot": "Workflow Management_step01_workflow_list.png"
         },
         {
           "step_number": 2,
-          "action": "Verify workflow list displays usage status",
-          "expected": "Each workflow shows whether it is in use",
-          "actual": "Workflows display 'This workflow is currently in use' indicator with 'View Usage' link for workflows that are in use (Direct Publish, Save Draft, Content Approval, Test Approval Workflow)",
-          "screenshot": "Workflow_Management_step01_available_workflows.png"
+          "action": "Expand workflow to see details",
+          "expected": "Workflow details including states and usage status should appear",
+          "actual": "Workflow details shown with IN USE checkmarks for workflows in use and View Usage link",
+          "screenshot": "Workflow Management_step02_workflow_details.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click View Usage link",
+          "expected": "Usage details should be displayed",
+          "actual": "View Usage expands to show content items using the workflow",
+          "screenshot": "Workflow Management_step03_view_usage.png"
         }
       ],
       "issues": []
@@ -36,17 +43,24 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click 'Create New Workflow' button",
-          "expected": "New workflow form opens",
-          "actual": "New workflow form opened with empty name and description fields",
-          "screenshot": "Workflow_Management_step02_create_form_open.png"
+          "action": "Click Create New Workflow button",
+          "expected": "New workflow form should appear",
+          "actual": "New workflow form displayed with Name and Description fields",
+          "screenshot": "Workflow Management_step04_create_new_workflow.png"
         },
         {
           "step_number": 2,
-          "action": "Enter unique workflow name 'Test Workflow Created' and save",
-          "expected": "Workflow is created successfully",
-          "actual": "Workflow created successfully and appears in the workflow list",
-          "screenshot": "Workflow_Management_step03_workflow_created.png"
+          "action": "Enter unique workflow name 'Unique Test Workflow 2026'",
+          "expected": "Name should be accepted",
+          "actual": "Name entered successfully, form ready for save",
+          "screenshot": "Workflow Management_step07_create_new_filled.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save button",
+          "expected": "Workflow should be created and appear in list",
+          "actual": "Workflow created successfully and appears in the workflow list with default states (Draft, Published)",
+          "screenshot": "Workflow Management_step08_workflow_saved.png"
         }
       ],
       "issues": []
@@ -57,17 +71,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to create workflow with existing name 'Direct Publish'",
-          "expected": "Error message displayed indicating duplicate name",
-          "actual": "Entered 'Direct Publish' in the new workflow name field",
-          "screenshot": "Workflow_Management_step05_duplicate_name_attempt.png"
+          "action": "Click Create New Workflow and enter existing name 'Direct Publish'",
+          "expected": "Form should accept the name input",
+          "actual": "Name 'Direct Publish' entered in the workflow name field",
+          "screenshot": "Workflow Management_step09_duplicate_name_entered.png"
         },
         {
           "step_number": 2,
           "action": "Click Save button",
-          "expected": "Server returns error about duplicate workflow name",
-          "actual": "Server returned 422 Unprocessable Entity with error message: 'A workflow with this name already exists.'",
-          "screenshot": "Workflow_Management_step06_duplicate_name_error.png"
+          "expected": "Error message should appear indicating duplicate name",
+          "actual": "Error message displayed: 'A workflow with this name already exists.'",
+          "screenshot": "Workflow Management_step10_duplicate_name_error.png"
         }
       ],
       "issues": []
@@ -78,69 +92,55 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Select existing workflow 'QA Test Workflow' and click Edit",
-          "expected": "Edit form opens with current values",
-          "actual": "Workflow expanded showing edit form with current name and description",
-          "screenshot": "Workflow_Management_step07_before_edit.png"
+          "action": "Click on Test Workflow to expand it",
+          "expected": "Workflow edit form should be displayed",
+          "actual": "Workflow expanded showing name, description, and states with edit fields",
+          "screenshot": "Workflow Management_step11_test_workflow_expanded.png"
         },
         {
           "step_number": 2,
-          "action": "Change name to 'QA Test Workflow Edited' and add description",
-          "expected": "Form accepts new values",
-          "actual": "Changed name to 'QA Test Workflow Edited' and description to 'Edited description - Testing workflow edit functionality on 2026-01-16.'",
-          "screenshot": "Workflow_Management_step08_edit_values_entered.png"
+          "action": "Modify workflow name and add description",
+          "expected": "Fields should accept new values",
+          "actual": "Name changed to 'Edited Test Workflow' and description added",
+          "screenshot": "Workflow Management_step12_edit_workflow.png"
         },
         {
           "step_number": 3,
-          "action": "Click Save",
-          "expected": "Changes saved successfully",
-          "actual": "Workflow updated successfully, new name and description now displayed in the list",
-          "screenshot": "Workflow_Management_step09_edit_saved.png"
+          "action": "Click Save button",
+          "expected": "Changes should be saved",
+          "actual": "Workflow saved successfully, changes persisted",
+          "screenshot": "Workflow Management_step13_edit_saved.png"
         }
       ],
       "issues": []
     },
     {
       "scenario_name": "Delete workflow not in use",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Select workflow 'NewWorkflow' that is not in use",
-          "expected": "Delete button available for unused workflow",
-          "actual": "Workflow 'NewWorkflow' found with Delete (X) button visible in ACTIONS column",
-          "screenshot": "Workflow_Management_step10_before_delete.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click Delete button",
-          "expected": "Confirmation dialog appears",
-          "actual": "Confirmation dialog appeared: 'Are you sure you want to delete this Workflow?'",
-          "screenshot": "Workflow_Management_step11_delete_confirmation.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Confirm deletion",
-          "expected": "Workflow deleted successfully",
-          "actual": "Workflow 'NewWorkflow' deleted and removed from the list",
-          "screenshot": "Workflow_Management_step12_delete_success.png"
+          "action": "Look for delete button on workflow not in use",
+          "expected": "Delete button should be available for workflows not in use",
+          "actual": "No delete button found in the UI. The ACTIONS column in the workflow list is empty for all workflows. Only workflow states have Edit/Delete actions.",
+          "screenshot": "Workflow Management_step14_workflow_list_overview.png"
         }
       ],
-      "issues": []
+      "issues": ["Delete workflow functionality exists in the API (WorkflowsController.cs:184-211) but there is no UI button to trigger it. Users cannot delete workflows through the UI."]
     },
     {
       "scenario_name": "Attempt to delete workflow in use - verify error",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to find delete button for workflows in use (Direct Publish, Save Draft, Content Approval, Test Approval Workflow)",
-          "expected": "Delete button not available or deletion prevented for workflows in use",
-          "actual": "UI prevents deletion by not showing delete button (X) for workflows that are currently in use. Only Edit button (pencil icon) is shown in ACTIONS column for in-use workflows.",
-          "screenshot": "Workflow_Management_step13_no_delete_for_inuse.png"
+          "action": "Attempt to delete workflow that is in use",
+          "expected": "System should prevent deletion and show error",
+          "actual": "Cannot test this scenario because there is no delete button in the UI for workflows",
+          "screenshot": "Workflow Management_step14_workflow_list_overview.png"
         }
       ],
-      "issues": []
+      "issues": ["Delete workflow functionality is not exposed in the UI, so cannot test error handling for deleting in-use workflows"]
     },
     {
       "scenario_name": "Set workflow as default for new pages",
@@ -148,17 +148,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "View DEFAULT column radio buttons",
-          "expected": "Radio buttons available to select default workflow",
-          "actual": "DEFAULT column shows radio buttons for each workflow, 'Test Approval Workflow' was initially selected as default",
-          "screenshot": "Workflow_Management_step14_default_workflow_view.png"
+          "action": "View workflow list with DEFAULT column",
+          "expected": "Radio buttons in DEFAULT column should show current default",
+          "actual": "DEFAULT column displays radio buttons, Direct Publish was initially selected as default",
+          "screenshot": "Workflow Management_step18_workflow_list_for_default.png"
         },
         {
           "step_number": 2,
-          "action": "Click radio button for 'Content Approval' to set as default",
-          "expected": "Content Approval becomes the new default workflow",
-          "actual": "Successfully changed default workflow to 'Content Approval' - radio button now filled/selected",
-          "screenshot": "Workflow_Management_step15_after_default_change.png"
+          "action": "Click radio button for 'Save Draft' workflow",
+          "expected": "Save Draft should become the default workflow",
+          "actual": "Save Draft is now selected as default (filled blue radio button)",
+          "screenshot": "Workflow Management_step20_save_draft_default.png"
         }
       ],
       "issues": []
@@ -169,90 +169,75 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate away from Workflow page to Dashboard",
-          "expected": "Navigation successful",
-          "actual": "Navigated to Dashboard panel",
-          "screenshot": "Workflow_Management_step12_default_persisted.png"
+          "action": "Navigate away from Workflow page and return",
+          "expected": "Default workflow selection should persist",
+          "actual": "After navigating to Site Settings and back to Workflow, Save Draft is still selected as default",
+          "screenshot": "Workflow Management_step21_persistence_check.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate empty workflow name - required field",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Create new workflow with empty name field",
+          "expected": "Validation error should appear, Save button should be disabled",
+          "actual": "Validation error displayed: 'This field is required.' Save button is disabled.",
+          "screenshot": "Workflow Management_step22_empty_name_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate workflow name maximum length",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter workflow name exceeding 40 characters",
+          "expected": "Validation error should appear for maximum length",
+          "actual": "Validation error displayed: 'Please enter no more than 40 characters.' Save button disabled.",
+          "screenshot": "Workflow Management_step24_max_length_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create workflow with special characters in name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter workflow name with special characters: 'Test & <> \"Special\" Chars!'",
+          "expected": "Special characters should be accepted",
+          "actual": "Name with &, <, >, and quotes accepted, Save button enabled",
+          "screenshot": "Workflow Management_step25_special_chars_valid.png"
         },
         {
           "step_number": 2,
-          "action": "Navigate back to Settings > Workflow",
-          "expected": "Default workflow selection still shows 'Content Approval'",
-          "actual": "'Content Approval' still selected as default (filled radio button in DEFAULT column)",
-          "screenshot": "Workflow_Management_step12_default_persisted.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Edge case - Empty workflow name validation",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Create new workflow and clear the name field",
-          "expected": "Validation error displayed, Save button disabled",
-          "actual": "Error message 'This field is required.' displayed with red tooltip, Save button disabled",
-          "screenshot": "Workflow_Management_step13_empty_name_validation.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Edge case - Minimum length validation",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Enter workflow name with only 2 characters 'AB' (minimum is 3)",
-          "expected": "Validation error displayed, Save button disabled",
-          "actual": "Save button correctly disabled preventing save of invalid data. Note: Error message UI did not update to show minLength error, still showed 'This field is required.'",
-          "screenshot": "Workflow_Management_step14_min_length_validation.png"
-        }
-      ],
-      "issues": ["Error message does not update to show specific validation error (shows 'This field is required.' instead of min length message), but validation correctly prevents saving"]
-    },
-    {
-      "scenario_name": "Edge case - Maximum length validation",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Enter workflow name exceeding 40 characters maximum",
-          "expected": "Validation error displayed, Save button disabled",
-          "actual": "Save button correctly disabled preventing save of data exceeding max length. Note: Error message UI did not update to show maxLength error.",
-          "screenshot": "Workflow_Management_step15_max_length_validation.png"
-        }
-      ],
-      "issues": ["Error message does not update to show specific validation error for max length, but validation correctly prevents saving"]
-    },
-    {
-      "scenario_name": "Edge case - Special characters in workflow name",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Verify existing workflow with special characters",
-          "expected": "Special characters handled correctly",
-          "actual": "Workflow 'Test <Special> & \"Chars\"' exists and displays correctly in the workflow list, confirming special characters are supported",
-          "screenshot": "Workflow_Management_step01_workflow_list.png"
+          "action": "Click Save button",
+          "expected": "Workflow should be created with special characters intact",
+          "actual": "Workflow created successfully, name displayed correctly with all special characters preserved",
+          "screenshot": "Workflow Management_step26_special_chars_saved.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "WorkflowController.cs in Components folder is an empty class - all business logic is implemented in WorkflowsController.cs (Services layer)",
-    "Client-side validation uses Knockout.js with rules: WorkflowName (required, minLength: 3, maxLength: 40), Description (maxLength: 255)",
-    "Error message tooltip does not dynamically update to show specific validation errors (minLength, maxLength) - it continues to show 'This field is required.' However, the Save button correctly becomes disabled when any validation rule is violated, preventing invalid data submission",
-    "UI prevents deletion of in-use workflows by hiding the Delete button rather than showing an error after clicking",
-    "Server-side validation for duplicate workflow names returns HTTP 422 with WorkflowNameAlreadyExistsException message",
-    "Default workflow setting uses TabWorkflowSettings.Instance.SetDefaultTabWorkflowId() and persists correctly across navigation"
+    "Delete workflow functionality exists in the API (WorkflowsController.cs Delete method, lines 184-211) but there is no UI element to trigger it. The ACTIONS column in the workflow list only shows actions for workflow states, not for entire workflows.",
+    "The API handles WorkflowException for delete operations on in-use workflows, but this cannot be tested via UI since delete is not exposed.",
+    "System workflows may be protected from deletion based on IsSystem property, but this also cannot be verified via UI.",
+    "Workflow name has a maximum length validation of 40 characters.",
+    "XSS-style script tags in workflow names are accepted and stored (no sanitization warning), though they appear to be rendered safely without executing."
   ],
   "summary": {
-    "total_scenarios": 12,
-    "passed": 12,
-    "failed": 0,
-    "pass_rate": "100%"
+    "total_scenarios": 11,
+    "passed": 9,
+    "failed": 2,
+    "pass_rate": "82%"
   }
 }

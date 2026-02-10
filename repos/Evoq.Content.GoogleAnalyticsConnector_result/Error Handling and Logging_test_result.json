@@ -5,81 +5,74 @@
     "feature_name": "Error Handling and Logging",
     "feature_description": "Comprehensive error handling and logging for Google Analytics operations",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T14:26:00Z",
+    "test_date": "2026-02-09T14:45:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Validation error for empty Measurement ID",
+      "scenario_name": "User-friendly error messages for validation failures",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Connectors and open Google Analytics 4 settings",
-          "expected": "GA4 settings panel expands with Measurement ID field",
-          "actual": "GA4 settings panel expanded showing Measurement ID field with value G-TEST123456",
-          "screenshot": "Error_Handling_and_Logging_step01_ga4_settings.png"
+          "action": "Navigate to Connectors page and click Connect on Google Analytics 4",
+          "expected": "Configuration form should appear with Measurement ID field",
+          "actual": "Configuration form appeared with Measurement ID and Track for Administrators fields",
+          "screenshot": "Error Handling and Logging_step02_ga4_config_form.png"
         },
         {
           "step_number": 2,
-          "action": "Clear the Measurement ID field (remove all text)",
-          "expected": "Measurement ID field becomes empty",
-          "actual": "Measurement ID field was cleared successfully",
-          "screenshot": "Error_Handling_and_Logging_step02_empty_field_before_save.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Click Save button with empty Measurement ID",
-          "expected": "Error message should appear indicating field cannot be empty",
-          "actual": "Error toast notification appeared with message: 'Tracking Code Cannot Be Empty'",
-          "screenshot": "Error_Handling_and_Logging_step03_validation_error_empty_field.png"
+          "action": "Click Save without entering a Measurement ID",
+          "expected": "A user-friendly error message should be displayed",
+          "actual": "Toast notification displayed with message 'Tracking Code Cannot Be Empty' - user-friendly error message shown",
+          "screenshot": "Error Handling and Logging_step03_validation_error_toast.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Success notification for deleting connection",
+      "scenario_name": "Detailed error information in Event Logs",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Open GA4 settings and click Delete Connection",
-          "expected": "Connection should be deleted with success notification",
-          "actual": "Connection was deleted and success notification appeared: 'Item successfully deleted.'",
-          "screenshot": "Error_Handling_and_Logging_step05_connection_deleted.png"
+          "action": "Navigate to Admin Logs via Manage > Admin Logs",
+          "expected": "Admin Logs page should display with list of log entries",
+          "actual": "Admin Logs page displayed showing multiple 'General Exception' entries related to ContentGoogleAnalyticsConnector/API",
+          "screenshot": "Error Handling and Logging_step04_admin_logs_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on a Google Analytics Connector exception entry to view details",
+          "expected": "Detailed error information should be displayed including exception message, stack trace, and context",
+          "actual": "Detailed error information displayed including: AbsoluteURL (API endpoint), ExceptionGUID (unique identifier), PortalId/UserId/TabId (context), ExceptionHash (deduplication), Message (error description), StackTrace (full trace pointing to Evoq.Content.GoogleAnalyticsConnector.Services.ServicesController), and Source (Evoq.Content.GoogleAnalyticsConnector)",
+          "screenshot": "Error Handling and Logging_step05_error_details.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Success notification for saving valid configuration",
+      "scenario_name": "Error logging for API failures",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Click Connect on Google Analytics 4 after deletion",
-          "expected": "Empty configuration form should appear",
-          "actual": "Configuration form appeared with empty Measurement ID field",
-          "screenshot": "Error_Handling_and_Logging_step06_connect_form.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Enter valid Measurement ID (G-TEST123456) and click Save",
-          "expected": "Configuration should save with success notification",
-          "actual": "Configuration saved successfully with notification: 'Item successfully saved.'",
-          "screenshot": "Error_Handling_and_Logging_step07_save_success.png"
+          "action": "Review Admin Logs for Google Analytics API-related exceptions",
+          "expected": "Exceptions from Google Analytics connector API calls should be logged",
+          "actual": "Multiple General Exception entries found for ContentGoogleAnalyticsConnector/API/Services endpoints, confirming that API errors are being captured and logged to the DNN Event Log",
+          "screenshot": "Error Handling and Logging_step04_admin_logs_list.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The GA4 connector in the UI is a simple measurement ID-based tracker that does not use OAuth authorization flow",
-    "The code files reviewed (GoogleAnalyticsRemoteManager.cs, GoogleAnalyticsRemoteRetryManager.cs) contain comprehensive error handling including: Polly retry policies for HTTP errors (408, 500, 502, 503, 504, 401), exception logging via DNN's logging framework, user-friendly error page (autherror.htm), and token cache clearing on 401 errors",
-    "These advanced error handling mechanisms are for a different, API-integrated Google Analytics connector that performs remote authorization",
-    "The UI connector implements client-side validation showing user-friendly error messages via toast notifications",
-    "Success and error notifications appear as toast messages that auto-dismiss after a few seconds",
-    "The Event Log for backend error logging is available through DNN's administrative interface but requires specific navigation"
+    "The code review confirmed that error handling uses DotNetNuke.Services.Exceptions.Exceptions.LogException(ex) for logging exceptions to the DNN Event Log",
+    "The ServicesController.cs includes a GetAuthErrorMessage method that provides user-friendly error messages when UseCustomErrorMessages is enabled",
+    "The GoogleAnalyticsRemoteRetryManager implements a Polly retry policy that logs warnings on each retry attempt and handles specific HTTP status codes (408, 500, 502, 503, 504, 401)",
+    "The retry mechanism clears the token cache on 401 Unauthorized errors to allow re-authentication",
+    "The Admin Logs show exceptions with comprehensive details including ExceptionGUID, StackTrace, Message, Source, and contextual information (PortalId, UserId, TabId)",
+    "The Google Analytics 4 connector (GA4) visible in the UI uses a simpler Measurement ID configuration rather than OAuth, while the code files reviewed were for the original Google Analytics connector which uses OAuth authentication"
   ],
   "summary": {
     "total_scenarios": 3,

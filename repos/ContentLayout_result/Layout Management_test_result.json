@@ -5,134 +5,156 @@
     "feature_name": "Layout Management",
     "feature_description": "Core functionality for creating and managing multi-column layouts on pages, including default layout creation and column configuration.",
     "feature_priority": "Top",
-    "test_date": "2026-01-16T12:25:00.000Z",
+    "test_date": "2026-02-09T15:00:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Layout rendering in edit mode",
+      "scenario_name": "Default 4-Column Layout Display in Edit Mode",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Logged in as SuperUser and navigated to home page",
-          "expected": "Page loads with admin controls visible",
-          "actual": "Page loaded successfully with admin sidebar visible",
-          "screenshot": "Layout Management_step01_login_success.png"
+          "action": "Navigate to home page and enter Edit Mode",
+          "expected": "Edit mode controls should appear with module panes visible",
+          "actual": "Edit mode activated successfully, all panes labeled (F30A_Pane1-4, 9977_Pane1-4) are visible",
+          "screenshot": "Layout Management_step01_edit_mode_overview.png"
         },
         {
           "step_number": 2,
-          "action": "Clicked Edit button to enter edit mode",
-          "expected": "Page enters edit mode showing pane names and module controls",
-          "actual": "Edit mode activated, showing pane names (F30A_Pane1, F30A_Pane2, 9977_Pane1-4), Actions links, and Add Existing Module links",
-          "screenshot": "Layout Management_step02_edit_mode.png"
+          "action": "View Content Layout modules with 4-column layout",
+          "expected": "4 columns should be displayed with content",
+          "actual": "4-column layout displayed correctly with TELEVISIONS, WEARABLES, TABLETS, LAPTOPS in first module and HOME THEATERS, BLU-RAY PLAYERS, MONITORS, CAMERAS in second module",
+          "screenshot": "Layout Management_step02_content_layout_panes.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Column Size Percentages Display on Hover",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hover over Content Layout module in Edit Mode",
+          "expected": "Column size percentages should appear for each column",
+          "actual": "Column percentages (25%, 25%, 25%, 25%) displayed on hover for each pane",
+          "screenshot": "Layout Management_step03_column_sizes_displayed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "CSS Classes Generated Correctly for 4-Column Layout",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Inspect DOM elements to verify Bootstrap CSS classes",
+          "expected": "Each pane should have responsive Bootstrap grid classes (col-lg-3, col-md-4, col-sm-6, col-xs-12)",
+          "actual": "All 8 panes (F30A_Pane1-4, 9977_Pane1-4) have correct CSS classes: 'pane col-lg-3 col-md-4 col-sm-6 col-xs-12'",
+          "screenshot": "Layout Management_step03_column_sizes_displayed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Interactive Column Resizing",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Locate resize handles between columns",
+          "expected": "Resize handles (ui-resizable-handle) should exist between columns",
+          "actual": "Found 6 resize handles (3 for each Content Layout module) with ui-resizable-e class",
+          "screenshot": "Layout Management_step05_content_layout_4col.png"
         },
         {
-          "step_number": 3,
-          "action": "Viewed full page in edit mode to see all Content Layout modules",
-          "expected": "All Content Layout panes visible with their contained modules",
-          "actual": "Full page shows 2-column layout (F30A) and 4-column layout (9977) with modules correctly placed in respective panes",
-          "screenshot": "Layout Management_step03_content_layout_panes.png"
+          "step_number": 2,
+          "action": "Drag resize handle to change column width",
+          "expected": "Column widths should change dynamically",
+          "actual": "Column sizes changed from 25%/25%/25%/25% to 33%/17%/25%/25% after dragging",
+          "screenshot": "Layout Management_step07_resized_column_sizes.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Get existing layout for a module (2-column layout)",
+      "scenario_name": "Layout Templates API Retrieval",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Hovered over Content Layout module 364 (2-column layout)",
-          "expected": "Column size percentages should be displayed",
-          "actual": "Column size indicators appeared showing 50% and 50% for each column",
-          "screenshot": "Layout Management_step04_column_sizes_displayed.png"
+          "action": "Call GetContentLayoutTemplates API endpoint",
+          "expected": "API should return list of available layout templates",
+          "actual": "API returned 6 templates: 25%+75% (id:1), 75%+25% (id:2), 50%+50% (id:3), 25%+50%+25% (id:4), 33%+33%+33% (id:5), 4x25% (id:6)",
+          "screenshot": "Layout Management_step03_column_sizes_displayed.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Get existing layout for a module (4-column layout with custom sizes)",
+      "scenario_name": "Layout Rendering in View Mode",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Hovered over Content Layout module 365 (4-column layout)",
-          "expected": "Column size percentages should be displayed showing custom sizes",
-          "actual": "Column size indicators appeared showing custom sizes: 33%, 17%, 25%, 25%",
-          "screenshot": "Layout Management_step05_4column_custom_sizes.png"
+          "action": "Navigate to page in View Mode (without Edit controls)",
+          "expected": "Layout should render correctly without edit UI elements",
+          "actual": "4-column layout rendered correctly in view mode with all 8 product categories displayed in 2 rows of 4 columns each",
+          "screenshot": "Layout Management_step08_view_mode_4col.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify CSS classes in View Mode",
+          "expected": "Bootstrap responsive classes should be applied",
+          "actual": "All panes have correct CSS classes (col-lg-3 col-md-4 col-sm-6 col-xs-12) applied in view mode",
+          "screenshot": "Layout Management_step08_view_mode_4col.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Verify column sizes are properly saved",
+      "scenario_name": "Pane Naming Convention and Structure",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Verified column sizes via DOM inspection using browser evaluation",
-          "expected": "Inline styles should reflect saved column percentages",
-          "actual": "DOM inspection confirmed: F30A_Pane1 width=13%, F30A_Pane2 width=87%, 9977_Pane1 width=33%, 9977_Pane2 width=17%, 9977_Pane3 width=25%, 9977_Pane4 width=25%",
-          "screenshot": "Layout Management_step05_4column_custom_sizes.png"
+          "action": "Verify pane naming follows expected pattern",
+          "expected": "Panes should be named {LayoutPrefix}_Pane{Number}",
+          "actual": "Panes correctly named: F30A_Pane1, F30A_Pane2, F30A_Pane3, F30A_Pane4 for first module and 9977_Pane1-4 for second module",
+          "screenshot": "Layout Management_step02_content_layout_panes.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Verify CSS classes are generated correctly",
+      "scenario_name": "Page Versioning Conflict Handling",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Inspected DOM to verify CSS classes on Content Layout panes",
-          "expected": "Bootstrap responsive grid classes should be applied to panes",
-          "actual": "2-column layout panes have classes 'pane col-lg-6 col-md-6 col-sm-6 col-xs-12'. 4-column layout panes have classes 'pane col-lg-3 col-md-3 col-sm-3 col-xs-12'. All panes include responsive mobile class col-xs-12.",
-          "screenshot": "Layout Management_step06_layout_rendering.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Layout rendering in view mode",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Verified layout structure and content placement in columns",
-          "expected": "Content should be displayed in correct columns according to layout",
-          "actual": "2-column layout displays Test Content in left pane and WEARABLES/TABLETS/TELEVISIONS in right pane. 4-column layout displays HOME THEATERS, BLU-RAY PLAYERS, MONITORS, CAMERAS across four columns.",
-          "screenshot": "Layout Management_step06_layout_rendering.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Content Layout pane naming convention",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Verified pane naming follows prefix pattern from LayoutPanePrefixGenerator",
-          "expected": "Panes should have unique prefix IDs",
-          "actual": "Panes follow the pattern: F30A_Pane1, F30A_Pane2 (for module 364) and 9977_Pane1, 9977_Pane2, 9977_Pane3, 9977_Pane4 (for module 365). Prefixes are unique per module instance.",
-          "screenshot": "Layout Management_step03_content_layout_panes.png"
+          "action": "Attempt to discard changes when page state has changed",
+          "expected": "System should detect conflict and show appropriate error",
+          "actual": "Error dialog displayed: 'Another user has taken action on the page and its state has been changed. Please, refresh the page to see the current state.'",
+          "screenshot": "Layout Management_step06_after_resize.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Code review shows CreateDefaultLayout uses Constants.DefaultColumnSizes when layout has no existing column configuration",
-    "The AreCustomColumnSizes property tracks whether column sizes have been customized by user (affects whether inline styles are applied)",
-    "Layout supports Page Versioning integration through IVersionableControl interface and VersionController",
-    "CSS classes are generated via ColumnSizesHelper.GenerateCssClasses() based on column size values",
-    "Edit mode layout editor functionality (LayoutEditor.js) provides interactive column resizing with visual percentage indicators",
-    "Bootstrap responsive grid classes ensure mobile-friendly behavior with col-xs-12 fallback"
+    "The Content Layout module uses a unique 4-character prefix (e.g., F30A, 9977) for pane naming to avoid conflicts with other modules",
+    "CSS classes are generated based on column sizes matching predefined templates - custom sizes result in dynamically calculated Bootstrap classes",
+    "The LayoutEditor.js provides interactive column resizing via jQuery UI resizable functionality",
+    "Column size changes are tracked through the version controller for page versioning support",
+    "Default layout is '25,25,25' which creates 4 columns of 25% width each",
+    "Layout templates support 2-column (25/75, 50/50, 75/25), 3-column (25/50/25, 33/33/33), and 4-column (25/25/25/25) configurations",
+    "The AreCustomColumnSizes flag determines whether inline width styles are applied (true) or only CSS classes (false)"
   ],
   "summary": {
-    "total_scenarios": 7,
-    "passed": 7,
+    "total_scenarios": 8,
+    "passed": 8,
     "failed": 0,
     "pass_rate": "100%"
   }

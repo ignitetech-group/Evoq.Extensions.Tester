@@ -5,7 +5,7 @@
     "feature_name": "UI Behavior and User Experience",
     "feature_description": "Test interactive UI elements including inline editing, animations, and real-time validation.",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:54:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,10 +15,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Clicked on 'Number of logins' row in the Influence table",
+          "action": "Clicked on 'Average time on page' row in the Influence table",
           "expected": "Inline edit form should expand below the clicked row",
-          "actual": "Inline edit form expanded with Goal Type dropdown, Weight, Value, Min Value, Max Value fields, and Save/Cancel buttons",
-          "screenshot": "UI_Behavior_and_User_Experience_step01_inline_edit_expanded.png"
+          "actual": "Inline edit form expanded showing Goal Type dropdown, Weight, Value, Min Value, Max Value fields, and Cancel/Save buttons",
+          "screenshot": "UI Behavior and User Experience_step01_inline_edit_expanded.png"
         }
       ],
       "issues": []
@@ -29,31 +29,24 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Observed edit form expand animation when clicking row",
-          "expected": "Form should slide down with smooth animation",
-          "actual": "Form slid down with jQuery slideDown animation (400ms duration as per code)",
-          "screenshot": "UI_Behavior_and_User_Experience_step01_inline_edit_expanded.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Clicked Cancel button to collapse the edit form",
-          "expected": "Form should slide up with smooth animation",
-          "actual": "Form slid up with jQuery slideUp animation (200ms duration as per code)",
-          "screenshot": "UI_Behavior_and_User_Experience_step02_inline_edit_collapsed.png"
+          "action": "Clicked Cancel button to close the inline edit form",
+          "expected": "Form should slide up with animation and collapse",
+          "actual": "Form slid up smoothly using jQuery slideUp animation (200ms) and the edit form disappeared",
+          "screenshot": "UI Behavior and User Experience_step02_form_collapsed.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Test Save button text changes to Saving",
+      "scenario_name": "Test Save button and toast notifications for success",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Expanded edit form and clicked Save button with valid data",
-          "expected": "Save button text should change to 'Saving...' during save operation",
-          "actual": "Code review confirms button changes to 'Saving...' (line 107, 426 in CommunitySettings.js). Change is brief due to fast async operation. Save completed successfully with toast notification.",
-          "screenshot": "UI_Behavior_and_User_Experience_step04_toast_success.png"
+          "action": "Opened inline edit form and clicked Save button",
+          "expected": "Save button should change text to 'Saving...' during save, then show success toast notification",
+          "actual": "Save operation completed successfully, toast notification appeared showing 'Item successfully saved.' with Success icon. The Save button text change to 'Saving...' happens very briefly during API call.",
+          "screenshot": "UI Behavior and User Experience_step03_save_success_toast.png"
         }
       ],
       "issues": []
@@ -64,24 +57,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Set Min Value to 200 and Max Value to 100 (invalid: min > max), then clicked Save",
-          "expected": "Validation should prevent save and show error feedback",
-          "actual": "Save was blocked by validation. Red error indicator appeared near the invalid field.",
-          "screenshot": "UI_Behavior_and_User_Experience_step03_validation_error.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Test error message display next to invalid fields",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Triggered validation error with Min Value > Max Value",
-          "expected": "Error message/indicator should display next to the invalid field",
-          "actual": "Red error tooltip/indicator displayed between the Value and Min Value fields showing validation failure",
-          "screenshot": "UI_Behavior_and_User_Experience_step03_validation_error.png"
+          "action": "Opened inline edit form and entered Min Value (200) greater than Max Value (100), then clicked Save",
+          "expected": "Validation error should appear and prevent save",
+          "actual": "Validation prevented save operation. A red validation error indicator appeared next to the Min Value field. Form remained open, confirming validation blocked the save.",
+          "screenshot": "UI Behavior and User Experience_step04_validation_triggered.png"
         }
       ],
       "issues": []
@@ -92,38 +71,45 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Clicked Remove (delete) button on 'The number of posts the user has authored' row",
+          "action": "Clicked Remove button on an influence goal row",
           "expected": "Confirmation dialog should appear asking to confirm deletion",
           "actual": "Confirmation dialog appeared with warning icon, message 'Are you sure you want to delete this item?', and Cancel/Delete buttons",
-          "screenshot": "UI_Behavior_and_User_Experience_step05_delete_confirmation.png"
+          "screenshot": "UI Behavior and User Experience_step05_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Cancel button in the confirmation dialog",
+          "expected": "Dialog should close and item should not be deleted",
+          "actual": "Dialog closed and item remained in the table - deletion was cancelled successfully",
+          "screenshot": "UI Behavior and User Experience_step06_full_page_view.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Test toast notifications for success",
+      "scenario_name": "Test Settings section Save button and toast notification",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Saved an influence goal with valid data",
-          "expected": "Toast notification should appear confirming success",
-          "actual": "Toast notification appeared with Success icon and message 'Item successfully saved.' (confirmed in page snapshot)",
-          "screenshot": "UI_Behavior_and_User_Experience_step04_toast_success.png"
+          "action": "Clicked Save button in the Miscellaneous Community Settings section",
+          "expected": "Settings should save and show success toast notification",
+          "actual": "Settings saved successfully and toast notification appeared showing 'Item successfully saved.' with Success icon",
+          "screenshot": "UI Behavior and User Experience_step07_settings_save_toast.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Tab switching between Settings and Influence: Code review and UI inspection confirmed there are NO tabs in the Community Settings panel. Both 'Influence' and 'Miscellaneous Community Settings' are sections displayed on the same page, not separate tabs to switch between.",
-    "Test responsive layout: Not tested per Medium priority guidelines (edge case testing not required).",
-    "Keyboard navigation and accessibility: Not tested per Medium priority guidelines (edge case testing not required).",
-    "Save button 'Saving...' text change: While code clearly shows the button text changes to 'Saving...' during async operations (CommunitySettings.js lines 107, 426), the visual change is too brief to capture in screenshot due to fast server response."
+    "The page shows both 'Influence' and 'Miscellaneous Community Settings' sections together on one page - there are no separate tabs to switch between Settings and Influence. The suggested test scenario 'Verify tab switching between Settings and Influence' is not applicable as there are no tabs in the UI.",
+    "The Save button text change from 'Save' to 'Saving...' happens very briefly (during the API call) and reverts quickly upon completion. The code confirms this behavior in CommunitySettings.js:107 and :170.",
+    "Keyboard navigation and accessibility testing was not performed as it falls outside the STANDARD testing scope for Medium priority features.",
+    "Responsive layout testing on different screen sizes was not performed as it falls outside the STANDARD testing scope for Medium priority features."
   ],
   "summary": {
-    "total_scenarios": 7,
-    "passed": 7,
+    "total_scenarios": 6,
+    "passed": 6,
     "failed": 0,
     "pass_rate": "100%"
   }

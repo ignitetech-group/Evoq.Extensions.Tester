@@ -5,63 +5,49 @@
     "feature_name": "Plugin Architecture Support",
     "feature_description": "Extensible plugin system allowing additional JavaScript modules to enhance connector functionality.",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T14:07:00Z",
+    "test_date": "2026-02-09T14:50:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "GetPlugins API Endpoint Functionality",
+      "scenario_name": "Load available plugins from Scripts folder via API",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to GetPlugins API endpoint at /DesktopModules/DNNCorp/GoogleAnalyticsConnector/API/Services/GetPlugins",
-          "expected": "API should return a list of available plugins from the Scripts folder, excluding connector.js",
-          "actual": "API returned XML response with ArrayOfstring containing 'authorize' plugin. The connector.js file was correctly excluded from the response.",
-          "screenshot": "Plugin_Architecture_Support_step02_getplugins_api_response.png"
+          "action": "Navigate to the GetPlugins API endpoint at /API/dnncorp/GoogleAnalyticsConnector/Services/GetPlugins",
+          "expected": "API endpoint should return a list of available plugins from the Scripts folder",
+          "actual": "API returned HTTP 200 with XML response containing one plugin: 'authorize'. The connector.js file was correctly excluded from the list as per the code logic.",
+          "screenshot": "Plugin Architecture Support_step03_getplugins_api_response.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Plugin Exclusion - connector.js Excluded",
+      "scenario_name": "Verify plugin exclusion (connector.js excluded)",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Verify GetPlugins API response excludes connector.js from the plugin list",
-          "expected": "connector.js should be filtered out per ServicesController.cs line 72: .Where(f => !string.IsNullOrEmpty(f) && f != \"connector\")",
-          "actual": "API response contains only 'authorize' plugin. The Scripts folder contains connector.js and authorize.js, confirming connector.js was correctly excluded.",
-          "screenshot": "Plugin_Architecture_Support_step02_getplugins_api_response.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Plugin File Structure Validation",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Verify authorize.js plugin has proper init function signature",
-          "expected": "Plugin should have init(bindViewModel, helper, rootFolder, utility) function that can be called by connector.js initializePlugins()",
-          "actual": "authorize.js contains proper init function with correct signature. The plugin provides Google Analytics OAuth authorization functionality including account selection, web property management, and data stream configuration.",
-          "screenshot": "Plugin_Architecture_Support_step01_connector_settings_loaded.png"
+          "action": "Call GetPlugins API endpoint and verify connector.js is not in the returned list",
+          "expected": "The 'connector' file should be excluded from the plugins list",
+          "actual": "API returned only 'authorize' plugin. The 'connector' file was correctly excluded as specified in ServicesController.cs line 72: .Where(f => !string.IsNullOrEmpty(f) && f != \"connector\")",
+          "screenshot": "Plugin Architecture Support_step03_getplugins_api_response.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The legacy Google Analytics connector (which contains this plugin architecture) is NOT visible in the Connectors UI - only 'Google Analytics 4' is shown.",
-    "Code exists at DesktopModules/DNNCorp/Connectors/GoogleAnalytics/ with plugin architecture, but this connector does not appear in the UI.",
-    "The plugin architecture code exists and is functional (verified via direct API testing), but cannot be fully tested via UI because the connector using it is not accessible.",
-    "Scripts folder contains: connector.js (main script) and authorize.js (OAuth plugin).",
-    "The authorize.js plugin provides Google Analytics OAuth integration including account selection, web properties, and data streams management."
+    "The original 'Google Analytics' connector (DisplayName: 'Google Analytics') that contains the plugin architecture is NOT visible in the Connectors UI. Only 'Google Analytics 4' connector is shown, which is a separate, simpler connector at DesktopModules/Connectors/GoogleAnalytics4/.",
+    "The GetPlugins API endpoint (/API/dnncorp/GoogleAnalyticsConnector/Services/GetPlugins) is still functional and accessible even though the connector UI is not shown.",
+    "The deployed instance has an 'authorize.js' plugin in the Scripts folder that was detected by the plugin architecture, though this file does not exist in the source repository (only connector.js exists in Evoq Content/Connectors/GoogleAnalytics/Scripts/).",
+    "Plugin initialization via connector.js loadPlugins() function cannot be directly tested via UI since the original Google Analytics connector is not registered in the connectors list. The plugin architecture code exists and the API works, but there is no UI path to trigger the full plugin loading flow.",
+    "The suggested test scenarios for 'Initialize plugins with connector context', 'Verify plugin loading order', 'Test plugin error handling', and 'Validate plugin init function call' cannot be tested via UI as they require the connector to be loaded and initialized, which only happens when the original Google Analytics connector panel is opened - and that connector is not present in the UI."
   ],
   "summary": {
-    "total_scenarios": 3,
-    "passed": 3,
+    "total_scenarios": 2,
+    "passed": 2,
     "failed": 0,
     "pass_rate": "100%"
   }

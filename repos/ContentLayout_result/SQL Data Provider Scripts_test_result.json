@@ -5,7 +5,7 @@
     "feature_name": "SQL Data Provider Scripts",
     "feature_description": "Database schema and migration scripts for content layout data persistence.",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:46:00Z",
+    "test_date": "2026-02-09T15:05:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,45 +15,38 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to SQL Console in DNN Settings",
+          "action": "Navigate to SQL Console in Settings",
           "expected": "SQL Console opens with query editor",
-          "actual": "SQL Console opened successfully with query editor available",
-          "screenshot": "SQL_Data_Provider_Scripts_step01_navigate_sql_console.png"
+          "actual": "SQL Console opened successfully with query editor and Run Script button",
+          "screenshot": "SQL_Data_Provider_Scripts_step01_sql_console.png"
         },
         {
           "step_number": 2,
           "action": "Execute query to check if ContentLayout_Versions table exists",
-          "expected": "Query returns ContentLayout_Versions table name",
-          "actual": "Query returned 'ContentLayout_Versions' showing 1-1 of 1 items",
-          "screenshot": "SQL_Data_Provider_Scripts_step02_verify_table_exists.png"
+          "expected": "Query returns result showing table exists as USER_TABLE",
+          "actual": "Query returned 1 row showing ContentLayout_Versions table exists with type U (USER_TABLE), created on 2026-02-09",
+          "screenshot": "SQL_Data_Provider_Scripts_step03_table_result.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Test stored procedure execution",
+      "scenario_name": "Verify stored procedure execution",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Execute query to list all ContentLayout stored procedures",
-          "expected": "Query returns all 6 stored procedures created by the SQL script",
-          "actual": "Query returned all 6 stored procedures: ContentLayout_Versions_Add, ContentLayout_Versions_Update, ContentLayout_Versions_Delete, ContentLayout_Versions_Get, ContentLayout_Versions_GetAll, ContentLayout_Migration_UpdatePaneName",
-          "screenshot": "SQL_Data_Provider_Scripts_step03_stored_procedures_full.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Verify table schema",
-      "status": "PASS",
-      "steps": [
+          "action": "Execute query to find ContentLayout_Versions stored procedures",
+          "expected": "Query returns 5 stored procedures: Add, Delete, Get, GetAll, Update",
+          "actual": "Query returned 5 stored procedures as expected: ContentLayout_Versions_Add, ContentLayout_Versions_Delete, ContentLayout_Versions_Get, ContentLayout_Versions_GetAll, ContentLayout_Versions_Update - all SQL_STORED_PROCEDURE type",
+          "screenshot": "SQL_Data_Provider_Scripts_step05_stored_procedures_result.png"
+        },
         {
-          "step_number": 1,
-          "action": "Execute query to list all columns in ContentLayout_Versions table",
-          "expected": "Query returns all 8 columns with correct data types as defined in SQL script",
-          "actual": "Query returned all 8 columns: ModuleId (int), Version (int), ColumnSizes (nvarchar), ColumnCssClasses (nvarchar), AreCustomColumnSizes (bit), IsPublished (bit), CreatedOnDate (datetime), LastModifiedOnDate (datetime)",
-          "screenshot": "SQL_Data_Provider_Scripts_step04_table_schema_full.png"
+          "step_number": 2,
+          "action": "Execute query to find ContentLayout_Migration stored procedures",
+          "expected": "Query returns the migration stored procedure",
+          "actual": "Query returned 1 stored procedure: ContentLayout_Migration_UpdatePaneName - SQL_STORED_PROCEDURE type",
+          "screenshot": "SQL_Data_Provider_Scripts_step07_migration_sp_result.png"
         }
       ],
       "issues": []
@@ -64,25 +57,31 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Extensions page and verify ContentLayout module is installed",
-          "expected": "ContentLayout module appears in Installed Extensions list",
-          "actual": "ContentLayout module is listed with version 10.1.1, In Use status 'Yes', confirming successful installation and SQL script execution",
-          "screenshot": "SQL_Data_Provider_Scripts_step05_module_installed.png"
+          "action": "Navigate to Extensions page in Settings",
+          "expected": "ContentLayout module appears in installed extensions list",
+          "actual": "Content Layout module found in Installed Extensions list with version 10.1.1 and In Use status 'Yes'",
+          "screenshot": "SQL_Data_Provider_Scripts_step08_content_layout_installed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify table schema matches SQL Data Provider script",
+          "expected": "Table has all 8 columns with correct data types: ModuleId (int), Version (int), ColumnSizes (nvarchar 50), ColumnCssClasses (nvarchar 256), AreCustomColumnSizes (bit), IsPublished (bit), CreatedOnDate (datetime), LastModifiedOnDate (datetime nullable)",
+          "actual": "Table schema verified - all 8 columns present with correct data types and nullability matching the 08.02.00.SqlDataProvider script exactly",
+          "screenshot": "SQL_Data_Provider_Scripts_step10_table_schema_full.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "SQL Data Provider scripts (08.02.00.SqlDataProvider) are automatically executed during DNN module installation - there is no separate UI to manually run these scripts",
-    "Fresh installation, upgrade from previous version, and uninstall cleanup scenarios cannot be directly tested through UI without performing actual module install/uninstall operations",
-    "The existence of the ContentLayout_Versions table, all 6 stored procedures, and the correct table schema confirms that the SQL Data Provider scripts have been successfully executed",
-    "The Uninstall.SqlDataProvider script would only be executed during module uninstallation - testing this would require uninstalling the module which would remove the database objects",
-    "Code review confirms 08.02.00.SqlDataProvider creates: 1 table (ContentLayout_Versions), 5 CRUD stored procedures, 1 migration stored procedure, and adds MigratedToContentLayoutModuleInstance column to existing ContentLayouts table"
+    "The SQL Data Provider scripts for ContentLayout create a ContentLayout_Versions table with versioning support for module configurations",
+    "6 stored procedures are created: 5 for CRUD operations on versions (Add, Delete, Get, GetAll, Update) and 1 for migration (UpdatePaneName)",
+    "The table schema includes fields for ColumnSizes, ColumnCssClasses, custom column sizing flag, and publish status - supporting the content layout's dynamic column configuration feature",
+    "Testing uninstall cleanup would require uninstalling the module which would affect other tests - not recommended for standard testing. The Uninstall.SqlDataProvider script is verified to exist and contains proper DROP statements for all objects"
   ],
   "summary": {
-    "total_scenarios": 4,
-    "passed": 4,
+    "total_scenarios": 3,
+    "passed": 3,
     "failed": 0,
     "pass_rate": "100%"
   }

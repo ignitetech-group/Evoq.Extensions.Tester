@@ -5,44 +5,72 @@
     "feature_name": "Influence Goals Search and Pagination",
     "feature_description": "Search, sort, and paginate through influence goals with configurable page sizes and multi-column sorting.",
     "feature_priority": "High",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:51:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Search by goal type/title keyword",
-      "status": "FAIL",
+      "scenario_name": "Search by goal type keyword",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Community Settings > Influence tab",
-          "expected": "Influence goals table displayed with search box",
-          "actual": "Influence goals table displayed with search box showing 13 items",
-          "screenshot": "Influence_Goals_Search_and_Pagination_step01_initial_state.png"
+          "action": "Navigated to Admin > Settings > Community Settings > Influence tab",
+          "expected": "Influence Goals table should be visible with search field",
+          "actual": "Influence Goals table displayed with search field, showing 13 items across 2 pages",
+          "screenshot": "Influence Goals Search and Pagination_step01_influence_tab.png"
         },
         {
           "step_number": 2,
-          "action": "Enter 'logins' in the search/filter box",
-          "expected": "Table filters to show only goals containing 'logins' (should show 'Number of logins' only)",
-          "actual": "Table still shows all 13 items - no filtering applied despite search term being entered",
-          "screenshot": "Influence_Goals_Search_and_Pagination_step02_search_logins.png"
+          "action": "Typed 'friends' in the search field",
+          "expected": "Table should filter to show only goals containing 'friends' in title",
+          "actual": "Table filtered to show 2 items matching 'friends': 'The number of friends the user has' and 'The number of friends the user has relative to the number of users on the site'",
+          "screenshot": "Influence Goals Search and Pagination_step02_search_friends.png"
         }
       ],
-      "issues": ["Search/filter functionality does not filter the influence goals table. Entering search terms has no effect on displayed results."]
+      "issues": []
     },
     {
-      "scenario_name": "Verify empty search results message",
-      "status": "FAIL",
+      "scenario_name": "Case-insensitive search",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Enter 'xyznonexistent123' in the search/filter box",
-          "expected": "Table shows empty state with message indicating no matching results",
-          "actual": "Table still shows all 13 items - search does not filter results",
-          "screenshot": "Influence_Goals_Search_and_Pagination_step08_search_no_filter.png"
+          "action": "Typed 'FRIENDS' in uppercase in the search field",
+          "expected": "Search should be case-insensitive and return same results as lowercase 'friends'",
+          "actual": "Table filtered to show same 2 items matching 'FRIENDS', confirming case-insensitive search",
+          "screenshot": "Influence Goals Search and Pagination_step03_case_insensitive.png"
         }
       ],
-      "issues": ["Cannot test empty search results because search functionality does not filter data at all"]
+      "issues": []
+    },
+    {
+      "scenario_name": "Empty search results",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Typed 'xyznonexistent123' in the search field",
+          "expected": "Table should show no results with appropriate message",
+          "actual": "Table shows 'Showing 0 items' with empty table body",
+          "screenshot": "Influence Goals Search and Pagination_step04_empty_search.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Sort by GoalType descending",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked on 'Goal Type' column header to toggle sort direction",
+          "expected": "Table should sort by Goal Type in descending order (Z to A)",
+          "actual": "Table sorted descending - first item is 'The total number of views...' (starting with 'T'), confirming Z-A sort order",
+          "screenshot": "Influence Goals Search and Pagination_step05_sort_goaltype_desc.png"
+        }
+      ],
+      "issues": []
     },
     {
       "scenario_name": "Sort by Weight ascending",
@@ -50,10 +78,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click on Weight column header",
-          "expected": "Table sorted by Weight in ascending order",
-          "actual": "Table sorted by Weight ascending: 1, 1, 1, 1, 1, 2, 2, 4, 8, 10. Sort indicator arrow shown on Weight column.",
-          "screenshot": "Influence_Goals_Search_and_Pagination_step03_sort_weight_asc.png"
+          "action": "Clicked on 'Weight' column header",
+          "expected": "Table should sort by Weight in ascending order (lowest first)",
+          "actual": "Table sorted ascending - Weight values: 1, 1, 1, 1, 1, 2, 2, 2, 4, 10",
+          "screenshot": "Influence Goals Search and Pagination_step06_sort_weight_asc.png"
         }
       ],
       "issues": []
@@ -64,10 +92,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click on Weight column header again",
-          "expected": "Table sorted by Weight in descending order",
-          "actual": "Table sorted by Weight descending: 30, 20, 10, 10, 8, 4, 2, 2, 1, 1. Sort indicator arrow shown pointing down.",
-          "screenshot": "Influence_Goals_Search_and_Pagination_step04_sort_weight_desc.png"
+          "action": "Clicked on 'Weight' column header again to toggle sort direction",
+          "expected": "Table should sort by Weight in descending order (highest first)",
+          "actual": "Table sorted descending - Weight values: 30, 20, 10, 10, 4, 2, 2, 2, 1, 1",
+          "screenshot": "Influence Goals Search and Pagination_step07_sort_weight_desc.png"
         }
       ],
       "issues": []
@@ -78,10 +106,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click on Value column header",
-          "expected": "Table sorted by Value in ascending order",
-          "actual": "Table sorted by Value ascending: 1, 1, 1, 2, 3, 5, 10, 10, 50, 100. Sort indicator arrow shown on Value column.",
-          "screenshot": "Influence_Goals_Search_and_Pagination_step05_sort_value_asc.png"
+          "action": "Clicked on 'Value' column header",
+          "expected": "Table should sort by Value in ascending order (lowest first)",
+          "actual": "Table sorted ascending - Value column shows: 1, 1, 1, 2, 3, 3, 5, 10, 50, 100",
+          "screenshot": "Influence Goals Search and Pagination_step08_sort_value_asc.png"
         }
       ],
       "issues": []
@@ -92,10 +120,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click Next pagination button",
-          "expected": "Navigate to page 2, showing items 11-13",
-          "actual": "Successfully navigated to page 2. Shows 'Showing 11-13 of 13 items' and 'Page 2 of 2'. Three remaining items displayed.",
-          "screenshot": "Influence_Goals_Search_and_Pagination_step06_page2.png"
+          "action": "Clicked 'Next' pagination button while on page 1 of 2",
+          "expected": "Should navigate to page 2 and show remaining items",
+          "actual": "Navigated to page 2, showing 'Showing 11-13 of 13 items' and 'Page 2 of 2', with 3 remaining items displayed",
+          "screenshot": "Influence Goals Search and Pagination_step09_page2.png"
         }
       ],
       "issues": []
@@ -106,28 +134,26 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click Prev pagination button",
-          "expected": "Navigate back to page 1, showing items 1-10",
-          "actual": "Successfully navigated back to page 1. Shows 'Showing 1-10 of 13 items' and 'Page 1 of 2'. Ten items displayed.",
-          "screenshot": "Influence_Goals_Search_and_Pagination_step07_prev_back_to_page1.png"
+          "action": "Clicked 'Prev' pagination button while on page 2",
+          "expected": "Should navigate back to page 1",
+          "actual": "Navigated back to page 1, showing 'Showing 1-10 of 13 items' and 'Page 1 of 2'",
+          "screenshot": "Influence Goals Search and Pagination_step10_page1_returned.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The search/filter functionality in the Influence tab does not work - entering any search term does not filter the displayed goals",
-    "The search appears to be wired up (500ms throttle delay exists in code) but the filtering does not take effect on the displayed data",
-    "It is possible the search filters on an internal GoalType field rather than the visible Title/description, but this could not be verified",
-    "Sorting functionality works correctly for Weight and Value columns with proper ascending/descending toggle",
-    "Pagination works correctly with Next/Prev buttons and proper display of item counts and page numbers",
-    "The code shows support for sorting by GoalType, Weight, Value, MinValue, and MaxValue columns, but UI only shows GoalType, Weight, and Value columns",
-    "Page size configuration (5, 10, 25, 50 items) exists in Miscellaneous Community Settings section, not directly in the Influence goals grid"
+    "The Influence Goals table uses a fixed page size of 10 items per page, initialized via pager.init(influenceViewModel, 10, ...). There is no UI control to change the page size for this specific table.",
+    "The 'Page Size' dropdown in the Miscellaneous Community Settings section below the Influence table is for content/comments page size in other community features (blogs, discussions, etc.), not for the Influence Goals table pagination.",
+    "The search uses a 500ms throttle delay (searchTextThrottle = setTimeout(searchInfluenceStart, 500)) to prevent excessive API calls while typing.",
+    "Sorting is implemented for GoalType, Weight, and Value columns. MinValue and MaxValue columns mentioned in the feature description are not visible in the table UI - they are only shown when editing a goal.",
+    "The search filters by Goal Type title text. The API supports searchText parameter that matches against goal type descriptions."
   ],
   "summary": {
-    "total_scenarios": 7,
-    "passed": 5,
-    "failed": 2,
-    "pass_rate": "71%"
+    "total_scenarios": 9,
+    "passed": 9,
+    "failed": 0,
+    "pass_rate": "100%"
   }
 }

@@ -5,7 +5,7 @@
     "feature_name": "Group Home Page Selection",
     "feature_description": "Select the default landing page for group spaces from dynamically loaded group tabs.",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T20:15:00Z",
+    "test_date": "2026-02-09T16:52:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,24 +15,24 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigated to Admin > Settings > Community Settings",
-          "expected": "Community Settings panel should open with Group Home Page dropdown visible",
-          "actual": "Community Settings panel opened showing Influence section and Miscellaneous Community Settings with Group Home Page dropdown",
-          "screenshot": "Group_Home_Page_Selection_step01_login_and_settings.png"
+          "action": "Navigate to Settings > Community in PersonaBar",
+          "expected": "Community Settings page should load",
+          "actual": "Community Settings page loaded with Influence and Miscellaneous Community Settings sections",
+          "screenshot": "Group Home Page Selection_step01_community_settings_page.png"
         },
         {
           "step_number": 2,
-          "action": "Scrolled to view Group Home Page dropdown",
-          "expected": "Group Home Page dropdown should be visible with current selection",
-          "actual": "Group Home Page dropdown visible showing 'Blogs' as current selection",
-          "screenshot": "Group_Home_Page_Selection_step02_dropdown_view.png"
+          "action": "Locate and scroll to Group Home Page dropdown",
+          "expected": "Group Home Page dropdown should be visible",
+          "actual": "Group Home Page dropdown is visible with Activity as default selection",
+          "screenshot": "Group Home Page Selection_step02_group_home_page_dropdown.png"
         },
         {
           "step_number": 3,
-          "action": "Clicked on Group Home Page dropdown to expand options",
-          "expected": "Dropdown should expand showing available group tabs",
-          "actual": "Dropdown expanded showing 8 group tabs: Activity, Answers, Blogs, Discussions, Events, Ideas, Members, Wiki",
-          "screenshot": "Group_Home_Page_Selection_step03_dropdown_expanded.png"
+          "action": "Click on Group Home Page dropdown to expand options",
+          "expected": "Dropdown should show available group tabs",
+          "actual": "Dropdown expanded showing 8 options: Activity, Answers, Blogs, Discussions, Events, Ideas, Members, Wiki",
+          "screenshot": "Group Home Page Selection_step03_dropdown_options.png"
         }
       ],
       "issues": []
@@ -43,60 +43,76 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Selected 'Discussions' from the Group Home Page dropdown",
-          "expected": "Dropdown should update to show 'Discussions' as selected value",
-          "actual": "Dropdown updated to show 'Discussions' as selected value",
-          "screenshot": "Group_Home_Page_Selection_step05_discussions_selected_final.png"
+          "action": "Select 'Discussions' from the Group Home Page dropdown",
+          "expected": "Discussions should be selected in the dropdown",
+          "actual": "Discussions was successfully selected and displayed in the dropdown",
+          "screenshot": "Group Home Page Selection_step04_discussions_selected.png"
         }
       ],
       "issues": []
     },
     {
       "scenario_name": "Save group home page selection and verify persistence",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Clicked Save button to save the 'Discussions' selection",
-          "expected": "Save operation should succeed with success notification",
-          "actual": "Save succeeded with 'Item successfully saved.' notification displayed",
-          "screenshot": "Group_Home_Page_Selection_step08_save_success_2.png"
+          "action": "Click Save button to save the Discussions selection",
+          "expected": "Settings should save successfully",
+          "actual": "Success notification appeared: 'Item successfully saved.' Dropdown showed 'Discussions' as selected",
+          "screenshot": "Group Home Page Selection_step05_save_success.png"
         },
         {
           "step_number": 2,
-          "action": "Reloaded the page and navigated back to Community Settings",
-          "expected": "Group Home Page dropdown should still show 'Discussions' as selected",
-          "actual": "Group Home Page dropdown shows 'Discussions' as selected - persistence verified",
-          "screenshot": "Group_Home_Page_Selection_step09_persistence_verified.png"
+          "action": "Navigate away to Dashboard and back to Community Settings",
+          "expected": "Discussions selection should persist",
+          "actual": "Value reverted to 'Activity' instead of persisting 'Discussions'",
+          "screenshot": "Group Home Page Selection_step07_persistence_failed.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Select 'Wiki', save, and perform full page refresh",
+          "expected": "Wiki selection should persist after page refresh",
+          "actual": "Wiki was saved with success notification but reverted to Activity after page refresh",
+          "screenshot": "Group Home Page Selection_step09_wiki_saved.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Verify Group Home Page value after page refresh",
+          "expected": "Wiki should still be selected",
+          "actual": "Value reverted to 'Activity' - persistence failed",
+          "screenshot": "Group Home Page Selection_step11_value_reverted_to_activity.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Group Home Page selection does not persist after saving. The system displays 'Item successfully saved' notification but the value reverts to 'Activity' (default) after navigating away or refreshing the page. This appears to be a bug in the persistence logic for the GroupHomePage setting."
+      ]
     },
     {
-      "scenario_name": "Test with multiple group tabs available",
+      "scenario_name": "Verify default value for new installations",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Expanded dropdown to view all available group tabs",
-          "expected": "Multiple group tabs should be available for selection",
-          "actual": "8 group tabs available: Activity, Answers, Blogs, Discussions, Events, Ideas, Members, Wiki",
-          "screenshot": "Group_Home_Page_Selection_step03_dropdown_expanded.png"
+          "action": "Observe the default selected value in Group Home Page dropdown",
+          "expected": "Default value should be 'Activity' (index 0) or no selection",
+          "actual": "Default value is 'Activity' which corresponds to index 0 as defined in code (groupHomePage: ko.observable(0))",
+          "screenshot": "Group Home Page Selection_step12_default_value_activity.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The dropdown is populated from GroupPages setting returned by the CmxSettingsController API",
-    "Default value appears to be 'Blogs' in this test environment, not 0 (no selection) as mentioned in requirements - this may indicate a pre-configured value",
-    "During initial testing, the first save appeared to succeed but persistence failed; a second save attempt was required to persist the value correctly - this could indicate a timing or caching issue",
-    "The GroupPages dropdown uses the page name as the display text (optionsText: 'key') and page value as the stored value (optionsValue: 'value')"
+    "The Group Home Page dropdown UI works correctly for displaying and selecting options.",
+    "The save operation appears to succeed (success notification is shown) but the GroupHomePage value does not actually persist to the database or is not being properly read back.",
+    "Code review shows GroupHomePage is included in the saveSettings POST request and should be saved via CmxSettingsController.Instance.SaveCmxSettings(). The issue may be in the backend persistence or retrieval logic.",
+    "Other settings on the same page (like Comment Moderation checkboxes) appear to persist correctly, suggesting the issue is specific to the GroupHomePage field."
   ],
   "summary": {
     "total_scenarios": 4,
-    "passed": 4,
-    "failed": 0,
-    "pass_rate": "100%"
+    "passed": 3,
+    "failed": 1,
+    "pass_rate": "75%"
   }
 }

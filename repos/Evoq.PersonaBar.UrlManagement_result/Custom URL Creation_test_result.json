@@ -5,7 +5,7 @@
     "feature_name": "Custom URL Creation",
     "feature_description": "Create and manage custom friendly URLs for pages with support for multiple locales and portal aliases",
     "feature_priority": "Top",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T12:00:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,115 +15,101 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Content > Pages > URL Test Page > Advanced > S.E.O.",
-          "expected": "URL Management panel should appear",
-          "actual": "URL Management panel appeared with 'URLs for this page' section",
-          "screenshot": "Custom_URL_Creation_step01_url_management_panel.png"
+          "action": "Navigate to Content > Pages > Test Page One > Advanced > S.E.O. tab",
+          "expected": "S.E.O. tab should display URLs for this page section",
+          "actual": "S.E.O. tab displayed with URLs for this page section showing existing URLs",
+          "screenshot": "Custom URL Creation_step02_page_seo_urls.png"
         },
         {
           "step_number": 2,
-          "action": "Click 'Add URL' button",
-          "expected": "Add URL form should appear",
-          "actual": "Add URL form appeared with Site Alias, URL Path, and URL Type fields",
-          "screenshot": "Custom_URL_Creation_step02_add_url_form.png"
+          "action": "Click Add URL button",
+          "expected": "Add URL form should appear with Site Alias, URL Path, and URL Type fields",
+          "actual": "Add URL form appeared with all expected fields",
+          "screenshot": "Custom URL Creation_step03_add_url_form.png"
         },
         {
           "step_number": 3,
-          "action": "Enter '/my-test-custom-url-2026' in URL Path field",
-          "expected": "URL path should be entered",
-          "actual": "URL path was entered successfully",
-          "screenshot": "Custom_URL_Creation_step03_valid_url_entered.png"
+          "action": "Enter /my-custom-url in URL Path field",
+          "expected": "URL path should be accepted and Save button should be enabled",
+          "actual": "URL path entered successfully, Save button enabled",
+          "screenshot": "Custom URL Creation_step04_url_entered.png"
         },
         {
           "step_number": 4,
           "action": "Click Save button",
-          "expected": "URL should be created and appear in the list",
-          "actual": "URL was created successfully and appeared in the URLs list",
-          "screenshot": "Custom_URL_Creation_step04_valid_url_created.png"
+          "expected": "Custom URL should be created and appear in the URL list",
+          "actual": "Custom URL /my-custom-url created successfully with Active (200) status and SuperUser Account as generator",
+          "screenshot": "Custom URL Creation_step05_url_created.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Create custom URL with special characters requiring cleaning",
+      "scenario_name": "Create custom URL with special characters - URL cleaning",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Click Add URL and enter '/test url with spaces & special! @#$'",
-          "expected": "URL path with special characters should be entered",
-          "actual": "URL path was entered",
-          "screenshot": "Custom_URL_Creation_step05_special_chars_entered.png"
+          "action": "Click Add URL and enter /my special url & test! in URL Path field",
+          "expected": "Form should accept the input",
+          "actual": "Input accepted in the URL Path field",
+          "screenshot": "Custom URL Creation_step06_special_chars_entered.png"
         },
         {
           "step_number": 2,
           "action": "Click Save button",
-          "expected": "System should clean the URL and show error with suggested path",
-          "actual": "Error displayed: 'The custom URL path has been cleaned.' Suggested path: '/test-url-with-spaces-special'",
-          "screenshot": "Custom_URL_Creation_step06_special_chars_cleaned.png"
+          "expected": "System should clean the URL and suggest a valid alternative",
+          "actual": "System detected special characters, showed error 'The submitted URL is not available' and suggested /my-special-url-test as the cleaned alternative",
+          "screenshot": "Custom URL Creation_step07_special_chars_cleaned.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Attempt duplicate URL creation - verify error handling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add URL and enter existing URL /my-custom-url",
+          "expected": "System should detect the duplicate",
+          "actual": "URL path entered in the form",
+          "screenshot": "Custom URL Creation_step08_duplicate_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "System should reject duplicate and suggest alternative",
+          "actual": "System displayed 'The submitted URL is not available' error and suggested /my-custom-url1 as alternative",
+          "screenshot": "Custom URL Creation_step08_duplicate_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create URL with different status codes (301 Redirect)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add URL and change URL Type dropdown from Active (200) to Redirect (301)",
+          "expected": "URL Type should change to Redirect (301) and Query String field should appear",
+          "actual": "URL Type changed to Redirect (301) and Query String field appeared",
+          "screenshot": "Custom URL Creation_step09_301_redirect.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter /old-page-url in URL Path field",
+          "expected": "URL path should be accepted",
+          "actual": "URL path entered successfully",
+          "screenshot": "Custom URL Creation_step10_301_with_querystring.png"
         },
         {
           "step_number": 3,
-          "action": "Accept the suggested cleaned URL by clicking Save again",
-          "expected": "Cleaned URL should be created",
-          "actual": "URL '/test-url-with-spaces-special' was created successfully",
-          "screenshot": "Custom_URL_Creation_step07_special_chars_url_created.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Attempt to create duplicate URL and verify error handling",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Click Add URL and enter '/URL-Test-Page' (existing automatic URL)",
-          "expected": "System should allow creation since automatic URLs are not checked against custom URLs",
-          "actual": "URL was created - system does not check against automatic URLs, only custom URLs",
-          "screenshot": "Custom_URL_Creation_step09_duplicate_url_result.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Try to add '/URL-Test-Page' again (now exists as custom URL)",
-          "expected": "System should detect duplicate and show error",
-          "actual": "Error displayed: 'The submitted URL is not available. If you wish to accept the suggested alternative, please click Save.' Suggested alternative: '/URL-Test-Page1'",
-          "screenshot": "Custom_URL_Creation_step11_duplicate_error_message.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Create URL with Redirect (301) status code",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Click Add URL, enter '/redirect-test-url-301', change URL Type to 'Redirect (301)'",
-          "expected": "URL Type dropdown should show 301 option and Query String field should appear",
-          "actual": "Selected Redirect (301) and Query String field appeared",
-          "screenshot": "Custom_URL_Creation_step12_redirect_301_form.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click Save",
-          "expected": "URL should be created with 301 redirect status",
-          "actual": "URL '/redirect-test-url-301' created with Redirect (301) status",
-          "screenshot": "Custom_URL_Creation_step13_redirect_301_created.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Validate required fields (empty path)",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Click Add URL and observe Save button state with empty URL path",
-          "expected": "Save button should be disabled when URL path is empty or just '/'",
-          "actual": "Save button was disabled when URL path contained only '/'",
-          "screenshot": "Custom_URL_Creation_step14_empty_path_save_disabled.png"
+          "action": "Click Save button",
+          "expected": "301 Redirect URL should be created",
+          "actual": "URL /old-page-url created with Redirect (301) status",
+          "screenshot": "Custom URL Creation_step11_301_saved.png"
         }
       ],
       "issues": []
@@ -134,17 +120,45 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click Add URL, enter path '/query-string-test-url', select Redirect (301), enter query string 'param1=value1&param2=value2'",
-          "expected": "Form should accept query string parameters",
-          "actual": "Query string was entered successfully. System auto-prepended '?' to make '?param1=value1&param2=value2'",
-          "screenshot": "Custom_URL_Creation_step15_query_string_form.png"
+          "action": "Select Redirect (301) URL Type which reveals Query String field",
+          "expected": "Query String field should be visible",
+          "actual": "Query String field appeared when Redirect (301) was selected",
+          "screenshot": "Custom URL Creation_step09_301_redirect.png"
         },
         {
           "step_number": 2,
-          "action": "Click Save",
-          "expected": "URL should be created with query string parameters",
-          "actual": "URL '/query-string-test-url' created with query string parameters",
-          "screenshot": "Custom_URL_Creation_step16_query_string_created.png"
+          "action": "Enter ?ref=redirect in Query String field with /old-page-url path",
+          "expected": "Query string should be accepted",
+          "actual": "Query string ?ref=redirect entered successfully",
+          "screenshot": "Custom URL Creation_step10_301_with_querystring.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save button",
+          "expected": "URL with query string should be created",
+          "actual": "URL created successfully with query string parameter",
+          "screenshot": "Custom URL Creation_step11_301_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate required fields - empty/minimal path",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add URL and observe the form with default / path",
+          "expected": "Save button should be disabled with only / in the path",
+          "actual": "Form opened with default / in URL Path, Save button initially disabled",
+          "screenshot": "Custom URL Creation_step12_empty_path_disabled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to save with just / in the URL Path",
+          "expected": "System should reject the root-only URL",
+          "actual": "System rejected / as invalid, displayed 'The submitted URL is not available' and suggested /1 as alternative",
+          "screenshot": "Custom URL Creation_step14_slash_error.png"
         }
       ],
       "issues": []
@@ -155,50 +169,63 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click the edit icon (pencil) on '/query-string-test-url' row",
-          "expected": "Edit form should open with existing URL details",
-          "actual": "Edit form opened showing all URL properties including query string",
-          "screenshot": "Custom_URL_Creation_step17_edit_form.png"
+          "action": "Click edit icon (second icon) on /my-custom-url entry",
+          "expected": "Edit form should open with current URL details",
+          "actual": "Edit form opened with Site Alias, URL Path (/my-custom-url), and URL Type (Active 200) fields",
+          "screenshot": "Custom URL Creation_step16_edit_form_opened.png"
         },
         {
           "step_number": 2,
-          "action": "Modify query string to '?param1=updated&newparam=test' and click Save",
-          "expected": "Changes should be saved successfully",
-          "actual": "URL was updated successfully with new query string parameters",
-          "screenshot": "Custom_URL_Creation_step18_edit_saved.png"
+          "action": "Change URL Path from /my-custom-url to /my-custom-url-edited",
+          "expected": "Save button should become enabled",
+          "actual": "URL Path changed and Save button became enabled",
+          "screenshot": "Custom URL Creation_step17_edit_url_changed.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save button",
+          "expected": "URL should be updated",
+          "actual": "URL updated successfully. System automatically created a 301 redirect from the old URL (/my-custom-url) to the new URL (/my-custom-url-edited)",
+          "screenshot": "Custom URL Creation_step18_edit_saved_with_redirect.png"
         }
       ],
       "issues": []
     },
     {
       "scenario_name": "Delete custom URL",
-      "status": "FAIL",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Click the delete icon (trash) on a custom URL row",
-          "expected": "URL should be deleted or confirmation dialog should appear",
-          "actual": "Both icons in the action column triggered the edit form instead of delete. Unable to successfully trigger the delete functionality through the UI icons.",
-          "screenshot": "Custom_URL_Creation_step19_final_url_list.png"
+          "action": "Click delete icon (first icon) on /my-custom-url redirect entry",
+          "expected": "Delete confirmation dialog should appear",
+          "actual": "Confirmation dialog appeared with 'Are you sure you want to remove this URL?' message and Cancel/Delete buttons",
+          "screenshot": "Custom URL Creation_step19_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Delete button to confirm",
+          "expected": "URL should be removed from the list",
+          "actual": "URL /my-custom-url was removed from the list. Other URLs remain intact.",
+          "screenshot": "Custom URL Creation_step20_url_deleted.png"
         }
       ],
-      "issues": [
-        "Delete icon in URL row appears to have same behavior as edit icon - both open the edit form. Unable to delete URLs via the row action icons."
-      ]
+      "issues": []
     }
   ],
   "observations": [
-    "URL Management is accessed per-page via Content > Pages > [Page] > Advanced > S.E.O., not as a global setting",
-    "The duplicate URL check only validates against existing custom URLs (TabUrls), not against system-generated automatic URLs. This allows creating a custom URL that matches an automatic URL.",
-    "URL path cleaning using FriendlyUrlController.CleanNameForUrl removes special characters, spaces, and invalid URL characters, replacing them with hyphens",
-    "Query String field only appears when URL Type is set to Redirect (301)",
-    "The code suggests a DeleteCustomUrl method exists in UrlManagementServiceController.cs, but the UI delete icon behavior needs investigation",
-    "Both status codes Active (200) and Redirect (301) work correctly for URL creation"
+    "Custom URLs are managed at the page level under Content > Pages > [Page] > Advanced > S.E.O. tab, not in a centralized URL Management section",
+    "The URL cleaning functionality uses FriendlyUrlController.CleanNameForUrl() which removes special characters and replaces spaces with hyphens",
+    "When editing a custom URL path, the system automatically creates a 301 redirect from the old URL to maintain backwards compatibility",
+    "The Query String field only appears when URL Type is set to Redirect (301), not for Active (200) URLs",
+    "The UI has two icons per custom URL: first icon is delete (trash), second icon is edit (pencil) - order is reversed from typical conventions",
+    "Duplicate URL detection uses FriendlyUrlController.ValidateUrl() and suggests incrementing numbers as alternatives",
+    "Site Alias dropdown allows selecting different portal aliases including language-specific ones (e.g., localhost:8081/en-us, localhost:8081/es-es)"
   ],
   "summary": {
     "total_scenarios": 8,
-    "passed": 7,
-    "failed": 1,
-    "pass_rate": "87.5%"
+    "passed": 8,
+    "failed": 0,
+    "pass_rate": "100%"
   }
 }

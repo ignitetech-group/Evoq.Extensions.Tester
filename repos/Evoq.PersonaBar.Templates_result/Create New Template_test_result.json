@@ -5,143 +5,176 @@
     "feature_name": "Create New Template",
     "feature_description": "Allows administrators to create new page templates with name, description, and layout selection",
     "feature_priority": "Top",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:48:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Navigate to Templates Panel",
+      "scenario_name": "Create template with valid name and description",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
           "action": "Navigate to Admin > Manage > Templates",
-          "expected": "Templates panel should open showing Page Templates heading and Add Template button",
-          "actual": "Templates panel opened successfully with Page Templates heading and Add Template button visible",
-          "screenshot": "Create_New_Template_step01_templates_panel.png"
+          "expected": "Templates page loads with Add Template button",
+          "actual": "Templates page loaded successfully showing existing templates and Add Template button",
+          "screenshot": "Create New Template_step01_templates_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Add Template button",
+          "expected": "Add Template form appears with name, description, and layout selection fields",
+          "actual": "Form appeared with Template Name*, Description, and Page Template* fields. Cavalier - Main was pre-selected",
+          "screenshot": "Create New Template_step02_add_template_form.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Enter 'Test Template Valid' as name and description text",
+          "expected": "Values are entered in the form fields",
+          "actual": "Values entered successfully in both fields",
+          "screenshot": "Create New Template_step03_valid_inputs.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click Create button",
+          "expected": "Template is created and appears in the list",
+          "actual": "Template 'Test Template Valid' was created successfully and appeared in the templates list",
+          "screenshot": "Create New Template_step04_template_created.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Create template when no existing templates",
+      "scenario_name": "Select different layout templates",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Click Add Template button when no templates exist",
-          "expected": "System should show appropriate message about needing existing templates",
-          "actual": "System correctly displayed message: 'You must save an existing page as a template prior to create a new template.'",
-          "screenshot": "Create_New_Template_step02_no_templates_error.png"
+          "action": "Click Add Template button and select different layout template",
+          "expected": "User can select different layout templates, selection indicator moves",
+          "actual": "Clicked on 'Test Template Page' layout and the green checkmark moved from 'Cavalier - Main' to 'Test Template Page'",
+          "screenshot": "Create New Template_step05_select_different_layout.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Create template with valid name and description",
-      "status": "FAIL",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Navigate to Pages panel and click Save Page Template > Evoq Page Template to create initial template",
-          "expected": "Save Page Template form should appear with Template Name and Description fields",
-          "actual": "Save Page Template form appeared correctly with Template Name* and Description fields",
-          "screenshot": "Create_New_Template_step03_save_page_template_form.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Enter template name 'Base Home Template' and description, then click Save",
-          "expected": "Template should be saved successfully and system should redirect to Templates panel with new template visible",
-          "actual": "Server returned 500 Internal Server Error. Template creation failed. GetPageTemplates API also returning 500 errors preventing template list from loading.",
-          "screenshot": "Create_New_Template_step04_500_error_blocking.png"
-        }
-      ],
-      "issues": ["HTTP 500 Internal Server Error from Templates API (GetPageTemplates endpoint)", "Server-side error preventing template creation and retrieval"]
-    },
-    {
-      "scenario_name": "Select different layout templates",
-      "status": "FAIL",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Attempt to test layout template selection in Add Template form",
-          "expected": "Add Template form should display available layout templates for selection",
-          "actual": "Could not test - GetPageTemplates API returns 500 error, preventing templates from loading. The Add Template form requires existing templates as layout options but none could be retrieved due to server error.",
-          "screenshot": "Create_New_Template_step04_500_error_blocking.png"
-        }
-      ],
-      "issues": ["Server 500 error prevents loading of template layouts", "Add Template form cannot function without existing templates"]
-    },
-    {
       "scenario_name": "Validate empty template name shows error",
-      "status": "FAIL",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to test empty template name validation",
-          "expected": "Clicking Save/Create with empty template name should show validation error",
-          "actual": "Could not test - GetPageTemplates API returns 500 error. Template creation form requires existing templates to load first, which failed due to server error.",
-          "screenshot": "Create_New_Template_step04_500_error_blocking.png"
+          "action": "Click Create button with empty template name",
+          "expected": "Validation error message appears for required field",
+          "actual": "Error message 'This field is required.' appeared in red below the Template Name field",
+          "screenshot": "Create New Template_step06_empty_name_validation.png"
         }
       ],
-      "issues": ["Server error prevents access to template creation form with layout templates loaded"]
+      "issues": []
     },
     {
       "scenario_name": "Validate script injection prevention in template name",
-      "status": "FAIL",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to test XSS prevention by entering script tags in template name",
-          "expected": "System should block or sanitize script tags in template name field",
-          "actual": "Could not test - Server 500 error blocks access to full template creation form. Code review confirms hasScript validation exists: regex /<[\\/]?[ ]{0,}[\\t]{0,}script\\b/gi is used to validate template names.",
-          "screenshot": "Create_New_Template_step04_500_error_blocking.png"
+          "action": "Enter '<script>alert('XSS')</script>' in template name and click Create",
+          "expected": "Script tag is blocked with appropriate error message",
+          "actual": "Error message 'The template name can't contain scripts.' appeared in red, preventing XSS attack",
+          "screenshot": "Create New Template_step07_script_injection_validation.png"
         }
       ],
-      "issues": ["Server error prevents testing of XSS validation"]
+      "issues": []
     },
     {
       "scenario_name": "Cancel template creation",
-      "status": "FAIL",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to test Cancel button functionality",
-          "expected": "Cancel button should close the Add Template form without saving",
-          "actual": "Could not test Cancel functionality in Add Template form - server 500 error prevents the form from loading properly with layout templates.",
-          "screenshot": "Create_New_Template_step04_500_error_blocking.png"
+          "action": "Click Cancel button on Add Template form",
+          "expected": "Form closes without creating a template",
+          "actual": "Form was dismissed and returned to template list view without creating a new template",
+          "screenshot": "Create New Template_step08_cancel_form.png"
         }
       ],
-      "issues": ["Server error prevents access to template creation form"]
+      "issues": []
+    },
+    {
+      "scenario_name": "Special characters in template name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter template name with special characters: @#$%^&*()_+-=[]{}|;':\",./<>?/~`",
+          "expected": "Special characters are accepted (except script tags)",
+          "actual": "Special characters were accepted and template was created successfully",
+          "screenshot": "Create New Template_step09_special_characters.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify template with special characters appears in list",
+          "expected": "Template appears in list with special characters displayed",
+          "actual": "Template 'Test @#$%^&*()_+-=[]{}|;':\",./<>?/~` Special!' appeared in the templates list",
+          "screenshot": "Create New Template_step10_special_chars_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Maximum length validation (50 characters)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter template name exceeding 50 characters",
+          "expected": "Input is truncated to 50 characters due to maxlength attribute",
+          "actual": "Input was automatically truncated to 50 characters: 'This is a very long template name that exceeds the'",
+          "screenshot": "Create New Template_step11_max_length_test.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "No template selected validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Deselect all layout templates and attempt to create",
+          "expected": "Validation error appears requiring template selection",
+          "actual": "Error message 'You need select a template to create new template.' appeared in pink banner",
+          "screenshot": "Create New Template_step12_no_template_selected.png"
+        }
+      ],
+      "issues": []
     },
     {
       "scenario_name": "Verify new template appears in list after creation",
-      "status": "FAIL",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to verify template appears in list after successful creation",
-          "expected": "Newly created template should appear in the templates list",
-          "actual": "Could not test - Template creation failed due to 500 server error, and template list itself cannot load due to the same API error.",
-          "screenshot": "Create_New_Template_step04_500_error_blocking.png"
+          "action": "Verify all created templates appear in the template list",
+          "expected": "All newly created templates are visible in the list",
+          "actual": "Template list shows 5 templates including 'Test Template Valid' and 'Test @#$%^&*()_+-=[]{}|;':\",./<>?/~` Special!' created during testing",
+          "screenshot": "Create New Template_step14_final_list_verification.png"
         }
       ],
-      "issues": ["Server error prevents template creation and list loading"]
+      "issues": []
     }
   ],
   "observations": [
-    "GetPageTemplates API endpoint consistently returns HTTP 500 Internal Server Error",
-    "The Templates panel UI correctly loads with Page Templates heading, Search box, and Add Template button",
-    "When no templates exist (or cannot be loaded), clicking Add Template shows the message: 'You must save an existing page as a template prior to create a new template' - this is expected behavior per code review",
-    "Save Page Template form (accessed via Pages > Save Page Template > Evoq Page Template) correctly displays Template Name* and Description fields",
-    "Code review confirms the feature has proper validation: template name is required, script injection is prevented via regex validation, and templateId (layout selection) is required",
-    "The server-side issue appears to be with the PageTemplateController.GetTemplates() method or related template retrieval logic",
-    "Multiple API calls to the Templates service are failing with 500 errors, suggesting a systemic backend issue rather than UI problem"
+    "The default layout template (Cavalier - Main) is automatically pre-selected when opening the Add Template form",
+    "Script injection prevention uses regex pattern to detect <script> tags in the template name",
+    "The maximum length for template name is 50 characters (enforced via HTML maxlength attribute)",
+    "Newly created templates can immediately be used as layout templates for creating more templates",
+    "Template thumbnails are generated automatically after template creation"
   ],
   "summary": {
-    "total_scenarios": 8,
-    "passed": 2,
-    "failed": 6,
-    "pass_rate": "25%"
+    "total_scenarios": 9,
+    "passed": 9,
+    "failed": 0,
+    "pass_rate": "100%"
   }
 }

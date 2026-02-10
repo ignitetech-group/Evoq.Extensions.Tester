@@ -5,157 +5,171 @@
     "feature_name": "Draft Publishing",
     "feature_description": "Publish draft content to make it live and visible to users",
     "feature_priority": "High",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T15:05:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Publish current draft via page-level Publish button",
+      "scenario_name": "Publish current draft",
       "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigated to Publish Test Page and entered Edit mode",
-          "expected": "Page enters edit mode with HTML module visible",
-          "actual": "Page entered edit mode successfully, HTML module with content '[Updated for publish test]' visible in LeftPane",
-          "screenshot": "Draft Publishing_step01_edit_mode.png"
+          "action": "Login as host user and navigate to Home page",
+          "expected": "Successfully logged in with edit capabilities",
+          "actual": "Successfully logged in as SuperUser Account",
+          "screenshot": "Draft Publishing_step00_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Located HTML module content and inline editor toolbar",
-          "expected": "HTML module content editable via inline editor",
-          "actual": "Found HTML module 957 with existing content, inline editor toolbar appeared",
-          "screenshot": "Draft Publishing_step03_html_module_content.png"
+          "action": "Enable Edit mode from Persona Bar",
+          "expected": "Edit mode enabled with module editing controls visible",
+          "actual": "Edit mode enabled, module panes and Actions menus visible",
+          "screenshot": "Draft Publishing_step01_edit_mode.png"
         },
         {
           "step_number": 3,
-          "action": "Modified content by adding '[Updated for publish test]' text",
-          "expected": "Content modified and ready for publishing",
-          "actual": "Content was modified successfully, Publish button became available at bottom of page",
-          "screenshot": "Draft Publishing_step05_content_modified.png"
+          "action": "Click on HTML module to open inline editor",
+          "expected": "Inline editor opens for content editing",
+          "actual": "Inline editor toolbar appeared with formatting options",
+          "screenshot": "Draft Publishing_step03_inline_editor.png"
         },
         {
           "step_number": 4,
-          "action": "Clicked Publish button to publish the draft content",
-          "expected": "Content published successfully, page returns to view mode",
-          "actual": "Error dialog appeared: 'Another user has taken action on the page and its state has been changed. Please, refresh the page to see the current state.'",
-          "screenshot": "Draft Publishing_step06_publish_error.png"
+          "action": "Add '[DRAFT TEST]' text to content",
+          "expected": "Draft content saved via auto-save",
+          "actual": "Content modified and auto-saved (5 second interval)",
+          "screenshot": "Draft Publishing_step04_content_modified.png"
         },
         {
           "step_number": 5,
-          "action": "Refreshed page and retried publishing",
-          "expected": "Publishing succeeds after refresh",
-          "actual": "Same error occurred on retry: 'Another user has taken action on the page and its state has been changed.'",
-          "screenshot": "Draft Publishing_step07_publish_error_retry.png"
+          "action": "Click Publish button",
+          "expected": "Draft content published successfully",
+          "actual": "Error dialog: 'Another user has taken action on the page and its state has been changed'",
+          "screenshot": "Draft Publishing_step06_publish_error.png"
         },
         {
           "step_number": 6,
-          "action": "Investigated page settings via Content > Pages panel",
-          "expected": "Find page configuration to understand publish failure",
-          "actual": "Discovered page has 'Versioning: Off' and 'Workflow: Off' settings, which explains the publish conflict errors",
-          "screenshot": "Draft Publishing_step09_page_details_versioning_off.png"
+          "action": "Refresh page and retry Publish",
+          "expected": "Publish succeeds after refresh",
+          "actual": "Same error persists: 'Another user has taken action on the page'",
+          "screenshot": "Draft Publishing_step08_publish_error_again.png"
         }
       ],
       "issues": [
-        "Page-level Publish button fails with 'Another user has taken action' error when page versioning is disabled",
-        "The Publish/Discard buttons appear in Edit mode even when page versioning is Off, creating confusing UX",
-        "Error message is misleading - suggests concurrent user conflict when actual issue is versioning configuration"
+        "Publish operation fails with WorkflowException conflict error even as single user",
+        "Error message indicates state mismatch that should not occur in single-user scenario",
+        "Page versioning system may have inconsistent state"
+      ]
+    },
+    {
+      "scenario_name": "View published vs draft",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View page in Edit mode to see draft content",
+          "expected": "Draft content '[DRAFT TEST]' visible in edit mode",
+          "actual": "Draft content '[DRAFT TEST]' visible next to 'Learn More' link",
+          "screenshot": "Draft Publishing_step09_draft_visible_editmode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to print mode (?dnnprintmode=true) to view published content",
+          "expected": "Published content shown without draft changes",
+          "actual": "Draft content '[DRAFT TEST]' still visible in print mode",
+          "screenshot": "Draft Publishing_step10_printmode_shows_draft.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Check page versioning settings",
+          "expected": "Versioning enabled for proper draft/published separation",
+          "actual": "Versioning: Off - explains why draft shows in all modes",
+          "screenshot": "Draft Publishing_step14_page_details_versioning_off.png"
+        }
+      ],
+      "issues": [
+        "Page versioning is disabled (Versioning: Off), causing draft content to display immediately",
+        "Without versioning, there is no distinction between draft and published content",
+        "Discard/Publish buttons still appear despite versioning being off, creating confusion"
+      ]
+    },
+    {
+      "scenario_name": "Unpublish/Discard content",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Discard button in edit bar",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog: 'Are you sure you want to discard the changes?'",
+          "screenshot": "Draft Publishing_step12_discard_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Confirm discard action",
+          "expected": "Draft changes discarded, reverts to published version",
+          "actual": "Error dialog: 'Another user has taken action on the page and its state has been changed'",
+          "screenshot": "Draft Publishing_step13_discard_conflict_error.png"
+        }
+      ],
+      "issues": [
+        "Discard operation fails with same conflict error as Publish",
+        "Both Publish and Discard API endpoints fail with WorkflowException",
+        "Page state appears to be corrupted or inconsistent in test environment"
       ]
     },
     {
       "scenario_name": "Schedule publishing",
-      "status": "FAIL",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Attempted to locate schedule publishing option in page settings",
-          "expected": "Find 'Enable Scheduling' option to test scheduled publishing",
-          "actual": "Found 'Enable Scheduling: Off' toggle in page details panel but could not test as page versioning is disabled",
-          "screenshot": "Draft Publishing_step09_page_details_versioning_off.png"
-        }
-      ],
-      "issues": [
-        "Cannot test schedule publishing because page versioning is disabled",
-        "Enable Scheduling toggle exists but requires versioning to be enabled"
-      ]
-    },
-    {
-      "scenario_name": "View published vs draft content",
-      "status": "FAIL",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Attempted to compare published and draft versions",
-          "expected": "See difference between published and draft content",
-          "actual": "Cannot compare versions because page versioning is disabled (Versioning: Off). With versioning off, there is no draft/published distinction at page level.",
-          "screenshot": "Draft Publishing_step09_page_details_versioning_off.png"
-        }
-      ],
-      "issues": [
-        "Page versioning disabled prevents testing published vs draft comparison",
-        "No UI indication that versioning is off until checking page settings"
-      ]
-    },
-    {
-      "scenario_name": "Verify page versioning configuration",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Accessed Content > Pages panel in persona bar",
-          "expected": "View page configuration settings",
-          "actual": "Successfully accessed Pages panel showing page list",
-          "screenshot": "Draft Publishing_step09_page_details_versioning_off.png"
+          "action": "Navigate to Pages > Home > Details tab in Persona Bar",
+          "expected": "Page settings displayed with scheduling option",
+          "actual": "Page details visible showing 'Enable Scheduling' toggle",
+          "screenshot": "Draft Publishing_step15_enable_scheduling_option.png"
         },
         {
           "step_number": 2,
-          "action": "Selected Publish Test Page and viewed Details tab",
-          "expected": "See versioning and workflow settings",
-          "actual": "Page details showed: Page ID: 73, Versioning: Off, Workflow: Off, Workflow type: Direct Publish",
-          "screenshot": "Draft Publishing_step09_page_details_versioning_off.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Checked Version Test Page configuration",
-          "expected": "Verify if other test pages have versioning enabled",
-          "actual": "Version Test Page also has Versioning: Off and Workflow: Off",
-          "screenshot": "Draft Publishing_step10_version_test_page_versioning_off.png"
+          "action": "Verify scheduling option availability",
+          "expected": "Enable Scheduling toggle present",
+          "actual": "Enable Scheduling toggle present (currently Off), Workflow dropdown shows 'Direct Publish'",
+          "screenshot": "Draft Publishing_step15_enable_scheduling_option.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Edit HTML content via inline editor",
+      "scenario_name": "Test publish permissions",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Clicked on HTML module content in Edit mode to activate inline editor",
-          "expected": "Inline WYSIWYG editor appears with formatting toolbar",
-          "actual": "Inline editor activated with toolbar showing Bold, Italic, Underline, Lists, Link, HTML, Insert Image, Advanced Editor options",
-          "screenshot": "Draft Publishing_step04_before_publish.png"
+          "action": "Navigate to Pages > Home > Permissions tab",
+          "expected": "Permission grid displayed with role-based access controls",
+          "actual": "Permissions grid shows roles: Administrators, Content Editors, Content Managers, Everyone, Registered Users",
+          "screenshot": "Draft Publishing_step16_permissions_grid.png"
         },
         {
           "step_number": 2,
-          "action": "Typed new content into the inline editor",
-          "expected": "Content updates in real-time",
-          "actual": "Content '[Updated for publish test]' was added successfully",
-          "screenshot": "Draft Publishing_step05_content_modified.png"
+          "action": "Verify Content and Edit Tab permissions for roles",
+          "expected": "Administrative roles have Content/Edit Tab permissions for publishing",
+          "actual": "Administrators, Content Editors, Content Managers have full permissions including Content and Edit Tab (required for publishing). Everyone and Registered Users have no permissions.",
+          "screenshot": "Draft Publishing_step16_permissions_grid.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Page versioning is disabled (Versioning: Off) on test pages including 'Publish Test Page' and 'Version Test Page'",
-    "Page workflow is set to 'Direct Publish' which means no approval workflow is required",
-    "The Publish/Discard buttons appear in Edit mode even when page versioning is disabled, which is misleading",
-    "The error message 'Another user has taken action on the page' appears when attempting to publish with versioning disabled - this is a confusing error message that doesn't indicate the actual configuration issue",
-    "Code review shows VersionController.cs implements PublishVersion(), GetPublishedVersion(), and RollBackVersion() methods for module content versioning, but these require page versioning to be enabled",
-    "HtmlTextController.cs implements IVersionable interface with module-level versioning support",
-    "The HTML module inline editor works correctly for content editing, but the page-level publish workflow fails",
-    "Schedule publishing feature exists (Enable Scheduling toggle) but could not be tested due to versioning being disabled",
-    "Multiple HTML modules (957, 958, 1148) exist on the test page"
+    "Page versioning is disabled (Versioning: Off) on the Home page, which affects draft/publish behavior",
+    "Workflow is set to 'Direct Publish' meaning content goes live immediately without approval steps",
+    "The auto-save feature in the HTML module saves content every 5 seconds to prevent data loss",
+    "Both Publish and Discard operations fail with 'Another user has taken action' error, suggesting page state management issues in the test environment",
+    "The PublishDate property exists in HtmlTextInfo code for scheduled publishing, but no direct UI exposure was found in the content editor",
+    "Schedule publishing is available at PAGE level via 'Enable Scheduling' toggle, not at module content level",
+    "Publish permissions are controlled through page-level permissions (Content and Edit Tab columns)"
   ],
   "summary": {
     "total_scenarios": 5,

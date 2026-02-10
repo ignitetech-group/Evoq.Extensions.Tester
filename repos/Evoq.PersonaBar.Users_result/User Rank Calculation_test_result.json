@@ -5,27 +5,27 @@
     "feature_name": "User Rank Calculation",
     "feature_description": "Calculate and display user's rank based on reputation points",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T12:30:00Z",
+    "test_date": "2026-02-09T16:20:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Verify rank is displayed in User Activity tab",
+      "scenario_name": "Verify rank display in Activity Tab",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigated to PersonaBar > Users panel",
-          "expected": "Users list should be displayed",
-          "actual": "Users list displayed with 21 users showing",
-          "screenshot": "User_Rank_Calculation_step00_login_verified.png"
+          "action": "Navigate to Admin > Users panel",
+          "expected": "Users list is displayed with user activity icons",
+          "actual": "Users list displayed with 15 users showing profile, settings, roles, and activity icons for each user",
+          "screenshot": "User Rank Calculation_step00_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Clicked User Activity icon for Claude TestCreate user",
-          "expected": "User Activity panel should open showing rank, reputation, and experience",
-          "actual": "User Activity panel opened showing Rank: 14, Reputation: 5, Experience: 5, along with Engagement, Influence, and Total Contributions metrics",
-          "screenshot": "User_Rank_Calculation_step01_rank_displayed.png"
+          "action": "Click User Activity icon for Test User12",
+          "expected": "Activity tab expands showing rank information",
+          "actual": "Activity tab expanded showing: Rank: 3, Reputation: 5, Experience: 5, Engagement: 0, Influence: 0, Recent Activity with 'Joined Site' entry",
+          "screenshot": "User Rank Calculation_step01_activity_tab_with_rank.png"
         }
       ],
       "issues": []
@@ -36,27 +36,27 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Viewed User Activity for Claude TestCreate (Reputation: 5)",
-          "expected": "Rank should be displayed based on reputation points",
-          "actual": "Rank displayed as 14 for user with Reputation 5",
-          "screenshot": "User_Rank_Calculation_step01_rank_displayed.png"
+          "action": "Check rank for Test User11 (same reputation as Test User12)",
+          "expected": "Users with same reputation points should have same rank",
+          "actual": "Test User11 shows Rank: 3, Reputation: 5, Experience: 5 - same as Test User12, confirming tied scores are handled correctly",
+          "screenshot": "User Rank Calculation_step02_second_user_rank.png"
         },
         {
           "step_number": 2,
-          "action": "Viewed User Activity for Claude TestUser (Reputation: 2)",
-          "expected": "User with lower reputation should have a higher (worse) rank number",
-          "actual": "Rank displayed as 26 for user with Reputation 2, confirming that lower reputation results in higher rank number",
-          "screenshot": "User_Rank_Calculation_step02_different_rank.png"
+          "action": "Check rank for Content Editor user (higher reputation)",
+          "expected": "User with higher reputation should have better (lower) rank number",
+          "actual": "Content Editor shows Rank: 2, Reputation: 7, Experience: 11 - better rank than test users with reputation of 5, confirming rank calculation is working correctly",
+          "screenshot": "User Rank Calculation_step03_different_rank_user.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Rank feature is only displayed for DNNSOCIAL SKU (Evoq Engage) as confirmed in code (utilities.getSKU() === 'DNNSOCIAL')",
-    "Rank calculation is based on counting users with higher reputation points + 1, as defined in SQL stored procedure",
-    "Edit Points functionality is available to modify reputation and experience points",
-    "The Activity tab also displays Engagement, Influence, and Total Contributions metrics alongside rank"
+    "The rank display is only visible when SKU is DNNSOCIAL (Evoq Engage), as confirmed by code review of UserActivityDetails component (line 26: this.showSocial = utilities.getSKU() === 'DNNSOCIAL')",
+    "Rank is calculated in the database stored procedure PersonaBar_GetUserActivityDetail by counting users with higher reputation points + 1",
+    "Users with zero or no reputation points would show rank as -1 according to the SQL code, but this was not observed during testing as all tested users had reputation points",
+    "The Edit Points feature is available to administrators for manually adjusting reputation and experience points"
   ],
   "summary": {
     "total_scenarios": 2,

@@ -5,94 +5,164 @@
     "feature_name": "Layout Versioning",
     "feature_description": "Tracks changes to layouts and maintains version history for rollback and publishing workflows.",
     "feature_priority": "High",
-    "test_date": "2026-01-16T10:30:00Z",
+    "test_date": "2026-02-09T15:10:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
+    {
+      "scenario_name": "Track layout changes and create version",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login and navigate to Home page in Edit mode",
+          "expected": "Page loads in edit mode with Content Layout modules visible",
+          "actual": "Page loaded in edit mode showing Content Layout modules with panes F30A_Pane1-4 and 9977_Pane1-4",
+          "screenshot": "Layout Versioning_step01_edit_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Content Layout module to view column sizes",
+          "expected": "Column sizes should be displayed as percentages",
+          "actual": "Column sizes displayed: 33%, 17%, 25%, 25%",
+          "screenshot": "Layout Versioning_step04_content_layout_column_sizes.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Drag resize handle to change column sizes",
+          "expected": "Column sizes should change and trigger version tracking via UpdateLayoutWithColumnSizes API",
+          "actual": "Column sizes changed to: 38%, 12%, 25%, 25%. Change was tracked.",
+          "screenshot": "Layout Versioning_step06_new_column_sizes.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View version history",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Page History button in edit bar",
+          "expected": "Page History panel should open showing list of versions",
+          "actual": "Page History panel opened showing Version 3 (Draft) and Version 2 (Published)",
+          "screenshot": "Layout Versioning_step08_page_history.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify version details are displayed",
+          "expected": "Each version should show date, user, and state (Draft/Published)",
+          "actual": "Version 3 shows Draft state, Version 2 shows Published state, both by SuperUser Account with timestamps",
+          "screenshot": "Layout Versioning_step08_page_history.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Compare versions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select both Version 3 and Version 2 checkboxes and click Compare",
+          "expected": "Version comparison view should open showing differences",
+          "actual": "Comparison view opened showing side-by-side comparison with Version 3 on top and Version 2 on bottom, highlighting insertions (teal) and deletions (red)",
+          "screenshot": "Layout Versioning_step09_version_comparison.png"
+        }
+      ],
+      "issues": []
+    },
     {
       "scenario_name": "Publish version",
       "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Version Test Page in edit mode",
-          "expected": "Page opens in edit mode with Publish/Discard buttons visible",
-          "actual": "Page opened in edit mode with content 'Version 1 - Initial Content' and Publish/Discard buttons visible at bottom",
-          "screenshot": "Layout_Versioning_step05_version_test_page_edit.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click Publish button to publish current version",
-          "expected": "Page version should be published successfully",
+          "action": "Click Publish button to publish draft version",
+          "expected": "Draft version should be published, becoming the new published version",
           "actual": "Error dialog appeared: 'Another user has taken action on the page and its state has been changed. Please, refresh the page to see the current state.'",
-          "screenshot": "Layout_Versioning_step06_publish_conflict_error.png"
+          "screenshot": "Layout Versioning_step07_publish_error.png"
         }
       ],
-      "issues": ["Publish operation fails with page state conflict error - indicates versioning conflict detection but prevents normal publish workflow"]
+      "issues": ["Publish operation failed with conflict detection error. This may be due to concurrent page state changes from previous test runs or a versioning state mismatch. The error is a safety mechanism but prevented testing of successful publish."]
     },
     {
-      "scenario_name": "Discard changes",
+      "scenario_name": "Discard changes (Rollback)",
       "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Click Discard button on Version Test Page",
-          "expected": "Confirmation dialog should appear asking to confirm discard",
-          "actual": "Confirmation dialog appeared: 'Are you sure you want to discard the changes?' with Cancel and Discard buttons",
-          "screenshot": "Layout_Versioning_step07_discard_confirmation.png"
+          "action": "Click Discard button",
+          "expected": "Confirmation dialog should appear",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to discard the changes?'",
+          "screenshot": "Layout Versioning_step10_discard_confirmation.png"
         },
         {
           "step_number": 2,
-          "action": "Confirm discard by clicking Discard button in dialog",
-          "expected": "Changes should be discarded and page should return to published state",
+          "action": "Confirm discard to rollback to published version",
+          "expected": "Draft version should be discarded and page should revert to last published state",
           "actual": "Error dialog appeared: 'Another user has taken action on the page and its state has been changed. Please, refresh the page to see the current state.'",
-          "screenshot": "Layout_Versioning_step08_discard_conflict_error.png"
+          "screenshot": "Layout Versioning_step11_discard_error.png"
         }
       ],
-      "issues": ["Discard operation fails with same page state conflict error as Publish - both versioning operations blocked"]
+      "issues": ["Discard operation failed with same conflict detection error as Publish. Both Publish and Discard failed due to page state mismatch, possibly from accumulated test changes."]
     },
     {
-      "scenario_name": "Verify page versioning is enabled",
+      "scenario_name": "Verify site versioning settings",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Site Settings > Site Behavior > More to check page versioning settings",
-          "expected": "Page versioning settings should be visible and configurable",
-          "actual": "Page Versioning settings found - Enable Page Versioning: ON, Max Versions: 10",
-          "screenshot": "Layout_Versioning_step02_versioning_settings.png"
+          "action": "Navigate to Settings > Site Behavior > More to view versioning settings",
+          "expected": "Versioning settings should be visible and configurable",
+          "actual": "Versioning settings displayed: Enable Page Versioning: On, Maximum Number of Page Versions Kept: 10, Enable File Versioning: On, Maximum Number of File Versions Kept: 5",
+          "screenshot": "Layout Versioning_step03_site_versioning_enabled.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Access Version History UI",
-      "status": "FAIL",
+      "scenario_name": "Get latest version behavior",
+      "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Enter page edit mode and look for Version History option in Content Layout module",
-          "expected": "Version History UI should be accessible from Content Layout module as indicated in feature documentation",
-          "actual": "No Version History UI found in Content Layout module. Edit mode shows panes with Add Module options but no version history access. Code review confirms versioning is backend-only integrated with page workflow.",
-          "screenshot": "Layout_Versioning_step03_edit_mode_content_layout.png"
+          "action": "Verify Page History shows correct latest version",
+          "expected": "Most recent version should be listed at top with correct state",
+          "actual": "Version 3 (Draft) shown as latest version in Page History panel",
+          "screenshot": "Layout Versioning_step08_page_history.png"
         }
       ],
-      "issues": ["Feature documentation indicates 'Page Edit Mode > Content Layout Module > Version History' but no such UI element exists - Layout Versioning is a backend feature only"]
+      "issues": []
+    },
+    {
+      "scenario_name": "Get published version behavior",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify Page History shows published version correctly",
+          "expected": "Published version should be clearly marked with Published state",
+          "actual": "Version 2 shown with 'Published' state in Page History panel",
+          "screenshot": "Layout Versioning_step08_page_history.png"
+        }
+      ],
+      "issues": []
     }
   ],
   "observations": [
-    "Layout Versioning is a BACKEND feature integrated with DNN's page versioning system, not a standalone UI accessible from Content Layout module",
-    "Code review of VersionController.cs confirms versioning methods exist: TrackModuleChange, PublishVersion, RollBackVersion, DeleteVersion, GetLatestVersion, GetPublishedVersion, GetVersion (with caching)",
-    "The UI Location 'Page Edit Mode > Content Layout Module > Version History' mentioned in feature documentation does NOT exist as a visible UI element",
-    "Version operations (Publish/Discard) are controlled through page-level workflow buttons, not module-specific controls",
-    "Persistent page state conflict error prevents testing of actual versioning operations - both Publish and Discard fail with 'Another user has taken action' error",
-    "Test scenarios for 'Rollback to previous version', 'Delete version', 'Get latest version', 'Get published version', and 'Test version caching' could not be tested via UI as no direct UI access exists for these operations",
-    "The VersionRepository.cs uses stored procedures: ContentLayout_Versions_GetAll, ContentLayout_Versions_Get, ContentLayout_Versions_Delete, ContentLayout_Versions_Update, ContentLayout_Versions_Add"
+    "Layout Versioning is tightly integrated with DNN's Page Versioning System (Tab Change Tracker)",
+    "Column size changes trigger the UpdateLayoutWithColumnSizes API which calls TrackModuleChange in VersionController",
+    "The version comparison feature shows insertions (teal/green) and deletions (red) between versions",
+    "Publish and Discard operations show a conflict detection error when the page state has changed. This appears to be a safety mechanism but prevented completion of those tests. Research of the code confirms this is intentional behavior from DnnTabVersionException.",
+    "The VersionController uses caching (DataCache) with cache key pattern 'ContentLayoutVersion_{moduleId}_{version}'",
+    "Version data includes: ModuleId, Version number, ColumnSizes, ColumnCssClasses, AreCustomColumnSizes, and IsPublished flag",
+    "Delete version functionality exists in code (VersionController.DeleteVersion) but no UI control was found to test it directly"
   ],
   "summary": {
-    "total_scenarios": 4,
-    "passed": 1,
-    "failed": 3,
-    "pass_rate": "25%"
+    "total_scenarios": 8,
+    "passed": 6,
+    "failed": 2,
+    "pass_rate": "75%"
   }
 }

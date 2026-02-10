@@ -5,7 +5,7 @@
     "feature_name": "Incremental Indexing",
     "feature_description": "Indexes only changed content since last crawl to improve performance.",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T13:46:00Z",
+    "test_date": "2026-02-09T15:28:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,17 +15,24 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Scheduler panel and locate Search: File Crawler task",
-          "expected": "Task should be visible in scheduler with task history available",
-          "actual": "Search: File Crawler task found with frequency of Every 1 Day and enabled status",
-          "screenshot": "Incremental_Indexing_step02_scheduler_tab.png"
+          "action": "Navigate to Settings > Scheduler",
+          "expected": "Scheduler page loads with task list",
+          "actual": "Scheduler page loaded successfully showing all scheduled tasks including Search: File Crawler",
+          "screenshot": "Incremental Indexing_step01_scheduler_page.png"
         },
         {
           "step_number": 2,
-          "action": "View Task History for Search: File Crawler",
-          "expected": "History should show 'Scanning for files changed since: [date]' indicating last crawl tracking",
-          "actual": "Task History shows 'Scanning for files changed since: 1/16/2026 1:16 PM' confirming last crawl date is tracked",
-          "screenshot": "Incremental_Indexing_step03_task_history.png"
+          "action": "Click on SCHEDULER tab to view task configurations",
+          "expected": "List of all scheduler tasks displayed",
+          "actual": "Scheduler tab shows all tasks including Search: File Crawler configured to run Every 1 Day",
+          "screenshot": "Incremental Indexing_step02_scheduler_list.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click on Task History icon for Search: File Crawler",
+          "expected": "Task history shows last crawl date information",
+          "actual": "Task history expanded showing 'Scanning for files changed since: 2/9/2026 2:16 PM' - confirming last crawl date is tracked",
+          "screenshot": "Incremental Indexing_step03_file_crawler_history.png"
         }
       ],
       "issues": []
@@ -36,17 +43,24 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Examine Task History logs for file change detection",
-          "expected": "Logs should show count of new or changed files since last crawl",
-          "actual": "Logs show 'Number of new or changed files since last crawl: 48' indicating the system correctly identifies changed files",
-          "screenshot": "Incremental_Indexing_step03_task_history.png"
+          "action": "Review task history for file crawler results",
+          "expected": "History shows count of new/changed files vs total files",
+          "actual": "Task history shows 'Number of files encountered: 76' and 'Number of new or changed files since last crawl: 76' demonstrating the system identifies changed files",
+          "screenshot": "Incremental Indexing_step03_file_crawler_history.png"
         },
         {
           "step_number": 2,
-          "action": "Verify File Crawler Results breakdown",
-          "expected": "Results should include counts for files encountered, changed, shallow indexed, and deep indexed",
-          "actual": "Results show: 135 files encountered, 48 new/changed files, 47 shallow indexed, 1 deep indexed, 1 failed deep index",
-          "screenshot": "Incremental_Indexing_step03_task_history.png"
+          "action": "Click Edit Task for Search: File Crawler and trigger Run Now",
+          "expected": "Task can be manually triggered",
+          "actual": "Task configuration panel opened with Run Now button. Clicked Run Now and received success message: 'Item added to schedule for immediate execution'",
+          "screenshot": "Incremental Indexing_step05_run_now_triggered.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Check HISTORY tab for new run results",
+          "expected": "New run shows incremental indexing statistics",
+          "actual": "New run at 3:27:45 PM shows 'Number of files encountered: 56' and 'Number of new or changed files since last crawl: 35' - confirming only 35 of 56 files were identified as changed",
+          "screenshot": "Incremental Indexing_step07_incremental_results.png"
         }
       ],
       "issues": []
@@ -57,67 +71,46 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Review multiple Task History entries for runs where no files changed",
-          "expected": "When no files have changed since last crawl, the system should report 0 changed files and 0 indexed",
-          "actual": "Multiple history entries (1/16/2026 1:16 PM, 1/15/2026 3:56 PM, 1/14/2026 3:26 PM) show 'Number of new or changed files since last crawl: 0' with all index counts at 0, confirming unchanged files are skipped",
-          "screenshot": "Incremental_Indexing_step04_skip_unchanged.png"
+          "action": "Analyze incremental indexing results from triggered run",
+          "expected": "Files unchanged since last crawl should be skipped",
+          "actual": "Results show 56 files encountered but only 35 new/changed files indexed. This means 21 files (56-35) were skipped because they hadn't changed since the last crawl at 3:16 PM",
+          "screenshot": "Incremental Indexing_step07_incremental_results.png"
         },
         {
           "step_number": 2,
-          "action": "Compare crawl duration between runs with changed vs unchanged files",
-          "expected": "Runs with no changes should complete faster",
-          "actual": "Run with 0 changed files completed in 0.297 seconds vs 0.977 seconds for run with 48 changed files, demonstrating performance improvement",
-          "screenshot": "Incremental_Indexing_step03_task_history.png"
+          "action": "Verify shallow vs deep indexing counts",
+          "expected": "System differentiates between shallow and deep indexing based on file type",
+          "actual": "Results show 'Number of files shallow indexed: 32' and 'Number of files deep indexed: 3' - confirming the system uses different indexing strategies based on file extension whitelist",
+          "screenshot": "Incremental Indexing_step07_incremental_results.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Verify SHA1 hash comparison",
+      "scenario_name": "Verify modification date detection",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Review FileCrawlerController.cs code for SHA1 hash implementation",
-          "expected": "Code should show SHA1 hash being stored and used for file comparison",
-          "actual": "Code review confirmed: IndexedFile class (line 380) stores Sha1Hash property. The CreateIndexedFile method stores the file's SHA1Hash for comparison during subsequent crawls",
-          "screenshot": "Incremental_Indexing_step05_task_settings.png"
-        }
-      ],
-      "issues": ["SHA1 hash comparison is implemented in code but not directly visible in UI task history logs"]
-    },
-    {
-      "scenario_name": "Test modification date detection",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Verify modification date comparison in Task History",
-          "expected": "System should compare file modification dates against last crawl date",
-          "actual": "Task History shows 'Scanning for files changed since: [date]' for each run. Code review confirmed RemoveFilesUnchangedSinceLastRun method (line 306) compares fileInfo.LastModifiedOnDate against lastIndexDate",
-          "screenshot": "Incremental_Indexing_step03_task_history.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Observe incremental behavior when files are modified",
-          "expected": "Only files modified after the last crawl date should be re-indexed",
-          "actual": "History entry from 1/13/2026 shows 8 changed files after a 4-day gap, while subsequent daily runs show 0 changed files when no modifications occurred",
-          "screenshot": "Incremental_Indexing_step03_task_history.png"
+          "action": "Review task history entries to verify modification date comparison",
+          "expected": "System uses file modification dates to determine changed files",
+          "actual": "Task history shows 'Scanning for files changed since: 2/9/2026 3:16 PM' on the new run, confirming the system compares file LastModifiedOnDate against the last crawl timestamp. Code review confirms this at FileCrawlerController.cs line 306: 'if (fileInfo.LastModifiedOnDate > lastIndexDate)'",
+          "screenshot": "Incremental Indexing_step06_history_after_run.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "SHA1 hash comparison is implemented in FileCrawlerController.cs but hash values are not displayed in the UI task history logs - only file counts are shown",
-    "Clock skew handling is implemented in code (line 299: lastIndexDate calculation considers timing between lastIndexedFileModificationDate and LastScheduledRunStartTime) but cannot be practically tested via UI without specific system configuration",
-    "The File Crawler task runs daily by default (Every 1 Day) which is appropriate for incremental indexing of files",
-    "iFilter errors for specific documents (docx, pdf) are logged but do not prevent the crawler from continuing with other files",
-    "The system maintains a persistent record of previously indexed files to enable accurate incremental comparisons"
+    "Code review confirms SHA1 hash is stored in IndexedFile object (line 380: Sha1Hash = fileInfo.SHA1Hash) but the primary incremental check uses modification date comparison rather than hash comparison for performance",
+    "The RemoveFilesUnchangedSinceLastRun method (lines 287-326) implements the core incremental logic: comparing file.LastModifiedOnDate against lastIndexDate",
+    "Clock skew handling is not explicitly visible in the UI but code shows the system uses the earlier of lastIndexedFileDate and LastScheduledRunStartTime (line 299)",
+    "The system maintains a list of previously crawled files (_previousCrawlIndexedFiles) to track what was indexed in the last run",
+    "Index removal is also incremental - files that existed in previous crawl but are now missing get their indexes removed (line 110-111: RemoveIndexesForMissingFiles)"
   ],
   "summary": {
-    "total_scenarios": 5,
-    "passed": 5,
+    "total_scenarios": 4,
+    "passed": 4,
     "failed": 0,
     "pass_rate": "100%"
   }

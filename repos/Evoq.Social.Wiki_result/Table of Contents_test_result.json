@@ -5,84 +5,64 @@
     "feature_name": "Table of Contents",
     "feature_description": "Automatically generate and display table of contents for articles",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T08:45:00Z",
+    "test_date": "2026-02-09T15:47:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "TOC displays with no headings",
+      "scenario_name": "Enable TOC option in article creation",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Wiki article with no headings (only paragraph content)",
-          "expected": "TOC section should be visible and show message for no sections",
-          "actual": "TOC section displayed 'Contents' heading with 'No sections defined' message",
-          "screenshot": "Table of Contents_step01_toc_no_headings.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Enable TOC checkbox in article editor",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Click Edit button on Wiki article to open editor dialog",
-          "expected": "Editor dialog should show 'Display a Table of Contents' checkbox option",
-          "actual": "Editor dialog displayed with 'Display a Table of Contents:' checkbox which was checked/enabled",
-          "screenshot": "Table of Contents_step02_toc_enabled_checkbox.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Generate TOC from headings",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Add HTML content with h2, h3, h4 headings to article (Introduction, Main Section, Subsection One, Subsection Two, Nested Details, Conclusion)",
-          "expected": "Content should be added with proper heading structure",
-          "actual": "Content with multiple heading levels (h2, h3, h4) was successfully added via HTML editor",
-          "screenshot": "Table of Contents_step03_adding_headings.png"
+          "action": "Navigate to Wiki Test page and enable Edit mode",
+          "expected": "Wiki module list appears with article creation option",
+          "actual": "Wiki module displayed with 4 existing articles and Create article button",
+          "screenshot": "Table of Contents_step05_wiki_articles_list.png"
         },
         {
           "step_number": 2,
-          "action": "Publish the article and verify TOC generation",
-          "expected": "TOC should automatically generate from the headings in the content",
-          "actual": "TOC generated correctly showing all headings: Introduction, Main Section, Subsection One, Subsection Two, Nested Details, Conclusion",
-          "screenshot": "Table of Contents_step04_toc_with_headings.png"
+          "action": "Click Create article button",
+          "expected": "Article creation dialog opens with TOC option",
+          "actual": "Create an article dialog opened with 'Display a Table of Contents' checkbox visible and checked by default",
+          "screenshot": "Table of Contents_step07_create_article_dialog.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Fill article form with title, type, content with h2/h3 headings, and tags",
+          "expected": "Form accepts HTML content with headings",
+          "actual": "Form accepted all inputs including HTML content with h2 and h3 heading tags. TOC checkbox remained checked.",
+          "screenshot": "Table of Contents_step08_article_filled.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Test nested headings in TOC",
-      "status": "PASS",
+      "scenario_name": "Verify TOC generation from headings",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Verify nested heading structure in TOC display",
-          "expected": "TOC should display h2 headings as top-level, h3 as nested under h2, h4 as nested under h3",
-          "actual": "TOC correctly displayed hierarchical nested structure: h2 (Introduction, Main Section, Conclusion) with h3 (Subsection One, Subsection Two) nested under Main Section, and h4 (Nested Details) nested under Subsection Two",
-          "screenshot": "Table of Contents_step04_toc_with_headings.png"
+          "action": "Navigate to Wiki article detail page",
+          "expected": "Article content with Table of Contents displayed",
+          "actual": "Wiki article detail pages render as empty - no content visible. The page loads but only shows header/footer with no Wiki module content.",
+          "screenshot": "Table of Contents_step04_wiki_article_view.png"
         }
       ],
-      "issues": []
+      "issues": ["Wiki article detail pages do not render any content in View mode. The Wiki module appears to be misconfigured or the article detail view control is not properly loaded on the page template."]
     }
   ],
   "observations": [
-    "The TOC feature parses h2, h3, and h4 heading tags from article content (h1 is not included based on code review)",
-    "TOC is controlled per-article via 'Display a Table of Contents' checkbox in the article editor",
-    "When no headings exist in article content, TOC shows 'No sections defined' message",
-    "TOC displays as a numbered/lettered hierarchical list (1, 2, 3 for h2; i, ii for h3; a for h4)"
+    "The 'Display a Table of Contents' checkbox is present in the article creation dialog and is enabled by default",
+    "Code review confirms TableOfContentsController.cs parses h2, h3, h4 headings to generate a tree structure for TOC",
+    "Contents.ascx control renders TOC using CSS class 'wiki-toc-container' with JavaScript-based navigation",
+    "Wiki article detail pages render empty content - only header/footer visible, preventing TOC verification",
+    "The article creation form accepts HTML content with heading tags but publish action may have issues"
   ],
   "summary": {
-    "total_scenarios": 4,
-    "passed": 4,
-    "failed": 0,
-    "pass_rate": "100%"
+    "total_scenarios": 2,
+    "passed": 1,
+    "failed": 1,
+    "pass_rate": "50%"
   }
 }

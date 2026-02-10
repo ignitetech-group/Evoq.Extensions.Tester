@@ -5,7 +5,7 @@
     "feature_name": "Post Deletion",
     "feature_description": "Soft delete and permanently delete posts from the activity stream",
     "feature_priority": "High",
-    "test_date": "2026-01-16T07:43:00Z",
+    "test_date": "2026-02-09T16:27:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,24 +15,52 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Activity Feed and identify a text-only post",
-          "expected": "Activity Feed loads with posts visible",
-          "actual": "Activity Feed loaded successfully showing multiple posts including 'Test text-only post - January 16, 2026'",
-          "screenshot": "Post Deletion_step02_before_soft_delete.png"
+          "action": "Navigate to Activity Stream on Community page",
+          "expected": "Activity Stream with posts is visible",
+          "actual": "Activity Stream displayed with test post visible",
+          "screenshot": "Post Deletion_step03_before_delete.png"
         },
         {
           "step_number": 2,
-          "action": "Click Remove link on the post",
+          "action": "Click Remove link on test post",
           "expected": "Confirmation dialog appears",
-          "actual": "Confirmation dialog appeared with message 'Are you sure you want to delete this item?'",
-          "screenshot": "Post Deletion_step03_delete_confirmation_dialog.png"
+          "actual": "Confirmation dialog displayed asking 'Are you sure you want to delete this item?'",
+          "screenshot": "Post Deletion_step04_delete_confirmation.png"
         },
         {
           "step_number": 3,
           "action": "Click Yes to confirm deletion",
           "expected": "Post is removed from the feed",
-          "actual": "Post was successfully removed from the Activity Feed",
-          "screenshot": "Post Deletion_step04_after_soft_delete.png"
+          "actual": "Post was successfully deleted and removed from the activity stream with slide-up animation",
+          "screenshot": "Post Deletion_step05_post_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete post as moderator/admin",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "As superuser (host), view activity stream with posts from other users",
+          "expected": "Remove link visible on other users' posts",
+          "actual": "Remove link visible on Test User12's badge notification post",
+          "screenshot": "Post Deletion_step06_before_mod_delete.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Remove link on another user's post",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog displayed with Yes/No buttons",
+          "screenshot": "Post Deletion_step07_mod_delete_confirm.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Yes to confirm moderator deletion",
+          "expected": "Other user's post is deleted",
+          "actual": "Post was successfully deleted - Test User12's badge post removed from feed",
+          "screenshot": "Post Deletion_step08_mod_delete_success.png"
         }
       ],
       "issues": []
@@ -43,10 +71,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Verify the deleted post no longer appears in the Activity Feed",
-          "expected": "Post should not be visible in the feed after deletion",
-          "actual": "The post 'Test text-only post - January 16, 2026' is no longer visible in the Activity Feed after soft delete confirmation",
-          "screenshot": "Post Deletion_step04_after_soft_delete.png"
+          "action": "After deleting a post, verify feed updates",
+          "expected": "Deleted post no longer appears in the activity stream",
+          "actual": "Deleted posts were immediately removed from the feed without page refresh",
+          "screenshot": "Post Deletion_step05_post_deleted.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify feed order after deletion",
+          "expected": "Remaining posts display in correct order",
+          "actual": "Next post in feed became the first visible post after deletion",
+          "screenshot": "Post Deletion_step08_mod_delete_success.png"
         }
       ],
       "issues": []
@@ -57,96 +92,47 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Identify a post with comments in the Activity Feed",
-          "expected": "Find a post that has comments attached",
-          "actual": "Found post 'Test post from Claude automated testing - January 9, 2026' with 7 comments",
-          "screenshot": "Post Deletion_step05_post_with_comments_before.png"
+          "action": "Click Comment link on a post to open comment form",
+          "expected": "Comment input area appears",
+          "actual": "Comment input area with Reply and Cancel buttons appeared",
+          "screenshot": "Post Deletion_step09_comment_area.png"
         },
         {
           "step_number": 2,
-          "action": "Click Remove link on the post with comments",
+          "action": "Type a test comment and click Reply",
+          "expected": "Comment is added to the post",
+          "actual": "Comment 'Test comment for deletion test' was successfully added and displayed under the post",
+          "screenshot": "Post Deletion_step12_comment_submitted.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Remove link on the post that has the comment",
           "expected": "Confirmation dialog appears",
-          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete this item?'",
-          "screenshot": "Post Deletion_step06_delete_post_with_comments_confirm.png"
+          "actual": "Confirmation dialog displayed asking to delete the item",
+          "screenshot": "Post Deletion_step13_delete_with_comment_confirm.png"
         },
         {
-          "step_number": 3,
-          "action": "Click Yes to confirm deletion",
-          "expected": "Post and all its comments are removed from the feed",
-          "actual": "Post with all 7 comments was successfully removed from the Activity Feed",
-          "screenshot": "Post Deletion_step07_post_with_comments_deleted.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Delete post with attachments",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Identify a post with file attachment in the Activity Feed",
-          "expected": "Find a post that has a file attachment",
-          "actual": "Found post with 'test_document.pdf' attachment (posted 1 minute ago)",
-          "screenshot": "Post Deletion_step08_post_with_attachment_before.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click Remove link on the post with attachment",
-          "expected": "Confirmation dialog appears",
-          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete this item?'",
-          "screenshot": "Post Deletion_step09_delete_attachment_confirm.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Click Yes to confirm deletion",
-          "expected": "Post with attachment is removed from the feed",
-          "actual": "Post with PDF attachment was successfully removed from the Activity Feed",
-          "screenshot": "Post Deletion_step10_attachment_deleted.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Delete post as moderator",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "As SuperUser (moderator), identify another user's activity post",
-          "expected": "Find an activity item from a different user that can be deleted with moderator privileges",
-          "actual": "Found 'Test NewUser received the badge Getting started' - an activity from user Test NewUser (userId 21)",
-          "screenshot": "Post Deletion_step11_moderator_before.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click Remove link on another user's activity",
-          "expected": "Confirmation dialog appears (moderator can delete other users' posts)",
-          "actual": "Confirmation dialog appeared, confirming moderator has permission to delete this item",
-          "screenshot": "Post Deletion_step12_moderator_confirm.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Click Yes to confirm moderator deletion",
-          "expected": "Activity is removed from the feed",
-          "actual": "Test NewUser's badge activity was successfully removed from the Activity Feed using moderator privileges",
-          "screenshot": "Post Deletion_step13_moderator_deleted.png"
+          "step_number": 4,
+          "action": "Click Yes to confirm deletion of post with comment",
+          "expected": "Post and its comment are both deleted",
+          "actual": "Post was deleted along with its comment - both removed from the feed",
+          "screenshot": "Post Deletion_step14_post_with_comment_deleted.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "UI only exposes SoftDelete functionality - there is no UI option for permanent deletion. The Delete API endpoint exists in ActivityStreamServicesController.cs but is not used by the UI JavaScript (dnn.activityStream.ListView.js only calls SoftDelete).",
-    "The 'Permanently delete own post' scenario cannot be tested via UI as there is no permanent delete option available to users.",
-    "The 'Attempt to delete other user's post' scenario cannot be tested for access denial as SuperUser has full moderator privileges. Testing this would require a non-moderator user account.",
-    "All delete operations show a confirmation dialog before proceeding, providing good UX protection against accidental deletions.",
-    "Deleting a post with comments removes the post and all associated comments together.",
-    "The permission model in code confirms: post owner can delete their own posts, moderators can delete any post, and users can delete posts on their own wall if they have wall delete permissions."
+    "The UI only uses SoftDelete API - there is no permanent delete option exposed in the Activity Stream UI. The permanent Delete API exists in the code but is not accessible from the user interface.",
+    "Delete confirmation uses dnnConfirm dialog with Yes/No buttons and 'Are you sure you want to delete this item?' message.",
+    "Posts are removed from the feed immediately with a slideUp animation effect without requiring page refresh.",
+    "Deleting a post also removes all associated comments - they are deleted together as a unit.",
+    "Moderators (users with CanModerate permission) and superusers can delete posts from any user.",
+    "The Share input at top of page uses the same contenteditable pattern as comment inputs, which can cause confusion when trying to interact with specific input fields."
   ],
   "summary": {
-    "total_scenarios": 5,
-    "passed": 5,
+    "total_scenarios": 4,
+    "passed": 4,
     "failed": 0,
     "pass_rate": "100%"
   }

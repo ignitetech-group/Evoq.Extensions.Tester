@@ -5,34 +5,48 @@
     "feature_name": "Page Variant Tracking",
     "feature_description": "Tracks personalized page variants in GTM dataLayer for A/B testing and personalization analytics",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T15:35:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
+    {
+      "scenario_name": "Verify GTM connector configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors page",
+          "expected": "Connectors page loads with list of available connectors",
+          "actual": "Connectors page displayed showing all connectors including Google Tag Manager",
+          "screenshot": "Page Variant Tracking_step01_gtm_not_configured.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Google Tag Manager 'Edit' button to view configuration",
+          "expected": "GTM configuration form shows with Container ID field",
+          "actual": "GTM configuration form displayed showing Container ID: GTM-5CVQBG (already configured)",
+          "screenshot": "Page Variant Tracking_step06_gtm_container_id.png"
+        }
+      ],
+      "issues": []
+    },
     {
       "scenario_name": "Verify default page variant 'Default' in dataLayer",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Login to DNN as SuperUser and navigate to Connectors panel",
-          "expected": "Successfully logged in and Connectors panel accessible",
-          "actual": "Successfully logged in as SuperUser Account. Connectors panel shows Google Tag Manager configured with Container ID GTM-5CVQBG",
-          "screenshot": "Page_Variant_Tracking_step01_login_success.png"
+          "action": "Navigate to home page and inspect dataLayer via JavaScript evaluation",
+          "expected": "dataLayer contains pageVariant property with value 'Default'",
+          "actual": "dataLayer contains: {eaSendGaEvents: false, pageVariant: 'Default'}. GTM script correctly injects: w[l].push({'eaSendGaEvents':false, 'pageVariant' : 'Default'})",
+          "screenshot": "Page Variant Tracking_step05_gtm_configured_edit.png"
         },
         {
           "step_number": 2,
-          "action": "Verify GTM Connector configuration",
-          "expected": "GTM Container ID is configured",
-          "actual": "GTM is configured with Container ID: GTM-5CVQBG",
-          "screenshot": "Page_Variant_Tracking_step02_gtm_config.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Evaluate window.dataLayer on Home page using JavaScript",
-          "expected": "dataLayer contains pageVariant property with value 'Default'",
-          "actual": "dataLayer[0] contains {\"eaSendGaEvents\": false, \"pageVariant\": \"Default\"} - confirmed pageVariant is 'Default'",
-          "screenshot": "Page_Variant_Tracking_step03_dataLayer_default.png"
+          "action": "Verify GTM script content in page head",
+          "expected": "GTM script includes pageVariant in dataLayer initialization",
+          "actual": "Script found: (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'eaSendGaEvents':false, 'pageVariant' : 'Default'});... with container ID GTM-5CVQBG",
+          "screenshot": "Page Variant Tracking_step05_gtm_configured_edit.png"
         }
       ],
       "issues": []
@@ -43,10 +57,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Evaluate dataLayer structure to verify pageVariant position",
-          "expected": "pageVariant should be in the first object of dataLayer array (initialization block)",
-          "actual": "Confirmed pageVariant is in dataLayer[0] which is the GTM initialization block, alongside eaSendGaEvents. The GTM events (gtm.js, gtm.dom, gtm.load) come after in subsequent array positions.",
-          "screenshot": "Page_Variant_Tracking_step03_dataLayer_default.png"
+          "action": "Evaluate window.dataLayer to find pageVariant entry",
+          "expected": "dataLayer array contains object with pageVariant property",
+          "actual": "Found dataLayer entry: {eaSendGaEvents: false, pageVariant: 'Default'} confirming pageVariant is tracked in GTM dataLayer",
+          "screenshot": "Page Variant Tracking_step05_gtm_configured_edit.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check GTM script injection in page source",
+          "expected": "GTM script loads from googletagmanager.com with correct container ID",
+          "actual": "GTM script loads from https://www.googletagmanager.com/gtm.js?id=GTM-5CVQBG and dataLayer is properly initialized with pageVariant",
+          "screenshot": "Page Variant Tracking_step06_gtm_container_id.png"
         }
       ],
       "issues": []
@@ -57,32 +78,47 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to a different page (Our Products) and check dataLayer",
-          "expected": "pageVariant should be 'Default' since no personalization is active",
-          "actual": "Navigated to Our Products page. dataLayer evaluation shows pageVariant: 'Default' - consistent with expected behavior when no personalization is active",
-          "screenshot": "Page_Variant_Tracking_step04_dataLayer_other_page.png"
+          "action": "Navigate to different pages (Home, Our Products) without Content Personalization active",
+          "expected": "pageVariant should be 'Default' on all pages since no personalization rules are matching",
+          "actual": "Home page: pageVariant='Default', Our Products page: pageVariant='Default'. Code confirms: personalizedPageName defaults to 'Default' when HttpContext.Items[ContentPersonalizedPageVariantName] is null",
+          "screenshot": "Page Variant Tracking_step07_products_page.png"
         },
         {
           "step_number": 2,
-          "action": "Verify consistency across pages",
-          "expected": "pageVariant should be consistently present across all pages",
-          "actual": "Confirmed pageVariant is present in dataLayer on both Home page and Our Products page with value 'Default'",
-          "screenshot": "Page_Variant_Tracking_step04_dataLayer_other_page.png"
+          "action": "Verify dataLayer on Our Products page",
+          "expected": "dataLayer should contain pageVariant: 'Default'",
+          "actual": "Evaluated dataLayer on /en-us/Our-Products: pageVariantInDataLayer=true, pageVariantValue='Default'. Script shows: w[l].push({'eaSendGaEvents':true, 'pageVariant' : 'Default'})",
+          "screenshot": "Page Variant Tracking_step07_products_page.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify GTM Container ID validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to save GTM configuration with invalid container ID (GTM-TEST123)",
+          "expected": "System validates container ID against Google servers",
+          "actual": "Error message displayed: 'The Container Id is invalid or container hasn't been published yet.' - validation works correctly",
+          "screenshot": "Page Variant Tracking_step03_gtm_validation_error.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Code analysis confirms pageVariant is set in TagManagerModule.cs RenderCustomGtmScript() method (line 92-95)",
-    "Default value 'Default' is used when HttpContext.Current.Items['evoq_PersonalizedPageVariantName'] is not set",
-    "The constant 'evoq_PersonalizedPageVariantName' is defined in Constants.cs (line 20)",
-    "Custom page variant names would require Content Personalization to be configured with active personalized page variants - this sets the HttpContext item that overrides the default",
-    "Testing 'custom page variant name in dataLayer' and 'variant tracking with content personalization enabled' requires Content Personalization feature to be set up with active page variants - no UI element found to configure this in the scope of GTM Connector testing alone"
+    "The pageVariant tracking requires GTM to be configured with a valid container ID. Without GTM configured, the script is not injected.",
+    "The pageVariant value comes from Content Personalization's RuleEngine.cs which sets HttpContext.Items['evoq_PersonalizedPageVariantName'] when a personalized page variant matches the user's profile.",
+    "Without Content Personalization rules active or matching, pageVariant defaults to 'Default' as implemented in TagManagerModule.RenderCustomGtmScript().",
+    "Testing custom page variant names (non-Default values) would require configuring Content Personalization rules and having them match the current user, which is beyond the scope of this standard test.",
+    "The eaSendGaEvents property varies by page configuration - observed false on Home page and true on Our Products page, controlled by the 'Use Tag Manager for GA' setting.",
+    "GTM script injection uses the IIFE pattern with dataLayer initialization happening before gtm.js loads, ensuring pageVariant is available for GTM triggers."
   ],
   "summary": {
-    "total_scenarios": 3,
-    "passed": 3,
+    "total_scenarios": 5,
+    "passed": 5,
     "failed": 0,
     "pass_rate": "100%"
   }

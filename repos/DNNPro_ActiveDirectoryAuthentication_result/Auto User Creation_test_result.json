@@ -5,34 +5,34 @@
     "feature_name": "Auto User Creation",
     "feature_description": "Automatically creates DNN user accounts for authenticated Active Directory users",
     "feature_priority": "High",
-    "test_date": "2026-01-16T14:34:00Z",
+    "test_date": "2026-02-09T15:30:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Verify Auto Create Users Setting Exists",
+      "scenario_name": "Access Auto User Creation Setting",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Settings > Extensions > Authentication Systems > DNNPro_ActiveDirectoryAuthentication > Site Settings",
-          "expected": "AD Authentication site settings page should display with Auto Create Users option",
-          "actual": "Successfully navigated to Site Settings tab showing 'Do Not Automatically Create Users?' checkbox",
-          "screenshot": "Auto User Creation_step01_navigate_to_settings.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Verify Initial Auto Create Users State",
-      "status": "PASS",
-      "steps": [
+          "action": "Navigate to Settings > Extensions > Authentication Systems",
+          "expected": "Authentication Systems list is displayed with AD provider",
+          "actual": "Authentication Systems list displayed with DNNPro_ActiveDirectoryAuthentication extension visible",
+          "screenshot": "Auto User Creation_step01_ad_settings_page.png"
+        },
         {
-          "step_number": 1,
-          "action": "Observe the initial state of 'Do Not Automatically Create Users?' checkbox",
-          "expected": "Checkbox should be visible with its current state clearly indicated",
-          "actual": "Checkbox is UNCHECKED, meaning auto user creation is ENABLED by default",
-          "screenshot": "Auto User Creation_step01_navigate_to_settings.png"
+          "step_number": 2,
+          "action": "Click on DNNPro_ActiveDirectoryAuthentication extension to open settings",
+          "expected": "Extension settings page opens with Site Settings tab available",
+          "actual": "Extension settings page opened with Package Information, Extension Settings, Site Settings, License, and Release Notes tabs",
+          "screenshot": "Auto User Creation_step01_ad_settings_page.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click on Site Settings tab",
+          "expected": "Site Settings loads with 'Do Not Automatically Create Users?' checkbox visible",
+          "actual": "Site Settings loaded showing the 'Do Not Automatically Create Users?' checkbox and other AD configuration options",
+          "screenshot": "Auto User Creation_step01_ad_settings_page.png"
         }
       ],
       "issues": []
@@ -43,51 +43,70 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Check the 'Do Not Automatically Create Users?' checkbox to disable auto-creation",
-          "expected": "Checkbox should be checked",
-          "actual": "Checkbox successfully checked (auto user creation now DISABLED)",
-          "screenshot": "Auto User Creation_step02_disable_auto_create.png"
+          "action": "Check the 'Do Not Automatically Create Users?' checkbox",
+          "expected": "Checkbox becomes checked",
+          "actual": "Checkbox was checked successfully",
+          "screenshot": "Auto User Creation_step02_checkbox_checked.png"
         },
         {
           "step_number": 2,
-          "action": "Click 'Update Authentication Settings' to save",
-          "expected": "Settings should be saved and persist",
-          "actual": "Settings saved. AD connection status displayed (FAIL - expected without actual AD server). Checkbox state persisted as CHECKED.",
-          "screenshot": "Auto User Creation_step03_settings_saved_disabled.png"
+          "action": "Click 'Update Authentication Settings' button",
+          "expected": "Settings are saved",
+          "actual": "Settings were saved, page refreshed and checkbox remained checked",
+          "screenshot": "Auto User Creation_step03_settings_saved.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Re-enable Auto User Creation",
+      "scenario_name": "Verify Setting Persistence",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Uncheck the 'Do Not Automatically Create Users?' checkbox to re-enable auto-creation",
-          "expected": "Checkbox should be unchecked",
-          "actual": "Checkbox successfully unchecked (auto user creation now ENABLED)",
-          "screenshot": "Auto User Creation_step04_enable_auto_create.png"
+          "action": "Navigate away from the settings panel by clicking show site button",
+          "expected": "Settings panel closes",
+          "actual": "Settings panel closed successfully",
+          "screenshot": "Auto User Creation_step05_after_save.png"
         },
         {
           "step_number": 2,
-          "action": "Click 'Update Authentication Settings' to save",
-          "expected": "Settings should be saved and persist",
-          "actual": "Settings saved successfully. Checkbox state persisted as UNCHECKED (auto-create enabled).",
-          "screenshot": "Auto User Creation_step05_settings_saved_enabled.png"
+          "action": "Navigate back to Settings > Extensions > Authentication Systems > DNNPro_ActiveDirectoryAuthentication > Site Settings",
+          "expected": "The 'Do Not Automatically Create Users?' checkbox should still be checked",
+          "actual": "Checkbox was still checked, confirming persistence of the setting",
+          "screenshot": "Auto User Creation_step06_persistence_verified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Enable Auto User Creation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Uncheck the 'Do Not Automatically Create Users?' checkbox",
+          "expected": "Checkbox becomes unchecked",
+          "actual": "Checkbox was unchecked successfully",
+          "screenshot": "Auto User Creation_step07_auto_create_enabled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Update Authentication Settings' button",
+          "expected": "Settings are saved with auto user creation enabled",
+          "actual": "Settings were saved, checkbox remained unchecked confirming auto user creation is now enabled",
+          "screenshot": "Auto User Creation_step07_auto_create_enabled.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The UI uses inverted naming: 'Do Not Automatically Create Users?' - when UNCHECKED, auto user creation is ENABLED; when CHECKED, auto user creation is DISABLED",
-    "The code logic in AuthenticationController.cs uses '!_config.AutoCreateUsers' to trigger user creation, which matches the inverted UI naming",
-    "AD connection status displays FAIL messages when no actual Active Directory server is configured (expected behavior)",
-    "Full functional testing of automatic user creation requires: (1) Active Directory server configured, (2) AD users not yet in DNN, (3) Ability to authenticate with AD credentials",
-    "Code review shows profile fields populated from AD during user creation: FirstName, LastName, Email, DisplayName, Street, City, Region, PostalCode, Country, Telephone, Fax, Cell, Website",
-    "The setting is stored as 'AD_AutoCreateUsers' in portal settings",
-    "Testing scenarios 'Login with AD user not in DNN', 'Verify user account is created', 'Verify proper user profile population', 'Test user creation across multiple portals', and 'Verify deleted users can be re-created' require actual AD infrastructure and cannot be tested in the current environment"
+    "The UI label is 'Do Not Automatically Create Users?' which uses inverted logic - when unchecked, auto user creation IS enabled; when checked, it is disabled. This matches the code where the setting 'AutoCreateUsers' being false means users ARE auto-created.",
+    "The actual auto user creation functionality (creating DNN users when AD users login) cannot be tested without a configured Active Directory environment. Testing is limited to UI configuration only.",
+    "The suggested test scenarios 'Login with AD user not in DNN', 'Verify user account is created', 'Verify proper user profile population', 'Test user creation across multiple portals', and 'Verify deleted users can be re-created' all require an Active Directory infrastructure which is not available in this test environment.",
+    "Code analysis (AuthenticationController.cs) confirms the auto-create logic: when AutoCreateUsers is false (checkbox unchecked), the CreateUser method is called to automatically create DNN accounts for authenticated AD users.",
+    "Settings are stored in portal settings with key 'AD_AutoCreateUsers' and persist correctly after navigation."
   ],
   "summary": {
     "total_scenarios": 4,

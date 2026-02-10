@@ -5,24 +5,42 @@
     "feature_name": "Content Locking",
     "feature_description": "Lock content to prevent concurrent editing by multiple users",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T14:52:00Z",
     "tester": "Claude"
   },
-  "test_scenarios": [],
+  "test_scenarios": [
+    {
+      "scenario_name": "Lock content for editing",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged in as host superuser and enabled Edit mode",
+          "expected": "Edit mode enabled with module actions accessible",
+          "actual": "Edit mode enabled successfully, module action menus accessible",
+          "screenshot": "Content Locking_step01_edit_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Opened Module Actions menu for Text/HTML module (366)",
+          "expected": "Module Actions menu should contain 'Lock Content' option",
+          "actual": "Module Actions menu shows: Settings, Export Content, Import Content, Help, Develop, Delete, Refresh. NO Lock Content option present.",
+          "screenshot": "Content Locking_step02_module_actions_no_lock.png"
+        }
+      ],
+      "issues": [
+        "Content Locking feature is NOT implemented. Code review confirms: (1) TODO comment in EditHtml.ascx:67 says 'Disable edit tab when locked by other user' indicating planned but unimplemented feature, (2) Resource strings for 'Lock.Action', 'Unlock.Action', 'ContentLocked.Error' exist but are never used, (3) ModuleActions property in HtmlModule.ascx.cs returns empty collection, (4) No lock-related methods in HtmlTextController.cs or Services folder."
+      ]
+    }
+  ],
   "observations": [
-    "Code analysis reveals that Content Locking feature is PLANNED but NOT IMPLEMENTED in the HTMLPro module.",
-    "Resource strings for 'Lock Content' (Lock.Action) and 'Unlock Content' (Unlock.Action) exist in SharedResources.resx, indicating the feature was planned.",
-    "A 'ContentLocked.Error' message exists: 'This content has been locked by [USER]. You cannot save your changes unless the lock is released first.'",
-    "EditHtml.ascx contains a TODO comment on line 67: '// TODO: Disable edit tab when locked by other user: var options = { disabled: [0] };' - confirming the feature was never completed.",
-    "No Lock/Unlock API endpoints exist in HtmlTextProController.cs or HtmlTextController.cs.",
-    "UI verification confirmed: The Module Actions menu shows Settings, Export Content, Import Content, Help, Develop, Delete, and Refresh - but NO 'Lock Content' or 'Unlock Content' options exist.",
-    "The suggested UI location 'Module Actions > Edit Content > Lock/Unlock' does not exist in the current implementation.",
-    "Per testing instructions: Since this feature exists in code planning (resource strings) but has no UI element to test, no test scenarios can be executed. This is documented as an observation rather than a test failure."
+    "Code suggests Content Locking feature was planned but never implemented. Evidence: (1) TODO comment in EditHtml.ascx line 67: 'TODO: Disable edit tab when locked by other user', (2) Localization resources exist in SharedResources.resx for 'Lock Content', 'Unlock Content', and 'ContentLocked.Error' messages, (3) These resources are never referenced by any functional code, (4) ModuleActions returns an empty collection with no Lock/Unlock actions defined.",
+    "The feature description specifies UI Location as 'Module Actions > Edit Content > Lock/Unlock' but no such menu option exists in the actual module actions menu."
   ],
   "summary": {
-    "total_scenarios": 0,
+    "total_scenarios": 1,
     "passed": 0,
-    "failed": 0,
-    "pass_rate": "N/A - Feature not implemented in UI"
+    "failed": 1,
+    "pass_rate": "0%"
   }
 }

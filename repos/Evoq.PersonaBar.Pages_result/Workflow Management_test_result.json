@@ -5,7 +5,7 @@
     "feature_name": "Workflow Management",
     "feature_description": "Manage content workflows for page approval and publishing",
     "feature_priority": "Top",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:14:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,17 +15,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Pages panel and select Home page",
-          "expected": "Page details panel opens with Workflow dropdown available",
-          "actual": "Page details panel opened successfully showing Workflow dropdown",
-          "screenshot": "Workflow_Management_step01_available_workflows.png"
+          "action": "Navigate to Pages panel and open page settings for Home page",
+          "expected": "Page settings panel opens with workflow dropdown",
+          "actual": "Page settings panel opened successfully with workflow dropdown visible",
+          "screenshot": "Workflow Management_step01_pages_panel.png"
         },
         {
           "step_number": 2,
-          "action": "Click on Workflow dropdown to view available workflows",
-          "expected": "List of available workflows displayed",
-          "actual": "10 workflows displayed: Direct Publish, Save Draft, Content Approval, Test Approval Workflow, QA Test Workflow, Test <Special> & \"Chars\", Automated Test Workflow, NewWorkflow, Test Workflow Created, Auto Test 623696",
-          "screenshot": "Workflow_Management_step01_available_workflows.png"
+          "action": "Check available workflows in dropdown",
+          "expected": "Multiple workflows should be available for selection",
+          "actual": "Four workflows available: Direct Publish, Save Draft, Content Approval, Test Workflow",
+          "screenshot": "Workflow Management_step02_available_workflows.png"
         }
       ],
       "issues": []
@@ -36,38 +36,45 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Select Home page and change workflow from Direct Publish to Content Approval",
-          "expected": "Workflow dropdown allows selection and shows Content Approval",
-          "actual": "Successfully selected Content Approval workflow from dropdown",
-          "screenshot": "Workflow_Management_step02_workflow_changed.png"
+          "action": "Select Content Approval workflow from dropdown",
+          "expected": "Workflow dropdown value changes to Content Approval",
+          "actual": "Content Approval workflow selected successfully. 'Apply setting to all subpages' checkbox appeared (available for non-Direct Publish workflows)",
+          "screenshot": "Workflow Management_step03_workflow_changed.png"
         },
         {
           "step_number": 2,
-          "action": "Click Save button to save the workflow assignment",
-          "expected": "Page saves successfully with new workflow assigned",
-          "actual": "Page saved successfully. Workflow changed to Content Approval",
-          "screenshot": "Workflow_Management_step03_workflow_assigned_success.png"
+          "action": "Save page settings with new workflow",
+          "expected": "Page settings save successfully with success message",
+          "actual": "Page saved successfully. Success message 'Page has been updated.' displayed",
+          "screenshot": "Workflow Management_step04_workflow_saved.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify workflow assignment persisted",
+          "expected": "Page settings show Content Approval workflow selected",
+          "actual": "Content Approval workflow confirmed as selected after save",
+          "screenshot": "Workflow Management_step05_workflow_assigned_verification.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Test direct publish workflow",
+      "scenario_name": "Test Direct Publish workflow",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Change Home page workflow back to Direct Publish",
-          "expected": "Direct Publish workflow can be selected and saved",
-          "actual": "Successfully changed workflow to Direct Publish",
-          "screenshot": "Workflow_Management_step04_direct_publish_selected.png"
+          "action": "Change workflow back to Direct Publish",
+          "expected": "Direct Publish workflow can be selected",
+          "actual": "Direct Publish workflow selected successfully. 'Apply setting to all subpages' checkbox no longer visible (only shown for non-Direct Publish workflows)",
+          "screenshot": "Workflow Management_step06_direct_publish_selected.png"
         },
         {
           "step_number": 2,
-          "action": "Verify Direct Publish does not show 'Apply setting to all subpages' option",
-          "expected": "Direct Publish workflow does not show propagation option",
-          "actual": "Confirmed - 'Apply setting to all subpages' option not shown for Direct Publish workflow",
-          "screenshot": "Workflow_Management_step04_direct_publish_selected.png"
+          "action": "Save page settings with Direct Publish workflow",
+          "expected": "Page saves with Direct Publish workflow",
+          "actual": "Page saved successfully with Direct Publish workflow assigned",
+          "screenshot": "Workflow Management_step07_advanced_settings.png"
         }
       ],
       "issues": []
@@ -78,24 +85,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Select Workflow Test Page with Content Approval workflow",
-          "expected": "Page shows workflow state information",
-          "actual": "Page displayed with Content Approval workflow assigned. Status shows 'Workflow: Off' indicating workflow is completed/not active",
-          "screenshot": "Workflow_Management_step05_workflow_test_page.png"
+          "action": "Navigate to Settings > Workflows",
+          "expected": "Workflows settings page opens showing all workflows",
+          "actual": "Workflows settings page opened showing 4 workflows: Direct Publish, Save Draft, Content Approval, Test Workflow",
+          "screenshot": "Workflow Management_step08_workflows_settings.png"
         },
         {
           "step_number": 2,
-          "action": "Examine Workflow Test Page New with Save Draft workflow",
-          "expected": "Different workflow state displayed",
-          "actual": "Page shown with Save Draft workflow assigned",
-          "screenshot": "Workflow_Management_step06_workflow_test_page_new.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Examine HierarchyTestParent with Test Approval Workflow",
-          "expected": "Custom workflow state displayed",
-          "actual": "Page shown with Test Approval Workflow assigned. Status shows 'Versioning: Off', 'Workflow: Off'",
-          "screenshot": "Workflow_Management_step09_test_approval_workflow.png"
+          "action": "Expand Content Approval workflow to view states",
+          "expected": "Content Approval workflow states are displayed",
+          "actual": "Content Approval workflow shows 3 states: Draft (1), Ready For Review (2), Published (3). Edit action available for Ready For Review state",
+          "screenshot": "Workflow Management_step09_content_approval_states.png"
         }
       ],
       "issues": []
@@ -106,17 +106,24 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "View page list in Pages panel",
-          "expected": "Pages with unpublished changes should show pencil icon indicator",
-          "actual": "Multiple pages show pencil icons (edit indicators) next to their names, indicating unpublished changes. Pages including: Workflow Test Page New, Publish Test Page New, Test & <Special> Page!, Test Normal Page Type, Workflow Publish Test, BulkTest Pages, HierarchyTestParent, Publishing Test New Page, etc.",
-          "screenshot": "Workflow_Management_step10_workflow_test_page_status.png"
+          "action": "Navigate to Wiki Test page settings",
+          "expected": "Page settings panel opens for Wiki Test page",
+          "actual": "Wiki Test page settings opened with workflow dropdown visible",
+          "screenshot": "Workflow Management_step11_wiki_test_page.png"
         },
         {
           "step_number": 2,
-          "action": "Verify HasUnpublishedChanges property is displayed in UI",
-          "expected": "Pages with unpublished versions show visual indicator",
-          "actual": "Pencil icons visible next to pages with unpublished changes, confirming HasUnpublishedChanges detection works",
-          "screenshot": "Workflow_Management_step11_workflow_completion_status.png"
+          "action": "Select Save Draft workflow",
+          "expected": "Save Draft workflow is selected",
+          "actual": "Save Draft workflow selected. This workflow type creates unpublished drafts that require manual publishing",
+          "screenshot": "Workflow Management_step12_save_draft_selected.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Save page with Save Draft workflow",
+          "expected": "Page saves successfully with Save Draft workflow",
+          "actual": "Page saved successfully with Save Draft workflow assigned",
+          "screenshot": "Workflow Management_step13_save_draft_saved.png"
         }
       ],
       "issues": []
@@ -127,17 +134,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Select Workflow Test Page and examine status section",
-          "expected": "Workflow completion status should be displayed",
-          "actual": "Page details show 'Workflow: Off' indicating workflow is completed. 'Versioning: Off' and 'PublishStatus:' (empty meaning published) displayed",
-          "screenshot": "Workflow_Management_step11_workflow_completion_status.png"
+          "action": "View workflow usage for a workflow",
+          "expected": "View Usage link shows content items using the workflow",
+          "actual": "View Usage popup displayed showing 'Used By' with count of content items using the workflow",
+          "screenshot": "Workflow Management_step10_view_usage.png"
         },
         {
           "step_number": 2,
-          "action": "Verify IsWorkflowCompleted property reflected in UI",
-          "expected": "Completed workflows show 'Off' status",
-          "actual": "Pages with completed workflows show 'Workflow: Off' status. Code confirms IsWorkflowCompleted() checks via WorkflowEngine.Instance.IsWorkflowCompleted()",
-          "screenshot": "Workflow_Management_step10_workflow_test_page_status.png"
+          "action": "View workflows overview",
+          "expected": "Workflows page shows usage status for each workflow",
+          "actual": "Workflows overview shows IN USE column with checkmarks for workflows currently in use (Direct Publish, Save Draft, Content Approval all in use)",
+          "screenshot": "Workflow Management_step15_workflows_overview.png"
         }
       ],
       "issues": []
@@ -148,34 +155,49 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Permissions tab for a page",
-          "expected": "Permissions tab shows role-based access controls",
-          "actual": "Permissions tab displayed showing role permissions including: All Users, Administrators, Content Editors, Content Managers, Registered Users, Subscribers, Translators (en-US). Permission types: View, Add, Content, Copy, Delete, Export, Import, Manage, Navigate, Edit Tab",
-          "screenshot": "Workflow_Management_step07_permissions_tab.png"
+          "action": "Navigate to page Permissions tab",
+          "expected": "Page permissions settings are displayed",
+          "actual": "Permissions tab shows comprehensive permission grid with roles (All Users, Administrators, Content Managers, Content Editors, Registered Users) and permission types (Full Control, View, Add, Add Content, Copy, Delete, Export, Import, Manage Settings)",
+          "screenshot": "Workflow Management_step14_page_permissions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create new workflow validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Create New Workflow button",
+          "expected": "New workflow form appears",
+          "actual": "New workflow form appeared with Name, Description fields and Cancel/Save buttons",
+          "screenshot": "Workflow Management_step16_create_new_workflow.png"
         },
         {
           "step_number": 2,
-          "action": "Verify permission controls are accessible as superuser",
-          "expected": "Superuser can view and modify all permissions",
-          "actual": "All permission checkboxes visible and interactive for superuser account",
-          "screenshot": "Workflow_Management_step07_permissions_tab.png"
+          "action": "Clear workflow name and attempt to save",
+          "expected": "Validation error displayed for required field",
+          "actual": "Validation error 'This field is required.' displayed. Save button disabled when name is empty",
+          "screenshot": "Workflow Management_step17_empty_name_validation.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The Workflow dropdown in page details lists 10 available workflows including system workflows (Direct Publish, Save Draft, Content Approval) and custom workflows",
-    "Pages show 'Workflow: Off' status when the workflow is completed, and 'Workflow: On' when a workflow is in progress",
-    "The 'Apply setting to all subpages' checkbox only appears for non-Direct Publish workflows - this is intentional behavior as Direct Publish doesn't need propagation",
-    "Pencil icons in the page list indicate pages with unpublished changes (HasUnpublishedChanges property)",
-    "Code analysis shows WorkflowHelper.IsWorkflowCompleted() delegates to WorkflowEngine.Instance.IsWorkflowCompleted() for status checking",
-    "Code shows AssignWorkflowToTab() throws exception if workflow is already running - preventing workflow changes during active workflow",
-    "PropagateWorkflowToChildren() in WorkflowHelper.cs handles the 'Apply to subpages' functionality recursively"
+    "The Workflows settings page (Settings > Workflows) provides comprehensive workflow management including: viewing all workflows, creating new workflows, editing workflow details, viewing workflow states, and checking usage",
+    "System workflows (Direct Publish, Save Draft, Content Approval) have 'Add a State' button disabled - cannot add states to system workflows",
+    "Custom workflows (Test Workflow) have 'Add a State' button enabled - can add custom states",
+    "The 'Apply setting to all subpages' checkbox only appears when selecting non-Direct Publish workflows - useful for propagating workflow to child pages",
+    "Workflow state edit functionality (E button) is available for intermediate states like 'Ready For Review' but not for first/last states (Draft, Published)",
+    "The code in WorkflowHelper.cs shows workflow propagation to children is only available if all child pages have completed workflows (IsWorkflowPropagationAvailable method)",
+    "Code confirms unpublished changes detection is implemented via HasUnpublishedChanges property which checks both tab.HasBeenPublished and WorkflowHelper.IsWorkflowCompleted(tab)",
+    "Direct Publish is the default workflow and is set automatically for pages with special types (non-normal, disabled links) per SavePageDetails in EvoqPagesController.cs"
   ],
   "summary": {
-    "total_scenarios": 7,
-    "passed": 7,
+    "total_scenarios": 8,
+    "passed": 8,
     "failed": 0,
     "pass_rate": "100%"
   }

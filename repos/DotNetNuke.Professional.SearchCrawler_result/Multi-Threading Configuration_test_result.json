@@ -5,82 +5,70 @@
     "feature_name": "Multi-Threading Configuration",
     "feature_description": "Configures multi-threaded crawling for improved performance.",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T13:45:00Z",
+    "test_date": "2026-02-09T15:29:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Verify Scheduler shows SearchCrawler tasks",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Navigated to Settings > Scheduler from Persona Bar",
-          "expected": "Scheduler page loads showing all scheduled tasks",
-          "actual": "Scheduler page loaded successfully showing Task Queue, Scheduler tab, and History tab with all scheduled tasks visible",
-          "screenshot": "Multi-Threading_Configuration_step01_scheduler_list.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Viewed SCHEDULER tab to see Search: Url Crawler task",
-          "expected": "Search: Url Crawler task is visible and accessible",
-          "actual": "Search: Url Crawler task found at ID 19 with Frequency 'Every 1 Day', enabled, next start scheduled. Global Max Threads shows '1' in scheduler header.",
-          "screenshot": "Multi-Threading_Configuration_step01_scheduler_list.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Verify Search Crawling settings page loads",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Navigated to Site Settings > Search > Crawling tab",
-          "expected": "Crawling settings page loads with configuration options",
-          "actual": "Crawling settings page loaded successfully showing URL Paths, Duplicates patterns, Included Directories, and Excluded Directories sections",
-          "screenshot": "Multi-Threading_Configuration_step02_crawling_settings.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Configure thread count for SearchCrawler",
+      "scenario_name": "Verify Multi-Threading Configuration UI Accessibility",
       "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Searched for thread count configuration field in Scheduler task edit panel",
-          "expected": "A field to configure IndexThreads or thread count should be available",
-          "actual": "No thread count configuration field found in the task edit panel. Only standard scheduler fields visible: Friendly Name, Class Name, Retain History, Servers, Dependencies, Schedule timing, Frequency, Retry settings.",
-          "screenshot": "Multi-Threading_Configuration_step01_scheduler_list.png"
+          "action": "Navigate to Settings > Scheduler to locate SearchCrawler task settings",
+          "expected": "Scheduler page should load with list of scheduled tasks including SearchCrawler tasks",
+          "actual": "Scheduler page loaded successfully showing Search: Site Crawler, Search: File Crawler, and Search: Url Crawler tasks with global thread settings (Max Threads: 1)",
+          "screenshot": "Multi-Threading Configuration_step01_scheduler_page.png"
         },
         {
           "step_number": 2,
-          "action": "Searched for thread count configuration in Search > Crawling settings",
-          "expected": "A field to configure thread count for multi-threaded crawling should be available",
-          "actual": "No thread count configuration field found. Crawling tab only shows URL Paths, Duplicates patterns, and Directory inclusion/exclusion settings.",
-          "screenshot": "Multi-Threading_Configuration_step02_crawling_settings.png"
+          "action": "Click SCHEDULER tab and locate Search: Url Crawler task",
+          "expected": "List of scheduler tasks displayed with Edit option for each task",
+          "actual": "SCHEDULER tab displayed all tasks including Search: File Crawler, Search: Site Crawler, and Search: Url Crawler with edit icons",
+          "screenshot": "Multi-Threading Configuration_step02_scheduler_tasks_list.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Edit Task for Search: Url Crawler to view task settings",
+          "expected": "Task edit dialog should show IndexThreads or thread count configuration option",
+          "actual": "Task edit dialog displayed standard scheduler settings (Friendly Name, Frequency, Retry Time Lapse, etc.) but NO thread count configuration field was found",
+          "screenshot": "Multi-Threading Configuration_step03_url_crawler_settings.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Navigate to Site Settings > Search > Crawling tab",
+          "expected": "Crawling settings page should show thread configuration for multi-threaded crawling",
+          "actual": "Crawling settings page displayed URL Paths, Duplicates regex patterns, Included/Excluded Directories, but NO thread count configuration option",
+          "screenshot": "Multi-Threading Configuration_step04_crawling_settings.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Review global scheduler thread settings in Task Queue view",
+          "expected": "Thread configuration options should be visible and configurable",
+          "actual": "Global scheduler displays Max Threads: 1, Active Threads: 0, Free Threads: 1 - these are read-only display values for the global scheduler thread pool, not the SearchCrawler-specific IndexThreads setting",
+          "screenshot": "Multi-Threading Configuration_step05_global_thread_settings.png"
         }
       ],
       "issues": [
-        "No UI element found in Persona Bar to configure thread count (IndexThreads) for the SearchCrawler",
-        "Code analysis confirms IndexThreads setting exists in Spider.cs (line 342-361) and is read from ScheduleHistoryItem.Settings with default value of 1, but no UI field exposes this setting"
+        "The IndexThreads setting exists in code (ScheduleHistoryItemsSettings.cs line 18, SearchSpiderHelper.cs line 588) but is NOT exposed through any admin UI",
+        "No UI field found in Scheduler task edit dialog for configuring crawler thread count",
+        "No UI field found in Site Settings > Search > Crawling for thread configuration",
+        "The feature exists in code but cannot be configured by administrators without direct database modification"
       ]
     }
   ],
   "observations": [
-    "Code analysis (Spider.cs:342-369) confirms multi-threading capability exists - Start() method accepts 'threads' parameter and creates N DocumentWorker instances for parallel URL processing",
-    "IndexThreads setting is stored in ScheduleHistoryItem.Settings and defaults to 1 (SearchSpiderHelper.cs:588)",
-    "Thread safety is implemented using lock(this) and Monitor.Wait/Pulse patterns in Spider.cs",
-    "The global Scheduler 'Max Threads' setting (shown as '1' in scheduler header) controls overall scheduler thread pool, not per-task threading",
-    "The IndexThreads setting may need to be configured via database (ScheduleItemSetting table) or legacy DNN admin interface, as no Persona Bar UI element exposes it",
-    "Related UI pages (Scheduler, Search > Crawling) load and function correctly - only the specific thread count configuration UI is missing"
+    "Code analysis confirms IndexThreads property exists in ScheduleHistoryItemsSettings class (line 18) and is read via SearchSpiderHelper.GetScheduleHistoryItemsSettings() at line 588",
+    "The IndexThreads value defaults to 1 and is passed to Spider.Start() method at line 85 in UrlIndexer.cs",
+    "Spider.cs line 355 uses the threads parameter to create multiple DocumentWorker instances for parallel crawling",
+    "The setting is stored in ScheduleItemSettings database table but there is no UI to modify it",
+    "Global scheduler Max Threads setting (visible in Scheduler UI) controls the overall DNN scheduler thread pool, NOT the per-task crawling threads",
+    "FileCrawlerFileEventsHandler.cs shows a separate MaxIndexingThreads setting controlled by host setting 'FileCrawlerFileEventsMaxThreads' (defaults to processor count)"
   ],
   "summary": {
-    "total_scenarios": 3,
-    "passed": 2,
+    "total_scenarios": 1,
+    "passed": 0,
     "failed": 1,
-    "pass_rate": "67%"
+    "pass_rate": "0%"
   }
 }

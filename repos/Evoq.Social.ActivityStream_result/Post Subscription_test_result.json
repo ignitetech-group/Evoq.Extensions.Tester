@@ -5,7 +5,7 @@
     "feature_name": "Post Subscription",
     "feature_description": "Subscribe to posts or walls to receive notifications of new activity",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T15:43:00Z",
+    "test_date": "2026-02-09T16:24:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -16,23 +16,23 @@
         {
           "step_number": 1,
           "action": "Navigate to Activity Feed page",
-          "expected": "Activity Feed loads with posts visible",
-          "actual": "Activity Feed loaded successfully with multiple posts displayed",
-          "screenshot": "Post Subscription_step01_activity_feed.png"
+          "expected": "Activity Feed page loads with posts visible",
+          "actual": "Activity Feed page loaded successfully showing multiple posts with Subscribe links",
+          "screenshot": "Post Subscription_step01_activity_feed_posts.png"
         },
         {
           "step_number": 2,
-          "action": "Locate a post with 'Subscribe' link",
-          "expected": "Post displays Subscribe link option",
-          "actual": "Found posts with Subscribe links visible",
-          "screenshot": "Post Subscription_step02_before_subscribe.png"
+          "action": "Identify a post with Subscribe link and verify subscription links are present",
+          "expected": "Posts should have Subscribe links visible in their action bar",
+          "actual": "Posts displayed with Subscribe links visible (e.g., 'Emoji test' post showing Subscribe option)",
+          "screenshot": "Post Subscription_step02_posts_with_subscription_links.png"
         },
         {
           "step_number": 3,
-          "action": "Click the Subscribe link on a post",
-          "expected": "Subscribe link changes to Unsubscribe",
-          "actual": "Link successfully changed from 'Subscribe' to 'Unsubscribe' indicating subscription was created",
-          "screenshot": "Post Subscription_step03_after_subscribe.png"
+          "action": "Click Subscribe link on the 'Emoji test' post",
+          "expected": "Subscribe link changes to Unsubscribe, indicating subscription was successful",
+          "actual": "Subscribe link successfully changed to Unsubscribe after clicking, confirming subscription was created",
+          "screenshot": "Post Subscription_step03_subscribe_to_post_success.png"
         }
       ],
       "issues": []
@@ -43,17 +43,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Locate a post showing 'Unsubscribe' link (already subscribed)",
-          "expected": "Post displays Unsubscribe link option",
-          "actual": "Post shows Unsubscribe link confirming active subscription",
-          "screenshot": "Post Subscription_step03_after_subscribe.png"
+          "action": "Locate a subscribed post showing Unsubscribe link",
+          "expected": "Previously subscribed post should show Unsubscribe option",
+          "actual": "The 'Emoji test' post correctly displayed Unsubscribe link after subscription",
+          "screenshot": "Post Subscription_step03_subscribe_to_post_success.png"
         },
         {
           "step_number": 2,
-          "action": "Click the Unsubscribe link on the post",
-          "expected": "Unsubscribe link changes back to Subscribe",
-          "actual": "Link successfully changed from 'Unsubscribe' to 'Subscribe' indicating subscription was removed",
-          "screenshot": "Post Subscription_step04_after_unsubscribe.png"
+          "action": "Click Unsubscribe link on the subscribed post",
+          "expected": "Unsubscribe link changes back to Subscribe, indicating unsubscription was successful",
+          "actual": "Unsubscribe link successfully changed back to Subscribe after clicking, confirming unsubscription was completed",
+          "screenshot": "Post Subscription_step04_unsubscribe_from_post_success.png"
         }
       ],
       "issues": []
@@ -64,27 +64,28 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Subscribe to a post by clicking Subscribe link",
-          "expected": "Post changes to show Unsubscribe link",
-          "actual": "Post successfully shows Unsubscribe after clicking Subscribe",
-          "screenshot": "Post Subscription_step06_before_persistence_test.png"
+          "action": "Subscribe to a post (Emoji test post)",
+          "expected": "Post shows Unsubscribe link",
+          "actual": "Subscribed to Emoji test post, now showing Unsubscribe link",
+          "screenshot": "Post Subscription_step03_subscribe_to_post_success.png"
         },
         {
           "step_number": 2,
-          "action": "Refresh the Activity Feed page",
-          "expected": "Subscription status persists after page refresh",
-          "actual": "After page refresh, the subscribed post still shows 'Unsubscribe' link, confirming subscription persisted in database",
-          "screenshot": "Post Subscription_step07_persistence_verified.png"
+          "action": "Reload the Activity Feed page",
+          "expected": "Subscription status should persist after page reload",
+          "actual": "After reloading the page, the Emoji test post still shows Unsubscribe link, confirming subscription persisted in database",
+          "screenshot": "Post Subscription_step05_persistence_verified.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Code suggests 'Subscribe to User Wall' feature exists (SubscriptionSwitcher component in jquery.activityStream.js with 'Subscribe to Updates' button), but no UI element was found on the user profile wall page to test this functionality. The wall subscription switcher may require specific configuration or context to be displayed.",
-    "Code in ActivityStreamSubscriptionController.cs confirms full implementation of SubscribeToUserWall, UnsubscribeFromUserWall, IsSubscribedToUserWall methods, indicating backend support exists for wall subscriptions.",
-    "Receive notification on subscribed post activity scenario requires multi-user interaction (another user must create activity on a subscribed post) which is outside the scope of single-user testing.",
-    "Posts automatically show Subscribe/Unsubscribe links based on user's current subscription state, and the toggle works correctly for post-level subscriptions."
+    "The subscription feature uses a toggle mechanism where clicking Subscribe changes to Unsubscribe and vice versa",
+    "Subscription data is stored via the SubscriptionController API using POST requests with anti-forgery token validation",
+    "Code supports multiple subscription types: post subscriptions, user wall subscriptions, group wall subscriptions, and activity stream subscriptions",
+    "Wall subscription features (subscribe to user's wall, unsubscribe from user's wall) require navigating to a specific user's profile page, which was not accessible in the current test context without additional users configured",
+    "Notification testing for subscribed post activity requires another user to perform actions, which is outside the scope of this single-user test session"
   ],
   "summary": {
     "total_scenarios": 3,

@@ -5,7 +5,7 @@
     "feature_name": "Thumbnail Generation",
     "feature_description": "Dynamically generates and manages thumbnails for files with configurable dimensions and versioning support",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T17:29:00Z",
+    "test_date": "2026-02-09T16:00:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,17 +15,24 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Assets > My Website to view files in grid view",
-          "expected": "Image files should display actual image thumbnails instead of generic icons",
-          "actual": "Image files (batch_image_2.png, batch_image_2-Copy.png, batch_image_3.png, cavalier-logo.png) displayed actual image thumbnails showing their content",
-          "screenshot": "Thumbnail_Generation_step02_image_thumbnails_grid.png"
+          "action": "Navigate to Content > Assets > My Website",
+          "expected": "Assets panel opens showing file listing",
+          "actual": "Assets panel opened successfully showing folders and files in grid view",
+          "screenshot": "Thumbnail Generation_step01_assets_view.png"
         },
         {
           "step_number": 2,
-          "action": "Verify multiple PNG files show thumbnails",
-          "expected": "All PNG image files should have thumbnails generated",
-          "actual": "Multiple PNG files displayed thumbnails correctly - batch_image_2.png showed screenshot content, cavalier-logo.png showed 'VALI' text",
-          "screenshot": "Thumbnail_Generation_step03_file_details.png"
+          "action": "Navigate to Images folder to view image files",
+          "expected": "Image files display with generated thumbnails",
+          "actual": "Multiple image files (cavalier-tv.png, CTA-1.jpg through CTA-8.jpg, etc.) displayed with actual image thumbnails showing previews of the content",
+          "screenshot": "Thumbnail Generation_step02_images_folder_thumbnails.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Hover over an image file to see action menu",
+          "expected": "File shows thumbnail and action icons on hover",
+          "actual": "CTA-2.jpg showed thumbnail preview (wearable device image) with edit, move, copy, download, delete icons on hover",
+          "screenshot": "Thumbnail Generation_step03_image_hover.png"
         }
       ],
       "issues": []
@@ -36,10 +43,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "View document files (XML, CSS, TXT) in the Assets grid view",
-          "expected": "Document files should display generic file type icons instead of thumbnails (as thumbnails are only supported for image files)",
-          "actual": "Document files displayed appropriate generic icons: XML files showed </> code icon, TXT files showed TXT icon, CSS files showed CSS icon - no thumbnails generated as expected",
-          "screenshot": "Thumbnail_Generation_step05_documents_no_thumbnails.png"
+          "action": "Navigate to Home folder and scroll to view document files",
+          "expected": "Document files (XML, CSS, TXT) should not have image thumbnails",
+          "actual": "Document files displayed with file type icons instead of thumbnails: XML files showed </> icon, CSS file showed document icon, TXT file showed TXT icon",
+          "screenshot": "Thumbnail Generation_step05_documents_icons.png"
         }
       ],
       "issues": []
@@ -50,48 +57,50 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Call ThumbnailDownLoad API with custom dimensions (width=200, height=150) for file ID 156",
-          "expected": "Thumbnail should be generated with specified dimensions while maintaining aspect ratio",
-          "actual": "Thumbnail generated successfully at 267x150 pixels (width adjusted to maintain aspect ratio with requested height)",
-          "screenshot": "Thumbnail_Generation_step06_custom_dimensions_200x150.png"
+          "action": "Call ThumbnailDownLoad API with width=100, height=100 for small image",
+          "expected": "Thumbnail generated at requested dimensions or maintaining aspect ratio",
+          "actual": "API returned 19x19 thumbnail (original image size, not upscaled beyond original dimensions as per code logic)",
+          "screenshot": "Thumbnail Generation_step07_api_custom_dims_small.png"
         },
         {
           "step_number": 2,
-          "action": "Call ThumbnailDownLoad API with larger dimensions (width=320, height=240)",
-          "expected": "Thumbnail should be generated at larger size while maintaining aspect ratio",
-          "actual": "Thumbnail generated successfully at 427x240 pixels (page title confirmed dimensions)",
-          "screenshot": "Thumbnail_Generation_step06_custom_dimensions_200x150.png"
+          "action": "Call ThumbnailDownLoad API with width=200, height=150 for larger image",
+          "expected": "Thumbnail generated at requested dimensions",
+          "actual": "API successfully generated 200x200 thumbnail (maintaining aspect ratio) for fileId=50, showing DNN installation success page image",
+          "screenshot": "Thumbnail Generation_step09_api_200x150.png"
         }
       ],
       "issues": []
     },
     {
       "scenario_name": "Handle missing thumbnails",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Call ThumbnailDownLoad API with invalid file ID (99999)",
-          "expected": "System should handle invalid file ID gracefully with an error response",
-          "actual": "API returned HTTP 500 error with JSON message: 'Object reference not set to an instance of an object' - system properly rejects invalid file requests",
-          "screenshot": "Thumbnail_Generation_step07_invalid_file_error.png"
+          "action": "Call ThumbnailDownLoad API with non-existent fileId=99999",
+          "expected": "System should gracefully handle missing file, ideally returning fallback thumbnail",
+          "actual": "API returned HTTP 500 error with JSON message: 'Object reference not set to an instance of an object.' instead of graceful fallback",
+          "screenshot": "Thumbnail Generation_step10_missing_file_error.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "API throws NullReferenceException when requesting thumbnail for non-existent file instead of returning the configured DefaultThumbnail fallback image"
+      ]
     }
   ],
   "observations": [
-    "Thumbnail generation is supported only for image file extensions: JPEG, JPG, PNG, GIF (confirmed in ThumbnailsController.ThumbnailAvailable method)",
-    "All generated thumbnails are converted to PNG format regardless of source image format",
-    "Default thumbnail dimensions are 10x10 pixels, with maximum allowed dimension of 4000 pixels",
-    "Thumbnails maintain aspect ratio - the smaller dimension is constrained to the requested size",
-    "Code defines a DefaultThumbnail fallback path at 'fallback-thumbnail.png' but API returns 500 error for invalid files rather than fallback image",
-    "Versioned thumbnails are supported via the 'version' parameter in the API endpoint"
+    "Code defines a DefaultThumbnail at ~/DesktopModules/admin/Dnn.PersonaBar/Modules/Evoq.Assets/Images/fallback-thumbnail.png but it is not used when file is not found",
+    "Thumbnails are only generated for image files (JPEG, JPG, PNG, GIF) as defined in ThumbnailExtensions enum in ThumbnailsController.cs",
+    "Maximum thumbnail dimension is capped at 4000 pixels (see ParseDimension method)",
+    "Thumbnail size will not exceed original image dimensions (image won't be upscaled)",
+    "All thumbnails are converted to PNG format regardless of source format",
+    "Versioned thumbnails are supported via the 'version' parameter in the API"
   ],
   "summary": {
     "total_scenarios": 4,
-    "passed": 4,
-    "failed": 0,
-    "pass_rate": "100%"
+    "passed": 3,
+    "failed": 1,
+    "pass_rate": "75%"
   }
 }

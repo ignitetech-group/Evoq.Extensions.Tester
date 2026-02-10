@@ -5,7 +5,7 @@
     "feature_name": "Localization Support",
     "feature_description": "Provides multi-language support for search crawler administration.",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T13:50:00.000Z",
+    "test_date": "2026-02-09T15:29:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,31 +15,24 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Site Settings > Search > Basic Settings tab",
-          "expected": "Search settings page loads with localized labels in English",
-          "actual": "Search settings page loaded successfully with all UI labels displayed in English including: Minimum Word Length, Maximum Word Length, Maximum Result Per Page, Custom Analyzer Type, Enable Partial-Word Search, SEARCH PRIORITIES, Title Boost, Tag Boost, Content Boost, Description Boost",
-          "screenshot": "Localization Support_step01_search_settings_basic.png"
+          "action": "Navigated to Site Settings > Search page",
+          "expected": "Search Crawler settings UI should display with properly localized text labels",
+          "actual": "Search settings page displayed with localized English UI text including tabs (Basic Settings, Synonyms, Ignore Words, Crawling, File Extensions) and field labels (Minimum Word Length, Maximum Word Length, etc.)",
+          "screenshot": "Localization Support_step01_search_settings_localized_ui.png"
         },
         {
           "step_number": 2,
-          "action": "Navigate to Crawling tab to view more localized labels",
-          "expected": "Crawling tab displays localized section headers and column labels",
-          "actual": "Crawling tab loaded with localized labels: URL PATHS, URL, ENABLE SPIDERING, DNN IMPERSONATION, WINDOWS AUTH, Duplicates, Description, Regex Pattern, Included Directories, Excluded Directories",
-          "screenshot": "Localization Support_step02_crawling_tab.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Test resource file loading",
-      "status": "PASS",
-      "steps": [
+          "action": "Clicked on Crawling tab to view crawler-specific settings",
+          "expected": "Crawling settings should display with localized section headers and column labels",
+          "actual": "Crawling tab displayed with properly localized text: URL PATHS, DUPLICATES, Included Directories, Excluded Directories sections with appropriate column headers (URL, Enable Spidering, DNN Impersonation, Windows Auth, Description, Regex Pattern, Directory)",
+          "screenshot": "Localization Support_step02_crawling_settings_localized.png"
+        },
         {
-          "step_number": 1,
-          "action": "Navigate to File Extensions tab and verify resource strings are loaded",
-          "expected": "Labels from SharedResources.resx file are displayed correctly",
-          "actual": "File Extensions tab loaded with localized labels from resource files: INCLUDED FILE EXTENSIONS, FILE EXTENSION, FILE TYPE, CONTENT CRAWLING, EXCLUDED FILE EXTENSIONS, Add File Type. Tooltip 'Content crawling is unavailable' matches tooltipContentCrawlingUnavailable.Text from SharedResources.resx",
-          "screenshot": "Localization Support_step03_file_extensions.png"
+          "step_number": 3,
+          "action": "Clicked on File Extensions tab",
+          "expected": "File Extensions settings should display with localized labels",
+          "actual": "File Extensions tab displayed with properly localized text: INCLUDED FILE EXTENSIONS, EXCLUDED FILE EXTENSIONS sections with column headers (File Extension, File Type, Content Crawling) and action buttons (Add File Type)",
+          "screenshot": "Localization Support_step03_file_extensions_localized.png"
         }
       ],
       "issues": []
@@ -50,25 +43,25 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click on German language flag in the persona bar language selector",
-          "expected": "Admin UI falls back to English since German translations are not available for Search Crawler admin resources",
-          "actual": "After clicking German flag, the admin UI correctly remains in English. All labels continue to display in English (INCLUDED FILE EXTENSIONS, FILE EXTENSION, FILE TYPE, etc.), demonstrating proper fallback behavior to the default language when translations are unavailable",
-          "screenshot": "Localization Support_step04_fallback_to_english.png"
+          "action": "Selected Spanish language from the language selector in the PersonaBar",
+          "expected": "UI should either display Spanish translations or fall back to default English if translations are not available",
+          "actual": "UI correctly fell back to default English language when Spanish was selected, as no Spanish resource files are installed for the Search Crawler module. This is expected behavior - the LocalizationHelper.cs uses DNN's Localization.GetString() which falls back to the default resource file when translations are unavailable.",
+          "screenshot": "Localization Support_step04_language_fallback.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The LocalizationHelper.cs class wraps DNN's Localization.GetString() method to retrieve localized strings from DesktopModules/DNNCorp/SearchCrawler/App_LocalResources/CrawlerSettings.ascx.resx",
-    "SharedResources.resx contains localized strings for error messages, log messages, tooltips, and UI labels used throughout the Search Crawler module",
-    "The localization system correctly falls back to the default English language when translations for other languages (e.g., German) are not available",
-    "Resource strings like 'Content crawling is unavailable' (tooltipContentCrawlingUnavailable.Text) are properly loaded and displayed in the UI",
-    "The admin persona bar provides language switching functionality, but Search Crawler admin resources only have English translations"
+    "The LocalizationHelper.cs class uses DNN's standard Localization.GetString() method pointing to DesktopModules/DNNCorp/SearchCrawler/App_LocalResources/CrawlerSettings.ascx.resx",
+    "SharedResources.resx contains approximately 35 localized strings for error messages, log messages, tooltips, and UI labels used throughout the Search Crawler module",
+    "The resource files include strings for file crawler results, indexing status messages, directory paths, and error notifications",
+    "Only English (default) resource files are present - no language-specific resource files (e.g., SharedResources.es-ES.resx) were found in the codebase, which explains the fallback behavior",
+    "The language selector in the PersonaBar controls content language context, not necessarily the admin UI language - this is standard DNN behavior"
   ],
   "summary": {
-    "total_scenarios": 3,
-    "passed": 3,
+    "total_scenarios": 2,
+    "passed": 2,
     "failed": 0,
     "pass_rate": "100%"
   }

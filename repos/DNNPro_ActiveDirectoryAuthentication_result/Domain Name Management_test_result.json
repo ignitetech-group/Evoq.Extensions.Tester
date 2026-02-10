@@ -5,7 +5,7 @@
     "feature_name": "Domain Name Management",
     "feature_description": "Configure how domain names are handled in usernames",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T15:40:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -16,44 +16,72 @@
         {
           "step_number": 1,
           "action": "Navigate to Settings > Extensions > Authentication Systems > DNNPro_ActiveDirectoryAuthentication > Site Settings",
-          "expected": "Active Directory settings page should load with all configuration options",
-          "actual": "AD settings page loaded successfully showing all configuration fields including Default Domain",
-          "screenshot": "Domain_Name_Management_step01_ad_settings_page.png"
+          "expected": "AD Authentication settings page should be displayed with Default Domain field visible",
+          "actual": "AD Authentication settings page displayed correctly with Default Domain field visible",
+          "screenshot": "Domain Name Management_step01_ad_settings_page.png"
         },
         {
           "step_number": 2,
-          "action": "Locate the Default Domain field and verify it is visible",
-          "expected": "Default Domain field should be visible and editable",
-          "actual": "Default Domain field is visible and empty (editable textbox)",
-          "screenshot": "Domain_Name_Management_step02_default_domain_field.png"
+          "action": "Scroll to view the Default Domain field",
+          "expected": "Default Domain field should be visible and empty by default",
+          "actual": "Default Domain field is visible and empty (default state)",
+          "screenshot": "Domain Name Management_step03_settings_full.png"
         },
         {
           "step_number": 3,
           "action": "Enter 'TESTDOMAIN' in the Default Domain field",
-          "expected": "Value should be accepted in the textbox",
-          "actual": "Successfully entered 'TESTDOMAIN' in the Default Domain field",
-          "screenshot": "Domain_Name_Management_step03_default_domain_entered.png"
+          "expected": "Value should be entered in the field",
+          "actual": "TESTDOMAIN value entered successfully in the Default Domain field",
+          "screenshot": "Domain Name Management_step04_default_domain_entered.png"
         },
         {
           "step_number": 4,
-          "action": "Click 'Update Authentication Settings' to save the configuration",
-          "expected": "Settings should be saved and persisted",
-          "actual": "Settings saved successfully. Page refreshed showing connection test results (expected failures due to no AD server) and Default Domain field retained the value 'TESTDOMAIN'",
-          "screenshot": "Domain_Name_Management_step04_default_domain_saved.png"
+          "action": "Click 'Update Authentication Settings' to save",
+          "expected": "Settings should be saved and value should persist",
+          "actual": "Settings saved successfully and TESTDOMAIN value persisted after page reload",
+          "screenshot": "Domain Name Management_step05_default_domain_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Strip Domain Name setting is not exposed in UI",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review all settings visible in the AD Authentication Site Settings page",
+          "expected": "Verify whether Strip Domain Name checkbox is visible or hidden",
+          "actual": "Strip Domain Name checkbox is NOT visible in the UI. Code review confirmed the control has Visible='false' attribute set in Settings.ascx (line 35-36)",
+          "screenshot": "Domain Name Management_step03_settings_full.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Login Page Without AD Authentication Enabled",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Log out and navigate to the login page with AD Authentication disabled",
+          "expected": "Login page should show only standard DNN login form (no Windows Authentication tab)",
+          "actual": "Login page displays standard DNN login form with Username/Password fields only - no Windows Authentication tab visible when AD Authentication is disabled",
+          "screenshot": "Domain Name Management_step06_login_page_no_windows_tab.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Strip Domain Name setting: Code analysis (Settings.ascx line 35-36) shows the checkbox control 'chkStripDomainName' exists but is explicitly hidden with Visible='false'. This feature cannot be tested via UI as there is no visible control to interact with.",
-    "Login scenario tests (DOMAIN\\username, username@domain.com, username with default domain): These tests require an actual Active Directory server connection. The test environment shows expected connection failures ('Accessing Global Catalog: FAIL', 'Checking Root Domain: FAIL', 'Accessing LDAP: FAIL') since no AD infrastructure is configured.",
-    "The Default Domain setting is stored as 'AD_DefaultDomain' in portal settings (Configuration.cs line 132) and is used by Login.ascx.cs to automatically prepend the domain when users enter a username without domain prefix.",
-    "Code confirms that when Default Domain is set and user enters just 'username', the system will format it as 'DEFAULTDOMAIN\\username' before authentication (Login.ascx.cs lines 139-141)."
+    "The 'Strip Domain Name' feature exists in the code (Configuration.cs and Settings.ascx.cs) but is intentionally hidden from the UI with Visible='false' attribute in Settings.ascx lines 35-36. This setting cannot be tested via UI.",
+    "The Default Domain field is functional and allows configuration of a default domain prefix for users logging in without specifying a domain.",
+    "Testing actual AD login with DOMAIN\\username or username@domain.com formats requires a real Active Directory environment which is not available in this test setup.",
+    "When AD Authentication is disabled (Enabled checkbox unchecked), the Windows Authentication tab does not appear on the login page as expected."
   ],
   "summary": {
-    "total_scenarios": 1,
-    "passed": 1,
+    "total_scenarios": 3,
+    "passed": 3,
     "failed": 0,
     "pass_rate": "100%"
   }

@@ -5,7 +5,7 @@
     "feature_name": "Image Search Results",
     "feature_description": "Specialized handling for image file search results with thumbnail generation.",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T14:30:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,24 +15,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigated to home page and logged in as SuperUser (host)",
-          "expected": "Login successful, SuperUser Account displayed",
-          "actual": "Login successful, SuperUser Account displayed in top navigation",
-          "screenshot": "Image Search Results_step00_login_confirmed.png"
+          "action": "Navigate to site search and search for 'cavalier' which is known to be in image file names",
+          "expected": "Search results should display image files with appropriate metadata",
+          "actual": "Search results displayed multiple image files (cavalier-logo.png, cavalier-tv.png, cavalier-tv-thumb-120.png) with Source label showing 'Images'",
+          "screenshot": "Image Search Results_step07_image_search_results_found.png"
         },
         {
           "step_number": 2,
-          "action": "Entered 'logo' in search box and submitted search",
-          "expected": "Search results page displays image files",
-          "actual": "Search results page loaded at /en-us/Search-Results?Search=logo showing 'About 1 Results'",
-          "screenshot": "Image Search Results_step01_search_results_page.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Verified image search result is displayed correctly",
-          "expected": "Image file cavalier-logo.png appears in search results with proper metadata",
-          "actual": "cavalier-logo.png displayed with URL path, description showing 'alier-logo.png...alier-logo png image/png users/001/01/1/', and Source: Images label",
-          "screenshot": "Image Search Results_step02_image_result_displayed.png"
+          "action": "Scroll to see additional image search results",
+          "expected": "More image results should be visible",
+          "actual": "Additional image results displayed with consistent formatting and 'Images' source classification",
+          "screenshot": "Image Search Results_step08_more_image_results.png"
         }
       ],
       "issues": []
@@ -43,10 +36,17 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Reviewed search result metadata for image file",
-          "expected": "Image file should be categorized as 'Images' source type",
-          "actual": "Search result shows 'Source: Images' confirming PNG file is correctly detected and categorized as an image type",
-          "screenshot": "Image Search Results_step02_image_result_displayed.png"
+          "action": "Open Advanced search filter dropdown to view available search type filters",
+          "expected": "Should see 'Images' as a distinct search type filter option",
+          "actual": "Filter dropdown shows 'Images' as a selectable option, confirming image file type detection is working and images are categorized separately from documents",
+          "screenshot": "Image Search Results_step02_filter_dropdown_showing_images.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Search for images and verify the Source label in results",
+          "expected": "Image results should show 'Images' as the Source type",
+          "actual": "All image results (PNG files) correctly display 'Source: Images' confirming the ImageResultController is providing the localized search type name",
+          "screenshot": "Image Search Results_step07_image_search_results_found.png"
         }
       ],
       "issues": []
@@ -57,31 +57,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Clicked on cavalier-logo.png search result link",
-          "expected": "Image URL should be generated and image should be accessible",
-          "actual": "Image opened directly in browser at /Portals/_default/Users/001/01/1/cavalier-logo.png with page title showing dimensions (225x60)",
-          "screenshot": "Image Search Results_step03_image_url_opens.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Generate image thumbnails",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Navigated to Content > Assets in PersonaBar",
-          "expected": "Asset Manager should display with access to site files",
-          "actual": "Asset Manager opened showing folder structure: Global Assets, My Website, Test Portal",
-          "screenshot": "Image Search Results_step04_asset_manager_images.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Navigated to Home > Images folder to view image files",
-          "expected": "Image files should display with generated thumbnails",
-          "actual": "Images folder displayed with multiple image files showing circular thumbnails: batch_image_3.png, cavalier-tv.png, CTA-1.jpg through CTA-8.jpg, and other PNG/JPG files with visible thumbnail previews",
-          "screenshot": "Image Search Results_step04_asset_manager_images.png"
+          "action": "Click on an image search result link (cavalier-logo.png)",
+          "expected": "Should navigate to the image URL and display the image",
+          "actual": "Browser navigated to /Portals/0/cavalier-logo.png and the image loaded successfully, displaying the Cavalier TV logo",
+          "screenshot": "Image Search Results_step09_image_url_works.png"
         }
       ],
       "issues": []
@@ -92,25 +71,25 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempted to access non-existent image URL: /Portals/0/Images/non_existent_image_12345.png",
-          "expected": "System should return appropriate error without crashing",
-          "actual": "System returned HTTP Error 404.0 - Not Found with detailed error page explaining 'The resource you are looking for has been removed, had its name changed, or is temporarily unavailable'",
-          "screenshot": "Image Search Results_step05_missing_image_404.png"
+          "action": "Search for a non-existent image term 'nonexistentimage12345'",
+          "expected": "Should display a user-friendly 'no results' message rather than an error",
+          "actual": "Search results page displayed 'No results found' message with a friendly message 'We could not find any results based on your search criteria.'",
+          "screenshot": "Image Search Results_step10_no_results_found.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "ImageResultController extends FileResultController and provides localized search type name for images",
-    "Image file types are detected based on extension matching against Globals.glbImageFileTypes configuration",
-    "Thumbnails are generated via ThumbnailsController API at API/DNNCorp/PersonaBar/Assets/ThumbnailDownLoad endpoint",
-    "Search results correctly differentiate between 'document' and 'image' search types using SearchTypeId",
-    "The FileCrawlerController handles cleanup of documents that were previously indexed as documents but are now recognized as images"
+    "ImageResultController is a simple extension of FileResultController that only overrides the LocalizedSearchTypeName property to return 'ImageSearchTypeName' from the resource file.",
+    "Image file type detection is handled in FileCrawlerController.GetSearchTypeId() method which checks if the file extension matches Globals.glbImageFileTypes (jpg, jpeg, gif, png, bmp).",
+    "Thumbnail generation was mentioned in the feature description but appears to be handled by the DNN Assets manager rather than directly by the search results display. The search results show the original file names without visible thumbnail previews in the results list.",
+    "File Extensions settings under Search Settings only show document types (.doc, .docx, .pdf, etc.) but images are still indexed through the FileCrawlerController's internal image detection logic.",
+    "Image permissions are verified through FileResultController.HasViewPermission() which checks FolderPermissionController.CanBrowseFolder or CanViewFolder on the parent folder. Testing with different user roles was not performed as it requires additional user setup."
   ],
   "summary": {
-    "total_scenarios": 5,
-    "passed": 5,
+    "total_scenarios": 4,
+    "passed": 4,
     "failed": 0,
     "pass_rate": "100%"
   }

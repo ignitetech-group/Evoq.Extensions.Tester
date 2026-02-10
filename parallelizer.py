@@ -352,7 +352,7 @@ if __name__ == "__main__":
         v9_website_path=Path("http://localhost:8091"),
         v10_website_path=Path("http://localhost:8081"),
         parallel=True,
-        max_workers=5,  # Increase this for more parallelism (50-200 recommended)
+        max_workers=20,  # Increase this for more parallelism (50-200 recommended)
     )
     
     # Example: Extract features only (Step 1)
@@ -363,37 +363,62 @@ if __name__ == "__main__":
     #     print(f"{name}: {len(ext_features.features)} features")
     
     # Example: Full test (Step 1 + Step 2)
-    results = parallelizer.test_extensions(
-        extensions_to_test_name_list=[
-            'DNN_HTML',
-            'ContentLayout',
-            'DotNetNuke.Professional.SearchCrawler',
-            'Evoq.GoogleAnalyticsConnector',
-            'DNNPro_ActiveDirectoryAuthentication',
-            'Publisher',
-            'Evoq.Content.GoogleAnalyticsConnector',
-            'Evoq.GoogleTagManagerConnector',
-            'Evoq.Social.ActivityStream',
-            'Evoq.Social.Wiki',
-            'Evoq.PersonaBar.UI',
-            'Evoq.PersonaBar.AccountSettings',
-            'Evoq.PersonaBar.Assets',
-            'Evoq.PersonaBar.Pages',
-            'Evoq.PersonaBar.SiteSettings',
-            'Evoq.PersonaBar.Templates',
-            'Evoq.PersonaBar.UrlManagement',
-            'Evoq.PersonaBar.Users',
-            'Evoq.PersonaBar.Workflow',
-            'Evoq.PersonaBar.CommunityAnalytics',
-            'Evoq.PersonaBar.CommunitySettings',
-        ],
-        on_output=default_output_handler,
-    )
-
-    # Final: Test All Extensions
     # results = parallelizer.test_extensions(
+    #     extensions_to_test_name_list=[
+    #         'DNN_HTML',
+    #         'ContentLayout',
+    #         'DotNetNuke.Professional.SearchCrawler',
+    #         'Evoq.GoogleAnalyticsConnector',
+    #         'DNNPro_ActiveDirectoryAuthentication',
+    #         'Publisher',
+    #         'Evoq.Content.GoogleAnalyticsConnector',
+    #         'Evoq.GoogleTagManagerConnector',
+    #         'Evoq.Social.ActivityStream',
+    #         'Evoq.Social.Wiki',
+    #         'Evoq.PersonaBar.UI',
+    #         'Evoq.PersonaBar.AccountSettings',
+    #         'Evoq.PersonaBar.Assets',
+    #         'Evoq.PersonaBar.Pages',
+    #         'Evoq.PersonaBar.SiteSettings',
+    #         'Evoq.PersonaBar.Templates',
+    #         'Evoq.PersonaBar.UrlManagement',
+    #         'Evoq.PersonaBar.Users',
+    #         'Evoq.PersonaBar.Workflow',
+    #         'Evoq.PersonaBar.CommunityAnalytics',
+    #         'Evoq.PersonaBar.CommunitySettings',
+    #     ],
     #     on_output=default_output_handler,
     # )
+
+    # Final: Test All HIGH Priority Extensions
+    HIGH_PRIORITY_EXTENSIONS = [
+        'DNN_HTML',
+        'ContentLayout',
+        'DotNetNuke.Professional.SearchCrawler',
+        'Evoq.GoogleAnalyticsConnector',
+        'DNNPro_ActiveDirectoryAuthentication',
+        'Publisher',
+        'Evoq.Content.GoogleAnalyticsConnector',
+        'Evoq.GoogleTagManagerConnector',
+        'Evoq.Social.ActivityStream',
+        'Evoq.Social.Wiki',
+        'Evoq.PersonaBar.UI',
+        'Evoq.PersonaBar.AccountSettings',
+        'Evoq.PersonaBar.Assets',
+        'Evoq.PersonaBar.Pages',
+        'Evoq.PersonaBar.SiteSettings',
+        'Evoq.PersonaBar.Templates',
+        'Evoq.PersonaBar.UrlManagement',
+        'Evoq.PersonaBar.Users',
+        'Evoq.PersonaBar.Workflow',
+        'Evoq.PersonaBar.CommunityAnalytics',
+        'Evoq.PersonaBar.CommunitySettings',
+    ]
+    
+    results = parallelizer.test_extensions(
+        extensions_to_test_name_list=HIGH_PRIORITY_EXTENSIONS,
+        on_output=default_output_handler,
+    )
     
     # Print summary
     print("\n" + "="*60)

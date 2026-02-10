@@ -5,90 +5,69 @@
     "feature_name": "Extension Management Administration",
     "feature_description": "Manages included and excluded file extensions for crawling and indexing operations.",
     "feature_priority": "High",
-    "test_date": "2026-01-16T00:00:00Z",
+    "test_date": "2026-02-09T12:45:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
-    {
-      "scenario_name": "Remove included file extension",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Navigate to File Extensions page and identify .xls in included list",
-          "expected": "File Extensions page loads with .xls visible in included extensions",
-          "actual": "Page loaded showing .xls in included extensions list",
-          "screenshot": "Extension Management Administration_step08_before_remove.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click delete icon for .xls extension",
-          "expected": "Confirmation dialog appears",
-          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete .xls?'",
-          "screenshot": "Extension Management Administration_step09_delete_confirmation.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Click Yes to confirm deletion",
-          "expected": ".xls is removed from the included extensions list",
-          "actual": ".xls was successfully removed from the list",
-          "screenshot": "Extension Management Administration_step10_xls_removed.png"
-        }
-      ],
-      "issues": []
-    },
     {
       "scenario_name": "Add included file extension",
       "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Click Add File Type in Included File Extensions section",
-          "expected": "Add form appears with textbox for extension",
-          "actual": "Add form appeared with textbox",
-          "screenshot": "Extension Management Administration_step02_add_included_form.png"
+          "action": "Navigate to Site Settings > Search > File Extensions",
+          "expected": "File Extensions page loads with included and excluded sections",
+          "actual": "File Extensions page loaded successfully showing included extensions (doc, docx, pdf, ppt, pptx, txt, xls, xlsx) and excluded extensions",
+          "screenshot": "Extension Management Administration_step01_file_extensions_page.png"
         },
         {
           "step_number": 2,
-          "action": "Enter 'txt' and click Save",
-          "expected": "Extension is added to the list",
-          "actual": "Validation error - extension not in host whitelist",
-          "screenshot": "Extension Management Administration_step04_whitelist_validation_error.png"
+          "action": "Click Add File Type button in Included File Extensions section",
+          "expected": "Add form appears with text input",
+          "actual": "Add form appeared with File Extension text input field",
+          "screenshot": "Extension Management Administration_step02_add_included_form.png"
         },
         {
           "step_number": 3,
-          "action": "Try multiple extensions: xlsx, htm, jpg, xls",
-          "expected": "At least one extension is successfully added",
-          "actual": "All extensions rejected by whitelist validation",
-          "screenshot": "Extension Management Administration_step11_add_xls.png"
+          "action": "Enter 'htm' and click Save",
+          "expected": "Extension added to included list",
+          "actual": "Validation error displayed - extension not in host whitelist",
+          "screenshot": "Extension Management Administration_step04_htm_validation_error.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Try adding 'jpg' extension",
+          "expected": "Extension added to included list",
+          "actual": "Validation error displayed - extension not in host whitelist",
+          "screenshot": "Extension Management Administration_step05_jpg_validation.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Try adding 'rtf' extension",
+          "expected": "Extension added to included list",
+          "actual": "Validation error displayed - extension not in host whitelist",
+          "screenshot": "Extension Management Administration_step06_rtf_validation.png"
         }
       ],
-      "issues": ["Unable to add any included extension due to restrictive host whitelist configuration in test environment. All attempted extensions (txt, xlsx, htm, jpg, xls) were rejected with whitelist validation errors."]
+      "issues": ["Unable to add any new included extensions due to restrictive host whitelist - all tested extensions (htm, jpg, rtf) were rejected as not in whitelist"]
     },
     {
-      "scenario_name": "Remove excluded file extension",
+      "scenario_name": "Remove included file extension",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Excluded File Extensions section and locate .zip",
-          "expected": ".zip is visible in excluded extensions list",
-          "actual": ".zip visible in excluded extensions list",
-          "screenshot": "Extension Management Administration_step12_excluded_section.png"
+          "action": "Locate .xlsx extension in included list and click delete icon",
+          "expected": "Confirmation dialog appears",
+          "actual": "Delete confirmation dialog appeared asking to confirm removal",
+          "screenshot": "Extension Management Administration_step09_delete_confirmation.png"
         },
         {
           "step_number": 2,
-          "action": "Click delete icon for .zip extension",
-          "expected": "Confirmation dialog appears",
-          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete .zip?'",
-          "screenshot": "Extension Management Administration_step13_delete_zip_confirmation.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Click Yes to confirm deletion",
-          "expected": ".zip is removed from the excluded extensions list",
-          "actual": ".zip was successfully removed from the list (8 items remaining)",
-          "screenshot": "Extension Management Administration_step14_zip_removed.png"
+          "action": "Confirm deletion",
+          "expected": "Extension removed from included list",
+          "actual": "Extension .xlsx successfully removed from the included list",
+          "screenshot": "Extension Management Administration_step10_xlsx_removed.png"
         }
       ],
       "issues": []
@@ -99,20 +78,41 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Click Add File Type in Excluded File Extensions section",
-          "expected": "Add form appears with textbox for extension",
-          "actual": "Add form appeared with textbox",
-          "screenshot": "Extension Management Administration_step15_add_excluded_zip.png"
+          "action": "Click Add File Type button in Excluded File Extensions section",
+          "expected": "Add form appears with text input",
+          "actual": "Add form appeared with File Extension text input field",
+          "screenshot": "Extension Management Administration_step12_excluded_section.png"
         },
         {
           "step_number": 2,
           "action": "Enter 'zip' and click Save",
-          "expected": "Extension is added to excluded list",
-          "actual": "Validation error displayed - extension rejected",
-          "screenshot": "Extension Management Administration_step16_add_excluded_result.png"
+          "expected": "Extension added to excluded list",
+          "actual": "Validation error displayed - extension not in host whitelist",
+          "screenshot": "Extension Management Administration_step16_zip_whitelist_error.png"
         }
       ],
-      "issues": ["Excluded extensions also require host whitelist validation. The 'zip' extension was rejected with validation error similar to included extensions."]
+      "issues": ["Unable to add excluded extensions due to host whitelist validation - zip extension was rejected"]
+    },
+    {
+      "scenario_name": "Remove excluded file extension",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Locate .zip extension in excluded list and click delete icon",
+          "expected": "Confirmation dialog appears",
+          "actual": "Delete confirmation dialog appeared asking to confirm removal",
+          "screenshot": "Extension Management Administration_step13_delete_excluded_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Confirm deletion",
+          "expected": "Extension removed from excluded list",
+          "actual": "Extension .zip successfully removed from the excluded list",
+          "screenshot": "Extension Management Administration_step14_zip_removed.png"
+        }
+      ],
+      "issues": []
     },
     {
       "scenario_name": "Verify host whitelist enforcement",
@@ -120,24 +120,31 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to add extension 'txt' to included list",
-          "expected": "System validates against host whitelist",
-          "actual": "System correctly rejected 'txt' with validation error",
-          "screenshot": "Extension Management Administration_step04_whitelist_validation_error.png"
+          "action": "Attempt to add 'htm' to included extensions",
+          "expected": "System should validate against host whitelist",
+          "actual": "Validation error shown - NotInWhitelist error displayed",
+          "screenshot": "Extension Management Administration_step04_htm_validation_error.png"
         },
         {
           "step_number": 2,
-          "action": "Attempt to add extension 'xlsx' to included list",
-          "expected": "System validates against host whitelist",
-          "actual": "System correctly rejected 'xlsx' with validation error",
-          "screenshot": "Extension Management Administration_step06_xlsx_validation.png"
+          "action": "Attempt to add 'jpg' to included extensions",
+          "expected": "System should validate against host whitelist",
+          "actual": "Validation error shown - NotInWhitelist error displayed",
+          "screenshot": "Extension Management Administration_step05_jpg_validation.png"
         },
         {
           "step_number": 3,
-          "action": "Attempt to add extension 'htm' to included list",
-          "expected": "System validates against host whitelist",
-          "actual": "System correctly rejected 'htm' with validation error",
-          "screenshot": "Extension Management Administration_step07_htm_validation.png"
+          "action": "Attempt to add 'rtf' to included extensions",
+          "expected": "System should validate against host whitelist",
+          "actual": "Validation error shown - NotInWhitelist error displayed",
+          "screenshot": "Extension Management Administration_step06_rtf_validation.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Attempt to add 'zip' to excluded extensions",
+          "expected": "System should validate against host whitelist",
+          "actual": "Validation error shown - NotInWhitelist error displayed",
+          "screenshot": "Extension Management Administration_step16_zip_whitelist_error.png"
         }
       ],
       "issues": []
@@ -148,10 +155,10 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Attempt to add 'ico' to excluded list (already exists as .ico)",
-          "expected": "System prevents duplicate entry with validation error",
-          "actual": "Validation error displayed - system detected duplicate extension",
-          "screenshot": "Extension Management Administration_step17_duplicate_prevention.png"
+          "action": "Attempt to add 'css' to excluded extensions (css already exists in excluded list)",
+          "expected": "System should prevent duplicate and show error",
+          "actual": "Error displayed indicating duplicate extension cannot be added",
+          "screenshot": "Extension Management Administration_step15_duplicate_css_error.png"
         }
       ],
       "issues": []
@@ -162,22 +169,30 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Clear the extension textbox and observe validation",
-          "expected": "System shows validation error for empty input",
-          "actual": "Validation error displayed with red border indicating empty input is not allowed",
-          "screenshot": "Extension Management Administration_step18_empty_input.png"
+          "action": "Open add extension form and clear the input field",
+          "expected": "Validation indicator should appear for empty field",
+          "actual": "Red border with exclamation mark appeared indicating required field validation",
+          "screenshot": "Extension Management Administration_step17_empty_input.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save with empty input",
+          "expected": "Save should be blocked",
+          "actual": "Save was blocked - form remained open with validation error",
+          "screenshot": "Extension Management Administration_step18_empty_save_blocked.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The host whitelist in the test environment is very restrictive, preventing addition of common extensions like txt, xlsx, htm, jpg, and even xls to both included and excluded lists.",
-    "Code confirms extensions must be in Host.AllowedExtensionWhitelist to be added to either included or excluded lists.",
-    "The code normalizes extensions by trimming whitespace, converting to lowercase, and removing leading dots.",
-    "Extension case normalization is confirmed in code (SearchSpiderHelper.cs) but could not be fully tested via UI due to whitelist restrictions.",
-    "Portal-specific extension settings (portalId) are properly handled - returns -1 for host-level (SuperTab) and PortalSettings.PortalId for portal-level.",
-    "IFilter information is available via GetIFilterExtensionInfo() for content crawling capability display."
+    "The host whitelist appears to be very restrictive - common file extensions like htm, jpg, rtf, xlsx, and zip are all rejected as not in whitelist",
+    "Existing extensions in the system (doc, docx, pdf, ppt, pptx, txt, xls, xlsx for included; css, eot, htmtemplate, ico, rar, template, ttf, woff, xml, xsd, xsl, zip for excluded) were likely pre-configured or added when the whitelist was different",
+    "Code review confirms extensions are validated against Host.AllowedExtensionWhitelist before being added",
+    "Extensions are normalized to lowercase and leading dots are removed before processing",
+    "Both included and excluded extensions use the same whitelist validation logic",
+    "IFilter information is displayed for included extensions showing content crawling capability",
+    "The UI clearly indicates when content crawling is unavailable for certain extensions (pdf, pptx)"
   ],
   "summary": {
     "total_scenarios": 7,

@@ -5,55 +5,41 @@
     "feature_name": "URL Management Configuration Settings",
     "feature_description": "Retrieve global URL management configuration including locale settings and sorting options",
     "feature_priority": "Low",
-    "test_date": "2026-01-16T12:00:00Z",
+    "test_date": "2026-02-09T16:55:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
-      "scenario_name": "Retrieve configuration successfully",
+      "scenario_name": "Access URL Management Configuration Page",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Persona Bar > Settings > SEO > URL Management",
-          "expected": "URL Management configuration panel should load with General Settings tab selected",
-          "actual": "URL Management panel loaded successfully with General Settings tab selected, displaying URL Rewriter and URL Redirects configuration sections",
-          "screenshot": "URL_Management_Configuration_Settings_step01_login_and_navigation.png"
+          "action": "Login as SuperUser and navigate to Settings > SEO > URL Management",
+          "expected": "URL Management page loads with configuration settings visible",
+          "actual": "URL Management page loaded successfully showing GENERAL SETTINGS tab with URL Rewriter and URL Redirects configuration options",
+          "screenshot": "URL Management Configuration Settings_step01_url_management_page.png"
         },
         {
           "step_number": 2,
           "action": "Verify configuration settings are displayed",
-          "expected": "All URL management configuration options should be visible with current values",
-          "actual": "All configuration options displayed correctly: Standard Replacement Character ('-'), Concatenate Page URLs (On), Convert URLs to Lowercase (Off), Convert Accented Characters (Off), Set Default Site Language (On), Redirect deleted/expired/disabled pages to (404 Error), Redirect to Friendly URLs (On), Redirect Mixed Case URLs (Off)",
-          "screenshot": "URL_Management_Configuration_Settings_step02_config_loaded.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Verify single locale flag correctness",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Observe locale indicators in the portal header",
-          "expected": "Locale flags should be visible indicating multi-locale support",
-          "actual": "Multiple locale flags visible (en-US, es-AR, fr-FR, de-DE, ar-ER), confirming SingleLocale=false is correctly reflected in the UI. The Set Default Site Language option is enabled which is consistent with multi-locale portal configuration.",
-          "screenshot": "URL_Management_Configuration_Settings_step01_login_and_navigation.png"
+          "expected": "Configuration settings including locale options and URL settings are visible",
+          "actual": "Configuration settings displayed correctly: Standard Replacement Character ('-'), Concatenate Page URLs (On), Convert URLs to Lowercase (Off), Convert Accented Characters (Off), Set Default Site Language (On), Redirect options (404 Error/Site Home Page), Redirect to Friendly URLs (On), Redirect Mixed Case URLs (Off)",
+          "screenshot": "URL Management Configuration Settings_step02_configuration_visible.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "The GetConfiguration() API returns SingleLocale flag and SortingFields enum values (None, Url, Locale, Status) which are used by the UI for display and sorting logic",
-    "The portal has 5 locales enabled (en-US, es-AR, fr-FR, de-DE, ar-ER), so SingleLocale returns false as expected",
-    "Configuration caching behavior could not be directly tested via UI as it is handled at the API/server level",
-    "Testing with different portal settings would require switching portal context which is beyond the scope of smoke testing"
+    "The GetConfiguration() API endpoint in UrlManagementServiceController.cs (line 486-495) returns SingleLocale (boolean indicating single locale or content localization enabled) and SortingFields (enum values: None=0, Url=1, Locale=2, Status=3). This API is page-context specific and is used internally when managing custom URLs for individual pages.",
+    "The URL Management configuration visible in the SEO > URL Management UI displays site-wide URL settings that are powered by this configuration system.",
+    "The site has multiple locales enabled (English and Spanish), so SingleLocale would return false in this configuration.",
+    "Available sorting fields (None, Url, Locale, Status) are used for sorting URL lists when viewing custom page URLs."
   ],
   "summary": {
-    "total_scenarios": 2,
-    "passed": 2,
+    "total_scenarios": 1,
+    "passed": 1,
     "failed": 0,
     "pass_rate": "100%"
   }

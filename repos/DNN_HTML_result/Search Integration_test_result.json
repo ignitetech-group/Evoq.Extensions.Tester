@@ -5,7 +5,7 @@
     "feature_name": "Search Integration",
     "feature_description": "Index HTML content for site search with configurable summary length",
     "feature_priority": "Medium",
-    "test_date": "2026-01-16T10:30:00Z",
+    "test_date": "2026-02-09T14:55:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
@@ -15,20 +15,48 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to HTML Module Settings page via URL /Home/ctl/Settings/mid/363",
-          "expected": "Module settings page displays with search-related settings",
-          "actual": "HTML Module Settings page displayed with 'Replace Tokens' checkbox and 'Max length of Description in search' textbox",
-          "screenshot": "Search Integration_step02_search_desc_length_setting.png"
+          "action": "Navigate to Home page and enable Edit mode",
+          "expected": "Edit mode enabled with pane labels visible",
+          "actual": "Edit mode enabled successfully, pane labels (TopHeroDark, TopPane, etc.) and module action menus visible",
+          "screenshot": "Search Integration_step01_edit_mode.png"
         },
         {
           "step_number": 2,
-          "action": "Enter value '150' in the 'Max length of Description in search' textbox",
-          "expected": "Field accepts numeric value",
-          "actual": "Value '150' was accepted by the textbox. Field has validation for numeric-only input (regex validator in code: ^\\d+$)",
-          "screenshot": "Search Integration_step02_search_desc_length_setting.png"
+          "action": "Open module settings for Text/HTML module (ID 366) via Admin > Settings",
+          "expected": "Module settings dialog opens with HTML Module Settings tab",
+          "actual": "Module settings dialog opened with tabs: Module Settings, Permissions, Page Settings, HTML Module Settings",
+          "screenshot": "Search Integration_step02_html_module_settings.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Navigate to HTML Module Settings tab and view Max length of Description in search field",
+          "expected": "Search description length field visible with default value of 100",
+          "actual": "Max length of Description in search field displayed with default value 100",
+          "screenshot": "Search Integration_step02_html_module_settings.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Change search description length from 100 to 150",
+          "expected": "Value changes to 150 in the textbox",
+          "actual": "Value successfully changed to 150",
+          "screenshot": "Search Integration_step03_search_length_changed.png"
         }
       ],
       "issues": []
+    },
+    {
+      "scenario_name": "Verify search length validation",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter non-numeric value 'abc' in the Max length of Description in search field",
+          "expected": "Client-side validation error should appear indicating only numeric values are allowed",
+          "actual": "Server-side EventValidation error occurred instead of expected client-side validation. Error: 'A critical error has occurred. Please check the Admin Logs for further details.'",
+          "screenshot": "Search Integration_step05_server_error.png"
+        }
+      ],
+      "issues": ["Client-side validation (RegularExpressionValidator) did not prevent the non-numeric value from being submitted. The validation was expected to occur client-side but the postback was processed, resulting in an ASP.NET EventValidation error instead of the intended validation message."]
     },
     {
       "scenario_name": "Search for module content",
@@ -36,75 +64,46 @@
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to home page and enter 'Cavalier Electronics' in the search box",
-          "expected": "Search executes and returns results",
-          "actual": "Search navigated to /Search-Results page and displayed 'About 9 Results' for the search term",
-          "screenshot": "Search Integration_step03_search_results.png"
+          "action": "Enter 'televisions' in the site search box and click Search",
+          "expected": "Search results page displays with results containing 'televisions'",
+          "actual": "Search results page displayed with 'About 3 Results' showing content from HTML modules",
+          "screenshot": "Search Integration_step08_search_results_content.png"
         },
         {
           "step_number": 2,
-          "action": "Review search results for HTML module content",
-          "expected": "Results include content from HTML modules on the site",
-          "actual": "Results included page content with descriptions like 'Cavalier Community...', 'Community Leaderboard', and 'Activities > Community Activities' showing HTML module content was successfully indexed",
-          "screenshot": "Search Integration_step04_search_results_content.png"
+          "action": "Verify search results include HTML module content",
+          "expected": "Results show content from HTML modules (Televisions module, Home Banner module)",
+          "actual": "Results include: 1) Televisions module showing 'TELEVISIONS', 2) Home Banner showing 'The World's Finest AV Products Since 1953, when it began producing televisions, the...'",
+          "screenshot": "Search Integration_step08_search_results_content.png"
         }
       ],
       "issues": []
     },
     {
-      "scenario_name": "Verify search results accuracy",
+      "scenario_name": "Verify HTML stripping in search results",
       "status": "PASS",
       "steps": [
         {
           "step_number": 1,
-          "action": "Examine search results for relevance to search term 'Cavalier Electronics'",
-          "expected": "Results contain content matching the search term",
-          "actual": "All 9 results contained 'Cavalier' in titles, descriptions, or file names. Results included both image files (cavalier-tv.png, cavalier-logo.png) and page content",
-          "screenshot": "Search Integration_step04_search_results_content.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Check search result descriptions for content excerpts",
-          "expected": "Descriptions show relevant text from indexed content",
-          "actual": "Page results showed accurate descriptions: 'Members of the Cavalier Community generously share their time and talent...', 'Cavalier thrives on the participation of inquisitive visitors...'",
-          "screenshot": "Search Integration_step04_search_results_content.png"
-        }
-      ],
-      "issues": []
-    },
-    {
-      "scenario_name": "Test HTML stripping in search",
-      "status": "PASS",
-      "steps": [
-        {
-          "step_number": 1,
-          "action": "Review search result descriptions for HTML tag removal",
-          "expected": "Search results display plain text without HTML markup",
-          "actual": "All search result descriptions displayed plain text only. No HTML tags visible in results. The search term 'Cavalier' was highlighted in the results (shown with emphasis styling)",
-          "screenshot": "Search Integration_step04_search_results_content.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Verify description truncation with ellipsis",
-          "expected": "Long descriptions are truncated based on configured length",
-          "actual": "Descriptions were properly truncated with '...' at the end, demonstrating the search description length feature is working. Example: 'Members of the Cavalier Community generously share their time and talent with one another by partic....'",
-          "screenshot": "Search Integration_step04_search_results_content.png"
+          "action": "Review search results for HTML content formatting",
+          "expected": "Search results show plain text content without HTML tags",
+          "actual": "Search results display clean text content. The 'Home Banner' result shows 'The World's Finest AV Products Since 1953, when it began producing televisions, the Cavalier Corporation in Japan (then Karloki Buto Co., Ltd.) has grown to become the world's largest manufacturer of a full line of televisions, and a leading producer of audio/visual products. Learn More' - all HTML stripped, plain text only",
+          "screenshot": "Search Integration_step08_search_results_content.png"
         }
       ],
       "issues": []
     }
   ],
   "observations": [
-    "Code review confirms search integration uses HtmlUtils.Clean() to strip HTML tags before indexing content (HtmlTextController.cs line 482)",
-    "The default MAX_DESCRIPTION_LENGTH is 100 characters when no module setting is configured (HtmlTextController.cs line 66)",
-    "Search description length is stored in module setting 'HtmlText_SearchDescLength' and read during indexing",
-    "'Exclude content from search' functionality was not found as a module-level setting - this would be controlled at the DNN platform search configuration level, not within the HTML module settings",
-    "Search indexing occurs asynchronously via the DNN Search Engine scheduler, so immediate index updates after content changes could not be directly tested in real-time"
+    "The search description length setting (HtmlText_SearchDescLength) defaults to 100 characters as defined in the code constant MAX_DESCRIPTION_LENGTH",
+    "The search indexing uses HtmlUtils.Clean() to strip HTML tags from content before indexing, which was confirmed by the plain text search results",
+    "The RegularExpressionValidator for the search description length field uses pattern ^\\d+$ to enforce numeric-only values, but client-side validation did not trigger as expected when testing invalid input",
+    "Search results accurately find content from HTML modules and display highlighted matches"
   ],
   "summary": {
     "total_scenarios": 4,
-    "passed": 4,
-    "failed": 0,
-    "pass_rate": "100%"
+    "passed": 3,
+    "failed": 1,
+    "pass_rate": "75%"
   }
 }

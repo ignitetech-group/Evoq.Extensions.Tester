@@ -5,120 +5,187 @@
     "feature_name": "Revision Management",
     "feature_description": "Track and manage article revisions with approval workflow and version history",
     "feature_priority": "High",
-    "test_date": "2026-01-16T16:21:00Z",
+    "test_date": "2026-02-09T15:51:00Z",
     "tester": "Claude"
   },
   "test_scenarios": [
     {
       "scenario_name": "View revision history",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "Navigate to Wiki module at http://localhost:8081/en-us/Community/Wiki",
-          "expected": "Wiki article list page should load",
-          "actual": "Wiki article list page loaded successfully with 26 articles displayed",
-          "screenshot": "Revision Management_step00_login_confirmed.png"
+          "action": "Login to DNN site as superuser",
+          "expected": "Successfully logged in",
+          "actual": "Successfully logged in as SuperUser Account",
+          "screenshot": "Revision Management_setup_login_confirmed.png"
         },
         {
           "step_number": 2,
-          "action": "Click on 'Test Article - Title Updated' to view article details",
-          "expected": "Article detail page should open with History link visible",
-          "actual": "Article detail page opened showing article content with History link in the actions area",
-          "screenshot": "Revision Management_step01_view_history.png"
+          "action": "Navigate to Wiki Test page",
+          "expected": "Wiki module with articles visible",
+          "actual": "Wiki module visible with 6 articles listed",
+          "screenshot": "Revision Management_step01_wiki_test_page.png"
         },
         {
           "step_number": 3,
-          "action": "Click on 'History' link to open revision history dialog",
-          "expected": "History dialog should open showing list of revisions with version numbers, dates, users, types, and states",
-          "actual": "History dialog opened showing 2 revisions (Version 1 and 2) with Published state, dates (12/30/2025), user info (Anonymous), and actions (Rollback, Delete)",
-          "screenshot": "Revision Management_step01_view_history.png"
+          "action": "Click on article 'Test Article for Revision Management' to access detail view",
+          "expected": "Article detail page renders with History link visible",
+          "actual": "Article detail page URL loads but no content renders - page is empty except for header/footer",
+          "screenshot": "Revision Management_step10_article_detail_no_content.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Wiki article detail pages do not render content - the Wiki Article module is not configured on the article child pages",
+        "The History link that provides access to Revision Management is located in Article.ascx (line 80-82) which only renders on the article detail view",
+        "Without the article detail view, there is no UI path to access the Revision Management feature"
+      ]
     },
     {
       "scenario_name": "Compare different revisions",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "In History dialog, check the checkboxes for Version 1 and Version 2",
-          "expected": "Both revision checkboxes should be selected",
-          "actual": "Both revision checkboxes selected successfully",
-          "screenshot": "Revision Management_step01_view_history.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Click 'Compare Revisions' button",
-          "expected": "Compare Revisions dialog should open showing visual diff between the two versions",
-          "actual": "Compare Revisions dialog opened showing visual diff with insertions highlighted in green and deletions in red/strikethrough. Clearly shows the text changes between versions.",
-          "screenshot": "Revision Management_step02_compare_revisions.png"
-        },
-        {
-          "step_number": 3,
-          "action": "Verify diff display format",
-          "expected": "Visual diff should clearly indicate what was added, removed, or modified",
-          "actual": "Diff display showed strikethrough text for removed content (red) and highlighted text for added content (green). Changes were clearly visible and easy to understand.",
-          "screenshot": "Revision Management_step02_compare_revisions.png"
+          "action": "Navigate to article detail page to access revision history",
+          "expected": "Article detail view with History link",
+          "actual": "Article detail page renders empty - no Wiki module content",
+          "screenshot": "Revision Management_step09_article_detail_empty.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Cannot access revision comparison feature - article detail pages do not render Wiki module content",
+        "Compare functionality exists in ChangesetControl.ascx but is inaccessible due to missing article detail view"
+      ]
     },
     {
-      "scenario_name": "Restore previous revision (Rollback)",
-      "status": "PASS",
+      "scenario_name": "Approve pending revision",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "In History dialog, click 'Rollback' button for Version 2",
-          "expected": "System should create an offsetting revision to restore to the previous state",
-          "actual": "Rollback action executed successfully. The History dialog updated to show 3 revisions, with a new Version 3 created as the rollback result.",
-          "screenshot": "Revision Management_step03_rollback_success.png"
+          "action": "Navigate to article detail page to access revision history",
+          "expected": "Article detail view with History link to access pending revisions",
+          "actual": "Article detail page renders empty - no Wiki module content",
+          "screenshot": "Revision Management_step09_article_detail_empty.png"
+        }
+      ],
+      "issues": [
+        "Cannot access revision approval feature - article detail pages do not render Wiki module content",
+        "Approve functionality exists in RevisionsApiController.cs (Publish endpoint) but is inaccessible via UI"
+      ]
+    },
+    {
+      "scenario_name": "Reject pending revision",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to article detail page to access revision history",
+          "expected": "Article detail view with History link to access pending revisions",
+          "actual": "Article detail page renders empty - no Wiki module content",
+          "screenshot": "Revision Management_step09_article_detail_empty.png"
+        }
+      ],
+      "issues": [
+        "Cannot access revision rejection feature - article detail pages do not render Wiki module content",
+        "Reject functionality exists in RevisionsApiController.cs (Reject endpoint) but is inaccessible via UI"
+      ]
+    },
+    {
+      "scenario_name": "Restore previous revision",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to article detail page to access revision history",
+          "expected": "Article detail view with History link to access revision list with Rollback option",
+          "actual": "Article detail page renders empty - no Wiki module content",
+          "screenshot": "Revision Management_step09_article_detail_empty.png"
+        }
+      ],
+      "issues": [
+        "Cannot access revision rollback feature - article detail pages do not render Wiki module content",
+        "Rollback functionality exists in RevisionsApiController.cs (Rollback endpoint) but is inaccessible via UI"
+      ]
+    },
+    {
+      "scenario_name": "Test revision state transitions (Draft->Pending->Published)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Create test article for revision management testing",
+          "expected": "Article created successfully",
+          "actual": "Article 'Test Article for Revision Management' created successfully and visible in list",
+          "screenshot": "Revision Management_step06_wiki_articles_list.png"
         },
         {
           "step_number": 2,
-          "action": "Verify new revision was created",
-          "expected": "A new revision should appear in the history with Published state",
-          "actual": "Version 3 appeared in history with Published state, dated 1/16/2026, showing it was created by SuperUser Account as a result of the rollback operation",
-          "screenshot": "Revision Management_step03_rollback_success.png"
+          "action": "Navigate to article detail page to access revision management",
+          "expected": "Article detail view with edit and history options",
+          "actual": "Article detail page renders empty - cannot access revision state management",
+          "screenshot": "Revision Management_step10_article_detail_no_content.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Cannot test revision state transitions - article detail pages do not render Wiki module content",
+        "Revision states (Pending=0, Unpublished=1, Published=2, Deleted=3) are defined in code but cannot be observed/modified via UI"
+      ]
     },
     {
       "scenario_name": "Delete revision",
-      "status": "PASS",
+      "status": "FAIL",
       "steps": [
         {
           "step_number": 1,
-          "action": "In History dialog, click 'Delete' button for Version 3",
-          "expected": "The revision should be deleted from the history",
-          "actual": "Delete action executed successfully. The History dialog updated to show only 2 revisions remaining (Version 1 and Version 2).",
-          "screenshot": "Revision Management_step04_delete_revision.png"
-        },
-        {
-          "step_number": 2,
-          "action": "Verify revision was removed from history",
-          "expected": "Version 3 should no longer appear in the revision list",
-          "actual": "Version 3 was successfully removed. History now shows only Version 1 and Version 2, both with Published state.",
-          "screenshot": "Revision Management_step04_delete_revision.png"
+          "action": "Navigate to article detail page to access revision history",
+          "expected": "Article detail view with History link to access revision list with Delete option",
+          "actual": "Article detail page renders empty - no Wiki module content",
+          "screenshot": "Revision Management_step09_article_detail_empty.png"
         }
       ],
-      "issues": []
+      "issues": [
+        "Cannot access revision deletion feature - article detail pages do not render Wiki module content",
+        "Delete functionality exists in RevisionsApiController.cs (Delete endpoint) but is inaccessible via UI"
+      ]
+    },
+    {
+      "scenario_name": "Test multiple pending revisions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to article detail page to create and manage multiple pending revisions",
+          "expected": "Article detail view with edit functionality to create revisions",
+          "actual": "Article detail page renders empty - cannot create or view revisions",
+          "screenshot": "Revision Management_step10_article_detail_no_content.png"
+        }
+      ],
+      "issues": [
+        "Cannot test multiple pending revisions - article detail pages do not render Wiki module content",
+        "Revision history table (ChangesetControl.ascx) that would show multiple revisions is inaccessible"
+      ]
     }
   ],
   "observations": [
-    "The Approve pending revision, Reject pending revision, and Revision state transitions (Draft->Pending->Published) scenarios could not be tested because the SuperUser account has auto-publish permissions that bypass the approval workflow. Even when the 'Approved' checkbox is unchecked during article creation/editing, no pending revision is created - content is published immediately.",
-    "Code analysis confirms the approval workflow exists in RevisionsApiController.cs with Publish() and Reject() methods, and RevisionState enum includes Draft, Pending, Published, Unpublished (rejected), and Deleted states. However, these states are only applicable when a non-admin user creates content that requires moderator approval.",
-    "The Multiple pending revisions scenario could not be tested because pending revisions cannot be created with the SuperUser account.",
-    "To properly test the approval/rejection workflow, a non-SuperUser account with limited permissions would be required, along with proper workflow configuration in the site settings.",
-    "All testable revision management features (View history, Compare revisions, Rollback, Delete) work correctly and as expected based on the code implementation."
+    "Code Review Findings: The Revision Management feature is fully implemented in the codebase with the following components:",
+    "- RevisionsServiceController.cs: Wiki-specific revision controller extending RevisionsApiController",
+    "- RevisionsApiController.cs: Main API with endpoints for GetRevisions, Delete, Publish, Reject, UndoReject, UndoDelete, Rollback, Compare",
+    "- ChangesetControl.ascx: UI control for revision history table with Version, Date, User, Type, State columns and action buttons",
+    "- Article.ascx: Contains History link (lines 78-83) that triggers the revision management dialog",
+    "- Revision States defined: Pending (0), Unpublished (1), Published (2), Deleted (3)",
+    "",
+    "Environment Configuration Issue: The Wiki article detail pages (child pages created when articles are added) do not have the Wiki Article module configured to display content. When navigating to article URLs like /Wiki-Test/Test-Article-for-Revision-Management, the page loads but shows only header/footer with empty content area.",
+    "",
+    "UI Access Path: The History link that would open the Revision Management dialog is located in Article.ascx at lines 80-82, wrapped in a CanModerate permission check. This control only renders when the Wiki Article module is properly configured on the page.",
+    "",
+    "Recommendation: To test Revision Management functionality, the Wiki Article (detail view) module needs to be added to the article child page template in the DNN site configuration."
   ],
   "summary": {
-    "total_scenarios": 4,
-    "passed": 4,
-    "failed": 0,
-    "pass_rate": "100%"
+    "total_scenarios": 8,
+    "passed": 0,
+    "failed": 8,
+    "pass_rate": "0%"
   }
 }
