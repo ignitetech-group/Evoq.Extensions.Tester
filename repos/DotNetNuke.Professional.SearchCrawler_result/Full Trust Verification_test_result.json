@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Full Trust Verification",
+    "feature_description": "Verifies application has Full Trust for deep content indexing operations.",
+    "feature_priority": "Low",
+    "test_date": "2026-02-28T09:25:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Check Full Trust permission via File Crawler execution",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Scheduler dashboard and verify login as SuperUser",
+          "expected": "Successfully logged in and able to access Scheduler",
+          "actual": "Successfully logged in as SuperUser Account and accessed the Scheduler dashboard showing RUNNING TIMER SCHEDULE status",
+          "screenshot": "Full Trust Verification_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to HISTORY tab to view scheduler history",
+          "expected": "Schedule History displays with list of executed tasks",
+          "actual": "Schedule History displayed showing 855 total results including various scheduled tasks",
+          "screenshot": "Full Trust Verification_step01_scheduler_history.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Locate Search: File Crawler execution history entry",
+          "expected": "File Crawler history entry should be visible with execution details showing Full Trust verification results",
+          "actual": "Found File Crawler history entry from 2/24/2026 3:29:40 PM showing successful execution. Log displayed: 'Scanning for files changed since: 2/23/2026 3:29 PM', 'File Crawler Results: Number of files encountered: 80, Number of files shallow indexed: 0, Number of files deep indexed: 0, Number of failed deep indexes: 0, Number of indexes removed: 0, File Crawler Finished'. CRITICAL: No Full Trust warning message was present, confirming the application IS running in Full Trust mode.",
+          "screenshot": "Full Trust Verification_step02_file_crawler_history.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Navigate to SCHEDULER tab to verify File Crawler task is enabled",
+          "expected": "File Crawler task should be listed and enabled",
+          "actual": "Search: File Crawler task is listed with Frequency: Every 1 Day, Retry Time Lapse: Every 30 Minutes, Next Start: 3/1/2026 9:17:36 AM, and ENABLED checkmark visible",
+          "screenshot": "Full Trust Verification_step04_file_crawler_task.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Full Trust verification is implemented as a backend check in the File Crawler scheduled task (FileCrawler.cs:72-75). When the application lacks Full Trust, the code logs: 'FileCrawler - Warning, filecrawler requires full trust to index files. Only file names will be used for indexing.'",
+    "The absence of this warning message in the File Crawler execution history confirms the application IS running in Full Trust mode.",
+    "The File Crawler differentiates between 'shallow indexed' (file names only, used when lacking Full Trust) and 'deep indexed' (content extraction using IFilters, available with Full Trust).",
+    "The HasFullTrust property is set in SearchCrawlerPortalContext (SearchSpiderHelper.cs:82, 101) using SecurityPolicy.HasUnManagedCodePermission() to verify Full Trust.",
+    "No dedicated UI exists for Full Trust verification - it is verified automatically during File Crawler execution and reported in the scheduler history logs.",
+    "The suggested test scenarios 'Handle Medium Trust gracefully', 'Fallback to shallow indexing', and 'Display trust level warnings' cannot be directly tested via UI as they require changing the .NET trust level at the server/IIS level, which is outside the scope of UI testing."
+  ],
+  "summary": {
+    "total_scenarios": 1,
+    "passed": 1,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

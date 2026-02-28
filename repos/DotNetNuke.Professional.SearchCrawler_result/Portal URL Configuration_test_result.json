@@ -1,0 +1,117 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Portal URL Configuration",
+    "feature_description": "Manages portal-specific URLs and aliases for crawling operations.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T15:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View list of portal crawl URLs",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Site Settings > Search > Crawling tab",
+          "expected": "URL Paths section should display a list of configured portal URLs",
+          "actual": "URL Paths section displayed with 5 existing URLs including http://localhost:8081, https://www.testsite.com/, http://localhost:8081/, http://testsite.local/, http://not-a-valid-url/",
+          "screenshot": "Portal URL Configuration_step01_crawling_tab.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add portal URL for crawling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Add Url' button in the URL Paths section",
+          "expected": "Add URL form should appear with fields for URL configuration",
+          "actual": "Add URL form appeared with fields: Url, Sitemap URL, DNN Role Impersonation, Enable Spidering, Windows Domain, Windows User Account, Windows User Password, Windows Authentication",
+          "screenshot": "Portal URL Configuration_step02_add_url_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'https://test-new-portal.example.com' in the URL field",
+          "expected": "URL should be accepted in the input field",
+          "actual": "URL was entered successfully in the input field",
+          "screenshot": "Portal URL Configuration_step03_url_entered.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save button",
+          "expected": "New URL should be saved and appear in the URL list",
+          "actual": "URL was saved successfully and appeared in the URL list as 'https://test-new-portal.example.com/'",
+          "screenshot": "Portal URL Configuration_step04_url_added.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Remove portal URL",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to click the delete (trash) icon for the test URL",
+          "expected": "URL should be deleted or a confirmation dialog should appear",
+          "actual": "Clicking the delete icon consistently opened the edit form instead of triggering delete action. Multiple attempts using different click methods all resulted in the edit form opening.",
+          "screenshot": "Portal URL Configuration_step08_delete_opens_edit.png"
+        }
+      ],
+      "issues": ["Delete icon click triggers edit form instead of delete action. Both the edit (pencil) and delete (trash) icons appear to be bound to the same edit action, or there is a click target issue where the edit icon intercepts clicks intended for the delete icon."]
+    },
+    {
+      "scenario_name": "SSL detection for URLs",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observe the URL list for both HTTP and HTTPS URLs",
+          "expected": "System should accept and properly display both HTTP and HTTPS URLs",
+          "actual": "URL list displays both HTTP URLs (http://localhost:8081, http://localhost:8081/, http://testsite.local/, http://not-a-valid-url/) and HTTPS URLs (https://www.testsite.com/, https://test-new-portal.example.com/), confirming SSL protocol detection works correctly",
+          "screenshot": "Portal URL Configuration_step10_url_list_ssl.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validation error for empty URL input",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Add Url' to open the add URL form",
+          "expected": "Add URL form should appear with empty fields",
+          "actual": "Add URL form appeared with empty URL field",
+          "screenshot": "Portal URL Configuration_step11_add_empty_url_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save without entering a URL",
+          "expected": "Validation error should be displayed for the empty URL field",
+          "actual": "Validation error displayed - URL field showed red border and red exclamation mark error indicator, preventing save of empty URL",
+          "screenshot": "Portal URL Configuration_step12_empty_url_validation.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The delete icon in the URL Paths list appears to have a UI interaction issue where clicking it triggers the edit form instead of the delete action. Both the pencil (edit) and trash (delete) icons are SVG elements with id='Layer_1' and are positioned close together, which may cause click target conflicts.",
+    "The URL list supports both HTTP and HTTPS protocols, confirming SSL detection functionality works as expected from code review of SearchSpiderHelper.InitializePortalUrlCrawlAliases().",
+    "Code review confirms the following methods exist for URL management: AddUrl(), DeleteUrl(), UpdateUrl(), GetPortalUrlInfoCollection() in SearchSpiderSettingsController.cs and SearchSpiderSettingsRepository.cs.",
+    "Auto-initialization of portal URLs is handled by SearchSpiderHelper.GetPortalUrlCrawlAliases() which creates default URLs based on portal aliases and SSL settings if no URLs are configured.",
+    "The 'Portal URLs' section mentioned in the UI Location (Admin > Site Settings > Search > Portal URLs) is actually located at Admin > Site Settings > Search > Crawling tab > URL Paths section."
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 4,
+    "failed": 1,
+    "pass_rate": "80%"
+  }
+}

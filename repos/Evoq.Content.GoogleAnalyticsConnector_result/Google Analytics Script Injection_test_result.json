@@ -1,0 +1,167 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Content.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Google Analytics Script Injection",
+    "feature_description": "Injects Google Analytics tracking scripts into website pages with configurable placement",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T08:25:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify tracking script appears in page HTML head",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to home page and inspect page HTML head for GA4 scripts",
+          "expected": "GA4 tracking scripts should be present in the page head",
+          "actual": "Found gtag.js script from googletagmanager.com and gtag config script with measurement ID G-ABC123XYZ99 in the page head",
+          "screenshot": "GA_Script_Injection_step03_script_in_head.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify tracking ID replacement in script template",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check that the configured Measurement ID is properly injected into the tracking script",
+          "expected": "The script should contain the configured Measurement ID",
+          "actual": "The gtag script correctly includes the Measurement ID: gtag('config', 'G-ABC123XYZ99'). The script URL also contains the ID: https://www.googletagmanager.com/gtag/js?id=G-ABC123XYZ99",
+          "screenshot": "GA_Script_Injection_step02_ga4_config.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify script injection position (top of head)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Evaluate the position of GA4 scripts in the page head element",
+          "expected": "GA4 scripts should be at the top of the head element for optimal performance",
+          "actual": "GA4 gtag.js script is at index 0 (first element) and the gtag config script is at index 1 (second element) in the head, confirming scripts are injected at the very top of the head",
+          "screenshot": "GA_Script_Injection_step03_script_in_head.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify no script injection when connector is disabled/deleted",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Connectors settings and click Edit on Google Analytics 4",
+          "expected": "Should see the GA4 connector configuration panel",
+          "actual": "GA4 connector panel opened showing Measurement ID and Track for Administrators options",
+          "screenshot": "GA_Script_Injection_step05_before_delete.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Delete Connection to disable the GA4 connector",
+          "expected": "Connector should be deleted with success message",
+          "actual": "Success message displayed: 'Item successfully deleted.' Google Analytics 4 now shows 'Connect' button instead of 'Edit'",
+          "screenshot": "GA_Script_Injection_step06_after_delete.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Navigate to home page and check for GA4 scripts in page head",
+          "expected": "No GA4 tracking scripts should be present",
+          "actual": "Confirmed: hasGtagScript: false, hasGtagConfig: false - no GA4 scripts are injected when the connector is disabled",
+          "screenshot": "GA_Script_Injection_step07_no_scripts_after_delete.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test script injection on different page types",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate from Home page to Our Products page and verify GA4 scripts are present",
+          "expected": "GA4 scripts should be injected on all standard pages",
+          "actual": "GA4 scripts confirmed present on Our Products page with Measurement ID G-TESTDELETE1. Script injection works across different page types.",
+          "screenshot": "GA_Script_Injection_step04_different_page.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify GA4 script format and functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Analyze the injected script format to verify it follows GA4 gtag.js standard",
+          "expected": "Scripts should follow the official GA4 gtag.js format",
+          "actual": "Scripts correctly implement GA4 format: 1) Async script loading gtag.js from googletagmanager.com 2) dataLayer initialization 3) gtag function definition 4) gtag('js', new Date()) call 5) gtag('config', 'G-XXX') call with measurement ID",
+          "screenshot": "GA_Script_Injection_step03_script_in_head.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test empty Measurement ID validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the Measurement ID field and attempt to save",
+          "expected": "System should validate and reject empty Measurement ID with appropriate error message",
+          "actual": "Error message displayed: 'Tracking Code Cannot Be Empty' - validation correctly prevents saving empty measurement ID",
+          "screenshot": "GA_Script_Injection_step09_empty_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test saving valid Measurement ID",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter a valid GA4 Measurement ID (G-TEST123456) and click Save",
+          "expected": "Configuration should be saved successfully",
+          "actual": "Success message displayed: 'Item successfully saved.' Green checkmark appears next to Google Analytics 4 indicating active connection",
+          "screenshot": "GA_Script_Injection_step10_saved_new_id.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test maximum length Measurement ID handling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observed existing configuration with extremely long Measurement ID (G-AAAA...0123456789)",
+          "expected": "System should handle long input values",
+          "actual": "System accepts and displays the extremely long Measurement ID. The field does not impose a visible maximum length restriction. Note: This may be a potential issue as real GA4 measurement IDs have a specific format (G-XXXXXXXXXX)",
+          "screenshot": "GA_Script_Injection_step08_long_measurement_id.png"
+        }
+      ],
+      "issues": ["System accepts Measurement IDs that do not match the official GA4 format (G- followed by 10 alphanumeric characters). Consider adding format validation."]
+    }
+  ],
+  "observations": [
+    "The Google Analytics 4 connector in Evoq uses a simple Measurement ID field rather than OAuth-based authorization for script injection",
+    "Scripts are injected at the very top of the page head element (index 0 and 1), which is optimal for tracking",
+    "The 'Track for Administrators' checkbox option exists but its effect was not explicitly tested in this session",
+    "The connector supports both GA4 format IDs (G-XXXXXXXXXX) and appears to accept Universal Analytics format IDs (UA-XXXXXXXX-X) as seen in earlier UI screenshots, though only GA4 gtag.js format scripts are injected",
+    "Different pages may have different Measurement IDs configured, as observed between Home page (G-ABC123XYZ99) and Our Products page (G-TESTDELETE1) - this may indicate portal-level or page-level configuration options",
+    "There is a SiteAnalytics.config file visible in the Configuration Manager dropdown which may contain additional script injection configurations"
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 9,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

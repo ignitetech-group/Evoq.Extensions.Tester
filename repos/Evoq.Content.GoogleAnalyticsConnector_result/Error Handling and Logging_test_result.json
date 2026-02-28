@@ -1,0 +1,104 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Content.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Error Handling and Logging",
+    "feature_description": "Comprehensive error handling and logging for Google Analytics operations",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Test validation error for empty Measurement ID",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors > Google Analytics 4",
+          "expected": "Google Analytics 4 connector settings should be displayed",
+          "actual": "Google Analytics 4 connector settings displayed with Edit button showing it is connected",
+          "screenshot": "Error_Handling_and_Logging_step01_connectors_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit on Google Analytics 4 connector",
+          "expected": "Connector settings form should expand showing Measurement ID field",
+          "actual": "Connector settings expanded showing Measurement ID: G-ABC123XYZ99 and Track for Administrators checkbox",
+          "screenshot": "Error_Handling_and_Logging_step02_ga4_settings.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Clear Measurement ID field and click Save",
+          "expected": "Validation error message should be displayed",
+          "actual": "Error toast appeared with message 'Tracking Code Cannot Be Empty'",
+          "screenshot": "Error_Handling_and_Logging_step03_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify user-friendly error messages in UI",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to save with empty required field",
+          "expected": "User-friendly error message should be displayed",
+          "actual": "User-friendly error message 'Tracking Code Cannot Be Empty' displayed in toast notification with error icon",
+          "screenshot": "Error_Handling_and_Logging_step03_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test successful save operation message",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter valid Measurement ID and click Save",
+          "expected": "Success message should be displayed",
+          "actual": "Success toast appeared with message 'Item successfully saved.' with success icon",
+          "screenshot": "Error_Handling_and_Logging_step04_save_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify detailed error information in Admin Logs",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Manage > Admin Logs",
+          "expected": "Admin Logs page should display with logged entries",
+          "actual": "Admin Logs page displayed showing multiple log entries including General Exception entries from AnalyticsService",
+          "screenshot": "Error_Handling_and_Logging_step05_admin_logs.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on a General Exception log entry to expand details",
+          "expected": "Detailed error information should be displayed",
+          "actual": "Log entry expanded showing: AbsoluteURL, DefaultDataProvider, ExceptionGUID, PortalId, UserId, TabId, ExceptionHash, detailed Message, complete StackTrace, Source, FileName, FileLineNumber, FileColumnNumber, Method, and Server Name",
+          "screenshot": "Error_Handling_and_Logging_step06_error_detail.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review of GoogleAnalyticsRemoteManager.cs shows Info-level logging for authorization initiation and HttpException throwing for API failures",
+    "Code review of GoogleAnalyticsRemoteRetryManager.cs shows implementation of Polly retry policy with up to 3 retries, Info logging for retry attempts, and Warn logging for exceptions",
+    "Code review of ServicesController.cs shows DotNetNuke.Services.Exceptions.Exceptions.LogException() usage for exception logging and GetAuthErrorMessage() for user-friendly error display",
+    "The system uses the DNN Logging Framework (ILog from DotNetNuke.Instrumentation) for comprehensive logging",
+    "Error handling includes retry mechanisms for transient failures with automatic token cache clearing on 401 Unauthorized responses",
+    "Admin Logs capture extensive exception details including ExceptionGUID, StackTrace, Message, Source, and Server Name for debugging purposes"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

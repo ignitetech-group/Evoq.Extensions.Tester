@@ -1,0 +1,161 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Module Settings Configuration",
+    "feature_description": "Configure module-specific settings including workflow, tokens, and display options",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:43:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Enable/disable token replacement",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Module Actions > Settings for HTML module",
+          "expected": "Settings dialog opens with module configuration options",
+          "actual": "Settings dialog opened showing Module Settings, Page Settings, and Permissions tabs",
+          "screenshot": "Module_Settings_Configuration_step03_settings_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked on HTML Module Settings tab",
+          "expected": "HTML Module Settings panel displays with Replace Tokens checkbox",
+          "actual": "HTML Module Settings panel displayed with Replace Tokens checkbox (checked) and Max Description Length field (100)",
+          "screenshot": "Module_Settings_Configuration_step04_html_module_settings.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Unchecked the Replace Tokens checkbox",
+          "expected": "Checkbox becomes unchecked",
+          "actual": "Replace Tokens checkbox successfully unchecked",
+          "screenshot": "Module_Settings_Configuration_step05_replace_tokens_disabled.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Clicked Save button in modal footer",
+          "expected": "Settings save successfully and modal closes",
+          "actual": "Settings saved and modal closed, returned to page in edit mode",
+          "screenshot": "Module_Settings_Configuration_step06_after_save.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Reopened Module Settings to verify persistence",
+          "expected": "Replace Tokens checkbox should still be unchecked",
+          "actual": "Replace Tokens checkbox confirmed unchecked after reopening settings",
+          "screenshot": "Module_Settings_Configuration_step08_setting_verified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Set search description length",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Opened Module Settings and navigated to HTML Module Settings tab",
+          "expected": "Max length of Description in search field is visible",
+          "actual": "Field displayed with current value of 100",
+          "screenshot": "Module_Settings_Configuration_step04_html_module_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Changed Search Description Length value to 200",
+          "expected": "Field accepts numeric input",
+          "actual": "Field accepted value 200",
+          "screenshot": "Module_Settings_Configuration_step13_valid_settings.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Saved settings via modal Save button",
+          "expected": "Settings save successfully",
+          "actual": "Settings saved successfully, timestamp updated to 2/28/2026 8:41:49 AM",
+          "screenshot": "Module_Settings_Configuration_step14_saved_successfully.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate setting values (non-numeric input)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Opened Module Settings and navigated to HTML Module Settings tab",
+          "expected": "Search Description Length field is visible",
+          "actual": "Field displayed",
+          "screenshot": "Module_Settings_Configuration_step11_invalid_value.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Entered non-numeric value 'abc' in Search Description Length field",
+          "expected": "Validation error should appear",
+          "actual": "Validation error displayed: 'You need input a number of max description length.'",
+          "screenshot": "Module_Settings_Configuration_step12_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save settings successfully via modal",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Set Replace Tokens to checked and Search Description Length to 200",
+          "expected": "Both settings configured correctly",
+          "actual": "Replace Tokens checked, Search Description Length set to 200",
+          "screenshot": "Module_Settings_Configuration_step13_valid_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Save button in modal footer",
+          "expected": "Settings save successfully with confirmation",
+          "actual": "Settings saved successfully, modal closed and page refreshed. Timestamp updated to 2/28/2026 8:41:49 AM confirming save",
+          "screenshot": "Module_Settings_Configuration_step14_saved_successfully.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save settings via direct URL page",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated directly to module settings URL: /en-us/Home/ctl/Module/ModuleId/363",
+          "expected": "Module settings page loads with settings form",
+          "actual": "Settings page loaded with HTML Module Settings section",
+          "screenshot": "Module_Settings_Configuration_step09_desc_length_changed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Changed Search Description Length to 250 and clicked Update button",
+          "expected": "Settings should save successfully",
+          "actual": "Error displayed: 'Object reference not set to an instance of an object.'",
+          "screenshot": "Module_Settings_Configuration_step10_save_error.png"
+        }
+      ],
+      "issues": [
+        "Saving module settings via direct URL navigation causes NullReferenceException. The modal popup method works correctly, but the direct page navigation method fails with 'Object reference not set to an instance of an object' error."
+      ]
+    }
+  ],
+  "observations": [
+    "The suggested test scenarios included 'Configure workflow assignment', 'Enable/disable autosave', and 'Configure form decoration', but code review of Settings.ascx and Settings.ascx.cs revealed only TWO actual settings exist in HTML Module Settings: Replace Tokens (checkbox) and Max length of Description in search (textbox).",
+    "Workflow, autosave, and form decoration settings are NOT present in the HTML Module Settings code. These may exist elsewhere in the system or may be features from a different module version.",
+    "Direct URL module settings page (/ctl/Module/ModuleId/xxx) has a bug - saving settings causes NullReferenceException. The modal popup method accessed via Module Actions > Settings works correctly.",
+    "The 'Reset to default settings' scenario could not be tested as there is no Reset or Default button visible in the HTML Module Settings interface.",
+    "Token replacement feature automatically disables module caching when enabled (as confirmed in Settings.ascx.cs code)."
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 4,
+    "failed": 1,
+    "pass_rate": "80%"
+  }
+}

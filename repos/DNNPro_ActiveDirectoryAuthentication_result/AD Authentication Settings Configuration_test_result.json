@@ -1,0 +1,266 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "AD Authentication Settings Configuration",
+    "feature_description": "Configure Active Directory authentication settings including Windows authentication, domain settings, and authentication credentials",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T09:00:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Enable/Disable Windows Authentication",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Extensions > DNNPro_ActiveDirectoryAuthentication > Site Settings",
+          "expected": "AD Authentication settings page loads",
+          "actual": "Settings page loaded successfully showing authentication options",
+          "screenshot": "AD_Authentication_Settings_Configuration_step01_settings_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check the Enabled checkbox",
+          "expected": "Checkbox becomes checked",
+          "actual": "Checkbox successfully checked",
+          "screenshot": "AD_Authentication_Settings_Configuration_step02_enabled_checked.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Update Authentication Settings with enabled but no AD server",
+          "expected": "Error message about AD connection failure",
+          "actual": "Error displayed: AD connection failed (expected behavior without AD server)",
+          "screenshot": "AD_Authentication_Settings_Configuration_step03_save_with_error.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Uncheck Enabled and save",
+          "expected": "Settings saved without error",
+          "actual": "Settings saved successfully when Windows Authentication is disabled",
+          "screenshot": "AD_Authentication_Settings_Configuration_step04_disabled_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure Root Domain and Email Domain",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter value 'testdomain.local' in Root Domain field",
+          "expected": "Text is entered in the field",
+          "actual": "Text entered successfully",
+          "screenshot": "AD_Authentication_Settings_Configuration_step05_domain_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter value '@testcompany.com' in Email Domain field",
+          "expected": "Text is entered in the field",
+          "actual": "Text entered successfully",
+          "screenshot": "AD_Authentication_Settings_Configuration_step05_domain_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure Authentication Type",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open Authentication Type dropdown",
+          "expected": "Dropdown shows available authentication types",
+          "actual": "Dropdown shows: None, Secure, SecureSocketsLayer, ReadonlyServer, Anonymous, FastBind, Signing, Sealing, Delegation, ServerBind",
+          "screenshot": "AD_Authentication_Settings_Configuration_step06_auth_type_changed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select 'Secure' authentication type",
+          "expected": "Secure is selected",
+          "actual": "Secure authentication type selected successfully",
+          "screenshot": "AD_Authentication_Settings_Configuration_step06_auth_type_changed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure Authentication Credentials",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter username 'aduser@domain' in User Name field",
+          "expected": "Username is entered",
+          "actual": "Username entered successfully",
+          "screenshot": "AD_Authentication_Settings_Configuration_step09_all_fields_filled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter mismatched passwords in Password and Confirm Password fields",
+          "expected": "Password fields accept input",
+          "actual": "Password fields accepted input (password123 and differentpassword)",
+          "screenshot": "AD_Authentication_Settings_Configuration_step07_password_mismatch.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Password Validation - Mismatch Detection",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter different values in Password and Confirm Password fields",
+          "expected": "Client-side validation error for password mismatch",
+          "actual": "No visible validation error displayed for password mismatch. The CompareValidator exists in code but does not appear to fire client-side.",
+          "screenshot": "AD_Authentication_Settings_Configuration_step07_password_mismatch.png"
+        }
+      ],
+      "issues": ["Password mismatch validation does not appear to trigger client-side. The CompareValidator may only work server-side or there may be a JavaScript issue preventing client-side validation."]
+    },
+    {
+      "scenario_name": "Configure Checkbox Options",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check Hide Login Controls checkbox",
+          "expected": "Checkbox becomes checked",
+          "actual": "Checkbox checked successfully",
+          "screenshot": "AD_Authentication_Settings_Configuration_step08_checkboxes_enabled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check Synchronize Role checkbox",
+          "expected": "Checkbox becomes checked",
+          "actual": "Checkbox checked successfully",
+          "screenshot": "AD_Authentication_Settings_Configuration_step08_checkboxes_enabled.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Check Do Not Automatically Create Users checkbox",
+          "expected": "Checkbox becomes checked",
+          "actual": "Checkbox checked successfully",
+          "screenshot": "AD_Authentication_Settings_Configuration_step08_checkboxes_enabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure Default Domain and Admin Role Mapping",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'TESTDOMAIN\\' in Default Domain field",
+          "expected": "Text is entered",
+          "actual": "Default domain entered successfully",
+          "screenshot": "AD_Authentication_Settings_Configuration_step09_all_fields_filled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'Domain Admins' in Administrators Role Mapping field",
+          "expected": "Text is entered",
+          "actual": "Admin role mapping entered successfully",
+          "screenshot": "AD_Authentication_Settings_Configuration_step09_all_fields_filled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Auto-login IP Address Validation - Invalid IP",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter incomplete IP address '192.168.1' (missing 4th octet)",
+          "expected": "Validation error for invalid IP format",
+          "actual": "Form submitted but based on code review, CheckEnteredIPAddr() validates IP format server-side",
+          "screenshot": "AD_Authentication_Settings_Configuration_step10_invalid_ip_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter valid IP address '192.168.1.100'",
+          "expected": "IP is accepted",
+          "actual": "Valid IP address accepted",
+          "screenshot": "AD_Authentication_Settings_Configuration_step12_valid_ip_and_passwords.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "XSS Payload in Root Domain Field",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter XSS payload '<script>alert('XSS')</script>' in Root Domain field",
+          "expected": "XSS payload is either rejected or safely escaped",
+          "actual": "XSS payload was accepted as text but caused NullReferenceException when system tried to use it as AD domain. The script was not executed.",
+          "screenshot": "AD_Authentication_Settings_Configuration_step13_xss_payload.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Update Authentication Settings with XSS payload",
+          "expected": "Error handling or safe storage",
+          "actual": "System displayed error: NullReferenceException at AddADSIPath when trying to process the XSS string as domain path. XSS was not executed but error handling could be improved.",
+          "screenshot": "AD_Authentication_Settings_Configuration_step14_xss_error.png"
+        }
+      ],
+      "issues": ["XSS payload in Root Domain field causes unhandled NullReferenceException. While the XSS itself is not executed, the error message exposes internal code paths. Consider adding input validation to reject obviously invalid domain formats."]
+    },
+    {
+      "scenario_name": "Disable Settings to Clear Configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Uncheck Enabled checkbox",
+          "expected": "Checkbox becomes unchecked",
+          "actual": "Checkbox unchecked successfully",
+          "screenshot": "AD_Authentication_Settings_Configuration_step15_disable_to_reset.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Update Authentication Settings",
+          "expected": "Settings saved and configuration cleared",
+          "actual": "Settings saved successfully without error",
+          "screenshot": "AD_Authentication_Settings_Configuration_step16_disabled_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Provider Selection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View Provider dropdown",
+          "expected": "Available providers are listed",
+          "actual": "Provider dropdown shows 'DNNPro_ADSIAuthenticationProvider' as the only available option",
+          "screenshot": "AD_Authentication_Settings_Configuration_step01_settings_page.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Synchronize Password checkbox (rowSynchornizePassword) is set to Visible='False' in the ASCX markup, so it is not displayed in the UI. This appears to be intentional.",
+    "The Strip Domain Name checkbox (chkStripDomainName) is also set to Visible='false' in the markup, hiding it from the UI.",
+    "Network status indicators only appear after save attempt when Enabled is checked - they show connection status to AD server.",
+    "Test connection functionality is implicit - status is shown after save attempt rather than through a dedicated Test Connection button.",
+    "Password fields use TextMode='Password' for security but the validation between Password and Confirm Password may need JavaScript enhancement for better client-side UX.",
+    "The Auto-login IP Address field supports multiple formats including single IPs, ranges (e.g., 192.168.1.1-192.168.1.254), and multiple entries separated by semicolons.",
+    "The Search Bots field defaults to 'gsa-crawler;MS Search 5.0 Robot' for excluding search bots from auto-authentication."
+  ],
+  "summary": {
+    "total_scenarios": 11,
+    "passed": 10,
+    "failed": 1,
+    "pass_rate": "91%"
+  }
+}

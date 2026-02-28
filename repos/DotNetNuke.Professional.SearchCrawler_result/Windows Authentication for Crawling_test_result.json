@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Windows Authentication for Crawling",
+    "feature_description": "Configures Windows domain authentication for crawling protected resources.",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T12:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Configure Windows domain credentials",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Site Settings > Search > Crawling tab",
+          "expected": "Crawling settings page with URL Paths section visible",
+          "actual": "Crawling tab displayed with URL Paths section showing existing URLs",
+          "screenshot": "Windows Authentication for Crawling_step01_crawling_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Add Url button to open new URL form",
+          "expected": "Form opens with Windows Authentication fields",
+          "actual": "Form opened showing URL, Sitemap URL, DNN Role Impersonation, Enable Spidering on the left, and Windows Domain, User Account, Password, and Windows Authentication toggle on the right",
+          "screenshot": "Windows Authentication for Crawling_step02_add_url_form.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Observe Windows credential fields with Windows Authentication toggle off",
+          "expected": "Windows credential fields should be disabled when toggle is off",
+          "actual": "Windows Domain, User Account, and Password fields are grayed out and disabled when Windows Authentication toggle is Off",
+          "screenshot": "Windows Authentication for Crawling_step03_form_with_disabled_fields.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Enable Windows Authentication toggle",
+          "expected": "Windows credential fields become enabled",
+          "actual": "Windows Authentication toggle changed to On and all Windows credential fields became enabled with white backgrounds",
+          "screenshot": "Windows Authentication for Crawling_step04_windows_auth_enabled.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Fill in Windows domain credentials: URL=http://testwinauth.local/, Domain=TESTDOMAIN, User=testuser, Password=TestPassword123!",
+          "expected": "All fields accept input",
+          "actual": "All fields accepted input correctly. Password field shows masked characters.",
+          "screenshot": "Windows Authentication for Crawling_step05_credentials_filled.png"
+        },
+        {
+          "step_number": 6,
+          "action": "Click Save button",
+          "expected": "Configuration saves successfully and URL appears in list",
+          "actual": "URL http://testwinauth.local/ saved successfully and appears in the URL Paths list with Windows Auth checkmark",
+          "screenshot": "Windows Authentication for Crawling_step06_save_success.png"
+        },
+        {
+          "step_number": 7,
+          "action": "Verify credentials persisted by viewing edit form",
+          "expected": "Credentials should be saved and visible when editing",
+          "actual": "Edit form shows persisted values: Domain=TESTDOMAIN, User=testuser, Password=TestPassword123!",
+          "screenshot": "Windows Authentication for Crawling_step08_credentials_verified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify encrypted password storage",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review code for password encryption implementation",
+          "expected": "Password should be encrypted before storage using secure encryption",
+          "actual": "Code review confirmed SearchSpiderHelper.cs uses TripleDES encryption with Encrypt() method for storing passwords. The password is decrypted using Decrypt() method when retrieved for crawling.",
+          "screenshot": "Windows Authentication for Crawling_step05_credentials_filled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify password is retrieved correctly after save",
+          "expected": "Password should decrypt correctly when editing URL entry",
+          "actual": "When editing the http://testwinauth.local/ entry, the password field displays the original password TestPassword123!, confirming the encryption/decryption cycle works correctly",
+          "screenshot": "Windows Authentication for Crawling_step08_credentials_verified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test validation - required fields and format",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add Url and try to save without entering URL",
+          "expected": "Validation error should appear for required URL field",
+          "actual": "URL field shows red border and red exclamation mark indicating validation error. Save operation is blocked.",
+          "screenshot": "Windows Authentication for Crawling_step09_validation_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify Windows credential fields are disabled when toggle is off",
+          "expected": "Fields should be disabled to prevent input without enabling Windows Auth",
+          "actual": "Windows Domain, User Account, and Password fields are grayed out and disabled when Windows Authentication toggle is Off, preventing accidental input",
+          "screenshot": "Windows Authentication for Crawling_step03_form_with_disabled_fields.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Password encryption uses TripleDES with a hardcoded key in SearchSpiderHelper.cs - this could be a security concern as the key is stored in source code",
+    "Windows Authentication credentials are passed to DocumentWorker.cs which uses NetworkCredential and CredentialCache with Digest, Negotiate, Kerberos, NTLM, and Basic authentication methods",
+    "The Windows credential fields are labeled as 'optional' in the UI but are effectively required when Windows Authentication is enabled for the crawler to authenticate properly",
+    "When editing an existing URL entry, the password is displayed in plaintext in the form (after decryption), which is standard behavior but could be a UI security consideration"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

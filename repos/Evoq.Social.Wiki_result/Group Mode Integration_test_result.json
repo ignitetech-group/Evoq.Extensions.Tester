@@ -1,0 +1,203 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Group Mode Integration",
+    "feature_description": "Wiki functionality within DNN social groups with group-specific content",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Create article in group",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test Group > Wiki tab",
+          "expected": "Wiki tab should be displayed with Create article option",
+          "actual": "Wiki tab displayed with 'Create article for front page...' and existing articles list",
+          "screenshot": "Group_Mode_Integration_step03_wiki_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Create article' button",
+          "expected": "Create article dialog should open",
+          "actual": "Create article dialog opened with Title, Article Type, Content, and Tags fields",
+          "screenshot": "Group_Mode_Integration_step04_create_dialog.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Fill form with Title='Group Integration Test Article', Type='Misc.', Content, Tags",
+          "expected": "Form should accept input",
+          "actual": "Form filled successfully, required fields populated",
+          "screenshot": "Group_Mode_Integration_step05_form_filled.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Encounter validation error for content field",
+          "expected": "Content should be accepted",
+          "actual": "Initial validation error 'Text is required' appeared due to contenteditable editor behavior",
+          "screenshot": "Group_Mode_Integration_step06_validation_error.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Add content properly and click Publish",
+          "expected": "Article should be created and published",
+          "actual": "Article created successfully, redirected to article page",
+          "screenshot": "Group_Mode_Integration_step07_article_created.png"
+        }
+      ],
+      "issues": ["Content editor validation requires actual keyboard input to register content - 'Text is required' error appeared even with visible content until keyboard interaction triggered"]
+    },
+    {
+      "scenario_name": "View group-only articles",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test Group > Wiki tab to view articles list",
+          "expected": "List should show articles created in this group",
+          "actual": "Wiki tab shows '2 Articles' count with both 'Group Integration Test Article' and 'Group Wiki Test Article' listed",
+          "screenshot": "Group_Mode_Integration_step11_articles_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify article details are visible",
+          "expected": "Articles should show title, last updated, summary, and tags",
+          "actual": "Articles displayed with full details: title, 'Last updated: X minutes/weeks ago', content preview, 'View Full Page' link, and Tags",
+          "screenshot": "Group_Mode_Integration_step12_articles_view.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test group permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View article detail page as group owner",
+          "expected": "Edit, Delete, History options should be available",
+          "actual": "Article page shows Edit button, Delete link, History link, Like/Bookmark/Unsubscribe options, and Report link",
+          "screenshot": "Group_Mode_Integration_step22_article_edit_delete.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit to verify edit access",
+          "expected": "Edit dialog should open allowing modifications",
+          "actual": "Edit dialog opened with all fields editable: Title, Content, Tags, Approved checkbox, and Advanced section",
+          "screenshot": "Group_Mode_Integration_step23_edit_no_move_option.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test group notifications",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Create article in group and check for notifications",
+          "expected": "Notifications should be generated for wiki activities",
+          "actual": "Notification appeared: 'Wiki - Congratulations! You have earned a new Privilege - Edit article metadata'",
+          "screenshot": "Group_Mode_Integration_step15_wiki_notification.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View notifications page",
+          "expected": "Wiki-related notifications should be listed",
+          "actual": "Notifications tab shows 'Wiki' notification with full details and '1 minute ago' timestamp",
+          "screenshot": "Group_Mode_Integration_step17_notification_detail.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Check for badge notifications",
+          "expected": "Gamification badges should be awarded for wiki activity",
+          "actual": "Badge notification appeared: 'Congratulations! You have earned a new Badge - Wikichievement'",
+          "screenshot": "Group_Mode_Integration_step19_article_permissions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test group activity journal",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to group Activity tab after creating article",
+          "expected": "Wiki article creation should appear in activity stream",
+          "actual": "Activity stream shows 'Anonymous authored wiki article Group Integration Test Article' with '1 minute ago' timestamp",
+          "screenshot": "Group_Mode_Integration_step14_activity_journal_scrolled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify activity entry details",
+          "expected": "Entry should include article link and summary",
+          "actual": "Activity entry includes clickable article title link, content preview, and Like/Read More/Comment options",
+          "screenshot": "Group_Mode_Integration_step13_activity_journal.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Move article between groups",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open article Edit dialog to find move option",
+          "expected": "Option to move article to different group should exist",
+          "actual": "Edit dialog shows Common and Advanced sections but no option to move article to a different group",
+          "screenshot": "Group_Mode_Integration_step23_edit_no_move_option.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check Advanced section for move functionality",
+          "expected": "Advanced settings might contain group/move options",
+          "actual": "Advanced section only contains 'Article Summary' field - no move or group transfer option exists",
+          "screenshot": "Group_Mode_Integration_step23_edit_no_move_option.png"
+        }
+      ],
+      "issues": ["Feature does not exist - No UI option to move articles between groups. Articles remain associated with their original GroupId with no transfer functionality."]
+    },
+    {
+      "scenario_name": "Test private group wikis",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Access group Edit settings to check privacy options",
+          "expected": "Group should have public/private accessibility settings",
+          "actual": "Edit Group dialog shows 'Group Accessibility' section with Public (selected) and Private radio buttons",
+          "screenshot": "Group_Mode_Integration_step25_group_settings_public.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify Private option description",
+          "expected": "Private option should restrict access to members only",
+          "actual": "Private option states: 'Only group members and those who have been invited will be able to view the group page'",
+          "screenshot": "Group_Mode_Integration_step25_group_settings_public.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review confirmed GroupId is stored with each article (ArticleController.cs:219) and used for filtering (ListController.cs:44-47, 76)",
+    "Permission checking uses RequireGroupModeViewPermission and RequireGroupModeChangePermission functions in ContentController.cs and ListController.cs",
+    "FilterMode enum supports Normal(0) and Group(1) modes for wiki display",
+    "Journal integration works correctly - article creation posts to group activity stream via Journal.Instance.AddWikiToJournal (ArticleController.cs:257)",
+    "Subscription functionality exists for group wikis (ListController.cs:92-121)",
+    "No UI exists to move articles between groups - GroupId is set at creation and cannot be changed through the interface",
+    "Content editor uses contenteditable which requires actual keyboard input to trigger validation - may cause confusion when content appears visible but validation fails"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 6,
+    "failed": 1,
+    "pass_rate": "86%"
+  }
+}

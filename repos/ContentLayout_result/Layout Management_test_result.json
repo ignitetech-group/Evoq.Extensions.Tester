@@ -1,0 +1,168 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Layout Management",
+    "feature_description": "Core functionality for creating and managing multi-column layouts on pages, including default layout creation and column configuration.",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T09:05:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Get existing layout for a module",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login to DNN as superuser",
+          "expected": "User should be logged in successfully",
+          "actual": "Successfully logged in as SuperUser Account",
+          "screenshot": "Layout_Management_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to home page and enter edit mode",
+          "expected": "Page should show edit mode with module controls",
+          "actual": "Edit mode activated, pane labels and module controls visible",
+          "screenshot": "Layout_Management_step01_edit_mode.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Scroll down to view Content Layout modules",
+          "expected": "Content Layout modules should be visible with 4 columns",
+          "actual": "Content Layout modules visible with F30A_Pane1-4 and 9977_Pane1-4, showing TELEVISIONS, WEARABLES, TABLETS, LAPTOPS",
+          "screenshot": "Layout_Management_step02_contentlayout_modules.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click on Content Layout to view column sizes",
+          "expected": "Column sizes should be displayed as percentages",
+          "actual": "Column sizes displayed as 25%, 25%, 25%, 25% (default 4x25% layout)",
+          "screenshot": "Layout_Management_step03_column_sizes_shown.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Resize columns via drag handle",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Drag resize handle between first and second column to resize",
+          "expected": "Columns should resize and show new percentages",
+          "actual": "Successfully dragged handle, first column became wider",
+          "screenshot": "Layout_Management_step04_after_resize.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on layout to verify new column sizes",
+          "expected": "New column sizes should be displayed",
+          "actual": "Column sizes changed to 30%, 20%, 25%, 25% - resizing worked correctly",
+          "screenshot": "Layout_Management_step05_resized_columns.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Layout rendering in view mode",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to home page in view mode (without edit mode)",
+          "expected": "Layout should render correctly with proper column arrangement",
+          "actual": "Layout renders with 4 columns side by side, responsive grid visible",
+          "screenshot": "Layout_Management_step09_view_mode_proper.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Scroll down to view Content Layout modules in view mode",
+          "expected": "Both Content Layout modules should display their content in 4 columns",
+          "actual": "First row shows TELEVISIONS, WEARABLES, TABLETS, LAPTOPS. Second row shows HOME THEATERS, BLU-RAY PLAYERS, MONITORS, CAMERAS. All in proper 4-column grid layout.",
+          "screenshot": "Layout_Management_step10_view_mode_columns.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Layout rendering in edit mode",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter edit mode on the home page",
+          "expected": "Layout should show edit controls, pane labels, and resize handles",
+          "actual": "Edit mode shows pane labels (F30A_Pane1-4, 9977_Pane1-4), module action buttons, resize handles between columns, and 'Add Existing Module' links",
+          "screenshot": "Layout_Management_step07_edit_mode_layout.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View Content Layout module columns in edit mode",
+          "expected": "Columns should be visible with edit controls and empty pane placeholders",
+          "actual": "Columns visible with modules (TELEVISIONS, WEARABLES, LAPTOPS), one empty pane showing 'Click to add text/image/module' buttons, resize handles visible between columns",
+          "screenshot": "Layout_Management_step08_edit_mode_columns.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "CSS classes generated correctly",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Inspect CSS classes on Content Layout panes via JavaScript",
+          "expected": "Panes should have Bootstrap-style responsive CSS classes",
+          "actual": "CSS classes verified: F30A panes have 'pane col-lg-3 col-md-3 col-sm-3 col-xs-12' (25% on lg/md/sm, 100% on xs). 9977 panes have 'pane col-lg-3 col-md-4 col-sm-6 col-xs-12' matching the default 4x25% template. Additional classes include ui-resizable, dnnSortable, dnnModuleManager for edit mode functionality.",
+          "screenshot": "Layout_Management_step08_edit_mode_columns.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Default layout configuration (4x25%)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify existing Content Layout module shows default 4-column layout",
+          "expected": "Module should display default layout of 25%, 25%, 25%, 25%",
+          "actual": "Module displays 4 equal columns at 25% each, matching the default column sizes constant '25,25,25' from code (Constants.DefaultColumnSizes)",
+          "screenshot": "Layout_Management_step03_column_sizes_shown.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Layout template data available",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify layout templates are configured in data.xml",
+          "expected": "Six layout templates should be available",
+          "actual": "Code review confirmed 6 templates available: 25%+75%, 75%+25%, 50%+50%, 25%+50%+25%, 33%+33%+33%, 4x25%. Templates defined in Templates/data.xml with Id, Name, Icon, and Sizes attributes.",
+          "screenshot": "Layout_Management_step02_contentlayout_modules.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Content Layout module creates dynamic panes (F30A_Pane1-4, 9977_Pane1-4) that act as containers for other modules",
+    "Column resize functionality uses jQuery UI resizable with drag handles, automatically calculating percentages",
+    "CSS classes use Bootstrap's 12-column grid system (col-lg-*, col-md-*, col-sm-*, col-xs-*) for responsive layouts",
+    "The module removes certain action buttons (Settings, Import, Export) when it contains child modules to prevent nested Content Layout issues",
+    "Code suggests validation prevents column sizes from exceeding 99% total and limits to maximum 4 columns (3 comma-separated values)",
+    "Page versioning system integration allows tracking of layout changes through IVersionableControl interface",
+    "The LayoutEditor.js handles real-time resize visualization with percentage displays during drag operations"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 7,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

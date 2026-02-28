@@ -1,0 +1,117 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.CommunitySettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Settings Batch Save",
+    "feature_description": "Save all community settings together as a single transaction with validation and error handling.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T10:13:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Modify multiple settings and save all at once",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Settings > Community Settings",
+          "expected": "Community Settings page loads with Miscellaneous Community Settings section visible",
+          "actual": "Community Settings page loaded successfully showing Influence goals table and Miscellaneous Community Settings section with checkboxes and dropdowns",
+          "screenshot": "Settings Batch Save_step01_community_settings_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View the settings section with all available options",
+          "expected": "All settings visible: Content Moderation, Comment Moderation, Enable WYSIWYG, Page Size, Comments Page Size, Profanity Filtering, Group Home Page",
+          "actual": "All settings sections visible with current values - Content Moderation (Answers, Discussions, Ideas, Social Events), Comment Moderation (Blogs, Discussions, Ideas, Social Events, Wiki), Enable WYSIWYG, Page Size dropdown, Comments Page Size dropdown, Profanity Filtering dropdown, Group Home Page dropdown, and Save button",
+          "screenshot": "Settings Batch Save_step02_settings_section.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Toggle Ideas checkbox in Content Moderation, toggle Blogs checkbox in Comment Moderation, change Page Size to 10 items, change Profanity Filtering to Filter Content",
+          "expected": "Multiple settings should be modifiable before saving",
+          "actual": "Successfully modified: Ideas checkbox toggled to checked, Blogs checkbox toggled to checked, Page Size changed to 10 items, Profanity Filtering changed to Filter Content",
+          "screenshot": "Settings Batch Save_step03_multiple_settings_changed.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click Save button to save all changes at once",
+          "expected": "All settings saved in single transaction with success notification",
+          "actual": "Save completed successfully with 'Item successfully saved.' notification displayed",
+          "screenshot": "Settings Batch Save_step04_save_success_notification.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify success notification on successful save",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Save settings and observe notification",
+          "expected": "Success notification should appear after save",
+          "actual": "Green success notification appeared with message 'Item successfully saved.' The notification displayed with a success icon and auto-dismissed after a few seconds",
+          "screenshot": "Settings Batch Save_step04_save_success_notification.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save settings without making changes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Save button without making any changes to settings",
+          "expected": "Save should complete successfully even with no changes",
+          "actual": "Save completed successfully with 'Item successfully saved.' notification displayed. The system accepts save operations even when no values have been modified",
+          "screenshot": "Settings Batch Save_step07_save_no_changes.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify settings persistence after page refresh",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Change Comments Page Size to 15 items and Group Home Page to Discussions",
+          "expected": "Settings should be changeable",
+          "actual": "Successfully changed Comments Page Size to 15 items and Group Home Page to Discussions",
+          "screenshot": "Settings Batch Save_step08_second_batch_changes.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Settings saved with success notification",
+          "actual": "Save completed with 'Item successfully saved.' notification",
+          "screenshot": "Settings Batch Save_step09_save_success_second.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Refresh the page and navigate back to Community Settings",
+          "expected": "Settings should persist after page refresh",
+          "actual": "After page refresh and navigating back to Community Settings, the saved values persisted: Comments Page Size shows '15 items' (selected) and Group Home Page shows 'Discussions' (selected). The batch save successfully persisted multiple settings.",
+          "screenshot": "Settings Batch Save_step10_persistence_verified.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The batch save feature successfully saves multiple settings in a single transaction as confirmed by code review of CmxSettingsController.SaveCmxSettings method",
+    "The save operation uses optimized caching - only changed values are persisted and cache is cleared once at the end for performance",
+    "Success notifications display correctly with green icon and 'Item successfully saved.' message",
+    "Settings that can be batch saved include: Content Moderation flags, Comment Moderation flags, Editor Choice settings, Page Size, Comments Page Size, Profanity Filter, and Group Home Page",
+    "The save button is always available (not disabled based on changes) allowing users to save at any time"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

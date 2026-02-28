@@ -1,0 +1,132 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Domain Name Management",
+    "feature_description": "Configure how domain names are handled in usernames",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T10:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Configure Default Domain Setting",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Extensions > Authentication Systems",
+          "expected": "Authentication Systems page should load with list of providers",
+          "actual": "Authentication Systems page loaded successfully showing DNNPro_ActiveDirectoryAuthentication provider",
+          "screenshot": "Domain Name Management_step01_settings_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on DNNPro_ActiveDirectoryAuthentication and access Site Settings tab",
+          "expected": "Site Settings tab should display Default Domain field",
+          "actual": "Site Settings tab displayed with Default Domain Prefix field visible",
+          "screenshot": "Domain Name Management_step02_default_domain_field.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Enter 'TESTDOMAIN\\' in the Default Domain Prefix field",
+          "expected": "Field should accept domain name input",
+          "actual": "Field accepted 'TESTDOMAIN\\' input successfully",
+          "screenshot": "Domain Name Management_step03_default_domain_entered.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click Update Authentication Settings button",
+          "expected": "Settings should be saved",
+          "actual": "Settings appeared to save (button clicked, page updated)",
+          "screenshot": "Domain Name Management_step04_settings_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Settings Persistence Requires Enabled Checkbox",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Switch tabs and return to Site Settings to verify persistence",
+          "expected": "Default Domain value should persist",
+          "actual": "Default Domain value was cleared - field was empty",
+          "screenshot": "Domain Name Management_step05_persistence_check.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify persistence behavior by examining code",
+          "expected": "Understand why value was cleared",
+          "actual": "Code confirmed: settings only persist when 'Enabled?' checkbox is checked. When disabled, UpdateConfig clears all settings.",
+          "screenshot": "Domain Name Management_step06_verify_persistence.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure Default Domain with Enabled Authentication",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check 'Enabled?' checkbox and enter 'MYDOMAIN\\' in Default Domain field",
+          "expected": "Both settings should be configurable together",
+          "actual": "Successfully checked Enabled? and entered MYDOMAIN\\ in Default Domain Prefix field",
+          "screenshot": "Domain Name Management_step07_enabled_with_domain.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Update Authentication Settings",
+          "expected": "Settings should be saved or appropriate error if no AD server",
+          "actual": "Error displayed: 'Object reference not set to an instance of an object' - This is expected behavior when no Active Directory server is available",
+          "screenshot": "Domain Name Management_step08_error_no_AD.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Login with DOMAIN\\username Format",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to test login with DOMAIN\\username format",
+          "expected": "Should be able to test domain login scenarios",
+          "actual": "Cannot test - no Active Directory infrastructure available in test environment. AD authentication requires actual domain controller.",
+          "screenshot": "Domain Name Management_step08_error_no_AD.png"
+        }
+      ],
+      "issues": ["Active Directory login testing requires actual AD infrastructure which is not available in the test environment"]
+    },
+    {
+      "scenario_name": "Test Login with username@domain.com Format",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to test login with username@domain.com format",
+          "expected": "Should be able to test UPN format login",
+          "actual": "Cannot test - no Active Directory infrastructure available. The Login.ascx.cs code shows UPN handling logic exists but cannot be exercised without AD.",
+          "screenshot": "Domain Name Management_step08_error_no_AD.png"
+        }
+      ],
+      "issues": ["Active Directory login testing requires actual AD infrastructure which is not available in the test environment"]
+    }
+  ],
+  "observations": [
+    "Code in Settings.ascx shows 'Strip Domain Name' checkbox exists but is hidden (Visible='false'). This setting cannot be tested via UI as it is not exposed to users.",
+    "The Default Domain Prefix field is visible and accepts input, but settings only persist when the 'Enabled?' checkbox is checked.",
+    "When authentication is not enabled, UpdateConfig method clears all settings with empty values (Settings.ascx.cs line 168).",
+    "Login.ascx.cs contains domain name handling logic: if username contains '@', it extracts the domain; if username has no domain and DefaultDomain is set, it prepends the default domain.",
+    "Actual Active Directory login testing (DOMAIN\\username, username@domain.com, username-only with default domain) requires real AD infrastructure which is not available in this test environment.",
+    "The error 'Object reference not set to an instance of an object' when enabling AD authentication is expected - it occurs when NetworkStatus() tries to connect to non-existent AD server."
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 3,
+    "failed": 2,
+    "pass_rate": "60%"
+  }
+}

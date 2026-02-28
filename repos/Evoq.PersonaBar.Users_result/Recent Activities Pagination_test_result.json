@@ -1,0 +1,188 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Users",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Recent Activities Pagination",
+    "feature_description": "Browse through paginated list of user's recent activities with details about area, action, and timestamp",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T10:23:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Load first page of activities",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Users",
+          "expected": "Users list should display",
+          "actual": "Users list displayed showing 15 total users with pagination controls",
+          "screenshot": "Recent Activities Pagination_step01_users_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click User Activity icon for Test User12",
+          "expected": "Activity panel should expand showing recent activities",
+          "actual": "Activity panel expanded showing 'Recent Activity' section with 1 activity item: 'Joined Site 2 weeks ago - Evoq Content Library'",
+          "screenshot": "Recent Activities Pagination_step02_user_activity_panel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify relative date formatting for activities",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View activity panel for Content Editor user",
+          "expected": "Activities should display with relative date format",
+          "actual": "Activities displayed with relative dates: 'Followed by another user 1 hour ago' and 'Joined Site 2 weeks ago'",
+          "screenshot": "Recent Activities Pagination_step04_content_editor_activity.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify auto-refresh when switching users",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View activity panel for Content Editor (shows 2 activities)",
+          "expected": "Content Editor activities should display",
+          "actual": "Displayed: Rank 2, Reputation 7, Experience 12, 2 activities",
+          "screenshot": "Recent Activities Pagination_step04_content_editor_activity.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Test User's activity icon",
+          "expected": "Activity panel should update to show Test User's data",
+          "actual": "Activity panel updated to show Test User data: Rank 5, Reputation 5, Experience 5, 1 activity - confirming auto-refresh works",
+          "screenshot": "Recent Activities Pagination_step05_switch_user_activity.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify SuperUser activities cannot be viewed",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page 2 of users list",
+          "expected": "SuperUser Account should be visible in the list",
+          "actual": "SuperUser Account visible in the users list on page 2",
+          "screenshot": "Recent Activities Pagination_step03_users_page2.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify icon availability on SuperUser Account row",
+          "expected": "SuperUser Account should NOT have User Activity icon (by design)",
+          "actual": "Confirmed: SuperUser Account row only shows Profile Settings and Account Settings icons. User Activity icon is NOT present, while other users (Content Editor) have the activity icons",
+          "screenshot": "Recent Activities Pagination_step07_superuser_row_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify activity area/module display",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View activities for multiple users",
+          "expected": "Each activity should show the area/module where the activity occurred",
+          "actual": "Activities correctly display area information: 'Evoq Content Library' for site join, 'Activities' for follow action",
+          "screenshot": "Recent Activities Pagination_step04_content_editor_activity.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Navigate to next page of activities",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Find user with more than 10 activities to test pagination",
+          "expected": "Should find a user with enough activities to trigger pagination",
+          "actual": "No users in the system have more than 10 activities. All test users have only 1-2 activities (mostly just 'Joined Site'). Pagination controls are not visible in the Recent Activity section because all users have fewer than 10 activities",
+          "screenshot": "Recent Activities Pagination_step08_recent_activity_section.png"
+        }
+      ],
+      "issues": ["Unable to test pagination navigation - no users have sufficient activity data (>10 activities required to show pagination)"]
+    },
+    {
+      "scenario_name": "Navigate to previous page of activities",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page 2 then back to page 1 of activities",
+          "expected": "Should be able to navigate back to previous page",
+          "actual": "Cannot test - no pagination controls are visible because no user has more than 10 activities",
+          "screenshot": "Recent Activities Pagination_step08_recent_activity_section.png"
+        }
+      ],
+      "issues": ["Unable to test pagination navigation - insufficient activity data"]
+    },
+    {
+      "scenario_name": "Verify page size fixed at 10 items",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify activities are paginated with 10 items per page",
+          "expected": "Recent Activity section should show 10 activities per page",
+          "actual": "Cannot verify page size - no user has more than 10 activities to demonstrate the page boundary",
+          "screenshot": "Recent Activities Pagination_step02_user_activity_panel.png"
+        }
+      ],
+      "issues": ["Unable to verify page size - all users have fewer than 10 activities"]
+    },
+    {
+      "scenario_name": "Test empty activities list",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Find user with no activities",
+          "expected": "Should display 'No recent activities' message",
+          "actual": "All users in the system have at least the 'Joined Site' activity automatically recorded. Cannot find a user with zero activities to test the empty state message.",
+          "screenshot": "Recent Activities Pagination_step02_user_activity_panel.png"
+        }
+      ],
+      "issues": ["Unable to test empty activities - all users have at least 'Joined Site' activity automatically recorded"]
+    },
+    {
+      "scenario_name": "Verify activities sorted by date (newest first)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View Content Editor activities which has multiple entries",
+          "expected": "Activities should be sorted with newest first",
+          "actual": "Activities are correctly sorted: 'Followed by another user 1 hour ago' appears before 'Joined Site 2 weeks ago' - confirming newest-first order",
+          "screenshot": "Recent Activities Pagination_step04_content_editor_activity.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Pagination controls in Recent Activity section are only rendered when there are more than 10 activities. Since no test users have sufficient activities, pagination UI could not be directly tested.",
+    "All users automatically receive a 'Joined Site' activity entry upon registration, making it impossible to test the 'No recent activities' empty state without manually creating a user through the database.",
+    "SuperUser activities are correctly hidden by design - the User Activity icon is not shown for SuperUser accounts in the users list.",
+    "The feature code files specified in the test prompt were not available in the repository (repository directory was empty), so testing was performed purely based on UI behavior.",
+    "Activity entries correctly display: action description, relative time format, and area/module name",
+    "The Recent Activity section appears to be a fixed-height container with the activity list inside, which would scroll or paginate when there are many activities."
+  ],
+  "summary": {
+    "total_scenarios": 10,
+    "passed": 6,
+    "failed": 4,
+    "pass_rate": "60%"
+  }
+}

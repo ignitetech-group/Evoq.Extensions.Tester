@@ -1,0 +1,148 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.UI",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Localization Support",
+    "feature_description": "Provides multi-language support for all UI elements and messages in the PersonaBar.",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T10:12:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Switch language to Spanish via URL",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Spanish URL (http://localhost:8081/es-es/)",
+          "expected": "Page loads with Spanish locale URL structure",
+          "actual": "Page loaded successfully at /es-es/ URL, Spanish flag indicator active",
+          "screenshot": "Localization Support_step02_spanish_url.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify URL-based language switching works",
+          "expected": "Language parameter in URL properly recognized",
+          "actual": "URL changed to /es-es/ and page content loaded. Language flags updated to show Spanish as active.",
+          "screenshot": "Localization Support_step04_main_page_spanish.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify UI strings are localized for Spanish",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Access PersonaBar while on Spanish URL",
+          "expected": "PersonaBar UI elements should display in Spanish",
+          "actual": "All PersonaBar UI elements remained in English: 'Site Settings', 'Languages', 'CULTURE', 'ENABLED', 'System Default', etc.",
+          "screenshot": "Localization Support_step05_personabar_spanish_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check Dashboard panel in Spanish mode",
+          "expected": "Dashboard labels should be in Spanish",
+          "actual": "Dashboard displayed all English labels: 'Site Analytics', 'Insights', 'Top Fives', 'Not now', 'Connect'",
+          "screenshot": "Localization Support_step03_dashboard_spanish_url.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Check Settings menu items",
+          "expected": "Menu items should be localized to Spanish",
+          "actual": "All menu items in English: 'Site Settings', 'Security', 'Workflow', 'SEO', 'Community', 'Gamification', 'Connectors', etc.",
+          "screenshot": "Localization Support_step07_settings_menu.png"
+        }
+      ],
+      "issues": ["PersonaBar UI does not display in Spanish despite being on Spanish locale URL. Spanish resource files are missing (354 missing resource files identified by Resource File Verifier)."]
+    },
+    {
+      "scenario_name": "Switch language to French",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Languages settings and click 'Add New Language'",
+          "expected": "Language selection dropdown should include French",
+          "actual": "Language dropdown displayed with French (Francais) available in the list of available languages to add",
+          "screenshot": "Localization Support_step06_add_language_dialog.png"
+        }
+      ],
+      "issues": ["French language is not installed by default. Only English (United States) and Spanish (Espana) are enabled. French would need to be added before testing."]
+    },
+    {
+      "scenario_name": "Switch language to German",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check available languages in system",
+          "expected": "German should be available for testing",
+          "actual": "German is not installed. Only English and Spanish are configured on the site.",
+          "screenshot": "Localization Support_step01_languages_tab.png"
+        }
+      ],
+      "issues": ["German language is not installed by default. Site only has English (United States) and Spanish (Espana) enabled."]
+    },
+    {
+      "scenario_name": "Verify Language Resource Files (Error Scenario)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Verify Language Resource Files' button in Languages settings",
+          "expected": "Resource File Verifier should display verification results",
+          "actual": "Resource File Verifier opened showing: English - 142 Malformed Resource Files; Spanish - 354 Missing Resource Files, 1 Malformed Resource File",
+          "screenshot": "Localization Support_step08_verify_resource_files.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Expand Missing Resource Files for Spanish",
+          "expected": "List of missing resource files should be displayed",
+          "actual": "Full list of 354 missing Spanish resource files displayed, including PersonaBar.es-ES.resx, SiteSettings.es-ES.resx, and other critical UI resource files",
+          "screenshot": "Localization Support_step09_missing_files_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify fallback to default language",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify System Default and Site Default language settings",
+          "expected": "Fallback language should be configured",
+          "actual": "System Default: English (United States), Site Default: English (United States). Both properly configured.",
+          "screenshot": "Localization Support_step10_fallback_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Access Spanish URL and verify fallback behavior",
+          "expected": "When Spanish translations are missing, system should fall back to English",
+          "actual": "System correctly falls back to English for all UI elements when Spanish translations are missing. This is expected behavior given the 354 missing Spanish resource files.",
+          "screenshot": "Localization Support_step04_main_page_spanish.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Spanish language is configured but 354 resource files are missing, preventing actual UI localization",
+    "142 English resource files are marked as malformed, though English UI still functions",
+    "The 'Users May Choose Interface Language' setting is Off, limiting language switching options",
+    "'Allow Content Localization' is Off, preventing content-level language management",
+    "Language parameter in URLs is enabled and functional (en-us, es-es paths work)",
+    "Browser Language Detection is enabled but doesn't affect PersonaBar UI",
+    "French and German languages are available to install but not pre-configured",
+    "Code suggests localization infrastructure exists (App_LocalResources paths referenced) but resource files are missing for non-English languages"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 3,
+    "failed": 3,
+    "pass_rate": "50%"
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Templates",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Create New Template",
+    "feature_description": "Allows administrators to create new page templates with name, description, and layout selection",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T09:46:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Validate empty template name shows error",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Add Template' button to open the create template dialog",
+          "expected": "Create template dialog opens with empty fields",
+          "actual": "Dialog opened with Template Name, Description, and Page Template selection fields",
+          "screenshot": "Create New Template_step01_add_template_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Create' button without entering template name",
+          "expected": "Validation error message appears for empty template name",
+          "actual": "Error message 'This field is required.' displayed below Template Name field",
+          "screenshot": "Create New Template_step02_empty_name_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create template with valid name and description",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'Test Template Creation' as template name",
+          "expected": "Template name is entered in the field",
+          "actual": "Template name entered successfully",
+          "screenshot": "Create New Template_step03_form_filled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter description 'This is a test template created for feature testing purposes.'",
+          "expected": "Description is entered in the field",
+          "actual": "Description entered successfully",
+          "screenshot": "Create New Template_step03_form_filled.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click 'Create' button with valid data",
+          "expected": "Template is created and appears in the list",
+          "actual": "Template 'Test Template Creation' was created successfully and appears in the templates list",
+          "screenshot": "Create New Template_step04_template_created_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify new template appears in list after creation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Templates panel after creating a new template",
+          "expected": "Newly created template appears in the templates list",
+          "actual": "'Test Template Creation' template is visible in the templates list with thumbnail preview",
+          "screenshot": "Create New Template_step06_template_in_list_verified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Cancel template creation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Add Template' and enter 'Template to Cancel' as name",
+          "expected": "Template name is entered in the dialog",
+          "actual": "Template name entered successfully",
+          "screenshot": "Create New Template_step08_before_cancel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Cancel' button",
+          "expected": "Dialog closes without creating template",
+          "actual": "Dialog closed and returned to templates list, no template was created",
+          "screenshot": "Create New Template_step09_after_cancel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate script injection prevention in template name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter '<script>alert('XSS')</script>' as template name",
+          "expected": "System should block or sanitize script injection attempt",
+          "actual": "Validation error 'The template name can't contain scripts.' is displayed immediately",
+          "screenshot": "Create New Template_step10_xss_payload_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to click 'Create' with XSS payload",
+          "expected": "Template should not be created due to validation",
+          "actual": "Form was not submitted, validation error persisted blocking the XSS attempt",
+          "screenshot": "Create New Template_step11_xss_validation_blocked.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Select different layout templates",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open Add Template dialog and observe available page templates",
+          "expected": "Multiple page template options are available for selection",
+          "actual": "8 page templates available: Cavalier - Main, Test Template Page, Workflow Test Template, and others",
+          "screenshot": "Create New Template_step01_add_template_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on 'Test Template Page' layout option",
+          "expected": "Different template is selected with visual indicator",
+          "actual": "'Test Template Page' is now selected (shown with green checkmark), replacing previous selection",
+          "screenshot": "Create New Template_step12_different_layout_selected.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test template creation with maximum length name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter a very long template name (over 200 characters)",
+          "expected": "System accepts or truncates the long name appropriately",
+          "actual": "Long name was accepted and entered in the field, visible as truncated in UI display",
+          "screenshot": "Create New Template_step13_long_name_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Create' with the long template name",
+          "expected": "Template is created with the long name or appropriate error shown",
+          "actual": "Template was created successfully with the long name, displayed truncated in the list",
+          "screenshot": "Create New Template_step14_long_name_created.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Page Templates panel is accessible via PersonaBar > Manage > Templates menu",
+    "Default page template selection is 'Cavalier - Main' when opening the Add Template dialog",
+    "Template thumbnails are auto-generated after creation showing a preview of the page layout",
+    "The system validates for XSS/script injection in template names with client-side validation",
+    "Long template names are accepted but displayed truncated in the UI to maintain layout consistency",
+    "Description field does not appear to have a required validation based on the UI (no asterisk), but the code in SaveAsTemplate.jsx suggests both fields are checked before enabling Create button"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 7,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

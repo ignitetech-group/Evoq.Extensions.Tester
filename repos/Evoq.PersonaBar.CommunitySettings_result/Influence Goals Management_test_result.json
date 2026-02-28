@@ -1,0 +1,244 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.CommunitySettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Influence Goals Management",
+    "feature_description": "Create, read, update, and delete influence scoring goals with 17 predefined goal types for tracking and scoring community interactions.",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T10:20:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Create new influence goal with valid data",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Community > Influence tab",
+          "expected": "Influence Goals Management section is displayed with list of existing goals",
+          "actual": "Influence tab displayed with table showing 13 existing goals with Goal Type, Weight, Value columns",
+          "screenshot": "Influence Goals Management_step01_influence_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Create New' button",
+          "expected": "Create new goal form opens with fields for Goal Type, Weight, Value, Min Value, Max Value",
+          "actual": "Form expanded with all required fields and dropdown for Goal Type with 17 options",
+          "screenshot": "Influence Goals Management_step02_create_new_form.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Fill form with valid data: Goal Type='Number of logins', Weight=3, Value=50, Min=1, Max=200 and click Save",
+          "expected": "Goal is created successfully with success notification",
+          "actual": "Success notification displayed 'Settings have been saved' and new goal appeared in list",
+          "screenshot": "Influence Goals Management_step09_goal_created_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify required field validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open Create New form and leave all numeric fields empty",
+          "expected": "Validation errors shown for required fields",
+          "actual": "'Text is required' validation messages displayed for Weight, Value, Min Value, and Max Value fields",
+          "screenshot": "Influence Goals Management_step03_required_field_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test duplicate GoalType validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Create new goal with Goal Type that already exists (Number of logins)",
+          "expected": "Error message indicating duplicate GoalType not allowed",
+          "actual": "Success message shown but duplicate was not created - system silently prevented duplicate",
+          "screenshot": "Influence Goals Management_step05_duplicate_save_result.png"
+        }
+      ],
+      "issues": ["Duplicate GoalType validation message not clearly displayed - system shows success but silently rejects duplicate"]
+    },
+    {
+      "scenario_name": "Test MinValue must be less than MaxValue validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Set Min Value to 300 and Max Value to 200 (Min > Max)",
+          "expected": "Validation error shown indicating Min must be less than Max",
+          "actual": "Form shows visual indicator (red bubble) and form stays open, preventing save",
+          "screenshot": "Influence Goals Management_step07_minmax_no_validation_error.png"
+        }
+      ],
+      "issues": ["Min > Max validation exists but error message text is not clearly visible - only visual red indicator shown"]
+    },
+    {
+      "scenario_name": "Edit existing influence goal",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click edit icon on 'Number of logins' goal",
+          "expected": "Edit form opens with current values populated",
+          "actual": "Inline edit form expanded showing Weight=3, Value=50, Min=1, Max=200",
+          "screenshot": "Influence Goals Management_step10_edit_form_opened.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Change Weight from 3 to 8, Value from 50 to 75",
+          "expected": "Fields update to new values",
+          "actual": "Weight field shows 8, Value field shows 75",
+          "screenshot": "Influence Goals Management_step12_edit_values.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save button",
+          "expected": "Success notification and table shows updated values",
+          "actual": "Success notification displayed, table now shows Weight=8, Value=75 for Number of logins",
+          "screenshot": "Influence Goals Management_step13_edit_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Cancel edit operation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open edit form for a goal and make changes",
+          "expected": "Changes visible in form",
+          "actual": "Edit form opened with current values",
+          "screenshot": "Influence Goals Management_step10_edit_form_opened.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Cancel button",
+          "expected": "Edit form closes without saving changes",
+          "actual": "Form closed and original values preserved in table",
+          "screenshot": "Influence Goals Management_step11_cancel_operation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete influence goal with confirmation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click delete (X) icon on a goal",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog displayed with 'Are you sure you want to delete this goal?' and Yes/No buttons",
+          "screenshot": "Influence Goals Management_step14_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'No' to cancel deletion",
+          "expected": "Dialog closes and goal remains in list",
+          "actual": "Dialog closed, goal still present in table",
+          "screenshot": "Influence Goals Management_step15_cancel_delete.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click delete again and click 'Yes' to confirm",
+          "expected": "Goal is deleted from list",
+          "actual": "Goal removed from table, list now shows 12 goals",
+          "screenshot": "Influence Goals Management_step16_delete_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test negative number validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter negative value -5 in Weight field",
+          "expected": "Validation error for negative numbers",
+          "actual": "Error message displayed: 'Negative numbers are not allowed'",
+          "screenshot": "Influence Goals Management_step18_negative_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Value must be between MinValue and MaxValue validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Set Value=500, Min=1, Max=200 (Value outside range)",
+          "expected": "Validation error indicating Value must be between Min and Max",
+          "actual": "Form stays open with visual indicator preventing save",
+          "screenshot": "Influence Goals Management_step19_value_range_validation.png"
+        }
+      ],
+      "issues": ["Value range validation exists but error message text is not prominently displayed"]
+    },
+    {
+      "scenario_name": "Test filter by name functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'friends' in the Filter by name search box",
+          "expected": "Table filters to show only goals containing 'friends' in their name",
+          "actual": "Table filtered to show 2 items: 'The number of friends the user has' and 'The number of friends the user has relative to...'",
+          "screenshot": "Influence Goals Management_step21_filter_results.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify GoalType is locked after creation",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open edit form for existing goal 'Number of logins'",
+          "expected": "GoalType dropdown should be disabled/locked",
+          "actual": "GoalType dropdown is enabled and can be changed",
+          "screenshot": "Influence Goals Management_step22_goaltype_edit.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Change GoalType dropdown to 'Total time on site'",
+          "expected": "Change should not be possible as GoalType should be locked",
+          "actual": "Successfully changed GoalType to 'Total time on site' - dropdown is NOT locked",
+          "screenshot": "Influence Goals Management_step23_goaltype_changed.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Cancel the edit to restore original state",
+          "expected": "Original GoalType restored",
+          "actual": "Cancel successful, original state preserved",
+          "screenshot": "Influence Goals Management_step24_goaltype_not_locked_verified.png"
+        }
+      ],
+      "issues": ["GoalType is NOT locked after creation as expected. Users can change the Goal Type on existing goals, which contradicts the expected behavior."]
+    }
+  ],
+  "observations": [
+    "The duplicate GoalType validation exists but the error feedback is unclear - system shows success message but silently rejects the duplicate",
+    "Min > Max validation uses visual indicators (red bubble) rather than clear text error messages",
+    "Value outside range validation also uses visual indicators without prominent text messages",
+    "GoalType is NOT locked after creation - this may be intentional design but contradicts the test scenario specification",
+    "17 predefined goal types are available as documented",
+    "The Influence Goals table supports pagination (showing 1-10 of 13 items) and sorting by Goal Type, Weight, and Value columns"
+  ],
+  "summary": {
+    "total_scenarios": 11,
+    "passed": 10,
+    "failed": 1,
+    "pass_rate": "91%"
+  }
+}

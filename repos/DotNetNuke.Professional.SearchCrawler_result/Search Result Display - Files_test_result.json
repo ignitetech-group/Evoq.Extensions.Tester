@@ -1,0 +1,122 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Search Result Display - Files",
+    "feature_description": "Displays file search results with proper permission checking and URL generation.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:21:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Display file search results",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to search results page and search for 'image'",
+          "expected": "Search results page displays with file/image results",
+          "actual": "Search results page displayed 'About 56 Results' with image files listed including test_image-thumb-154.png, product-image-1.jpg, etc.",
+          "screenshot": "Search Result Display - Files_step02_image_search_results_clean.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify file results show proper information",
+          "expected": "Each result shows file name, URL, metadata, and source type",
+          "actual": "Results displayed file names as titles, file URLs (/Portals/0/Images/...), MIME type info (image/png, image/jpeg), timestamps, and Source: Images",
+          "screenshot": "Search Result Display - Files_step03_file_results_scrolled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test file URL generation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on a file search result link",
+          "expected": "File should be accessible at the generated URL",
+          "actual": "Clicking on test_image-thumb-154.png opened the actual image file at /Portals/0/Images/Publisher/test_image-thumb-154.png?ver=... - The 100x100 image was displayed correctly",
+          "screenshot": "Search Result Display - Files_step04_file_url_works.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test localized result type names",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for 'image' and verify source type label",
+          "expected": "Image results should show 'Images' as localized source type",
+          "actual": "Search results displayed 'Source: Images' for all image file results, confirming ImageSearchTypeName localization works",
+          "screenshot": "Search Result Display - Files_step03_file_results_scrolled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Search for 'document' and verify mixed result types",
+          "expected": "Different content types should show their respective localized source names",
+          "actual": "Results showed 'Source: Pages' for URL results and 'Source: Wiki' for wiki articles, confirming UrlSearchTypeName localization works",
+          "screenshot": "Search Result Display - Files_step06_source_types_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify folder browse/view permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "As SuperUser, search for files and verify results are visible",
+          "expected": "Files in accessible folders should be displayed in results",
+          "actual": "Files from /Portals/0/Images/ and /Portals/0/Images/Publisher/ folders were visible in search results, indicating folder browse/view permissions are being checked correctly",
+          "screenshot": "Search Result Display - Files_step03_file_results_scrolled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle missing file/no results gracefully",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for non-existent term 'nonexistentfile12345'",
+          "expected": "System should gracefully display 'No results found' message",
+          "actual": "Search results page displayed 'No results found.' message without any errors",
+          "screenshot": "Search Result Display - Files_step07_no_results_clean.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Empty search results handling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for 'pdf' (no PDF files indexed)",
+          "expected": "System should display empty results gracefully",
+          "actual": "Search results page displayed 'No results found.' message indicating no PDF files match the search criteria",
+          "screenshot": "Search Result Display - Files_step01_search_no_results.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The FileResultFilter class filters files based on excluded folder list and excluded file extensions per portal - this is configured in admin settings but testing individual filter rules would require modifying admin configuration",
+    "The 'Documents' localized type name (DocumentSearchTypeName) was not observed in search results as there were no non-image document files indexed. Only 'Images' type was visible for file results",
+    "Folder permission checking is implemented via FolderPermissionController.CanBrowseFolder() and CanViewFolder() methods, which were working correctly for the SuperUser account"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

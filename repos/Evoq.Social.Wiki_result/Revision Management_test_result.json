@@ -1,0 +1,164 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Revision Management",
+    "feature_description": "Track and manage article revisions with approval workflow and version history",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:47:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View revision history",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page",
+          "expected": "Wiki module loads with list of articles",
+          "actual": "Wiki module loaded successfully with 6 articles visible",
+          "screenshot": "Revision_Management_step02_wiki_articles_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on 'Test Article for Revision Management' to view article detail and access revision history",
+          "expected": "Article detail page opens with revision history tab or link available",
+          "actual": "404 Error Page - 'Sorry, the page you are looking for cannot be found'",
+          "screenshot": "Revision_Management_step05_article_404_error.png"
+        }
+      ],
+      "issues": ["Article detail pages return 404 error - individual Wiki article pages are not properly configured in DNN, preventing access to revision history UI"]
+    },
+    {
+      "scenario_name": "Compare different revisions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access article detail page to compare revisions",
+          "expected": "Article detail page with revision comparison functionality",
+          "actual": "Cannot access revision comparison - article detail pages return 404 error",
+          "screenshot": "Revision_Management_step05_article_404_error.png"
+        }
+      ],
+      "issues": ["Cannot test revision comparison - article detail pages return 404 error, blocking access to revision management UI"]
+    },
+    {
+      "scenario_name": "Approve pending revision",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open Create article dialog to check approval workflow options",
+          "expected": "Create article dialog opens with Approved checkbox visible",
+          "actual": "Create article dialog opened successfully with Approved checkbox (checked by default)",
+          "screenshot": "Revision_Management_step03_create_article_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to access article to approve pending revision",
+          "expected": "Access to revision management UI with approve action",
+          "actual": "Cannot access revision management UI - article pages return 404 error",
+          "screenshot": "Revision_Management_step05_article_404_error.png"
+        }
+      ],
+      "issues": ["Article approval workflow UI not accessible due to 404 errors on article detail pages"]
+    },
+    {
+      "scenario_name": "Reject pending revision",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access article to reject pending revision",
+          "expected": "Access to revision management UI with reject action",
+          "actual": "Cannot access revision management UI - article pages return 404 error",
+          "screenshot": "Revision_Management_step05_article_404_error.png"
+        }
+      ],
+      "issues": ["Revision rejection functionality not accessible due to 404 errors on article detail pages"]
+    },
+    {
+      "scenario_name": "Restore previous revision (Rollback)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access article to rollback to previous revision",
+          "expected": "Access to revision management UI with rollback action",
+          "actual": "Cannot access revision management UI - article pages return 404 error",
+          "screenshot": "Revision_Management_step05_article_404_error.png"
+        }
+      ],
+      "issues": ["Revision rollback functionality not accessible due to 404 errors on article detail pages"]
+    },
+    {
+      "scenario_name": "Revision state transitions (Draft->Pending->Published)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify Create article dialog has Approved checkbox for state control",
+          "expected": "Approved checkbox present to control initial revision state",
+          "actual": "Approved checkbox is present and checked by default (meaning direct publish)",
+          "screenshot": "Revision_Management_step03_create_article_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to access article to test state transitions",
+          "expected": "Access to revision management UI to observe state changes",
+          "actual": "Cannot access revision management UI - article pages return 404 error",
+          "screenshot": "Revision_Management_step05_article_404_error.png"
+        }
+      ],
+      "issues": ["State transition testing blocked due to 404 errors on article detail pages. Code review confirms states: Pending(0), Unpublished(1), Published(2), Deleted(3)"]
+    },
+    {
+      "scenario_name": "Delete revision",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access article to delete revision",
+          "expected": "Access to revision management UI with delete action",
+          "actual": "Cannot access revision management UI - article pages return 404 error",
+          "screenshot": "Revision_Management_step05_article_404_error.png"
+        }
+      ],
+      "issues": ["Revision deletion functionality not accessible due to 404 errors on article detail pages"]
+    },
+    {
+      "scenario_name": "Test multiple pending revisions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access article to create and manage multiple pending revisions",
+          "expected": "Access to revision management UI to test multiple pending revisions",
+          "actual": "Cannot access revision management UI - article pages return 404 error",
+          "screenshot": "Revision_Management_step05_article_404_error.png"
+        }
+      ],
+      "issues": ["Multiple pending revisions testing blocked due to 404 errors on article detail pages"]
+    }
+  ],
+  "observations": [
+    "Code review confirms Revision Management feature exists with full implementation in RevisionsServiceController.cs and RevisionsApiController.cs",
+    "The revision management API supports: GetRevisions, Delete, Publish, Reject, UndoReject, UndoDelete, Rollback, Compare operations",
+    "Revision states implemented in code: Pending (0), Unpublished (1), Published (2), Deleted (3)",
+    "The Revisions UI is rendered via ChangesetControl.ascx which displays version history, date, user, type, state, and action buttons",
+    "UI actions include: Compare, Rollback, Delete, Reject, Approve/Publish, UndoReject, UndoDelete based on current revision state",
+    "The 'History' link to access revision management appears in article detail view (dnn.wiki.Revisions.js)",
+    "CRITICAL ISSUE: All Wiki article detail pages (e.g., /Wiki-Test/Test-Article-Draft) return 404 errors, preventing access to the revision management UI",
+    "The Wiki module appears to require additional DNN page configuration to properly route article URLs to the Wiki detail view",
+    "Create article dialog includes 'Approved' checkbox which controls whether the initial revision is published or pending",
+    "The feature code is present and well-implemented, but infrastructure/configuration issues prevent UI testing"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 0,
+    "failed": 8,
+    "pass_rate": "0%"
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.AccountSettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Permission-Based Access Control",
+    "feature_description": "Validates that only authorized users can access the AccountSettings module",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T09:26:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Administrators can access the module",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login as SuperUser (host) with admin credentials",
+          "expected": "Login successful and PersonaBar visible",
+          "actual": "Login successful, PersonaBar displayed on the left side with all admin menu items including Dashboard, Content, Manage, Settings, and Accounts",
+          "screenshot": "Permission-Based Access Control_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to Manage > Users in PersonaBar",
+          "expected": "Users management panel opens showing list of users",
+          "actual": "Users panel opened successfully showing list of 15 users with their details including Name, Email, Joined date, and action icons",
+          "screenshot": "Permission-Based Access Control_step05_users_panel_with_account_settings.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Account Settings icon for a test user (testuser12)",
+          "expected": "Account Settings panel opens showing user account details",
+          "actual": "Account Settings panel opened displaying User Name, Display Name, Email Address fields, Password Management options (Change Password, Force Password Change, Send Password Reset Link), and Account Data section showing User ID, Created Date, Last Login Date, Last Activity Date, etc.",
+          "screenshot": "Permission-Based Access Control_step06_account_settings_panel_open.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Accounts menu item is visible in PersonaBar for admins",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examine PersonaBar menu while logged in as SuperUser",
+          "expected": "Accounts menu item visible in PersonaBar",
+          "actual": "Accounts menu item (nav_Accounts) is visible in the PersonaBar with a user avatar icon. Note: The localization key 'nav_Accounts' is displayed instead of 'Accounts', indicating a localization resource issue, but the menu item IS accessible",
+          "screenshot": "Permission-Based Access Control_step02_accounts_menu_visible.png"
+        }
+      ],
+      "issues": ["Minor: Localization key 'nav_Accounts' displayed instead of translated text 'Accounts' - indicates missing or misconfigured resource file"]
+    },
+    {
+      "scenario_name": "Test API controller enforces admin-level permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Make unauthenticated API call to /API/PersonaBar/Users/GetUsers",
+          "expected": "API returns 401 Unauthorized",
+          "actual": "API returned HTTP 401 Unauthorized status, confirming unauthenticated users cannot access user data",
+          "screenshot": "Permission-Based Access Control_step09_unauthenticated_no_personabar.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Make unauthenticated API call to /API/PersonaBar/Users/GetUserDetail?userId=16",
+          "expected": "API returns 401 Unauthorized",
+          "actual": "API returned HTTP 401 Unauthorized status, confirming user detail endpoint is protected",
+          "screenshot": "Permission-Based Access Control_step09_unauthenticated_no_personabar.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify regular users cannot see/access the module",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logout from SuperUser account",
+          "expected": "User is logged out, PersonaBar is not visible",
+          "actual": "Successfully logged out. Page shows Register | Login links in header. No PersonaBar is visible - completely hidden from unauthenticated users",
+          "screenshot": "Permission-Based Access Control_step07_logged_out.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify PersonaBar and admin menus are not accessible as anonymous user",
+          "expected": "No admin interface visible, API endpoints return 401",
+          "actual": "Confirmed: No PersonaBar visible on page, API calls to Users endpoints return 401 Unauthorized. Anonymous users have no access to AccountSettings functionality",
+          "screenshot": "Permission-Based Access Control_step09_unauthenticated_no_personabar.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Content Managers can access the module",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to login as a Content Manager role user",
+          "expected": "Login successful and ability to access AccountSettings functionality",
+          "actual": "Unable to test - test user passwords are not known. Login attempt with testuser12 failed with 'Login Failed. Please remember that passwords are case sensitive.'",
+          "screenshot": "Permission-Based Access Control_step08_regular_user_login_attempt.png"
+        }
+      ],
+      "issues": ["Test blocked: Unable to login as Content Manager, Content Editor, or Community Manager roles because test user passwords are not available in the test environment"]
+    },
+    {
+      "scenario_name": "Verify Content Editors can access the module",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to login as a Content Editor role user",
+          "expected": "Login successful and ability to access AccountSettings functionality",
+          "actual": "Unable to test - no Content Editor user credentials available",
+          "screenshot": "Permission-Based Access Control_step08_regular_user_login_attempt.png"
+        }
+      ],
+      "issues": ["Test blocked: Unable to login as Content Editor role because test user passwords are not available in the test environment"]
+    },
+    {
+      "scenario_name": "Verify Community Managers can access the module",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to login as a Community Manager role user",
+          "expected": "Login successful and ability to access AccountSettings functionality",
+          "actual": "Unable to test - no Community Manager user credentials available",
+          "screenshot": "Permission-Based Access Control_step08_regular_user_login_attempt.png"
+        }
+      ],
+      "issues": ["Test blocked: Unable to login as Community Manager role because test user passwords are not available in the test environment"]
+    }
+  ],
+  "observations": [
+    "The AccountSettings module provides account management functionality (username, display name, email, password management) accessible from the Users panel in PersonaBar > Manage > Users",
+    "The 'nav_Accounts' menu item in PersonaBar displays an unlocalized resource key instead of 'Accounts' - this indicates a missing or misconfigured localization resource file (AccountSettings.resx)",
+    "The standalone Accounts menu item (nav_Accounts) in the PersonaBar does not open a panel when clicked - the Account Settings functionality is accessed through Manage > Users > [user] > Account Settings icon instead",
+    "API permission enforcement is working correctly - all PersonaBar API endpoints return 401 Unauthorized for unauthenticated users",
+    "Test users exist in the system (testuser01 through testuser12) but their passwords are not documented, preventing testing with different user roles",
+    "To fully test Content Managers, Content Editors, and Community Managers access, credentials for users in those roles would need to be provided or created"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 4,
+    "failed": 3,
+    "pass_rate": "57%"
+  }
+}

@@ -1,0 +1,147 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.UrlManagement",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Custom URL Deletion",
+    "feature_description": "Delete existing custom URLs from the system",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T10:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Delete existing custom URL successfully",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Content > Pages, select Test Page One, go to Advanced > S.E.O. tab",
+          "expected": "URLs for this page section is displayed with custom URLs",
+          "actual": "URLs section displayed showing 5 URLs including custom URLs /my-custom-url-edited and /old-page-url",
+          "screenshot": "Custom URL Deletion_step02_page_with_custom_urls.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click the trash icon on the /old-page-url custom URL",
+          "expected": "Confirmation dialog appears asking to confirm deletion",
+          "actual": "Confirmation dialog appeared with message 'Are you sure you want to remove this URL?' with Cancel and Delete buttons",
+          "screenshot": "Custom URL Deletion_step07_delete_confirmation_dialog.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Delete button to confirm deletion",
+          "expected": "URL is deleted and removed from the list",
+          "actual": "URL /old-page-url was successfully deleted, list now shows 4 URLs instead of 5",
+          "screenshot": "Custom URL Deletion_step08_url_deleted_successfully.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify deleted URL is removed from listings",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After deleting /old-page-url, examine the URLs for this page list",
+          "expected": "The deleted URL should no longer appear in the list",
+          "actual": "The /old-page-url is no longer in the list. Only 4 URLs remain: /my-custom-url-edited, /Test-Page-One, /TestPageOne, and /Test-Page-One (redirects)",
+          "screenshot": "Custom URL Deletion_step08_url_deleted_successfully.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Cancel deletion preserves URL",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click the trash icon on /my-custom-url-edited custom URL",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to remove this URL?'",
+          "screenshot": "Custom URL Deletion_step09_second_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Cancel button in the confirmation dialog",
+          "expected": "URL should be preserved and remain in the list",
+          "actual": "URL /my-custom-url-edited was preserved and still appears in the list",
+          "screenshot": "Custom URL Deletion_step10_cancel_preserved_url.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete multiple URLs in sequence",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Delete first custom URL /old-page-url",
+          "expected": "URL is deleted successfully",
+          "actual": "URL /old-page-url deleted successfully, 4 URLs remaining",
+          "screenshot": "Custom URL Deletion_step08_url_deleted_successfully.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click trash icon on /my-custom-url-edited (second custom URL)",
+          "expected": "Confirmation dialog appears for second URL",
+          "actual": "Confirmation dialog appeared correctly for the second URL",
+          "screenshot": "Custom URL Deletion_step11_second_deletion_confirm.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Confirm deletion of second custom URL",
+          "expected": "Second URL is deleted, only automatic URLs remain",
+          "actual": "URL /my-custom-url-edited was deleted. Only 1 URL remains: /Test-Page-One (Automatic)",
+          "screenshot": "Custom URL Deletion_step12_all_custom_urls_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Empty state - no custom URLs to delete",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After deleting all custom URLs, examine the URL list for available delete actions",
+          "expected": "No delete icons should appear for automatic URLs",
+          "actual": "Only the automatic URL /Test-Page-One remains. No trash/edit icons are displayed for automatic URLs - deletion is only available for custom URLs created by users",
+          "screenshot": "Custom URL Deletion_step12_all_custom_urls_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Automatic URLs cannot be deleted",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observe the automatic URL row /Test-Page-One",
+          "expected": "Automatic URLs should not have delete action available",
+          "actual": "The automatic URL /Test-Page-One does not have any action icons (trash or edit). The system correctly prevents deletion of system-generated automatic URLs",
+          "screenshot": "Custom URL Deletion_step12_all_custom_urls_deleted.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Custom URLs are managed at the page level in Content > Pages > [Page Name] > Advanced > S.E.O. tab, not in the main SEO settings",
+    "The delete confirmation dialog provides clear messaging asking 'Are you sure you want to remove this URL?'",
+    "Automatic URLs (system-generated) cannot be deleted - no action icons are displayed for them",
+    "Only custom URLs (created by users, shown as 'SuperUser Account' in Generated By column) have trash/edit icons",
+    "The trash icon is the first action icon (index 0) and the edit icon is the second (index 1)",
+    "Deletion is immediate after confirmation - no page refresh required to see updated URL list",
+    "The Cancel button in the confirmation dialog correctly preserves the URL without deleting it"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

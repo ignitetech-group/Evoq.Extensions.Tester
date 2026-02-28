@@ -1,0 +1,175 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Assets",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Search and Navigation",
+    "feature_description": "Provides advanced search capabilities for files and folders with sorting, filtering, and pagination",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:48:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Search files by name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Assets panel and enter search term 'cavalier' in search box",
+          "expected": "Files containing 'cavalier' in their name should appear in search results",
+          "actual": "Search results showed 2 files: cavalier-tv.png and cavalier-tv-thumb-120.png with search term highlighted in yellow",
+          "screenshot": "Search and Navigation_step02_search_file_by_name.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Search folders by name",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter folder name 'Templates' in search box and press Enter",
+          "expected": "Folders containing 'Templates' should appear in search results",
+          "actual": "Search produced no results. The search feature only searches files, not folders (labeled as 'Search Files' in the UI)",
+          "screenshot": "Search and Navigation_step03_search_folder_no_results.png"
+        }
+      ],
+      "issues": ["Search functionality does not search folder names, only file names. This may be by design as the search box is labeled 'Search Files'."]
+    },
+    {
+      "scenario_name": "Partial text search",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter partial search term 'test_' in search box and press Enter",
+          "expected": "All files containing 'test_' should appear in search results",
+          "actual": "Search results showed multiple files including test_image.jpg, test_image.png, test_image2.png, test_image3.png, test_image-thumb-154.png, test_image-thumb-156.jpg, test_upload_image.png, version_test.txt, workflow_test_file.txt with search term highlighted",
+          "screenshot": "Search and Navigation_step04_partial_search.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Sort Alphabetically (A-Z)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on sort dropdown and select 'Alphabetical' option",
+          "expected": "Items should be sorted alphabetically A-Z with folders first, then files",
+          "actual": "Items sorted correctly: folders first (Badges, Groups, Images, RenamedSecureFolder, Templates, Users) then files alphabetically (cavalier-logo.png, Dnn.CKEditorSettings.xml, etc.)",
+          "screenshot": "Search and Navigation_step08_sort_alphabetical.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Sort by Last Modified",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on sort dropdown and select 'Last Modified' option",
+          "expected": "Items should be sorted by last modification date",
+          "actual": "Items reordered with most recently modified items first (Templates folder appeared first)",
+          "screenshot": "Search and Navigation_step06_sort_last_modified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Sort by Date Uploaded",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on sort dropdown and select 'Date Uploaded' option",
+          "expected": "Items should be sorted by upload date",
+          "actual": "Items reordered based on upload date (Images folder appeared first)",
+          "screenshot": "Search and Navigation_step07_sort_date_uploaded.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View all items without pagination",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Images folder with many items and check for pagination controls",
+          "expected": "Items should be displayed with pagination or infinite scroll for large datasets",
+          "actual": "All 24 items (3 folders + 21 files) loaded without traditional pagination controls. The system uses scrolling/infinite loading rather than numbered pages.",
+          "screenshot": "Search and Navigation_step09_images_folder.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Search with special characters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter search term 'special chars' to find files with special characters in name",
+          "expected": "Files containing the search terms should appear regardless of special characters in their names",
+          "actual": "Search found 'test_special_!@#chars.txt' file with search terms 'special' and 'chars' highlighted in yellow",
+          "screenshot": "Search and Navigation_step10_search_special_chars.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Navigate folder hierarchy",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate from Home to Images to Publisher subfolder",
+          "expected": "Breadcrumb should show full path and folder contents should update",
+          "actual": "Successfully navigated through hierarchy. Breadcrumb showed 'HOME > IMAGES > PUBLISHER' and folder contents updated correctly",
+          "screenshot": "Search and Navigation_step11_folder_hierarchy.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on 'Images' in breadcrumb to navigate back up",
+          "expected": "Should navigate back to Images folder",
+          "actual": "Successfully navigated back to Images folder via breadcrumb click",
+          "screenshot": "Search and Navigation_step12_breadcrumb_navigation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Empty search results handling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter non-existent search term 'xyznonexistentfile123'",
+          "expected": "Should display appropriate message when no results found",
+          "actual": "Displayed clear message 'Your Search Produced No Results' with a search icon",
+          "screenshot": "Search and Navigation_step13_empty_search_results.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The search functionality is labeled 'Search Files' and only searches file names, not folder names. This appears to be by design.",
+    "No explicit Z-A (reverse alphabetical) sort option exists - only Alphabetical (A-Z), Last Modified, and Date Uploaded are available.",
+    "No explicit 'Sort by Size' option exists in the UI, though this was mentioned in suggested test scenarios.",
+    "The Assets panel uses continuous loading rather than traditional numbered pagination for displaying items.",
+    "Search results highlight matching text in yellow for easy identification.",
+    "Folders are always displayed before files regardless of sort order selected.",
+    "The folder dropdown shows the current folder name while breadcrumbs show the full navigation path."
+  ],
+  "summary": {
+    "total_scenarios": 10,
+    "passed": 9,
+    "failed": 1,
+    "pass_rate": "90%"
+  }
+}

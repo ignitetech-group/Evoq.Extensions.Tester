@@ -1,0 +1,89 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Import/Export Content",
+    "feature_description": "Import and export wiki articles for backup or migration",
+    "feature_priority": "Low",
+    "test_date": "2026-02-28T08:48:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Import/Export Content from Module Actions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Wiki Test page and entered Edit mode",
+          "expected": "Edit mode enabled with module action menus visible",
+          "actual": "Edit mode enabled successfully with module action menus visible",
+          "screenshot": "Import_Export Content_step02_edit_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked on Admin menu for Wiki module to find Import/Export option",
+          "expected": "Import/Export Content option visible in module actions",
+          "actual": "Admin menu only contains: Settings, Help, Develop, Delete, Refresh - NO Import/Export option",
+          "screenshot": "Import_Export Content_step03_module_admin_menu.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Opened Module Settings to check for Import/Export tab",
+          "expected": "Import/Export tab or option in module settings",
+          "actual": "Module Settings contains tabs: Module Settings, Permissions, Page Settings, Wiki - NO Import/Export tab",
+          "screenshot": "Import_Export Content_step04_module_settings.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Checked Wiki-specific settings tab",
+          "expected": "Import/Export option in Wiki settings",
+          "actual": "Wiki tab only contains Mode and Enable Comments settings - NO Import/Export option",
+          "screenshot": "Import_Export Content_step05_wiki_settings.png"
+        }
+      ],
+      "issues": ["The Wiki module does not have a dedicated Import/Export Content feature accessible from Module Actions as described in the UI Location. The ContentExchangeController.cs in the codebase implements DNN's IContentExchangeController interface for platform-level Site Import/Export, not a module-specific action."]
+    },
+    {
+      "scenario_name": "Wiki content accessible via DNN Site Import/Export",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Settings > Import / Export in persona bar",
+          "expected": "Site Import/Export page loads",
+          "actual": "Site Import/Export page loaded showing Import/Export Log with previous operations",
+          "screenshot": "Import_Export Content_step06_site_import_export.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Selected 'My Website' and clicked Export Data",
+          "expected": "Export options page with content selection",
+          "actual": "Export Data page opened with options including Content toggle (ON) and Pages selection",
+          "screenshot": "Import_Export Content_step07_export_data_options.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Expanded Pages tree to verify Wiki Test page is included",
+          "expected": "Wiki Test page visible and selectable for export",
+          "actual": "Wiki Test page is visible and checked in the Pages in Export tree, confirming Wiki content can be exported via Site Export",
+          "screenshot": "Import_Export Content_step08_pages_tree_expanded.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Wiki module does NOT have a dedicated 'Import/Export Content' option in Module Actions as specified in the UI Location (Module Actions > Import/Export Content)",
+    "Code review of ContentExchangeController.cs confirms it implements DNN's IContentExchangeController interface, which integrates with DNN's platform-level Site Import/Export framework rather than providing a standalone module action",
+    "Wiki content can be exported and imported through DNN's Site Import/Export feature (Settings > Import / Export) by selecting the site and including Content in the export",
+    "The Wiki.dnn manifest shows only View, Settings, and ModuleCompanions controls - no Import/Export control is registered",
+    "The feature description may be misleading as it suggests a module-level Import/Export capability that does not exist as a standalone module action"
+  ],
+  "summary": {
+    "total_scenarios": 2,
+    "passed": 1,
+    "failed": 1,
+    "pass_rate": "50%"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "URL Rewriting Support",
+    "feature_description": "Handles friendly URLs and URL rewriting during crawling operations.",
+    "feature_priority": "Low",
+    "test_date": "2026-02-28T09:27:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify URL Rewriter Settings Accessible",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Settings > SEO > URL Management",
+          "expected": "SEO settings page loads with URL Rewriter configuration options",
+          "actual": "SEO settings page loaded successfully showing URL REWRITER section with options for Standard Replacement Character, Concatenate Page URLs, Convert URLs to Lowercase, Convert Accented Characters, and Set Default Site Language. Also shows URL REDIRECTS section with Redirect to Friendly URLs option enabled.",
+          "screenshot": "URL Rewriting Support_step01_seo_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test URL Rewriting Functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to TEST URL tab in SEO settings",
+          "expected": "TEST URL tab displays with URL testing options",
+          "actual": "TEST URL tab loaded showing TEST A PAGE URL and TEST URL REWRITING sections with input fields for URL testing",
+          "screenshot": "URL Rewriting Support_step02_test_url_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter friendly URL 'http://localhost:8081/en-us/Our-Products' and click Test URL Rewriting",
+          "expected": "URL is rewritten to internal DNN format with TabId parameter",
+          "actual": "URL was successfully rewritten. Rewriting Result: 'Default.aspx?TabId=22&language=en-US', Identified Language/Culture: 'en-US', Identified Page: 'Our Products', Operation Messages: 'ActiveTab: 22/Our Products IsSecure: False'",
+          "screenshot": "URL Rewriting Support_step03_url_rewrite_test_result.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Friendly URLs Enabled for Crawling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Site Settings > Search > Crawling tab",
+          "expected": "Crawling settings display with URL Paths configured for crawling",
+          "actual": "Crawling settings displayed showing URL PATHS section with multiple URLs configured including 'http://localhost:8081', and DUPLICATES section with regex patterns for handling URL parameters during crawling (tabid, ctl, linkclick, etc.)",
+          "screenshot": "URL Rewriting Support_step04_crawling_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to a page using friendly URL",
+          "expected": "Page loads successfully using friendly URL format",
+          "actual": "Page 'Our Products' loaded successfully using friendly URL 'http://localhost:8081/en-us/Our-Products'. The navigation shows all pages use friendly URL format (e.g., /en-us/Community, /en-us/Groups, /en-us/News, etc.)",
+          "screenshot": "URL Rewriting Support_step05_friendly_url_working.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The URL Rewriting Support feature in the Search Crawler module leverages the platform's SEO/URL Management settings rather than having its own dedicated UI.",
+    "The UrlRewriter.cs component reads rewriting rules from SiteUrls.config and uses the UseFriendlyUrls host setting to determine when to apply URL rewriting during crawling operations.",
+    "The Search Crawler's Spider.cs uses UrlRewriter.RewriteUrl() to convert friendly URLs back to internal DNN format (with TabId parameters) when crawling pages.",
+    "URL rewriting rules can handle special pages like login, register, privacy, and terms pages.",
+    "The Duplicates section in Crawling settings provides regex patterns to handle URL parameters and prevent duplicate indexing of the same content with different URL formats."
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

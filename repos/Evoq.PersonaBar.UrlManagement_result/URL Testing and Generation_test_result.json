@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.UrlManagement",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "URL Testing and Generation",
+    "feature_description": "Test URL generation for specific pages with custom parameters and query strings",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T10:19:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Test URL generation for existing page",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to SEO > URL Management > TEST URL tab",
+          "expected": "TEST URL tab should display with page selection and URL testing options",
+          "actual": "TEST URL tab displayed with Page to Test dropdown, Query String field, Custom Page Name field, and Test URL button",
+          "screenshot": "URL Testing and Generation_step01_test_url_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Page to Test dropdown and select 'Home' page",
+          "expected": "Dropdown should show available pages in hierarchical tree",
+          "actual": "Dropdown displayed 23 pages in tree structure with expandable folders",
+          "screenshot": "URL Testing and Generation_step02_page_dropdown_open.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Test URL button with Home page selected",
+          "expected": "Generated URLs for the Home page should appear in Resulting URLs field",
+          "actual": "Three URLs generated for different locales: http://localhost:8081/, http://localhost:8081/en-us/, http://localhost:8081/es-es/",
+          "screenshot": "URL Testing and Generation_step03_home_page_url_generated.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with custom page name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Our Products' page and enter 'my-custom-page' in Custom Page Name field",
+          "expected": "Custom page name should be appended to generated URLs",
+          "actual": "URLs generated with custom page name appended: http://localhost:8081/Our-Products/my-custom-page, http://localhost:8081/en-us/Our-Products/my-custom-page, http://localhost:8081/es-es/Our-Products/my-custom-page",
+          "screenshot": "URL Testing and Generation_step04_custom_page_name.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with query string parameters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'category=electronics&sort=price' in Add Query String field and click Test URL",
+          "expected": "Query string should be appended to generated URLs",
+          "actual": "URLs generated with query string: http://localhost:8081/Our-Products?category=electronics&sort=price for each locale variant",
+          "screenshot": "URL Testing and Generation_step05_query_string.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test special character handling in custom page names",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'test@page#name$special' in Custom Page Name field and click Test URL",
+          "expected": "System should handle special characters appropriately",
+          "actual": "System generated unfriendly URL format when special characters present: ~/OurProducts/tabid/22/test@page#name$special - This shows the system falls back to a non-friendly URL format when special characters are used",
+          "screenshot": "URL Testing and Generation_step06_special_chars.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test URL Rewriting functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'http://localhost:8081/en-us/Our-Products' in URL to Test field and click Test URL Rewriting",
+          "expected": "System should analyze the URL and show rewriting details",
+          "actual": "System correctly identified: Rewriting Result: Default.aspx?TabId=22&language=en-US, Identified Language: en-US, Identified Page: Our Products, Operation Messages: ActiveTab: 22/Our Products IsSecure: False",
+          "screenshot": "URL Testing and Generation_step07_url_rewriting.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify generated URL format and validity",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review all generated URLs across tests",
+          "expected": "URLs should be properly formatted with correct structure",
+          "actual": "All friendly URLs followed correct format: protocol://domain/locale/page-path with optional query strings. URLs properly handled multiple locales (en-us, es-es) and portal aliases",
+          "screenshot": "URL Testing and Generation_step03_home_page_url_generated.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The TEST URL feature is located under SEO > URL Management > TEST URL tab, not under a separate URL Management menu",
+    "When special characters (@, #, $) are used in custom page names, the system falls back to generating unfriendly URLs with tabid parameters (e.g., ~/OurProducts/tabid/22/) instead of friendly URLs",
+    "The URL generation automatically creates URLs for all configured portal aliases and locales",
+    "The TEST URL REWRITING feature provides detailed debugging information including the internal rewriting result, identified culture, identified page, and operation messages"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

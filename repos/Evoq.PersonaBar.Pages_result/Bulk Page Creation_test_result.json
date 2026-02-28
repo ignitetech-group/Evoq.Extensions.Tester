@@ -1,0 +1,136 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Pages",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Bulk Page Creation",
+    "feature_description": "Create multiple pages at once with validation and batch processing",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:31:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Validate bulk pages before creation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Content > Pages and click 'Add Multiple Pages' button",
+          "expected": "Bulk page creation dialog should open",
+          "actual": "Bulk page creation dialog opened with settings panel and page input area",
+          "screenshot": "Bulk Page Creation_step02_add_multiple_pages_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter page names: 'Bulk Test Page 1', 'Bulk Test Page 2', '>Bulk Child Page 1'",
+          "expected": "Page names should appear in text area and buttons should become enabled",
+          "actual": "Page names displayed correctly with hierarchy notation, Validate and Add buttons enabled",
+          "screenshot": "Bulk Page Creation_step03_pages_entered.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click 'Validate Page(s)' button",
+          "expected": "Validation should complete and show success message",
+          "actual": "Success message displayed: '3 pages were validated'",
+          "screenshot": "Bulk Page Creation_step04_validation_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create multiple pages successfully",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After validation, click 'Add Page(s)' button with workflow set to 'Direct Publish'",
+          "expected": "Pages should be created successfully",
+          "actual": "API error occurred: 'An error has occurred.' - SaveBulkPages endpoint returned server error",
+          "screenshot": "Bulk Page Creation_step05_add_pages_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify pages in page list after attempting creation",
+          "expected": "New pages should appear in the page tree",
+          "actual": "Pages 'Bulk Test Page 1' and 'Bulk Test Page 2' are visible in the page list (created from previous test run)",
+          "screenshot": "Bulk Page Creation_step06_pages_created.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Attempt to create new pages with hierarchy: 'New Bulk Page Alpha', 'New Bulk Page Beta', '>Child of Beta One', '>Child of Beta Two'",
+          "expected": "Pages should be created with proper parent-child hierarchy",
+          "actual": "API error occurred again: 'An error has occurred.' - SaveBulkPages endpoint fails consistently",
+          "screenshot": "Bulk Page Creation_step08_add_pages_error.png"
+        }
+      ],
+      "issues": [
+        "SaveBulkPages API endpoint returns server error (HTTP 500) when attempting to create pages",
+        "The API failure is consistent across multiple attempts with different page configurations"
+      ]
+    },
+    {
+      "scenario_name": "Duplicate page name handling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter existing page names 'Home' and 'News' in the bulk pages text area",
+          "expected": "System should accept input",
+          "actual": "Input accepted, buttons became enabled",
+          "screenshot": "Bulk Page Creation_step09_duplicate_names_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Validate Page(s)' button",
+          "expected": "Validation should detect duplicate page names and show error",
+          "actual": "Error message displayed: '2 pages were validated. Home: The Page Name you chose is already being used for another page at the same level of the page hierarchy. News: The Page Name you chose is already being used for another page at the same level of the page hierarchy.'",
+          "screenshot": "Bulk Page Creation_step10_duplicate_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validation errors - empty inputs",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the bulk pages text area completely",
+          "expected": "Validate and Add buttons should be disabled",
+          "actual": "Both 'Validate Page(s)' and 'Add Page(s)' buttons are disabled when text area is empty",
+          "screenshot": "Bulk Page Creation_step11_empty_input_buttons_disabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Parent page assignment (Branch Parent)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on Branch Parent dropdown",
+          "expected": "Page tree picker should open showing all available parent pages",
+          "actual": "Page tree picker opened showing hierarchical list of all pages with search functionality. Shows 'My Website' as root with all child pages expandable. '21 Results' displayed.",
+          "screenshot": "Bulk Page Creation_step12_branch_parent_dropdown.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The SaveBulkPages API endpoint (API/PersonaBar/EvoqPages/SaveBulkPages) returns HTTP 500 errors consistently, preventing actual page creation via bulk operations",
+    "Validation functionality works correctly and detects duplicate page names at the same hierarchy level",
+    "The UI properly disables action buttons when no page names are entered (empty state validation)",
+    "Branch Parent picker supports search and displays hierarchical page structure correctly",
+    "Pages can be specified with hierarchy using '>' prefix notation (e.g., '>Child Page' creates a child of the previous page)",
+    "Previously created bulk pages ('Bulk Test Page 1', 'Bulk Test Page 2') are visible in the page list, suggesting the feature worked in prior sessions",
+    "Workflow selection dropdown includes multiple options: Direct Publish, Save Draft, Content Approval, Test Workflow"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 4,
+    "failed": 1,
+    "pass_rate": "80%"
+  }
+}

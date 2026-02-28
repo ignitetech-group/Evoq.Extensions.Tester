@@ -1,0 +1,179 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "Post Creation and Management",
+    "feature_description": "Create, edit, and manage activity stream posts with various content types and privacy settings",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T00:55:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Create text-only post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Activity Feed page",
+          "expected": "Activity Stream editor should be visible",
+          "actual": "Activity Stream editor visible with 'Tell the world something...' placeholder",
+          "screenshot": "Post Creation and Management_step01_activity_stream.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on editor and enter text 'This is a test post created for Post Creation and Management testing'",
+          "expected": "Text should appear in the editor",
+          "actual": "Text appeared in editor with Share button visible",
+          "screenshot": "Post Creation and Management_step02_text_entered.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Share button",
+          "expected": "Post should be created and appear in the feed",
+          "actual": "Post created successfully and appears at top of feed",
+          "screenshot": "Post Creation and Management_step03_post_created_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create post with emoji",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter text with emojis: 'Testing emoji post: (party) (fire) (rocket) Great success!'",
+          "expected": "Text with emoji codes should appear in editor",
+          "actual": "Text entered successfully in editor",
+          "screenshot": "Post Creation and Management_step04_emoji_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Share button",
+          "expected": "Post with emojis should be created",
+          "actual": "Post created with emojis rendered correctly as graphical icons",
+          "screenshot": "Post Creation and Management_step05_emoji_post_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create post with special characters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter text with special characters: '<>&\"'@#$%^*(){}[]|\\;:?,./~`+- cafe resume'",
+          "expected": "Special characters should be accepted",
+          "actual": "Special characters entered in editor",
+          "screenshot": "Post Creation and Management_step06_special_chars_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Share button",
+          "expected": "Post with special characters should be created and displayed correctly",
+          "actual": "Post created successfully. Special characters including HTML entities (<>&) are properly escaped and displayed as text. Unicode characters (n, cafe, resume) render correctly with copyright symbol",
+          "screenshot": "Post Creation and Management_step07_special_chars_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify HTML sanitization (XSS prevention)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter malicious script: '<script>alert(\"XSS\")</script> Test HTML injection'",
+          "expected": "Text should be accepted in editor",
+          "actual": "XSS attempt text entered in editor",
+          "screenshot": "Post Creation and Management_step08_xss_attempt.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Share button",
+          "expected": "Script tags should be sanitized/stripped, only safe text displayed",
+          "actual": "Post created showing only 'Test HTML injection' - script tags were completely stripped by HTML sanitization. No JavaScript execution occurred.",
+          "screenshot": "Post Creation and Management_step09_xss_sanitized.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create post with maximum character limit",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 353-character text exceeding the default 250-character limit",
+          "expected": "System should either reject, truncate, or accept the long text",
+          "actual": "Long text (353 chars) entered in editor without any client-side validation",
+          "screenshot": "Post Creation and Management_step10_long_text_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Share button",
+          "expected": "Post should be handled according to system settings",
+          "actual": "Post created successfully with full 353-character content displayed. No truncation or rejection. Posts appear to have no strict character limit.",
+          "screenshot": "Post Creation and Management_step11_long_post_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edge case - Empty post submission",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on editor to activate it, leave empty, click Share",
+          "expected": "System should validate and prevent empty post creation",
+          "actual": "Empty editor shown with Share button visible",
+          "screenshot": "Post Creation and Management_step12_empty_input_before.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Share without entering any text",
+          "expected": "Validation error should appear preventing empty post",
+          "actual": "Empty post was created and appears in feed with no content (only username and timestamp visible). No validation prevented the empty submission.",
+          "screenshot": "Post Creation and Management_step13_empty_post_created.png"
+        }
+      ],
+      "issues": ["System allows creation of empty posts with no content validation. Users can submit posts without any text, resulting in empty entries in the activity feed."]
+    },
+    {
+      "scenario_name": "Delete post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Remove link on a post",
+          "expected": "Confirmation dialog should appear",
+          "actual": "Confirmation dialog appeared with message 'Are you sure you want to delete this item?' and Yes/No buttons",
+          "screenshot": "Post Creation and Management_step14_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Yes to confirm deletion",
+          "expected": "Post should be removed from the feed",
+          "actual": "Post deleted successfully and removed from the activity feed",
+          "screenshot": "Post Creation and Management_step15_post_deleted.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review shows MaxCharacters setting defaults to 250, but this appears to apply only to comments, not posts. Posts accept longer content without restriction.",
+    "HTML sanitization uses Utilities.FilterMaliciousTags() which successfully strips script tags and other malicious HTML",
+    "SecuritySet values support: E=Everyone, C=Community, F=Friends, U=User/Private, R=Group - but privacy settings UI was not visible in the basic post editor",
+    "The Edit post functionality was not found in the UI during testing. Each post shows Like, Comment, Subscribe/Unsubscribe, Remove, and Pin options, but no Edit option was visible."
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 6,
+    "failed": 1,
+    "pass_rate": "86%"
+  }
+}

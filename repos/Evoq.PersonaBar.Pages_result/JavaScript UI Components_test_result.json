@@ -1,0 +1,171 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Pages",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "JavaScript UI Components",
+    "feature_description": "Client-side page management interface with React components",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:35:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Page tree rendering",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Content > Pages",
+          "expected": "Page tree should render with all pages",
+          "actual": "Page tree rendered successfully showing all pages in hierarchical structure",
+          "screenshot": "JavaScript UI Components_step01_page_tree_rendered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click expand/collapse controls on page tree",
+          "expected": "Tree should expand to show child pages",
+          "actual": "Clicking [+] expanded 'Our Products' to show 'Leaderboard' child page",
+          "screenshot": "JavaScript UI Components_step02_tree_expanded.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click on a page in the tree",
+          "expected": "Page details panel should update to show selected page",
+          "actual": "Clicking 'Leaderboard' loaded its details in the right panel showing Page ID: 72",
+          "screenshot": "JavaScript UI Components_step03_page_selected.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Search for pages using search box",
+          "expected": "Search results should filter the page list",
+          "actual": "Searching for 'News' returned filtered results showing matching pages",
+          "screenshot": "JavaScript UI Components_step04_search_results.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Drag and drop functionality",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to drag 'Wiki Test' page to 'Groups' parent",
+          "expected": "Page should be moved under Groups with visual feedback",
+          "actual": "JavaScript error occurred: 'Cannot read properties of undefined (reading forEach)'. UI showed inconsistent state with details panel displaying 'Page Parent: Our Products > Leaderboard' which was incorrect",
+          "screenshot": "JavaScript UI Components_step05_drag_drop_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Refresh page and verify state",
+          "expected": "Page should be at original location or correctly moved",
+          "actual": "After refresh, Wiki Test page disappeared from visible tree. Had to search to find it - it was moved to 'Groups / WikiTest' (different location than expected from UI feedback)",
+          "screenshot": "JavaScript UI Components_step07_wiki_test_found.png"
+        }
+      ],
+      "issues": [
+        "JavaScript error 'Cannot read properties of undefined (reading forEach)' during drag operation",
+        "UI showed incorrect parent page information after drag",
+        "Page was moved to different location than indicated in the UI",
+        "Page disappeared from tree view after drag operation"
+      ]
+    },
+    {
+      "scenario_name": "Mobile responsiveness",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Resize browser to 375x667 (iPhone mobile size)",
+          "expected": "UI should adapt to mobile viewport",
+          "actual": "Sidebar collapsed to icon-only mode, page tree remained visible and scrollable, long page names truncated with ellipsis",
+          "screenshot": "JavaScript UI Components_step08_mobile_375px.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify page tree accessibility at mobile size",
+          "expected": "Page tree should remain functional",
+          "actual": "Page tree scrollable, all pages accessible, COLLAPSE ALL button visible",
+          "screenshot": "JavaScript UI Components_step09_mobile_detailed.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Resize browser to 768x1024 (tablet size)",
+          "expected": "UI should show responsive tablet layout",
+          "actual": "Both page tree and Details panel visible side by side, sidebar still collapsed to icons, layout adapts well",
+          "screenshot": "JavaScript UI Components_step10_tablet_768px.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Real-time updates",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on different pages in the tree",
+          "expected": "Details panel should update immediately without page reload",
+          "actual": "Clicking on 'News' page immediately updated the details panel to show News page info (Page ID: 24, Name: News) without any page reload",
+          "screenshot": "JavaScript UI Components_step11_realtime_update.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Error handling in UI",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the Name field (required field) and modify the form",
+          "expected": "UI should indicate unsaved changes",
+          "actual": "Form displayed 'Changes have not been saved' message, Save button became enabled",
+          "screenshot": "JavaScript UI Components_step12_unsaved_changes.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save with empty Name field",
+          "expected": "Validation error should be displayed",
+          "actual": "Error notification appeared with message 'Tab Name is Empty'",
+          "screenshot": "JavaScript UI Components_step13_validation_error.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Cancel with unsaved changes",
+          "expected": "Confirmation dialog should appear",
+          "actual": "Warning dialog appeared: 'Are you sure you want to close? Changes have been made and will be lost. Do you wish to continue?' with 'Go Back' and 'Continue' buttons",
+          "screenshot": "JavaScript UI Components_step14_discard_confirm.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Loading states",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Add Page' button",
+          "expected": "Form should load with appropriate state indicators",
+          "actual": "Add Page form loaded instantly (React SPA - no server round trip needed). Buttons in header became disabled during form display, indicating proper UI state management. Form showed Page ID: 0 for new page, template options loaded immediately",
+          "screenshot": "JavaScript UI Components_step15_add_page_form.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The drag and drop functionality has a significant bug causing JavaScript errors and inconsistent UI state",
+    "Code repository at C:\\DNN\\Evoq.Extensions.Tester\\repos\\Dnn.AdminExperience.Evoq.Basic appeared empty - could not review source code for Pages.js and EvoqPages.js",
+    "The React components load instantly without visible loading spinners since they are client-side rendered",
+    "XSS prevention is working - page names with script tags are properly HTML-encoded in the UI",
+    "Long page names are handled with truncation and ellipsis in the tree view"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 5,
+    "failed": 1,
+    "pass_rate": "83%"
+  }
+}

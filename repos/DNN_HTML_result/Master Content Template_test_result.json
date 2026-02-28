@@ -1,0 +1,58 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Master Content Template",
+    "feature_description": "Set content as master template for reuse across multiple module instances",
+    "feature_priority": "Low",
+    "test_date": "2026-02-28T08:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Make Master feature accessibility",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged in as SuperUser and enabled Edit mode",
+          "expected": "Page enters Edit mode with module editing controls visible",
+          "actual": "Edit mode enabled successfully with all HTML modules showing edit controls and Actions menus",
+          "screenshot": "Master_Content_Template_step01_edit_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked on HTML module Actions menu to look for 'Make Master' option",
+          "expected": "Find 'Make Master' option in Module Actions menu as specified in UI Location",
+          "actual": "Module Actions menu shows Settings, Export Content, Import Content, Help, Develop, Delete, and Refresh - no 'Make Master' option visible",
+          "screenshot": "Master_Content_Template_step02_module_actions.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Reviewed code to understand when 'Make Master' appears",
+          "expected": "Understand conditions for Make Master feature visibility",
+          "actual": "Code analysis reveals Make Master only appears for orphaned shared modules - when a module was shared from another page but the original page/module was deleted. This is a recovery mechanism, not a proactive template creation feature. The feature shows as a warning message with 'Make this page as master?' link, not in Module Actions menu.",
+          "screenshot": "Master_Content_Template_step03_no_make_master_option.png"
+        }
+      ],
+      "issues": [
+        "The 'Make Master' feature is not accessible through the documented UI path (Module Actions > Make Master). It is actually a recovery mechanism that only appears when a shared module becomes orphaned (its master page/module is deleted).",
+        "The feature description 'Set content as master template for reuse across multiple module instances' is misleading - the feature is for recovering orphaned shared modules, not for creating master templates.",
+        "Cannot test the feature without first creating an orphaned shared module scenario (share module to another page, then delete original page/module)."
+      ]
+    }
+  ],
+  "observations": [
+    "Code analysis (HtmlModule.ascx.cs lines 197-216) shows the 'Make Master' functionality only appears when: 1) Module is a shared module (_moduleController.IsSharedModule returns true), AND 2) The master tab/module no longer exists (IsOrphanedModule returns true).",
+    "The UI location 'Module Actions > Make Master' in the feature specification is incorrect. The feature appears as a warning message within the module content area with a clickable 'Make this page as master?' link.",
+    "Related localization text found in HtmlModule.ascx.resx: 'MasterPageNotFound.Text' = 'This module does not belong to the page, but its master page is not found. Make this page as master?'",
+    "The 'ShowMasterContent' property in EditHtml.ascx.cs (lines 76-83) is related to localization/language modules (DefaultLanguageModule), not the master template concept.",
+    "The MakeMaster API endpoint (HtmlTextProController.cs lines 93-110) simply updates the ContentItem's TabID to the current tab, claiming ownership of the content."
+  ],
+  "summary": {
+    "total_scenarios": 1,
+    "passed": 0,
+    "failed": 1,
+    "pass_rate": "0%"
+  }
+}

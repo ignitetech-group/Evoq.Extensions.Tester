@@ -1,0 +1,104 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "SQL Data Provider Scripts",
+    "feature_description": "Database schema and migration scripts for content layout data persistence.",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:06:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify extension installation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Extensions and locate Content Layout module",
+          "expected": "Content Layout module is listed with version information and In Use status",
+          "actual": "Content Layout module found: Version 10.1.1, In Use: Yes, Description: 'A module that allows add to a page a Dynamic Content Layout that can host other modules'",
+          "screenshot": "SQL Data Provider Scripts_step01_extensions_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Content Layout to view extension details",
+          "expected": "Extension details page shows package information including version",
+          "actual": "Extension details displayed correctly: Name: ContentLayout, Friendly Name: Content Layout, Version: 10.1.1, Owner: DNN, Organization: DNN Corp.",
+          "screenshot": "SQL Data Provider Scripts_step02_contentlayout_extension_details.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify table creation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > SQL Console and execute query to find ContentLayout tables",
+          "expected": "Query returns ContentLayout_Versions table created by SQL Data Provider script",
+          "actual": "Query 'SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE '%ContentLayout%'' returned ContentLayout_Versions table",
+          "screenshot": "SQL Data Provider Scripts_step03_table_verification.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View query results showing the table name",
+          "expected": "ContentLayout_Versions table exists in the database",
+          "actual": "ContentLayout_Versions table confirmed to exist - showing 1-1 of 1 items",
+          "screenshot": "SQL Data Provider Scripts_step04_table_result.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify stored procedure execution",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Execute query in SQL Console to find ContentLayout stored procedures",
+          "expected": "Query returns all CRUD stored procedures created by SQL Data Provider script",
+          "actual": "Query returned 6 stored procedures: ContentLayout_Versions_Add, ContentLayout_Versions_Update, ContentLayout_Versions_Delete, ContentLayout_Versions_Get, ContentLayout_Versions_GetAll, ContentLayout_Migration_UpdatePaneName",
+          "screenshot": "SQL Data Provider Scripts_step05_stored_procedures.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View complete list of stored procedures",
+          "expected": "All 6 stored procedures defined in 08.02.00.SqlDataProvider are present",
+          "actual": "All 6 stored procedures confirmed present and correctly named as per the SQL script specifications",
+          "screenshot": "SQL Data Provider Scripts_step06_stored_procedures_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify module functionality (database integration)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to home page and verify Content Layout modules are working",
+          "expected": "Content Layout modules display correctly on the page, indicating database integration is working",
+          "actual": "Multiple Content Layout modules observed functioning correctly on the home page with pane structures: F30A_Pane1/Pane2, 9977_Pane1-4, 8F80_Pane1-2. Modules host other content modules (HTML Pro, image modules) successfully.",
+          "screenshot": "SQL Data Provider Scripts_step07_contentlayout_panes.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "SQL Data Provider Scripts are designed to execute automatically during extension installation/upgrade, not through direct UI interaction.",
+    "The 08.02.00.SqlDataProvider script creates: ContentLayout_Versions table with columns ModuleId, Version, ColumnSizes, ColumnCssClasses, AreCustomColumnSizes, IsPublished, CreatedOnDate, LastModifiedOnDate.",
+    "The script creates 5 CRUD stored procedures (Add, Update, Delete, Get, GetAll) plus 1 migration procedure (ContentLayout_Migration_UpdatePaneName).",
+    "The Uninstall.SqlDataProvider script properly defines cleanup procedures that will drop all stored procedures and the table when the extension is uninstalled.",
+    "Fresh installation and upgrade testing would require actually reinstalling the extension package, which is beyond standard UI testing scope.",
+    "The ContentLayout_Versions table has a foreign key relationship to the Modules table with CASCADE DELETE."
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

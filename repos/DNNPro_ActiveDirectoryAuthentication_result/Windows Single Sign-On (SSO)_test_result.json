@@ -1,0 +1,141 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Windows Single Sign-On (SSO)",
+    "feature_description": "Automatic authentication using Windows integrated authentication for domain-joined computers",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T09:10:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Direct Access to WindowsSignIn.aspx Page",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate directly to WindowsSignIn.aspx endpoint",
+          "expected": "Page should require Windows Authentication (401 or challenge for credentials)",
+          "actual": "Received HTTP 401.2 - Unauthorized error, confirming that IIS Windows Authentication is correctly configured to deny anonymous access to this page",
+          "screenshot": "Windows Single Sign-On (SSO)_step01_windowssignin_401.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify AD Authentication Provider Availability",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Site Settings > Security > Authentication",
+          "expected": "DNNPro_ActiveDirectory provider should be available in the Default Authentication Provider dropdown",
+          "actual": "DNNPro_ActiveDirectory is available as an option alongside DNN in the Default Authentication Provider dropdown",
+          "screenshot": "Windows Single Sign-On (SSO)_step03_auth_providers_dropdown.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select DNNPro_ActiveDirectory as default provider",
+          "expected": "Provider should be selectable and Save/Cancel buttons should become enabled",
+          "actual": "Successfully selected DNNPro_ActiveDirectory as the default authentication provider",
+          "screenshot": "Windows Single Sign-On (SSO)_step04_ad_provider_selected.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify AD Extension in Authentication Systems List",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Host > Extensions and filter by Authentication Systems",
+          "expected": "DNNPro_ActiveDirectoryAuthentication should be listed and enabled",
+          "actual": "DNNPro_ActiveDirectoryAuthentication (version 10.1.1) is listed with description indicating it uses Windows Active Directory authentication protocol",
+          "screenshot": "Windows Single Sign-On (SSO)_step05_auth_systems_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View AD Authentication extension Site Settings",
+          "expected": "Extension should show authentication type, login control source, and enabled status",
+          "actual": "Site Settings shows Authentication Type as DNNPro_ActiveDirectory, Login Control Source as DesktopModules/AuthenticationServices/DNNPro_ActiveDirectory/Login.ascx, and Enabled checkbox is checked",
+          "screenshot": "Windows Single Sign-On (SSO)_step06_ad_extension_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Logout Flow",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Logoff.aspx while logged in as SuperUser",
+          "expected": "User should be logged out and redirected to home page with Register/Login links visible",
+          "actual": "Successfully logged out - Register and Login links appeared in the header, confirming logout was successful",
+          "screenshot": "Windows Single Sign-On (SSO)_step07_logged_out_state.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Login Dialog for Anonymous Users",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Login link as anonymous user",
+          "expected": "Login dialog should appear with authentication form",
+          "actual": "Login dialog appeared with Username, Password fields, Remember Login checkbox, and Login/Cancel buttons. Since DNN is currently set as default provider, the standard username/password form is shown. When AD is set as default, the AD login control would be displayed instead.",
+          "screenshot": "Windows Single Sign-On (SSO)_step08_login_dialog.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Windows SSO Auto-Login from Domain Computer",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt automatic Windows SSO login from domain-joined computer",
+          "expected": "User should be automatically authenticated using Windows credentials without manual login",
+          "actual": "Cannot test - requires IIS Windows Authentication enabled at the server level and a browser running on a domain-joined computer. The WindowsSignIn.aspx page requires IIS to be configured with Windows Authentication enabled (not just Forms Authentication) and the browser must support NTLM/Kerberos authentication. The 401.2 error confirms the page is correctly configured to deny anonymous access.",
+          "screenshot": "Windows Single Sign-On (SSO)_step01_windowssignin_401.png"
+        }
+      ],
+      "issues": ["Windows SSO auto-login cannot be tested via Playwright browser automation as it requires: 1) IIS Windows Authentication enabled at the virtual directory level for WindowsSignIn.aspx, 2) A domain-joined computer, 3) A browser that supports NTLM/Kerberos negotiation with the server"]
+    },
+    {
+      "scenario_name": "Test Authentication Status Cookie Management",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify authentication status cookies are set during SSO login",
+          "expected": "authentication.status cookie should be set with WinLogon status after successful Windows authentication",
+          "actual": "Cannot directly test cookie management without a successful Windows SSO login. Code review shows the AuthenticationController.SetStatus method creates an encrypted FormsAuthenticationTicket cookie with the authentication status.",
+          "screenshot": "Windows Single Sign-On (SSO)_step06_ad_extension_settings.png"
+        }
+      ],
+      "issues": ["Authentication status cookie testing requires a successful Windows SSO login which cannot be performed via browser automation"]
+    }
+  ],
+  "observations": [
+    "Windows Single Sign-On (SSO) feature relies on IIS Windows Authentication being enabled for the WindowsSignIn.aspx page. The page is correctly configured to deny anonymous access (returns 401.2 error).",
+    "Code review of WindowsSignin.aspx.cs shows the SSO flow: 1) Page checks Request.ServerVariables['LOGON_USER'] for Windows credentials, 2) If WindowsAuthentication or HideWindowsLogin is enabled in config, it calls AuthenticationLogon(), 3) On successful authentication, a FormsAuthentication cookie is set and user is redirected back.",
+    "The AuthenticationModule (HttpModule) intercepts requests to Default.aspx and redirects unauthenticated users to WindowsSignin.aspx if Windows Authentication is enabled in the AD config.",
+    "Settings.ascx provides UI for configuring: Windows Authentication toggle, Hide Login Controls, Auto-login IP Address ranges (subnet restrictions), and other AD settings.",
+    "The AD Authentication provider (version 10.1.1) is installed and enabled in the Extensions > Authentication Systems list.",
+    "DNNPro_ActiveDirectory can be selected as the Default Authentication Provider in Site Settings > Security > Authentication.",
+    "Testing Windows SSO auto-login requires infrastructure that browser automation cannot provide: domain membership, IIS Windows Auth, and NTLM/Kerberos credential negotiation.",
+    "The DNNReturnTo cookie is used to redirect users back to their original requested URL after Windows SSO authentication completes."
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 5,
+    "failed": 2,
+    "pass_rate": "71%"
+  }
+}

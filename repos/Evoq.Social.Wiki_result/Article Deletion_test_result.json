@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Article Deletion",
+    "feature_description": "Delete wiki articles with proper cleanup of related data",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Delete published article",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page",
+          "expected": "Wiki article list is displayed with published articles",
+          "actual": "Wiki article list displayed showing 6 articles",
+          "screenshot": "Article Deletion_step02_wiki_articles_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on article link to access article detail page",
+          "expected": "Article detail page opens with delete button visible",
+          "actual": "404 Error Page displayed - 'Sorry, the page you are looking for cannot be found'",
+          "screenshot": "Article Deletion_step03_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Article detail page URLs return 404 error - cannot access article to delete",
+        "Article links in the list view (e.g., /Wiki-Test/Test-Article-for-Bookmarks) do not resolve correctly"
+      ]
+    },
+    {
+      "scenario_name": "Delete draft article",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to create a new draft article to test deletion",
+          "expected": "New article created successfully",
+          "actual": "Create article dialog opened but Publish button did not submit the form",
+          "screenshot": "Article Deletion_step06_publish_attempt.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to existing draft article",
+          "expected": "Article detail page opens",
+          "actual": "Cannot test - all article links return 404 errors",
+          "screenshot": "Article Deletion_step03_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Article creation form Publish button does not work - form does not submit",
+        "Cannot access existing articles due to 404 errors on article URLs"
+      ]
+    },
+    {
+      "scenario_name": "Test delete confirmation",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to article to access delete button",
+          "expected": "Delete button visible with confirmation dialog on click",
+          "actual": "Cannot access article detail page - 404 error",
+          "screenshot": "Article Deletion_step03_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test delete confirmation - article detail pages are inaccessible due to 404 errors"
+      ]
+    },
+    {
+      "scenario_name": "Test delete permissions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Access article as authorized user (SuperUser) to verify delete button visibility",
+          "expected": "Delete button visible for authorized users",
+          "actual": "Cannot access article detail page - 404 error",
+          "screenshot": "Article Deletion_step03_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test delete permissions - article detail pages are inaccessible"
+      ]
+    },
+    {
+      "scenario_name": "Test cascading deletes (comments, likes)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Access article with comments/likes to delete and verify cascading cleanup",
+          "expected": "Article deleted with all related data (comments, likes, subscriptions) removed",
+          "actual": "Cannot access article detail page - 404 error",
+          "screenshot": "Article Deletion_step03_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test cascading deletes - article detail pages are inaccessible"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review confirms ArticleController.Delete() properly handles cascading deletes: removes notifications, revisions (summary and content), comments, journal entries, scoring actions, subscriptions, and the article itself",
+    "Code review confirms NO restore functionality exists in the codebase - deleted articles are permanently removed with all related data",
+    "The delete functionality is triggered via ContentController.DeletePage() API endpoint which requires authentication and ValidateAntiForgeryToken",
+    "NotificationServiceController.DeleteArticle() provides an alternative delete path from notifications for pending articles",
+    "CRITICAL BUG: All article detail page URLs return 404 errors despite articles being listed correctly in the Wiki list view",
+    "CRITICAL BUG: Create article form Publish button does not submit the form - new articles cannot be created"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 0,
+    "failed": 5,
+    "pass_rate": "0%"
+  }
+}

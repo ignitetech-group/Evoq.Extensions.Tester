@@ -1,0 +1,160 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Universal Analytics & GA4 Support",
+    "feature_description": "Support for both Universal Analytics (UA-) and Google Analytics 4 (G-) tracking codes with appropriate configuration.",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T08:33:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Configure UA tracking code (UA-XXXXX)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors > Google Analytics 4",
+          "expected": "Google Analytics 4 connector panel opens with tracking ID field",
+          "actual": "Connector panel opened showing Measurement ID field with existing G-ABC123XYZ99 value",
+          "screenshot": "UA_GA4_Support_step03_ga4_current_config.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter UA tracking code UA-12345678-1 in Measurement ID field",
+          "expected": "UA tracking code is entered in the field",
+          "actual": "UA-12345678-1 was entered successfully in the Measurement ID field",
+          "screenshot": "UA_GA4_Support_step04_ua_tracking_id_entered.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save button",
+          "expected": "UA tracking code is saved successfully",
+          "actual": "Item successfully saved message appeared, UA tracking code was saved",
+          "screenshot": "UA_GA4_Support_step06_ua_save_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure GA4 tracking code (G-XXXXX)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter GA4 tracking code G-TESTGA4CODE in Measurement ID field",
+          "expected": "GA4 tracking code is entered in the field",
+          "actual": "G-TESTGA4CODE was entered successfully in the Measurement ID field",
+          "screenshot": "UA_GA4_Support_step07_ga4_tracking_id.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "GA4 tracking code is saved successfully",
+          "actual": "Item successfully saved message appeared, GA4 tracking code was saved",
+          "screenshot": "UA_GA4_Support_step08_ga4_save_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Display warning for UA deprecation",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter UA tracking code UA-999999999-1 in Measurement ID field",
+          "expected": "A deprecation warning should appear indicating Universal Analytics will sunset",
+          "actual": "No deprecation warning appeared. The UA tracking code was accepted without any warning message.",
+          "screenshot": "UA_GA4_Support_step09_ua_no_warning.png"
+        }
+      ],
+      "issues": ["The Evoq.GoogleAnalyticsConnector which contains the UA deprecation warning feature (UniversalAnalyticsWarning) is not visible in the UI. Only the 'Google Analytics 4' connector from DNN Platform is available, which does not have this warning feature."]
+    },
+    {
+      "scenario_name": "Auto-detect analytics version from tracking ID",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review connector behavior when entering UA vs GA4 tracking codes",
+          "expected": "System should auto-detect analytics version (UA- vs G-) and apply appropriate configuration",
+          "actual": "The visible 'Google Analytics 4' connector does not implement auto-detection of analytics version. Both UA and GA4 codes are accepted without version-specific handling.",
+          "screenshot": "UA_GA4_Support_step05_ua_warning_check.png"
+        }
+      ],
+      "issues": ["The Evoq.GoogleAnalyticsConnector with GetAnalyticsVersion() method that auto-detects UA vs GA4 is not visible in the UI. The DNN Platform's GoogleAnalytics4Connector does not implement this feature."]
+    },
+    {
+      "scenario_name": "Load correct config file based on version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review config file selection based on tracking ID version",
+          "expected": "System should load SiteAnalytics.config for UA and SiteAnalytics.GA4.config for GA4",
+          "actual": "Cannot test - the Evoq.GoogleAnalyticsConnector with EnsureConfig() method that handles config file selection is not visible in the UI.",
+          "screenshot": "UA_GA4_Support_step02_connectors_list.png"
+        }
+      ],
+      "issues": ["The Evoq.GoogleAnalyticsConnector which implements dynamic config file loading based on analytics version is not registered/visible in the connectors list."]
+    },
+    {
+      "scenario_name": "gtag.js script injection for GA4",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Configure GA4 tracking code G-ABC123XYZ99 and verify script injection",
+          "expected": "gtag.js script should be injected in the page head with correct tracking ID",
+          "actual": "Found script: https://www.googletagmanager.com/gtag/js?id=G-ABC123XYZ99 and inline script: gtag('config', 'G-ABC123XYZ99')",
+          "screenshot": "UA_GA4_Support_step12_final_state.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Empty input validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the Measurement ID field and click Save",
+          "expected": "System should reject empty input with an error message",
+          "actual": "Error message displayed: 'Tracking Code Cannot Be Empty'",
+          "screenshot": "UA_GA4_Support_step10_empty_input_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Invalid format validation (XSS input)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter XSS script tag <script>alert('XSS')</script> in Measurement ID field and save",
+          "expected": "System should reject invalid/malicious input with format validation error",
+          "actual": "The XSS script was accepted and saved successfully without any validation error",
+          "screenshot": "UA_GA4_Support_step11_xss_input_accepted.png"
+        }
+      ],
+      "issues": ["Security vulnerability: The connector accepts arbitrary strings including script tags as valid tracking IDs. There is no format validation to ensure the tracking ID matches expected patterns (UA-XXXXX or G-XXXXX)."]
+    }
+  ],
+  "observations": [
+    "The Evoq.GoogleAnalyticsConnector (from Dnn.Evoq.Basic with DisplayName='Google Analytics') is NOT visible in the Connectors UI. Only 'Google Analytics 4' connector (from DNN Platform) is shown.",
+    "Code review confirms Evoq.GoogleAnalyticsConnector exists with features: UA deprecation warning, auto-detect analytics version (UA- vs G-), dynamic config file loading (SiteAnalytics.config vs SiteAnalytics.GA4.config), and analytics.js vs gtag.js script selection. However, these features cannot be tested as the connector is not registered/visible.",
+    "The visible 'Google Analytics 4' connector from DNN Platform uses different config storage (GoogleAnalytics4 vs GoogleAnalytics) and field names (Ga4ID vs TrackingId).",
+    "Both connectors share the same Name='GoogleAnalytics' which may cause registration conflicts.",
+    "The Google Analytics 4 connector injects gtag.js scripts correctly for GA4 tracking codes.",
+    "Security concern: The Google Analytics 4 connector does not validate tracking ID format, accepting arbitrary strings including script tags."
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 4,
+    "failed": 4,
+    "pass_rate": "50%"
+  }
+}

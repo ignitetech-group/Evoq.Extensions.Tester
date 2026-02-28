@@ -1,0 +1,175 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Scheduler Integration",
+    "feature_description": "Integrates with DNN scheduler for automated crawling tasks.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:29:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify URL Spider and File Crawler schedules exist",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Scheduler",
+          "expected": "Scheduler page loads with SCHEDULER tab",
+          "actual": "Scheduler page loaded successfully with TASK QUEUE, SCHEDULER, and HISTORY tabs",
+          "screenshot": "Scheduler Integration_step01_scheduler_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View SCHEDULER tab to find crawler tasks",
+          "expected": "Search: Url Crawler and Search: File Crawler tasks are visible",
+          "actual": "Both Search: Url Crawler and Search: File Crawler tasks are visible in the list with correct class names: DotNetNuke.Professional.SearchCrawler.SearchSpider.SearchSpider and DotNetNuke.Professional.SearchCrawler.FileCrawler.FileCrawler",
+          "screenshot": "Scheduler Integration_step03_crawlers_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure schedule frequency",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Edit Task for Search: Url Crawler",
+          "expected": "Edit panel opens with frequency settings",
+          "actual": "Edit panel opened showing Frequency field with value '2' and dropdown showing 'Days'",
+          "screenshot": "Scheduler Integration_step04_url_crawler_config.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Change frequency from 2 Days to 1 Day",
+          "expected": "Frequency value updates to 1",
+          "actual": "Frequency value changed from 2 to 1",
+          "screenshot": "Scheduler Integration_step05_frequency_changed.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Update to save changes",
+          "expected": "Success message appears confirming update",
+          "actual": "Success message 'Schedule item updated successfully' appeared",
+          "screenshot": "Scheduler Integration_step06_update_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test schedule enable/disable",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open Edit panel for Search: Url Crawler",
+          "expected": "Edit panel shows Enable Schedule toggle",
+          "actual": "Edit panel opened with Enable Schedule toggle visible in 'On' state",
+          "screenshot": "Scheduler Integration_step07_edit_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Toggle Enable Schedule to Off",
+          "expected": "Toggle switches to Off state",
+          "actual": "Toggle successfully changed to 'Off' state",
+          "screenshot": "Scheduler Integration_step08_disabled_toggle.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Update to save disabled state",
+          "expected": "Task shows as disabled in list (no checkmark in ENABLED column)",
+          "actual": "Task successfully disabled - no checkmark visible in ENABLED column for Search: Url Crawler",
+          "screenshot": "Scheduler Integration_step09_disabled_success.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Re-enable the schedule by toggling back to On",
+          "expected": "Toggle switches to On state",
+          "actual": "Toggle successfully changed to 'On' state",
+          "screenshot": "Scheduler Integration_step10_reenabled_toggle.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Save re-enabled state",
+          "expected": "Task shows as enabled in list (checkmark in ENABLED column)",
+          "actual": "Task successfully re-enabled - checkmark visible in ENABLED column with Next Start time updated",
+          "screenshot": "Scheduler Integration_step11_reenabled_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify schedule history logging",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click HISTORY tab to view schedule history",
+          "expected": "Schedule history displays with task execution logs",
+          "actual": "Schedule History tab shows detailed logs including: Search: Url Crawler executed at 9:27:12 AM with duration 12.033 seconds, showing 'UrlCrawler - Started', 'SearchCrawler - Start Indexing Site http://localhost:8081', 'ended indexing 15 links', and success status",
+          "screenshot": "Scheduler Integration_step12_history_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Task History icon for Search: Url Crawler",
+          "expected": "Task-specific history displays",
+          "actual": "Task-specific history panel expanded showing 5 of 8 historical executions with detailed logs, duration, server name, and success status for each run",
+          "screenshot": "Scheduler Integration_step13_task_history.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Task History icon for Search: File Crawler",
+          "expected": "File Crawler task-specific history displays",
+          "actual": "File Crawler history shows detailed progress reporting: 'Scanning for files changed since...', 'Number of files encountered: 84', 'Number of new or changed files since last crawl: 4', 'Number of files shallow indexed: 4', 'File Crawler Finished'",
+          "screenshot": "Scheduler Integration_step14_file_crawler_history.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify progress reporting via TASK QUEUE",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click TASK QUEUE tab to view queued tasks",
+          "expected": "TASK QUEUE displays scheduled tasks with next start times",
+          "actual": "TASK QUEUE tab shows all queued tasks including Search: File Crawler (Next Start: 3/1/2026 9:17:36 AM, Time Remaining: 23 hours) and Search: Url Crawler (Next Start: 3/1/2026 9:27:12 AM), with ID, Servers, Object Dependencies (SearchCrawler), Triggered By (STARTED_FROM_SCHEDULE_CHANGE), and Thread information",
+          "screenshot": "Scheduler Integration_step15_task_queue.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle schedule errors gracefully",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review history logs for error handling behavior",
+          "expected": "Tasks handle errors gracefully without failing completely",
+          "actual": "Search: Url Crawler shows graceful error handling - 'Skipped Spidering of Site' messages for unreachable URLs (https://www.testsite.com/, http://testsite.local/, http://not-a-valid-url/, etc.) while still completing successfully with 'UrlCrawler - Success'. Other tasks like Messaging Dispatch show 'No SMTP Servers have been configured for this host. Terminating task.' but still mark as SUCCEEDED",
+          "screenshot": "Scheduler Integration_step16_error_handling.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The SearchSpider.cs code extends SchedulerClient and implements DoWork() method with proper error handling via try-catch blocks",
+    "FileCrawler.cs similarly extends SchedulerClient with detailed progress logging via RecordLog() method",
+    "Both crawlers use ScheduleHistoryItem.AddLogNote() to record detailed execution logs visible in the UI",
+    "The 'Run Now' functionality is not explicitly available as a button in the SCHEDULER list view - tasks run based on their configured schedule or can be triggered by modifying schedule settings",
+    "Error handling is implemented gracefully - individual URL failures do not cause the entire task to fail, instead they are logged as 'Skipped Spidering' and the task completes successfully",
+    "Progress reporting includes detailed metrics: files encountered, files indexed (shallow/deep), indexes removed, etc. for File Crawler",
+    "Schedule tasks show Object Dependencies (SearchCrawler) which links URL Crawler and File Crawler to the SearchCrawler module"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

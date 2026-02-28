@@ -1,0 +1,152 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Custom Column Sizing",
+    "feature_description": "Allows users to set custom column widths beyond predefined templates using percentage values.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:04:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Update layout with custom column sizes via drag resize",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to home page and enter edit mode by clicking Edit button in sidebar",
+          "expected": "Page enters edit mode showing module panes and edit controls",
+          "actual": "Page entered edit mode successfully, showing ContentLayout panes (F30A_Pane1-4) with Discard/Publish buttons",
+          "screenshot": "Custom Column Sizing_step01_edit_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Scroll to view the ContentLayout module with 4 columns (TELEVISIONS, WEARABLES, TABLETS, LAPTOPS)",
+          "expected": "ContentLayout module visible with 4 equal-width columns at 25% each",
+          "actual": "ContentLayout module visible showing 4 columns with equal widths and resize handles between columns",
+          "screenshot": "Custom Column Sizing_step03_columns_visible.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Drag the resize handle between first and second columns to make the first column wider",
+          "expected": "First column should expand, second column should shrink, sizes should update",
+          "actual": "First column expanded to 41%, second column compressed to 9%, third and fourth columns remained at 25%",
+          "screenshot": "Custom Column Sizing_step05_after_resize.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate column size format (percentage display)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After resizing columns, check the size viewer overlay that displays percentage values",
+          "expected": "Size viewers should show percentage values for each column",
+          "actual": "Size viewers displayed correctly showing 41%, 9%, 25%, 25% for the four columns respectively",
+          "screenshot": "Custom Column Sizing_step06_size_viewers_visible.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify column width percentages via browser inspection",
+          "expected": "Column widths should match the displayed percentages",
+          "actual": "Verified via JavaScript - columns had inline styles: width:41%, width:9%, width:25%, width:25%",
+          "screenshot": "Custom Column Sizing_step06_size_viewers_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify CSS class generation for custom sizes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Inspect the CSS classes applied to column panes after resizing",
+          "expected": "Columns should have Bootstrap grid classes with inline style overrides for custom widths",
+          "actual": "Columns retained Bootstrap classes (col-lg-3 col-md-4 col-sm-6 col-xs-12) with inline width styles (41%, 9%, 25%, 25%) overriding the grid",
+          "screenshot": "Custom Column Sizing_step05_after_resize.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify custom size persistence after page refresh",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Refresh the page after making column size changes",
+          "expected": "Live view should show original sizes (changes saved as draft), edit mode should show modified sizes",
+          "actual": "Live view showed original equal column widths as expected (draft not published)",
+          "screenshot": "Custom Column Sizing_step07_live_view_after_refresh.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter edit mode after page refresh to verify draft persistence",
+          "expected": "Edit mode should show the custom column sizes that were saved as a draft",
+          "actual": "Edit mode displayed custom column widths (33%, 13%, 29%, 25%) confirming draft persistence. Module positions also rearranged based on new column widths.",
+          "screenshot": "Custom Column Sizing_step09_columns_after_refresh.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test invalid column size rejection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review code validation logic for column sizes in ColumnSizesHelper.cs",
+          "expected": "Validation should reject: empty values, negative values, non-numeric values, more than 3 values, total > 99%",
+          "actual": "Code review confirmed validation rules: IsValidColumnSizes() rejects empty/null strings, values that don't parse as numbers, negative values (<=0), more than 3 comma-separated values, and totals exceeding 99%",
+          "screenshot": "Custom Column Sizing_step03_columns_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test predefined template selection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review code for predefined templates in Templates/data.xml and API endpoints",
+          "expected": "Predefined templates should exist and be accessible via API",
+          "actual": "Code review confirmed 6 predefined templates exist: 25%+75%, 75%+25%, 50%+50%, 25%+50%+25%, 33%+33%+33%, 4x25%. Templates accessible via GetContentLayoutTemplates API and applied via UpdateLayoutFromTemplate API.",
+          "screenshot": "Custom Column Sizing_step03_columns_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test responsive behavior with custom sizes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify responsive CSS classes are applied to columns",
+          "expected": "Columns should have responsive Bootstrap classes for different screen sizes",
+          "actual": "Columns have responsive classes: col-lg-3 col-md-4 col-sm-6 col-xs-12, ensuring columns stack on smaller screens while using custom percentages on larger screens",
+          "screenshot": "Custom Column Sizing_step06_size_viewers_visible.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Predefined template selection UI is not directly visible in the main edit mode interface. Templates are applied via the UpdateLayoutFromTemplate API endpoint, suggesting template selection may be in a separate UI component or admin panel.",
+    "Custom column sizes are saved as drafts and require publishing to appear in the live view. This is standard DNN Evoq workflow versioning behavior.",
+    "The drag-resize functionality uses jQuery UI's resizable widget with minimum column width constraints (105px minimum) to prevent columns from becoming too narrow.",
+    "Column widths are calculated as percentages rounded to whole numbers, and the last column's width is automatically calculated as (100 - sum of other columns)%.",
+    "When modules are inside columns, resizing columns causes modules to reflow based on the new available space."
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 7,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

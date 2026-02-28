@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "User Mentions",
+    "feature_description": "Mention users in articles and comments with @ notation and notifications",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Mention user in article via quick create dialog",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page",
+          "expected": "Wiki page loads with article list and create article option",
+          "actual": "Wiki Test page loaded successfully showing 6 articles in the list",
+          "screenshot": "User Mentions_step01_wiki_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Create article button to open article creation dialog",
+          "expected": "Article creation dialog opens with rich text editor supporting @ mentions",
+          "actual": "Create article dialog opened with simple textarea field for content (not a rich text editor)",
+          "screenshot": "User Mentions_step02_create_article_dialog.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Type @ symbol in content field to trigger mention autocomplete",
+          "expected": "Autocomplete dropdown should appear with list of available users to mention",
+          "actual": "No autocomplete dropdown appeared - the simple textarea does not support user mentions functionality",
+          "screenshot": "User Mentions_step03_typing_at_symbol.png"
+        }
+      ],
+      "issues": [
+        "The quick create article dialog uses a simple HTML textarea instead of a rich text editor (Redactor) that supports user mentions",
+        "Code review shows user mentions are initialized via dnn.social.initUserMentions() which requires the Redactor editor, but the quick create dialog does not use Redactor"
+      ]
+    },
+    {
+      "scenario_name": "Access article detail page for editing with rich editor",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on existing article 'Test Article Draft' to access detail page",
+          "expected": "Article detail page loads with edit functionality and rich text editor",
+          "actual": "404 Error Page - 'Sorry, the page you are looking for cannot be found'",
+          "screenshot": "User Mentions_step04_404_error.png"
+        }
+      ],
+      "issues": [
+        "Wiki article detail pages return 404 errors - URLs like /en-us/Wiki-Test/Test-Article-Draft are not resolving",
+        "This prevents testing of user mentions in the full article editor which uses Redactor and has mention support",
+        "Articles appear in the list but their URLs are broken or the articles may have been deleted from the database while metadata remains"
+      ]
+    },
+    {
+      "scenario_name": "Test mention user in comment",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access article detail page to find comments section",
+          "expected": "Article page should load with comments section allowing @ mentions",
+          "actual": "Cannot test - article detail pages return 404 errors preventing access to comments section",
+          "screenshot": "User Mentions_step04_404_error.png"
+        }
+      ],
+      "issues": [
+        "Unable to test comment mentions due to 404 errors on all article detail pages"
+      ]
+    },
+    {
+      "scenario_name": "Test mention auto-complete",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Type @ in quick create dialog content field",
+          "expected": "Autocomplete dropdown appears with users matching typed characters",
+          "actual": "No autocomplete functionality available in the simple textarea - quick create uses basic HTML textarea without mention support",
+          "screenshot": "User Mentions_step03_typing_at_symbol.png"
+        }
+      ],
+      "issues": [
+        "Quick create dialog does not have rich editor with mention autocomplete",
+        "Full article editor with mention support is inaccessible due to 404 errors on article pages"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review confirms User Mentions feature is implemented: ContentController.cs uses UserMentionsController.Instance.ReplaceUserMentionsWithProfileLink() to process mentions",
+    "UserMentionNotificationsController.Instance.SendUserMentionedNotification() is called when articles are published to notify mentioned users",
+    "The dnn.wiki.ContentEditor.js file shows dnn.social.initUserMentions() is called on the Redactor editor for both content and summary fields",
+    "The dnn.social.mentions.js plugin connects to Social/GetAvailableUsersForMentioning API endpoint for autocomplete data",
+    "The quick create article dialog (modal) uses a simple textarea, not the full Redactor editor, which explains why mentions don't work there",
+    "All wiki article detail page URLs return 404 errors - this is a critical issue preventing testing of the full editor and comments with mention support",
+    "The feature implementation appears correct in code but is untestable via UI due to the 404 errors on article pages"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 0,
+    "failed": 4,
+    "pass_rate": "0%"
+  }
+}

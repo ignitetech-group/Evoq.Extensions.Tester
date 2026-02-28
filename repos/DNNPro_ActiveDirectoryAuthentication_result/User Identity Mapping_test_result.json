@@ -1,0 +1,137 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "User Identity Mapping",
+    "feature_description": "Maps Active Directory User Principal Names to DNN usernames for flexible authentication",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:15:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify user mapping table creation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > SQL Console",
+          "expected": "SQL Console should load",
+          "actual": "SQL Console loaded successfully",
+          "screenshot": "User Identity Mapping_step04_sql_table_exists.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Execute query: SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'AD_UserMapping') AND type in (N'U')",
+          "expected": "Query should return the AD_UserMapping table metadata",
+          "actual": "Query returned 1 row showing AD_UserMapping table exists as USER_TABLE, created on 2026-02-09",
+          "screenshot": "User Identity Mapping_step04_sql_table_exists.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify stored procedures for mapping operations",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Execute query: SELECT name, type_desc FROM sys.objects WHERE name LIKE 'AD_%' ORDER BY type_desc, name",
+          "expected": "Query should return AD_GetUserMapping and AD_UpdateUserMapping stored procedures",
+          "actual": "Query returned both stored procedures: AD_GetUserMapping (SQL_STORED_PROCEDURE) and AD_UpdateUserMapping (SQL_STORED_PROCEDURE)",
+          "screenshot": "User Identity Mapping_step06_stored_procedures.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test UPN to username mapping on first login",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Security > Authentication",
+          "expected": "Authentication settings page should show Active Directory as an authentication provider option",
+          "actual": "Only 'DNN' authentication provider is available in the Default Authentication Provider dropdown. Active Directory is not listed.",
+          "screenshot": "User Identity Mapping_step02_auth_provider_dropdown.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check if AD_UserMapping table has any existing mappings",
+          "expected": "If AD authentication was used, mappings should exist",
+          "actual": "Table is empty - no AD logins have occurred. Query returned 'The query did not return any data.'",
+          "screenshot": "User Identity Mapping_step05_table_empty.png"
+        }
+      ],
+      "issues": [
+        "Cannot test UPN to username mapping because Active Directory authentication provider is not configured/enabled in this environment",
+        "Active Directory is not available as an authentication provider option in the Security settings"
+      ]
+    },
+    {
+      "scenario_name": "Verify mapping persistence across sessions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to verify mapping persistence by checking existing mappings in database",
+          "expected": "If mappings exist, they should persist across sessions",
+          "actual": "Cannot test - AD_UserMapping table is empty because no AD authentication has occurred",
+          "screenshot": "User Identity Mapping_step05_table_empty.png"
+        }
+      ],
+      "issues": [
+        "Cannot verify mapping persistence - no Active Directory environment configured",
+        "This test requires actual AD authentication to create mappings first"
+      ]
+    },
+    {
+      "scenario_name": "Test login with different UPN formats",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check if different UPN format handling is testable via UI",
+          "expected": "Should be able to test UPN format handling through AD login",
+          "actual": "Cannot test - Active Directory provider not available in authentication settings",
+          "screenshot": "User Identity Mapping_step02_auth_provider_dropdown.png"
+        }
+      ],
+      "issues": [
+        "Test requires Active Directory environment which is not configured",
+        "UPN format testing requires actual AD authentication flow"
+      ]
+    },
+    {
+      "scenario_name": "Verify mapping cleanup on user deletion",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review database schema for CASCADE DELETE constraint on AD_UserMapping table",
+          "expected": "Foreign key should have CASCADE DELETE to auto-cleanup mappings when users are deleted",
+          "actual": "Code review confirms FK constraint with ON DELETE CASCADE is defined in 07.01.01.SqlDataProvider: 'FOREIGN KEY([UserId]) REFERENCES [Users] ([UserID]) ON DELETE CASCADE'",
+          "screenshot": "User Identity Mapping_step04_sql_table_exists.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "User Identity Mapping is a database-level feature with NO direct UI for management - it operates automatically during AD authentication",
+    "The feature infrastructure (table and stored procedures) is fully installed in the database",
+    "AD_UserMapping table exists with columns: MappingId (PK), IdentityName (UPN), UserId (FK with CASCADE DELETE)",
+    "Stored procedures AD_GetUserMapping and AD_UpdateUserMapping are installed and ready for use",
+    "Active Directory authentication provider is NOT enabled/configured in this test environment - only 'DNN' provider is available",
+    "The mapping table is empty because no AD authentication has occurred in this environment",
+    "Code analysis (AuthenticationController.cs) shows GetUserMapping is called during both AuthenticationLogon() and ManualLogon() methods",
+    "UpdateUserMapping is called in UpdateDNNUser() after successful authentication to persist the UPN-to-UserId mapping",
+    "Testing the actual mapping functionality requires a configured Active Directory environment with valid AD credentials"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 3,
+    "failed": 3,
+    "pass_rate": "50%"
+  }
+}

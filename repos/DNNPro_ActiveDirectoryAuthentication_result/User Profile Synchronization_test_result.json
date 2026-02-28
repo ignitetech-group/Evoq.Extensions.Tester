@@ -1,0 +1,157 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "User Profile Synchronization",
+    "feature_description": "Synchronizes user profile information from Active Directory to DNN user profiles",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:11:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify AD Authentication Provider Installation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to login page",
+          "expected": "Login page should display with authentication tabs",
+          "actual": "Login page displayed with both 'Standard' and 'Windows Login' tabs visible",
+          "screenshot": "User Profile Synchronization_step06_login_page_tabs.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on 'Windows Login' tab",
+          "expected": "Windows Login form should display",
+          "actual": "Windows Login tab displayed a separate form with Username and Password fields for AD authentication",
+          "screenshot": "User Profile Synchronization_step07_windows_login_tab.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify AD Authentication Login Flow",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter test credentials in Windows Login form",
+          "expected": "Credentials should be accepted or appropriate error shown",
+          "actual": "Entered test username 'testuser' and password 'testpassword' in the AD login form",
+          "screenshot": "User Profile Synchronization_step08_ad_login_form_filled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Login button",
+          "expected": "AD authentication should be attempted",
+          "actual": "Login Failed. Error message displayed: 'Login Failed. Please remember that passwords are case sensitive.' - AD authentication failed because no Active Directory domain is configured",
+          "screenshot": "User Profile Synchronization_step09_ad_login_failed.png"
+        }
+      ],
+      "issues": [
+        "Active Directory domain is not configured in the test environment, preventing actual AD authentication testing"
+      ]
+    },
+    {
+      "scenario_name": "Verify Security Settings - Authentication Providers",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Security > Authentication",
+          "expected": "Authentication settings should be accessible",
+          "actual": "Security settings page displayed with Authentication tab showing Basic Login Settings",
+          "screenshot": "User Profile Synchronization_step04_security_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check Default Authentication Provider dropdown",
+          "expected": "Should show available authentication providers",
+          "actual": "Dropdown only shows 'DNN' as the available provider - Active Directory is not listed as a selectable default provider",
+          "screenshot": "User Profile Synchronization_step05_auth_providers_dropdown.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify First Name Synchronization from AD",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to login with AD user to trigger profile sync",
+          "expected": "First name should be synchronized from AD to DNN profile",
+          "actual": "Cannot test - No Active Directory domain configured. AD login attempt fails before synchronization can occur",
+          "screenshot": "User Profile Synchronization_step09_ad_login_failed.png"
+        }
+      ],
+      "issues": [
+        "Cannot verify first name synchronization - Active Directory environment not available"
+      ]
+    },
+    {
+      "scenario_name": "Verify Last Name Synchronization from AD",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to login with AD user to trigger profile sync",
+          "expected": "Last name should be synchronized from AD to DNN profile",
+          "actual": "Cannot test - No Active Directory domain configured. AD login attempt fails before synchronization can occur",
+          "screenshot": "User Profile Synchronization_step09_ad_login_failed.png"
+        }
+      ],
+      "issues": [
+        "Cannot verify last name synchronization - Active Directory environment not available"
+      ]
+    },
+    {
+      "scenario_name": "Verify Email Synchronization from AD",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to login with AD user to trigger profile sync",
+          "expected": "Email should be synchronized from AD to DNN profile",
+          "actual": "Cannot test - No Active Directory domain configured. AD login attempt fails before synchronization can occur",
+          "screenshot": "User Profile Synchronization_step09_ad_login_failed.png"
+        }
+      ],
+      "issues": [
+        "Cannot verify email synchronization - Active Directory environment not available"
+      ]
+    },
+    {
+      "scenario_name": "Verify Profile Updates Don't Overwrite with Empty Values",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to verify empty value handling during sync",
+          "expected": "Empty AD values should not overwrite existing DNN profile data",
+          "actual": "Cannot test - No Active Directory domain configured",
+          "screenshot": "User Profile Synchronization_step09_ad_login_failed.png"
+        }
+      ],
+      "issues": [
+        "Cannot verify empty value handling - Active Directory environment not available"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review of AuthenticationController.cs (lines 344-437) confirms the UpdateDNNUser method implements profile synchronization for: DisplayName, Email, FirstName, LastName, LastIPAddress, Profile.FirstName, Profile.LastName, Profile.Street, Profile.City, Profile.Region, Profile.PostalCode, Profile.Country, Profile.Telephone, Profile.Fax, Profile.Cell, Profile.Website",
+    "The code explicitly checks for non-empty values before updating (e.g., 'if (!(objAuthUser.DisplayName == \"\"))'), confirming that empty values from AD will NOT overwrite existing DNN profile data",
+    "Profile synchronization occurs automatically during both Windows Single Sign-On (AuthenticationLogon method) and manual AD login (ManualLogon method)",
+    "The AD Authentication module is installed and the 'Windows Login' tab is visible on the login page, but the system is not connected to an Active Directory domain",
+    "The Security settings Default Authentication Provider dropdown only shows 'DNN' - Active Directory is not available as a selectable default provider",
+    "Testing profile synchronization requires an Active Directory environment with users containing populated profile attributes, which is not available in this test environment",
+    "Initial navigation to localhost:8081 redirected to WindowsSignin.aspx with 401.2 Unauthorized error, indicating Windows Authentication is enabled but not properly configured in IIS"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 2,
+    "failed": 5,
+    "pass_rate": "29%"
+  }
+}

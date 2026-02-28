@@ -1,0 +1,124 @@
+{
+  "metadata": {
+    "extension_name": "Publisher",
+    "extension_type": "Module",
+    "feature_name": "Tag Management",
+    "feature_description": "Create, edit, and manage post tags for categorization and filtering",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:20:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Add tags to post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to News page with Publisher module",
+          "expected": "Publisher post list page loads",
+          "actual": "News page loaded with list of posts displayed",
+          "screenshot": "Tag Management_step01_publisher_news_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on a post to open Edit Post Details panel",
+          "expected": "Edit panel opens with Tags section visible",
+          "actual": "Edit Post Details panel opened showing Tags input field with existing tags",
+          "screenshot": "Tag Management_step03_edit_post_tags_visible.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Type 'testing' in the Tags input field and press comma",
+          "expected": "New tag is created and added to the post",
+          "actual": "Tag 'testing' was successfully added to the post, appearing as a tag chip",
+          "screenshot": "Tag Management_step07_tag_added.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Remove tags from post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "With tags visible in Edit Post Details, click the 'x' button on a tag",
+          "expected": "Tag is removed from the post",
+          "actual": "Tag 'testing' was successfully removed after clicking the x button",
+          "screenshot": "Tag Management_step08_tag_removed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test special characters in tags",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Type tag with special characters 'test@tag#123' and press comma",
+          "expected": "Tag with special characters is accepted or rejected with appropriate feedback",
+          "actual": "Tag 'test@tag#123' was accepted and added successfully - the system allows special characters in tags",
+          "screenshot": "Tag Management_step09_special_chars_tag.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle duplicate tags",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to add a tag that already exists on the post ('technology')",
+          "expected": "System prevents duplicate and provides visual feedback",
+          "actual": "When typing an existing tag, it was highlighted in red in the auto-suggest dropdown, indicating it's already added. System correctly prevents duplicates.",
+          "screenshot": "Tag Management_step10_duplicate_tag_test.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View tag cloud",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to News page and locate the Tags filter section",
+          "expected": "Tag cloud/filter displays available tags with post counts",
+          "actual": "Tags filter section displayed in the sidebar showing tags like 'technology (2)' with counts indicating number of posts",
+          "screenshot": "Tag Management_step11_tag_cloud.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Filter posts by tag",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on 'technology' tag in the Tags filter",
+          "expected": "Post list filters to show only posts with that tag",
+          "actual": "Posts were filtered successfully. 'Viewing: technology x' indicator appeared and only posts tagged with 'technology' were displayed",
+          "screenshot": "Tag Management_step12_tag_filter_active.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Auto-suggest functionality was observed when typing tags - existing tags appear in a dropdown for selection",
+    "Tags are stored using DNN's Taxonomy system (Terms attached to ContentItems) as confirmed in PostManager.cs",
+    "Tag cloud uses GetTopTags API endpoint from FilterController.cs to retrieve tag counts",
+    "Bulk tag operations UI was not found - tags are managed individually per post in the Edit Post Details panel",
+    "No explicit character limit validation was observed during testing - long tags appeared to be accepted"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Social - Likes",
+    "feature_description": "Like and unlike wiki articles with like count display",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:46:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Navigate to Wiki Article Detail View",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login to DNN as superuser",
+          "expected": "Successfully logged in",
+          "actual": "Successfully logged in as SuperUser Account",
+          "screenshot": "Social - Likes_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to Wiki Test page",
+          "expected": "Wiki module page loads with article list",
+          "actual": "Wiki Test page loaded successfully showing 6 articles",
+          "screenshot": "Social - Likes_step01_wiki_list.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click on article link (Test Article Draft)",
+          "expected": "Article detail page loads showing article content and like button",
+          "actual": "404 Error Page displayed - 'Sorry, the page you are looking for cannot be found'",
+          "screenshot": "Social - Likes_step03_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Wiki article friendly URLs return 404 errors - URL rewriting not configured for wiki article detail pages",
+        "URLs like /en-us/Wiki-Test/Test-Article-Draft are not being handled by the URL rewriter",
+        "The like button is only accessible on the article detail view (Article.ascx), which cannot be accessed"
+      ]
+    },
+    {
+      "scenario_name": "Like an article",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access article detail page to view like button",
+          "expected": "Article detail page loads with like button visible",
+          "actual": "Cannot access article detail page - 404 error on all article URLs",
+          "screenshot": "Social - Likes_step03_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test like functionality - article detail pages are inaccessible due to 404 errors"
+      ]
+    },
+    {
+      "scenario_name": "Unlike an article",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access article detail page to view unlike button",
+          "expected": "Article detail page loads with unlike button visible (after liking)",
+          "actual": "Cannot access article detail page - 404 error on all article URLs",
+          "screenshot": "Social - Likes_step03_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test unlike functionality - article detail pages are inaccessible due to 404 errors"
+      ]
+    },
+    {
+      "scenario_name": "View like count",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access article detail page to view like count",
+          "expected": "Article detail page loads showing like count",
+          "actual": "Cannot access article detail page - 404 error on all article URLs",
+          "screenshot": "Social - Likes_step03_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot test like count display - article detail pages are inaccessible due to 404 errors"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review confirms like functionality exists in Article.ascx (lines 28, 33-38, 115, 196) with proper Knockout.js bindings",
+    "Like button uses CSS classes dnnSocialLike/dnnSocialLikeActive and binds to like/unlike functions",
+    "Like count is displayed via model.likeString().Big binding in the article detail view",
+    "The socialController.like() and socialController.unlike() functions are properly implemented in dnn.wiki.Article.js",
+    "The like button only appears when ArticleApproved is true (Article.ascx line 24)",
+    "Wiki article URLs use friendly URL format (/Wiki-Test/Article-Name) but the URL rewriting is not configured",
+    "The actual URL should use query parameters like ?cid=<contentItemId> according to Links.cs (line 33)",
+    "All wiki articles exist (6 articles found on Wiki Test page) but their detail pages are inaccessible"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 0,
+    "failed": 4,
+    "pass_rate": "0%"
+  }
+}

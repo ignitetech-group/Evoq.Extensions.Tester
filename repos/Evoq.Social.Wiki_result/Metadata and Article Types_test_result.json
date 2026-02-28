@@ -1,0 +1,126 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Metadata and Article Types",
+    "feature_description": "Manage article metadata, custom fields, and article type categorization",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Set article type",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page",
+          "expected": "Wiki module page loads with article list",
+          "actual": "Wiki page loaded successfully showing 6 existing articles",
+          "screenshot": "Metadata and Article Types_step01_wiki_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Create article button",
+          "expected": "Article creation dialog opens",
+          "actual": "Create an article dialog opened with all form fields visible",
+          "screenshot": "Metadata and Article Types_step02_create_article_dialog.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Article Type dropdown",
+          "expected": "Dropdown shows available article types",
+          "actual": "Dropdown expanded showing 12 article types: Teams/Groups, Animals, Misc., Architecture, Geography, Procedures, Concepts, Media, Books/Documents, Awards, Events, People",
+          "screenshot": "Metadata and Article Types_step03_article_type_dropdown.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Select 'People' article type",
+          "expected": "People type is selected in the dropdown",
+          "actual": "People type was successfully selected and displayed in the dropdown",
+          "screenshot": "Metadata and Article Types_step04_people_type_selected.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add custom metadata fields",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to create article with article type selected to view metadata fields",
+          "expected": "Metadata editor section should appear or article should be created successfully",
+          "actual": "Article creation form showed validation errors even with all required fields filled. Form would not submit.",
+          "screenshot": "Metadata and Article Types_step06_after_publish.png"
+        }
+      ],
+      "issues": ["Article creation dialog showed 'Text is required' validation errors despite Title field being filled with 'Metadata Test Article'. This prevented testing of custom metadata field functionality."]
+    },
+    {
+      "scenario_name": "Edit metadata values",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access existing article to edit metadata",
+          "expected": "Article page loads with metadata edit option",
+          "actual": "Clicking article links (e.g., Test Article Draft) resulted in 404 Error Page",
+          "screenshot": "Metadata and Article Types_step07_wiki_list.png"
+        }
+      ],
+      "issues": ["Article URLs (e.g., /en-us/Wiki-Test/Test-Article-Draft) return 404 errors, preventing access to article detail pages where metadata editing functionality would be available."]
+    },
+    {
+      "scenario_name": "Test metadata validation",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Fill article form with Title, Article Type, Content, and Tags",
+          "expected": "Form should validate and allow submission",
+          "actual": "Form displayed validation errors even when all required fields were populated",
+          "screenshot": "Metadata and Article Types_step05_article_form_filled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Publish button",
+          "expected": "Article should be created or appropriate validation message shown",
+          "actual": "Validation errors appeared stating 'Text is required' for fields that were already filled",
+          "screenshot": "Metadata and Article Types_step06_after_publish.png"
+        }
+      ],
+      "issues": ["Form validation appears to be malfunctioning - shows 'Text is required' errors for Title field despite containing 'Metadata Test Article'. This appears to be a bug in the validation logic."]
+    },
+    {
+      "scenario_name": "Test metadata display in article view",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to article detail page to view metadata display",
+          "expected": "Article page loads showing metadata table with key-value pairs",
+          "actual": "Unable to access article detail pages due to 404 errors on all article URLs",
+          "screenshot": "Metadata and Article Types_step07_wiki_list.png"
+        }
+      ],
+      "issues": ["Cannot test metadata display because article detail pages return 404 errors. Code review confirms MetaDataControl.ascx exists to display metadata in a table format, but UI cannot be verified."]
+    }
+  ],
+  "observations": [
+    "Code review confirms extensive metadata infrastructure exists in the Wiki module: MetaDataController.cs manages CRUD operations, MetaData.cs defines entity with SettingId, ModuleId, ArticleTypeId, FieldType, Key, and Enabled properties.",
+    "MetaDataEditor.ascx provides UI for editing metadata with tabs for Image and Metadata, supporting 5 field types: Date (0), Text (1), URL (2), Boolean (3), MultilineText (4).",
+    "MetaDataControl.ascx shows metadata display functionality with a table layout showing key-value pairs and optional image display.",
+    "Article Type functionality is working - 12 predefined types are available in dropdown: Teams/Groups, Animals, Misc., Architecture, Geography, Procedures, Concepts, Media, Books, Awards, Events, People.",
+    "DataService.cs contains methods for metadata operations: GetMetaDataTypes, GetMetaDataById, GetMetaDataByName, EnableMetaData, DeleteMetaData.",
+    "Article routing appears broken - all article detail URLs (e.g., /en-us/Wiki-Test/Test-Article-Draft) return 404 errors despite articles showing in the listing.",
+    "Article creation form validation appears buggy - shows 'Text is required' errors despite fields containing data."
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 1,
+    "failed": 4,
+    "pass_rate": "20%"
+  }
+}

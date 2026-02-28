@@ -1,0 +1,202 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Permissions and Security",
+    "feature_description": "Control access to wiki features based on user roles and permissions",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T08:52:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Test view permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page as authenticated superuser",
+          "expected": "Wiki page should be accessible and display articles",
+          "actual": "Wiki page loaded successfully showing 8 articles with full view permissions",
+          "screenshot": "Permissions and Security_step01_wiki_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Access page permissions settings",
+          "expected": "Page permissions tab should show role-based access controls",
+          "actual": "Page permissions displayed with View Page, Edit Page columns and role assignments",
+          "screenshot": "Permissions and Security_step02_page_permissions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test create permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Access module permissions to verify create article capability",
+          "expected": "Module permissions should show Content/Edit permissions that control article creation",
+          "actual": "Module permissions tab shows Content, Edit Module, and Moderators columns for controlling article creation",
+          "screenshot": "Permissions and Security_step05_module_permissions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test edit permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enable Edit mode on Wiki page",
+          "expected": "Edit mode should enable module editing capabilities",
+          "actual": "Edit mode enabled successfully, showing module action menu options",
+          "screenshot": "Permissions and Security_step03_edit_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Access module settings",
+          "expected": "Module settings should be accessible with Admin > Settings menu",
+          "actual": "Module settings dialog opened with multiple tabs including Module Settings and Permissions",
+          "screenshot": "Permissions and Security_step04_module_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test moderate permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Access Module Permissions tab and verify Moderators column",
+          "expected": "Wiki module should have a Moderators permission column",
+          "actual": "Module permissions grid shows Moderators column specific to Wiki module for controlling article moderation",
+          "screenshot": "Permissions and Security_step05_module_permissions.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Add Moderators role with moderation permission",
+          "expected": "Moderators role should be addable with moderation checkbox",
+          "actual": "Successfully added Moderators role and granted Moderators permission checkbox",
+          "screenshot": "Permissions and Security_step08_moderator_permission_granted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test permission inheritance",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Toggle 'Inherit View permissions from Page' checkbox",
+          "expected": "Disabling inheritance should show independent permission controls",
+          "actual": "Unchecking inheritance checkbox changed the permission grid to show independent controls",
+          "screenshot": "Permissions and Security_step06_view_inherit_disabled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Add new role with inherited settings disabled",
+          "expected": "Should be able to add roles independently of page permissions",
+          "actual": "Successfully added Moderators role when inheritance was disabled",
+          "screenshot": "Permissions and Security_step07_moderators_role_added.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test anonymous user access",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Log out and attempt to access Wiki Test page as anonymous user",
+          "expected": "Anonymous user should be redirected to login page if page has restricted permissions",
+          "actual": "Anonymous user was redirected to login page at /en-us/Login?returnurl=%2fen-us%2fWiki-Test",
+          "screenshot": "Permissions and Security_step09_anonymous_access_denied.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Log back in as superuser",
+          "expected": "Should be able to log back in and access Wiki page",
+          "actual": "Successfully logged back in and can access Wiki page with full permissions",
+          "screenshot": "Permissions and Security_step10_logged_back_in.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test group mode permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Groups and access Wiki Test Group",
+          "expected": "Group should be accessible with Wiki tab available",
+          "actual": "Wiki Test Group loaded with Activity tab showing group content and Wiki tab in tablist",
+          "screenshot": "Permissions and Security_step11_group_activity.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Wiki tab within the group",
+          "expected": "Wiki module should load in group context showing group-specific articles",
+          "actual": "Wiki module loaded showing 2 group-specific articles: Group Integration Test Article and Group Wiki Test Article",
+          "screenshot": "Permissions and Security_step12_group_wiki.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify group member can view and create articles",
+          "expected": "Group owner/member should have full access to Wiki within group context",
+          "actual": "As group owner, 'Create article' button is visible and articles are accessible",
+          "screenshot": "Permissions and Security_step13_group_wiki_articles.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test anti-forgery validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Test API endpoint method restriction",
+          "expected": "POST-only endpoints should reject GET requests",
+          "actual": "API returned: 'The requested resource does not support http method GET'",
+          "screenshot": "Permissions and Security_step14_api_method_restriction.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt POST request to Wiki Content/Publish API without anti-forgery token",
+          "expected": "Request should be rejected with anti-forgery validation error",
+          "actual": "API returned 404 with message: 'RequestVerificationToken not present' confirming ValidateAntiForgeryToken attribute is working",
+          "screenshot": "Permissions and Security_step15_antiforgery_test.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Attempt API call without authentication",
+          "expected": "Unauthenticated requests should be rejected",
+          "actual": "API returned: 'Authorization has been denied for this request' confirming DnnAuthorize attribute works",
+          "screenshot": "Permissions and Security_step14_api_method_restriction.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Wiki module extends ModuleSecurityBase which provides CanView, CanEdit, and CanModerate properties based on module permissions",
+    "Wiki-specific ModuleSecurity class adds CanCreateArticle() method that checks CanModerate OR hasCreatePage permission",
+    "ContentController uses [DnnAuthorize] and [ValidateAntiForgeryToken] attributes for API security",
+    "RequireGroupModeChangePermission and RequireGroupModeViewPermission methods handle group context validation in BaseWebApiController",
+    "Module permissions include a Wiki-specific 'Moderators' column for article moderation control",
+    "Permission inheritance from page can be toggled independently for view permissions"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 8,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

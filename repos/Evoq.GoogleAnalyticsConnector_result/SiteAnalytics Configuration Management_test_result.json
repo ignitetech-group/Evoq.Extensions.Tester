@@ -1,0 +1,107 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "SiteAnalytics Configuration Management",
+    "feature_description": "Manages SiteAnalytics.config file updates, backups, and version-specific configurations.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View SiteAnalytics.config in Config Manager",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Settings > Config Manager",
+          "expected": "Configuration Manager opens with Config Files tab",
+          "actual": "Configuration Manager opened with Config Files tab selected and SiteAnalytics.config available in dropdown",
+          "screenshot": "SiteAnalytics_Configuration_Management_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Selected SiteAnalytics.config from the dropdown",
+          "expected": "File contents displayed in editor",
+          "actual": "SiteAnalytics.config contents displayed showing Universal Analytics script template with GoogleAnalyticsObject",
+          "screenshot": "SiteAnalytics_Configuration_Management_step03_config_content_UA.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save GA4 Configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Settings > Connectors and clicked Edit on Google Analytics 4",
+          "expected": "Configuration form expands with Measurement ID field",
+          "actual": "Configuration form expanded showing Measurement ID field with existing G- tracking ID",
+          "screenshot": "SiteAnalytics_Configuration_Management_step02_ga4_config_expanded.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Entered GA4 Measurement ID (G-TESTGA4ID) and clicked Save",
+          "expected": "Configuration saved successfully",
+          "actual": "Configuration saved with 'Item successfully saved' message displayed",
+          "screenshot": "SiteAnalytics_Configuration_Management_step05_ga4_save_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test GA4 Config Selection",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Saved GA4 tracking ID (G-TESTGA4ID) which should trigger EnsureConfig to copy GA4 template",
+          "expected": "SiteAnalytics.config should be updated to GA4 template (containing gtag.js script)",
+          "actual": "SiteAnalytics.config still contains Universal Analytics script (GoogleAnalyticsObject, analytics.js) instead of GA4 template (gtag.js)",
+          "screenshot": "SiteAnalytics_Configuration_Management_step06_config_still_UA.png"
+        }
+      ],
+      "issues": ["SiteAnalytics.config was not updated to GA4 template after saving GA4 tracking ID. The EnsureConfig method should copy SiteAnalytics.GA4.config to SiteAnalytics.config when a G- tracking ID is saved, but the config file still contains the Universal Analytics script. This may indicate: (1) GA4 template file does not exist on server, (2) file permissions issue, or (3) EnsureConfig logic not executing properly."]
+    },
+    {
+      "scenario_name": "Save Universal Analytics Configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Changed Measurement ID to Universal Analytics format (UA-12345678-1)",
+          "expected": "UA tracking ID accepted in the field",
+          "actual": "UA-12345678-1 entered successfully in Measurement ID field",
+          "screenshot": "SiteAnalytics_Configuration_Management_step07_ua_id_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Save to save Universal Analytics configuration",
+          "expected": "Configuration saved successfully",
+          "actual": "Configuration saved with 'Item successfully saved' message displayed",
+          "screenshot": "SiteAnalytics_Configuration_Management_step08_ua_save_success.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The SiteAnalytics Configuration Management feature is primarily automatic/backend-driven with limited direct UI exposure.",
+    "The module upgrade process (UpgradeSiteAnalytics.UpdateSiteAnalyticsConfig) cannot be tested via UI as it runs automatically during DNN module upgrade to version 09.02.00.",
+    "Backup creation during upgrade cannot be tested via UI - it occurs automatically when config hash differs.",
+    "Config hash comparison is internal to the upgrade process and not exposed in UI.",
+    "Missing config file handling is automatic and not testable via UI.",
+    "Backup folder creation is automatic during upgrade process.",
+    "Config file permissions are file-system level and not directly testable via UI.",
+    "The EnsureConfig method is triggered when saving connector settings but the GA4 template switch did not work - suggesting either the SiteAnalytics.GA4.config template file is missing from the deployment or there is a bug in the version detection/file copy logic.",
+    "The Config Manager in DNN allows viewing and editing SiteAnalytics.config directly, which confirms the file is accessible."
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 3,
+    "failed": 1,
+    "pass_rate": "75%"
+  }
+}

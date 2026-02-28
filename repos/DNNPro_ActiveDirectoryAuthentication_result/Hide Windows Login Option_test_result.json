@@ -1,0 +1,87 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Hide Windows Login Option",
+    "feature_description": "Option to hide the Windows authentication login button from the login page",
+    "feature_priority": "Low",
+    "test_date": "2026-02-28T09:15:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Hide Login Controls Setting",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Settings > Extensions > Authentication Systems > DNNPro_ActiveDirectoryAuthentication > Site Settings",
+          "expected": "The Site Settings tab should display the Active Directory authentication configuration options",
+          "actual": "Site Settings tab displayed with all configuration options including 'Hide Login Controls?' checkbox",
+          "screenshot": "Hide Windows Login Option_step01_settings_page.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Enable Hide Windows Login Option",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check the 'Enabled?' checkbox to enable Windows Authentication",
+          "expected": "Enabled checkbox should be checked",
+          "actual": "Enabled checkbox was successfully checked",
+          "screenshot": "Hide Windows Login Option_step02_enabled_checked.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check the 'Hide Login Controls?' checkbox",
+          "expected": "Hide Login Controls checkbox should be checked",
+          "actual": "Hide Login Controls checkbox was successfully checked",
+          "screenshot": "Hide Windows Login Option_step02_enabled_checked.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click 'Update Authentication Settings' to save",
+          "expected": "Settings should be saved",
+          "actual": "Settings were processed. An error message appeared regarding network status check (expected in non-AD environment), but configuration was saved as the error occurs after UpdateConfig() call",
+          "screenshot": "Hide Windows Login Option_step03_save_with_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Login Page After Enabling Hide Option",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Log out and navigate to the login page",
+          "expected": "Windows Login tab should be hidden from the login page",
+          "actual": "Windows Login tab was still visible on the login page after initial logout (though it disappeared on subsequent page load)",
+          "screenshot": "Hide Windows Login Option_step05_login_page_with_windows_tab.png"
+        }
+      ],
+      "issues": [
+        "The 'Hide Login Controls?' setting behavior is inconsistent - Windows Login tab was visible immediately after enabling the setting",
+        "Code review reveals that 'Hide Login Controls' setting is NOT used to hide the login tab UI; it only affects automatic authentication behavior in WindowsSignin.aspx and AuthenticationModule",
+        "The feature description ('hide the Windows authentication login button from the login page') does not match the actual implementation which allows hidden auto-authentication"
+      ]
+    }
+  ],
+  "observations": [
+    "The 'Hide Login Controls?' setting (AD_HideWindowsLogin) is stored in portal settings and can be toggled via the UI",
+    "Based on code review, this setting does NOT actually hide the Windows Login tab from the login page UI",
+    "The setting is used in WindowsSignin.aspx.cs (line 52) and AuthenticationModule.cs (line 115) to allow Windows authentication to proceed even when WindowsAuthentication is disabled",
+    "The Login.ascx.cs 'Enabled' property (which controls tab visibility) only checks WindowsAuthentication, not HideWindowsLogin",
+    "The feature name 'Hide Login Controls' is misleading - it enables a 'hidden mode' auto-authentication, not UI hiding",
+    "Network status check error is expected in environments without Active Directory infrastructure - settings are saved before this check"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 2,
+    "failed": 1,
+    "pass_rate": "67%"
+  }
+}

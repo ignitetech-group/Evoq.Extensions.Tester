@@ -1,0 +1,201 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.SiteSettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Included File Extension Management",
+    "feature_description": "Manages file extensions that are allowed to be indexed and crawled by the search system",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:47:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View list of all included extensions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Settings > Site Settings > Search > File Extensions tab",
+          "expected": "List of included file extensions is displayed",
+          "actual": "List shows 6 included extensions: .doc, .docx, .pdf, .ppt, .pptx, .txt with FILE EXTENSION, FILE TYPE, and CONTENT CRAWLING columns",
+          "screenshot": "Included File Extension Management_step01_file_extensions_tab.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify IFilter information display for extensions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View the included extensions list and observe FILE TYPE column",
+          "expected": "IFilter information is displayed for extensions that have filters installed",
+          "actual": "FILE TYPE column shows filter names: 'Microsoft Office Filter' for .doc/.ppt, 'Wordpad DOCX Filter' for .docx, 'Plain Text filter' for .txt. Extensions .pdf and .pptx show info icons indicating no IFilter installed",
+          "screenshot": "Included File Extension Management_step01_file_extensions_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Observe CONTENT CRAWLING column checkboxes",
+          "expected": "Extensions with IFilter should have checked checkboxes",
+          "actual": "Checkboxes are checked for extensions with IFilter (.doc, .docx, .ppt, .txt). Extensions without IFilter (.pdf, .pptx) have unchecked boxes with info icons",
+          "screenshot": "Included File Extension Management_step01_file_extensions_tab.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with empty extension value",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add File Type button to open add extension form",
+          "expected": "Add extension form opens with empty input field",
+          "actual": "Form opens with 'File Extension' label and empty text input with Cancel and Save buttons",
+          "screenshot": "Included File Extension Management_step02_add_extension_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button without entering any value",
+          "expected": "Validation error should appear",
+          "actual": "Input field shows red border and validation error icon, form is not submitted",
+          "screenshot": "Included File Extension Management_step03_empty_extension_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add extension without leading dot (xls)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'xls' (without leading dot) in the File Extension field",
+          "expected": "Either accept the extension without dot or provide clear validation message about required format",
+          "actual": "Input shows red border and error icon with validation error 'This field has an error'",
+          "screenshot": "Included File Extension Management_step05_xls_validation_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Hover over error icon to see tooltip",
+          "expected": "Clear error message explaining required format",
+          "actual": "Tooltip shows 'This field has an error' without specifying that leading dot is required",
+          "screenshot": "Included File Extension Management_step06_error_tooltip.png"
+        }
+      ],
+      "issues": ["Error message 'This field has an error' is not helpful - should indicate that extension must start with a dot"]
+    },
+    {
+      "scenario_name": "Add extension with leading dot (.xls)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter '.xls' (with leading dot) in the File Extension field",
+          "expected": "Extension should be accepted",
+          "actual": "Input accepts '.xls' value without validation error",
+          "screenshot": "Included File Extension Management_step07_dot_xls_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Extension should be added to the list",
+          "actual": ".xls is added to the list showing 'Microsoft Office Filter' as FILE TYPE and checked CONTENT CRAWLING checkbox",
+          "screenshot": "Included File Extension Management_step08_xls_added_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add duplicate included extension and verify error",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add File Type and enter '.xls' again (already exists)",
+          "expected": "Duplicate error should be shown",
+          "actual": "After clicking Save, error message appears: 'Extension .xls was already in the list'",
+          "screenshot": "Included File Extension Management_step09_duplicate_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add extension not in whitelist and verify error",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter '.exe' in the File Extension field",
+          "expected": "Whitelist validation error should appear",
+          "actual": "Input shows '.exe' value entered",
+          "screenshot": "Included File Extension Management_step10_exe_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Error message about extension not being allowed",
+          "actual": "Error message appears: 'Extension .exe is not a valid file extension, please check whitelist'",
+          "screenshot": "Included File Extension Management_step11_exe_whitelist_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete included file extension",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Locate .xls in the list and click the delete (trash) icon",
+          "expected": "Confirmation dialog should appear",
+          "actual": "Delete confirmation dialog appears with message 'Are you sure you want to delete this extension?'",
+          "screenshot": "Included File Extension Management_step13_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Yes button to confirm deletion",
+          "expected": ".xls should be removed from the list",
+          "actual": ".xls is successfully removed, list now shows original 6 extensions",
+          "screenshot": "Included File Extension Management_step14_after_delete.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add extension without leading dot (xlsx) - additional validation test",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'xlsx' (without leading dot) in the File Extension field",
+          "expected": "Either accept the extension or show specific validation message about required format",
+          "actual": "Input shows red border and validation error icon",
+          "screenshot": "Included File Extension Management_step15_xlsx_no_dot.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Clear error message about required format",
+          "actual": "Form shows validation error but does not clearly indicate that leading dot is required",
+          "screenshot": "Included File Extension Management_step16_xlsx_validation_error.png"
+        }
+      ],
+      "issues": ["Validation error message does not clearly explain that the extension must start with a dot (e.g., '.xlsx' not 'xlsx')"]
+    }
+  ],
+  "observations": [
+    "The system requires file extensions to start with a leading dot (e.g., '.txt' not 'txt'), but the validation error message 'This field has an error' does not clearly communicate this requirement to users",
+    "IFilter integration is working correctly - extensions with installed filters show filter names (Microsoft Office Filter, Wordpad DOCX Filter, Plain Text filter) while extensions without filters show info icons",
+    "CONTENT CRAWLING checkboxes are automatically set based on IFilter availability - checked for extensions with filters, unchecked for those without",
+    "The whitelist validation correctly prevents adding potentially dangerous extensions like .exe",
+    "Duplicate extension detection works correctly at the server level, returning appropriate error messages"
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 7,
+    "failed": 2,
+    "pass_rate": "78%"
+  }
+}

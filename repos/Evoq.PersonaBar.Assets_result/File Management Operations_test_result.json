@@ -1,0 +1,239 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Assets",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "File Management Operations",
+    "feature_description": "Provides comprehensive file management including rename, delete, copy, move operations with permission validation",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Rename file with valid name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Assets panel and hover over test_upload_file.txt",
+          "expected": "File action icons should appear on hover",
+          "actual": "File action icons appeared on hover including edit, move, copy, download, delete",
+          "screenshot": "File Management Operations_step02_hover_file.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click edit button to open file details panel",
+          "expected": "File details panel should open with editable name field",
+          "actual": "File details panel opened with Name field containing current filename",
+          "screenshot": "File Management Operations_step04_file_details.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Change filename to 'renamed_test_file.txt' and click Save",
+          "expected": "File should be renamed successfully",
+          "actual": "File was renamed successfully to 'renamed_test_file.txt'",
+          "screenshot": "File Management Operations_step06_rename_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Rename file with invalid characters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open file details panel and enter 'invalid:file?.txt' as new name",
+          "expected": "System should display validation error for invalid characters",
+          "actual": "Entered filename with invalid characters ':' and '?'",
+          "screenshot": "File Management Operations_step07_invalid_chars_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save to trigger validation",
+          "expected": "Error message should indicate invalid characters",
+          "actual": "Error displayed: 'The name contains invalid character(s). Please specify a name without \\:/*?\"<>|.'",
+          "screenshot": "File Management Operations_step08_invalid_chars_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Rename file with reserved name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'CON.txt' as new filename (Windows reserved name)",
+          "expected": "System should display validation error for reserved names",
+          "actual": "Entered reserved filename 'CON.txt'",
+          "screenshot": "File Management Operations_step09_reserved_name_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save to trigger validation",
+          "expected": "Error message should indicate reserved name",
+          "actual": "Error displayed: 'The name is reserved. Try a different name.'",
+          "screenshot": "File Management Operations_step10_reserved_name_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete single file",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hover over renamed_test_file.txt and click delete button",
+          "expected": "Delete confirmation dialog should appear",
+          "actual": "Delete confirmation dialog appeared asking 'Are you sure you want to delete this file?'",
+          "screenshot": "File Management Operations_step11_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Delete to confirm",
+          "expected": "File should be deleted from the folder",
+          "actual": "File was successfully deleted, no longer visible in folder listing",
+          "screenshot": "File Management Operations_step12_delete_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Copy file to different folder",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hover over test_image.png and click copy button",
+          "expected": "Copy dialog should open with folder selection tree",
+          "actual": "Copy dialog opened showing 'Copy file to (select a destination)' with folder tree",
+          "screenshot": "File Management Operations_step13_copy_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select Images folder as destination",
+          "expected": "Images folder should be highlighted as selected",
+          "actual": "Images folder was selected and highlighted",
+          "screenshot": "File Management Operations_step14_copy_destination_selected.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Copy button to execute copy operation",
+          "expected": "File should be copied to Images folder",
+          "actual": "File was successfully copied to Images folder, verified by navigating to Images folder",
+          "screenshot": "File Management Operations_step15_copy_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Move file between folders",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hover over test_image.png in Home folder and click move button",
+          "expected": "Move dialog should open with folder selection tree",
+          "actual": "Move dialog opened showing 'Move file to (select a destination)' with folder tree",
+          "screenshot": "File Management Operations_step16_move_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select Badges folder as destination",
+          "expected": "Badges folder should be highlighted as selected",
+          "actual": "Badges folder was selected and highlighted",
+          "screenshot": "File Management Operations_step17_move_destination_selected.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Move button to execute move operation",
+          "expected": "File should be moved to Badges folder (removed from source, present in destination)",
+          "actual": "File was moved - no longer in Home folder",
+          "screenshot": "File Management Operations_step18_move_success.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Navigate to Badges folder to verify file was moved",
+          "expected": "test_image.png should be present in Badges folder",
+          "actual": "test_image.png is now present in Badges folder, confirming successful move",
+          "screenshot": "File Management Operations_step20_moved_file_in_badges.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle naming conflicts during copy",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "In Images folder, attempt to copy test_image.png to the same Images folder",
+          "expected": "Copy dialog should open",
+          "actual": "Copy dialog opened with folder tree",
+          "screenshot": "File Management Operations_step21_copy_dialog_for_conflict.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select Images folder as destination (same folder where file exists)",
+          "expected": "Images folder should be selected",
+          "actual": "Images folder selected as destination",
+          "screenshot": "File Management Operations_step22_images_selected_for_conflict.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Copy to execute copy with naming conflict",
+          "expected": "System should handle the conflict by appending suffix to filename",
+          "actual": "System automatically created 'test_image-Copy.png' - appended '-Copy' suffix to resolve naming conflict",
+          "screenshot": "File Management Operations_step24_copy_conflict_resolved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test empty filename validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open file details panel for test_image-Copy.png",
+          "expected": "File details panel should open with editable fields",
+          "actual": "File details panel opened with Name field containing 'test_image-Copy.png'",
+          "screenshot": "File Management Operations_step25_file_details_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clear the Name field to make it empty",
+          "expected": "Name field should be emptied",
+          "actual": "Name field was cleared and is now empty",
+          "screenshot": "File Management Operations_step26_empty_name_field.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save to trigger validation",
+          "expected": "Validation error should appear indicating name is required",
+          "actual": "Validation error displayed: 'Text is required'",
+          "screenshot": "File Management Operations_step28_empty_name_error_visible.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "File action icons (edit, move, copy, download, delete) only appear on hover over file cards",
+    "The system validates against Windows reserved filenames (CON, PRN, AUX, NUL, COM1-9, LPT1-9, CLOCK$)",
+    "Invalid filename characters are: \\:/*?\"<>|",
+    "When copying a file to a location where a file with the same name exists, the system automatically appends '-Copy' suffix to resolve the conflict",
+    "The Name field in file details is marked as required with an asterisk (*)",
+    "Delete operation requires confirmation via a dialog before executing",
+    "Move operation removes the file from the source folder and places it in the destination folder",
+    "Copy operation creates a duplicate in the destination folder while keeping the original"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 8,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

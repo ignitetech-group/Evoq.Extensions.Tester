@@ -1,0 +1,122 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "Profanity Filtering",
+    "feature_description": "Automatically filter and moderate profane content in posts and comments",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Enable profanity filter",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Persona Bar > Settings > Community",
+          "expected": "Community settings page loads with profanity filter options",
+          "actual": "Community settings page loaded successfully with Profanity Filtering dropdown visible",
+          "screenshot": "Profanity Filtering_step01_community_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Profanity Filtering dropdown",
+          "expected": "Dropdown expands showing filter options",
+          "actual": "Dropdown expanded showing three options: Filter Content, Prohibit Content, No Filtering",
+          "screenshot": "Profanity Filtering_step03_filter_options_expanded.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Select 'Prohibit Content' option",
+          "expected": "Option is selected",
+          "actual": "Prohibit Content option was selected successfully",
+          "screenshot": "Profanity Filtering_step04_prohibit_content_selected.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click Save button",
+          "expected": "Settings are saved successfully",
+          "actual": "Settings saved successfully with confirmation message",
+          "screenshot": "Profanity Filtering_step05_settings_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Post with profane content",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Community Activity Stream page",
+          "expected": "Activity Stream page loads with post input area",
+          "actual": "Activity Stream page loaded successfully with 'Tell the world something' input area visible",
+          "screenshot": "Profanity Filtering_step06_community_activity_stream.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter text containing profane word 'damn' in the post input",
+          "expected": "Text is entered in the post input field",
+          "actual": "Text 'Testing profanity filter with word damn' entered successfully",
+          "screenshot": "Profanity Filtering_step07_profanity_text_entered.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Share button to submit the post",
+          "expected": "Post should be blocked with error message since Prohibit Content is enabled",
+          "actual": "Post was accepted and published without being blocked. The profane content 'damn' was not filtered or prohibited.",
+          "screenshot": "Profanity Filtering_step09_profanity_post_visible.png"
+        }
+      ],
+      "issues": [
+        "Profanity filter set to 'Prohibit Content' did not block post containing the word 'damn'. The post was accepted and displayed in the activity stream. This indicates either the profanity word list is empty/not configured, or the filter is not functioning correctly."
+      ]
+    },
+    {
+      "scenario_name": "Configure profanity word list",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Host > Lists to configure profanity word list",
+          "expected": "Lists management page loads showing available lists including ProfanityFilter",
+          "actual": "No UI found to configure the profanity word list. The Host/Lists page shows Host options but no Lists management interface. Persona Bar does not expose the Lists configuration.",
+          "screenshot": "Profanity Filtering_step12_no_lists_ui.png"
+        }
+      ],
+      "issues": [
+        "No accessible UI found to configure the profanity word list (ProfanityFilter list in DNN ListController). Based on code review, the profanity filter relies on the ListController 'ProfanityFilter' list, but there is no visible UI in Persona Bar or legacy admin pages to manage this list."
+      ]
+    },
+    {
+      "scenario_name": "Test different profanity filter levels",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify profanity filter dropdown options in Community Settings",
+          "expected": "Three filter levels should be available: Filter Content, Prohibit Content, No Filtering",
+          "actual": "All three filter levels are available in the dropdown: Filter Content (default), Prohibit Content, and No Filtering",
+          "screenshot": "Profanity Filtering_step03_filter_options_expanded.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review confirmed three profanity filter modes exist: FilterContent (0) - replaces profane words, ProhibitContent (1) - blocks submission entirely, NoFiltering (2) - no filtering applied",
+    "The profanity filter implementation in ActivityStreamServicesController.cs correctly checks the filter setting and uses ProfanityHelper.ContainsProfanity() for validation",
+    "ProfanityHelper.cs uses PortalSecurity.Instance.Remove() with 'ProfanityFilter' ListController list to detect profanity",
+    "The profanity word list is stored in DNN's ListController under the key 'ProfanityFilter', but this list appears to be empty or not configured by default",
+    "No UI was found in Persona Bar or legacy admin pages to manage the profanity word list - this is a critical missing feature for the profanity filter to function",
+    "The suggested test scenario 'Admin > Activity Stream Settings > Profanity Filter' location in the prompt is incorrect - the actual location is Persona Bar > Settings > Community"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 2,
+    "failed": 2,
+    "pass_rate": "50%"
+  }
+}

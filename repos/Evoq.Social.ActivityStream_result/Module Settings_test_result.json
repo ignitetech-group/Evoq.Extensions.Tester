@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "Module Settings",
+    "feature_description": "Configure activity stream module settings and behavior",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T12:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Module Settings Dialog",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Community page with Activity Stream module",
+          "expected": "Page loads with Activity Stream module visible",
+          "actual": "Community page loaded successfully with Activity Stream module displaying",
+          "screenshot": "Module Settings_step01_community_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enable Edit Mode via Persona Bar",
+          "expected": "Page enters edit mode with module actions available",
+          "actual": "Edit mode enabled, module actions menu accessible",
+          "screenshot": "Module Settings_step02_edit_mode.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Activity Stream module to select it",
+          "expected": "Module is selected and ready for settings access",
+          "actual": "Module selected, action menu visible",
+          "screenshot": "Module Settings_step03_activity_stream_module.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Open Admin > Settings from module action menu",
+          "expected": "Module Settings dialog opens",
+          "actual": "Module Settings dialog opened successfully showing Module Settings, Permissions, and Activity Stream tabs",
+          "screenshot": "Module Settings_step04_settings_dialog.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Click Activity Stream tab to view module-specific settings",
+          "expected": "Activity Stream settings panel displays all configuration options",
+          "actual": "Activity Stream tab opened showing: Enable Activity Stream Editor, File Attachments, Photo Attachments, Max Files Per Journal, Enable View Filters, Enable Grouping, Default Page Size, Maximum Characters",
+          "screenshot": "Module Settings_step05_activity_stream_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Enable/Disable Editor Toggle",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Uncheck 'Enable Activity Stream Editor' checkbox",
+          "expected": "File Attachments and Photo Attachments checkboxes should become disabled",
+          "actual": "File Attachments and Photo Attachments checkboxes became disabled/grayed out when Enable Editor was unchecked",
+          "screenshot": "Module Settings_step06_editor_disabled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Re-enable 'Enable Activity Stream Editor' checkbox",
+          "expected": "File Attachments and Photo Attachments checkboxes should become enabled",
+          "actual": "File Attachments and Photo Attachments checkboxes became enabled again",
+          "screenshot": "Module Settings_step07_settings_modified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure File and Photo Attachments",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Toggle File Attachments checkbox to unchecked state",
+          "expected": "File Attachments setting changes to disabled",
+          "actual": "File Attachments checkbox successfully unchecked",
+          "screenshot": "Module Settings_step07_settings_modified.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Toggle Photo Attachments checkbox to unchecked state",
+          "expected": "Photo Attachments setting changes to disabled",
+          "actual": "Photo Attachments checkbox successfully unchecked",
+          "screenshot": "Module Settings_step07_settings_modified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure Max Files Per Journal",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Change Max Files Per Journal dropdown from 10 to 5",
+          "expected": "Dropdown value changes to 5",
+          "actual": "Max Files Per Journal dropdown successfully changed to 5",
+          "screenshot": "Module Settings_step07_settings_modified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Configure Maximum Message Length",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Change Maximum Characters per message dropdown from 250 to 500",
+          "expected": "Dropdown value changes to 500",
+          "actual": "Maximum Characters dropdown successfully changed to 500",
+          "screenshot": "Module Settings_step07_settings_modified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save and Apply Settings",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Update button to save all modified settings",
+          "expected": "Settings are saved successfully and dialog closes or shows success message",
+          "actual": "Server error occurred: 'Object reference not set to an instance of an object.' Page redirected to Site Settings page with critical error message: 'A critical error has occurred. Please check the Admin Logs for further details.'",
+          "screenshot": "Module Settings_step08_save_error.png"
+        }
+      ],
+      "issues": ["NullReferenceException when saving Activity Stream module settings - settings cannot be persisted"]
+    },
+    {
+      "scenario_name": "Verify Settings Persistence",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Reopen module settings to verify saved values",
+          "expected": "All previously modified settings should be retained",
+          "actual": "Unable to verify persistence due to save error in previous test",
+          "screenshot": "Module Settings_step08_save_error.png"
+        }
+      ],
+      "issues": ["Settings persistence cannot be verified because the save operation failed with NullReferenceException"]
+    }
+  ],
+  "observations": [
+    "The Enable Editor toggle correctly controls the enabled/disabled state of File Attachments and Photo Attachments checkboxes via JavaScript",
+    "All settings UI elements are accessible and functional for modification",
+    "The settings save functionality has a critical bug causing NullReferenceException when clicking Update",
+    "Code in Settings.ascx shows the following configurable options: Enable Editor, Allow Files, Allow Photos, Max Files (1-10), Enable View Filters, Enable Grouping, Default Page Size (5-100), Max Message Length (140-2000), Journal Filters",
+    "No emoji panel enable/disable setting found in the UI - this was listed in test scenarios but may be configured elsewhere or not implemented"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 5,
+    "failed": 2,
+    "pass_rate": "71%"
+  }
+}

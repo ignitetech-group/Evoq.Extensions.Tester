@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "Post Subscription",
+    "feature_description": "Subscribe to posts or walls to receive notifications of new activity",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:55:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Subscribe to a post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Community page with Activity Stream",
+          "expected": "Activity Stream with posts should be visible",
+          "actual": "Community page loaded with Activity Stream showing multiple posts",
+          "screenshot": "Post Subscription_step01_activity_stream.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Locate a post with 'Subscribe' link and click it",
+          "expected": "Link should change to 'Unsubscribe' indicating successful subscription",
+          "actual": "Clicked Subscribe link on post. Link changed to 'Unsubscribe' and a notification badge appeared confirming subscription",
+          "screenshot": "Post Subscription_step04_subscribed_to_post.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Unsubscribe from a post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Locate a post with 'Unsubscribe' link (previously subscribed) and click it",
+          "expected": "Link should change back to 'Subscribe' indicating successful unsubscription",
+          "actual": "Clicked Unsubscribe link on the post. Link changed back to 'Subscribe' confirming unsubscription",
+          "screenshot": "Post Subscription_step05_unsubscribed_from_post.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Subscribe to user's wall",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to another user's profile (Content Editor user)",
+          "expected": "User profile page with Activity Feed should load",
+          "actual": "Content Editor's profile page loaded with Activity Feed showing wall subscription toggle button",
+          "screenshot": "Post Subscription_step06_user_profile.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click the wall subscription toggle button (#tbar-subscribe)",
+          "expected": "Button should become selected and tooltip should change to 'Unsubscribe from Updates'",
+          "actual": "Clicked wall subscription button via JavaScript. Button added 'selected' class and tooltip changed to 'Unsubscribe from Updates'",
+          "screenshot": "Post Subscription_step07_subscribed_to_wall.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Unsubscribe from user's wall",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click the wall subscription toggle button again while subscribed",
+          "expected": "Button should become deselected and tooltip should change to 'Subscribe to Updates'",
+          "actual": "Clicked wall subscription button. Button removed 'selected' class and tooltip changed to 'Subscribe to Updates'",
+          "screenshot": "Post Subscription_step08_unsubscribed_from_wall.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify subscription status persistence",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate away from the page and return to Community Activity Stream",
+          "expected": "Subscription states should persist - previously subscribed posts should still show 'Unsubscribe', unsubscribed posts should show 'Subscribe'",
+          "actual": "Navigated back to Community page. Subscription states persisted correctly: 'This is a test post created for Post Creation and Management testing' shows 'Unsubscribe' (subscribed), 'Test post to verify like own post' shows 'Subscribe' (unsubscribed)",
+          "screenshot": "Post Subscription_step12_persistence_verified.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The wall subscription button (#tbar-subscribe) is not directly visible in the accessibility tree and requires JavaScript interaction to click",
+    "Post subscription state changes are reflected immediately in the UI without page refresh",
+    "The subscription API endpoints (SubscribeToPost, UnsubscribeFromPost, SubscribeToWall, UnsubscribeFromWall) are implemented in SubscriptionsController.cs and require ValidateAntiForgeryToken",
+    "Notification test scenario was not explicitly tested as it would require waiting for actual notifications from other user activities - code review confirms notification integration exists via ICommentsNotifications"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

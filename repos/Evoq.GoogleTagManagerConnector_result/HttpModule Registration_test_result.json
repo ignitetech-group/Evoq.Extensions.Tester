@@ -1,0 +1,132 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleTagManagerConnector",
+    "extension_type": "Connector",
+    "feature_name": "HttpModule Registration",
+    "feature_description": "Registers and manages the GTM HttpModule that intercepts page rendering to inject tracking scripts",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T10:11:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify module registration in web.config on install",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Read web.config file at C:\\DNN\\EvoqEngageDoneDev\\web.config",
+          "expected": "GoogleTagManager module should be registered in system.webServer/modules section",
+          "actual": "Found GoogleTagManager module registered at line 117: <add name=\"GoogleTagManager\" type=\"Evoq.GoogleTagManagerConnector.TagManagerModule, Evoq.GoogleTagManagerConnector\" preCondition=\"managedHandler\" />",
+          "screenshot": "HttpModule Registration_step07_webconfig_editor.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to Config Manager and select web.config",
+          "expected": "web.config file should be accessible and viewable in Config Manager",
+          "actual": "Successfully accessed Config Manager and viewed web.config file content",
+          "screenshot": "HttpModule Registration_step07_webconfig_editor.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test PreRequestHandlerExecute event handling - GTM Script Injection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login as host user and navigate to homepage",
+          "expected": "Page should load successfully",
+          "actual": "Homepage loaded successfully with logged-in SuperUser Account visible",
+          "screenshot": "HttpModule Registration_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Evaluate page source to check for GTM script injection",
+          "expected": "GTM script should be injected into page head if Container ID is configured",
+          "actual": "Found GTM script injected: https://www.googletagmanager.com/gtm.js?id=GTM-5CVQBG. hasGTM=true, gtmScripts found in page",
+          "screenshot": "HttpModule Registration_step04_frontend_with_gtm.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify module only processes valid DNN requests (CDefault pages)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check GTM scripts on admin/settings page",
+          "expected": "GTM scripts should be present on admin pages since they render within CDefault page frames",
+          "actual": "GTM scripts found on admin page (hasGTM=true). The admin PersonaBar is loaded in an iframe within the main CDefault page, so GTM is correctly injected in the parent page",
+          "screenshot": "HttpModule Registration_step05_admin_page_gtm.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test module with non-page handlers (API requests)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Make API request to /API/PersonaBar/SiteSettings/GetPortalSettings and check response",
+          "expected": "API response should NOT contain GTM scripts (module should skip non-page handlers)",
+          "actual": "API returned JSON response (status 200, isJson=true, contentLength=11175) with hasGTM=false - confirming module correctly skips API/non-page handlers",
+          "screenshot": "HttpModule Registration_step06_api_no_gtm.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Container ID validation through connector UI",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Connectors page and click Connect on Google Tag Manager",
+          "expected": "GTM configuration panel should open with Container ID field",
+          "actual": "GTM configuration panel opened showing Container ID field and checkbox option",
+          "screenshot": "HttpModule Registration_step02_gtm_config_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter invalid Container ID (GTM-TEST123) and click Save",
+          "expected": "Validation error should appear",
+          "actual": "Validation error displayed: 'The Container Id is invalid or container hasn't been published yet.'",
+          "screenshot": "HttpModule Registration_step03_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify module doesn't interfere with admin pages",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Site Settings in admin panel",
+          "expected": "Admin page should load and function correctly",
+          "actual": "Admin panel loaded successfully with all settings tabs visible and functional. GTM is injected in the parent page but does not interfere with admin functionality",
+          "screenshot": "HttpModule Registration_step05_admin_page_gtm.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The HttpModule is correctly registered in web.config at line 117 with the configuration: <add name=\"GoogleTagManager\" type=\"Evoq.GoogleTagManagerConnector.TagManagerModule, Evoq.GoogleTagManagerConnector\" preCondition=\"managedHandler\" />",
+    "The module uses Initialize.ProcessHttpModule() to determine if requests should be processed, correctly filtering out non-DNN requests",
+    "Script injection only occurs for CDefault pages (DNN's default page type) as verified in TagManagerModule.cs line 46: if (!(page is CDefault)) return;",
+    "API endpoints correctly return JSON without any GTM script injection, confirming the module's page handler filtering works",
+    "A valid GTM Container ID (GTM-5CVQBG) was already configured in the system, demonstrating the module is actively working",
+    "Module removal on uninstall cannot be tested via UI as it would require uninstalling the extension package"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

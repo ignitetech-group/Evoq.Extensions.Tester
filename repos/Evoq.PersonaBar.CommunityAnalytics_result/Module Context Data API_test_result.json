@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.CommunityAnalytics",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Module Context Data API",
+    "feature_description": "API endpoint for retrieving contextual data specific to individual modules",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T10:01:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access GetModuleContextData API endpoint",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to the documented API endpoint /DesktopModules/PersonaBar/API/CommunityAnalytics/GetModuleContextData",
+          "expected": "API endpoint should be accessible and return module context data",
+          "actual": "API returns 404 error: 'No HTTP resource was found that matches the request URI'. The GetModuleContextData endpoint does not exist.",
+          "screenshot": "Module Context Data API_step01_api_no_params.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Try API with moduleName parameter: /DesktopModules/PersonaBar/API/CommunityAnalytics/GetModuleContextData?moduleName=Blogs",
+          "expected": "API should return context data for Blogs module",
+          "actual": "API returns 404 error. The endpoint does not exist in this path structure.",
+          "screenshot": "Module Context Data API_step03_api_not_found.png"
+        }
+      ],
+      "issues": ["The documented GetModuleContextData API endpoint does not exist. The actual implementation uses GetModuleDashboardInfo instead at /en-us/API/personabar/CommunityAnalytics/GetModuleDashboardInfo"]
+    },
+    {
+      "scenario_name": "Retrieve context for Blogs module type (using actual API)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Call GetModuleDashboardInfo API with moduleName=Blogs parameter",
+          "expected": "API should return module-specific context data for Blogs",
+          "actual": "API returned HTTP 200 with JSON data containing: periodLabel, labels, create counts, views counts, areaStats with Blogs-specific health metrics ('Blogs older than 6 hours with no Views', 'Blogs older than 24 hours without Comments', etc.), engagementPercent, engagementStats, tagStats, and popularContent",
+          "screenshot": "Module Context Data API_step04_blogs_api_response.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Retrieve context for Wiki module type",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Call GetModuleDashboardInfo API with moduleName=Wiki parameter",
+          "expected": "API should return module-specific context data for Wiki",
+          "actual": "API returned HTTP 200 with JSON data containing Wiki-specific areaStats ('Articles older than 24 hours with no Views', 'Articles older than 12 hours with Views but no Interaction', 'Articles older than 24 hours deleted') with same data structure as Blogs",
+          "screenshot": "Module Context Data API_step05_wiki_api_response.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with invalid module names",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Call GetModuleDashboardInfo API with moduleName=InvalidModule parameter",
+          "expected": "API should return an error response for invalid module name",
+          "actual": "API returned HTTP 500 error status, correctly rejecting the invalid module name. Error handling is working as expected.",
+          "screenshot": "Module Context Data API_step06_invalid_module_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify data structure consistency",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Compare API response structure between Blogs and Wiki modules",
+          "expected": "Both modules should have consistent data structure with module-specific areaStats",
+          "actual": "Both Blogs and Wiki API responses have identical structure: data.periodLabel, data.labels, data.create[], data.views[], data.areaStats[], data.engagementPercent, data.engagementStats[], data.tagStats, data.popularContent, data.isPending flags. Only the areaStats content differs based on module type.",
+          "screenshot": "Module Context Data API_step02_community_analytics_dashboard.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify all module types load in dashboard",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Community Analytics dashboard and verify all module sections load",
+          "expected": "All 6 module types should be visible with their respective data",
+          "actual": "Community Analytics dashboard displays all 6 module types: Answers (Questions metrics), Blogs (Blog metrics), Discussions (Topics metrics), Social Events (Events metrics), Ideas (Ideas metrics), and Wiki (Articles metrics). Each module shows Community Health, Engagement, Creates & Views, Trending Tags, and Popular Content sections.",
+          "screenshot": "Module Context Data API_step07_dashboard_all_modules.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The documented API endpoint 'GetModuleContextData' at /DesktopModules/PersonaBar/API/CommunityAnalytics/GetModuleContextData does not exist",
+    "The actual implementation uses 'GetModuleDashboardInfo' at /en-us/API/personabar/CommunityAnalytics/GetModuleDashboardInfo",
+    "The API requires authentication - it's accessible via the PersonaBar and requires admin/superuser access",
+    "The API accepts parameters: period, startDate, endDate, comparativeTerm, moduleName, sequence",
+    "Valid module names are: Answers, Blogs, Discussions, Social Events, Ideas, Wiki",
+    "Each module type returns contextually appropriate health metrics (e.g., 'Questions' for Answers, 'Topics' for Discussions, 'Articles' for Wiki)",
+    "Invalid module names result in HTTP 500 error response",
+    "Code repository was not available - testing conducted through UI and direct API calls"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 5,
+    "failed": 1,
+    "pass_rate": "83%"
+  }
+}

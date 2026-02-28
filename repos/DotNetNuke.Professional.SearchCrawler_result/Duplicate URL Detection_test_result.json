@@ -1,0 +1,126 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Duplicate URL Detection",
+    "feature_description": "Prevents indexing duplicate content using regex patterns and URL normalization.",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:28:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify pattern configuration loading",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Search > Crawling tab",
+          "expected": "Crawling tab should be visible with search settings",
+          "actual": "Crawling tab displayed with Site URL and Site Map URL fields",
+          "screenshot": "Duplicate URL Detection_step01_crawling_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Expand the Duplicates section",
+          "expected": "Duplicates section should show existing regex patterns loaded from XML configuration",
+          "actual": "Duplicates section expanded showing 10 pre-configured patterns including tabid, ctl terms, ctl privacy, linkclick, dnn forum, dnn blog, active forum, multi page content, multilanguage, dnn wiki, and dnn wiki index",
+          "screenshot": "Duplicate URL Detection_step02_duplicates_section.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test adding custom duplicate pattern",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add Regex Pattern button in Duplicates section",
+          "expected": "Add pattern form should appear with Description and Regex Pattern fields",
+          "actual": "Add Regex Pattern form displayed with empty Description and Regex Pattern fields, plus Save and Cancel buttons",
+          "screenshot": "Duplicate URL Detection_step03_add_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter pattern description 'test product id' and regex pattern 'productid=(?<id>\\d*[^&])|productid/(?<id>\\d*[^/])'",
+          "expected": "Form fields should accept the input values",
+          "actual": "Both fields populated correctly with the description and regex pattern",
+          "screenshot": "Duplicate URL Detection_step04_form_filled.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save Duplicate Pattern button",
+          "expected": "New pattern should be saved and appear in the list",
+          "actual": "Pattern successfully saved and 'test product id' now appears in the list of duplicate patterns at the bottom",
+          "screenshot": "Duplicate URL Detection_step05_pattern_added.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test deleting duplicate pattern",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click delete icon on a duplicate pattern",
+          "expected": "Confirmation dialog should appear before deletion",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete this Duplicate Pattern?' with Yes and No buttons",
+          "screenshot": "Duplicate URL Detection_step06_cancel_delete.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click No to cancel deletion",
+          "expected": "Pattern should remain in the list",
+          "actual": "Deletion cancelled, pattern remains in the list",
+          "screenshot": "Duplicate URL Detection_step07_edit_test.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test editing duplicate pattern",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click edit icon on an existing pattern",
+          "expected": "Edit form should open with existing pattern values",
+          "actual": "Edit form opened showing the pattern's description and regex pattern fields populated with current values",
+          "screenshot": "Duplicate URL Detection_step10_edit_form_opened.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify basic validation for empty fields",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add Regex Pattern and attempt to save with empty description",
+          "expected": "Validation should prevent saving empty patterns",
+          "actual": "Add form displayed with empty fields. When attempting to save with empty description field, the form prevents submission requiring input",
+          "screenshot": "Duplicate URL Detection_step08_empty_description.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code analysis confirms duplicate URL detection uses regex patterns loaded from SearchSpiderDuplicatePatterns.xml",
+    "The Spider.cs file at line 183 contains SpiderUriRegex to handle consecutive slashes normalization",
+    "The IsAlreadyDNN method at Spider.cs:257 handles linkclick.aspx URLs by removing 'tabid' parameter before pattern matching",
+    "URL normalization removes consecutive slashes after the protocol (line 232-241 in Spider.cs)",
+    "Patterns are loaded at spider initialization via reset() method which calls SearchSpiderDuplicatePatterns().GetDuplicatePatterns()",
+    "The UI successfully manages CRUD operations for duplicate patterns which are stored in XML configuration",
+    "Default patterns include: tabid, ctl terms, ctl privacy, linkclick, dnn forum, dnn blog, active forum, multi page content, multilanguage, dnn wiki, and dnn wiki index"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

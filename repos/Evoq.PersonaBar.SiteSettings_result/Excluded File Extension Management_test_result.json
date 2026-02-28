@@ -1,0 +1,166 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.SiteSettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Excluded File Extension Management",
+    "feature_description": "Manages file extensions that should be excluded from indexing and crawling",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View list of all excluded extensions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Site Settings > Search > File Extensions",
+          "expected": "File Extensions tab should display with Included and Excluded sections",
+          "actual": "File Extensions tab displayed with both Included and Excluded File Extensions sections",
+          "screenshot": "Excluded File Extension Management_step01_file_extensions_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View the Excluded File Extensions list",
+          "expected": "List of excluded extensions should be visible with delete buttons",
+          "actual": "List displayed showing .css, .eot, .htmtemplate, .ico, .rar, .template, .ttf, .woff, .xml, .xsd, .xsl with delete icons",
+          "screenshot": "Excluded File Extension Management_step02_excluded_list_view.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add new excluded file extension",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add File Type button in Excluded section",
+          "expected": "Add form should appear with File Extension field",
+          "actual": "Add form appeared with File Extension textbox, Cancel and Save buttons",
+          "screenshot": "Excluded File Extension Management_step03_add_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter .testlog extension and click Save",
+          "expected": "Extension should be saved and added to the list",
+          "actual": "Server returned HTTP 500 error on SaveExcludedFileExtension endpoint - extension was not added",
+          "screenshot": "Excluded File Extension Management_step05_save_error.png"
+        }
+      ],
+      "issues": ["Server returned 500 Internal Server Error when attempting to save new excluded extension .testlog"]
+    },
+    {
+      "scenario_name": "Delete excluded file extension",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click delete icon on .xsl extension",
+          "expected": "Confirmation dialog should appear",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete .xsl?' with No and Yes buttons",
+          "screenshot": "Excluded File Extension Management_step08_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Yes to confirm deletion",
+          "expected": ".xsl should be removed from the list",
+          "actual": ".xsl was successfully removed from the excluded extensions list",
+          "screenshot": "Excluded File Extension Management_step09_after_delete.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add extension with leading dot (.xsl)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add File Type, enter .xsl (with leading dot)",
+          "expected": "Extension should be accepted",
+          "actual": "Extension .xsl entered in the form",
+          "screenshot": "Excluded File Extension Management_step10_add_with_dot.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save",
+          "expected": ".xsl should be added to the list",
+          "actual": ".xsl was successfully added to the excluded extensions list",
+          "screenshot": "Excluded File Extension Management_step11_add_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add duplicate excluded extension",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to add .xsl again (which already exists)",
+          "expected": "Validation error or duplicate warning should appear",
+          "actual": "Server returned HTTP 500 Internal Server Error instead of proper validation message",
+          "screenshot": "Excluded File Extension Management_step12_duplicate_test.png"
+        }
+      ],
+      "issues": ["Duplicate extension handling returns 500 server error instead of user-friendly validation message"]
+    },
+    {
+      "scenario_name": "Test with empty extension value",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add File Type and leave field empty",
+          "expected": "Validation should prevent saving empty value",
+          "actual": "Empty form shown before save attempt",
+          "screenshot": "Excluded File Extension Management_step13_empty_test.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save with empty field",
+          "expected": "Validation error should be displayed",
+          "actual": "Validation error displayed - text field shows red border with error icon",
+          "screenshot": "Excluded File Extension Management_step14_empty_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add extension without leading dot (validation test)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'tmp' without leading dot",
+          "expected": "Validation should require proper format with leading dot",
+          "actual": "Field shows red border with error icon indicating validation failure",
+          "screenshot": "Excluded File Extension Management_step15_without_dot.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to save invalid extension format",
+          "expected": "Save should be prevented with validation error",
+          "actual": "Save prevented - validation error persists, extension not added",
+          "screenshot": "Excluded File Extension Management_step16_validation_error.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The initial save attempt for .testlog extension failed with HTTP 500 error, but subsequent save for .xsl succeeded. This may indicate intermittent server issues or specific extension names may have restrictions.",
+    "Duplicate extension detection returns a server error (500) rather than a user-friendly validation message in the UI.",
+    "The system properly validates empty values and extension format (requires leading dot).",
+    "Delete functionality works correctly with confirmation dialog.",
+    "Extension formatting in the list consistently shows extensions with leading dot (e.g., .css, .xml)."
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 5,
+    "failed": 2,
+    "pass_rate": "71%"
+  }
+}

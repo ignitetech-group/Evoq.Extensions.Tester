@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Bootstrap Grid Integration",
+    "feature_description": "Integrates Bootstrap responsive grid system for column layouts.",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:10:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Bootstrap CSS loading",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to a page with Content Layout module and enable edit mode",
+          "expected": "Page loads with Content Layout columns visible",
+          "actual": "Page loaded successfully with Content Layout columns showing panes F30A_Pane1, F30A_Pane2, 9977_Pane1, 9977_Pane2, 9977_Pane3, 9977_Pane4",
+          "screenshot": "Bootstrap Grid Integration_step01_edit_mode_content_layout.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Use JavaScript to verify Bootstrap CSS file is loaded in the page",
+          "expected": "Bootstrap CSS file should be loaded from ContentLayout module path",
+          "actual": "Bootstrap CSS found at: http://localhost:8081/DesktopModules/DnnCorp/ContentLayout/Css/bootstrap.min.css?cdv=132",
+          "screenshot": "Bootstrap Grid Integration_step02_bootstrap_css_verified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify column CSS classes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Inspect DOM elements to verify Bootstrap column classes are applied to Content Layout panes",
+          "expected": "Column elements should have Bootstrap grid classes (col-lg-*, col-md-*, col-sm-*, col-xs-*)",
+          "actual": "Found 6 column elements with Bootstrap classes. Sample element: 'pane col-lg-6 col-md-6 col-sm-6 col-xs-12 dnnSortable dnnModuleManager ui-sortable ui-resizable'. Unique classes used: col-lg-6, col-md-6, col-sm-6, col-xs-12, col-lg-3, col-md-4",
+          "screenshot": "Bootstrap Grid Integration_step03_column_layout_visible.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify 2-column and 4-column layouts use correct Bootstrap classes",
+          "expected": "2-column layout should use col-*-6, 4-column layout should use col-*-3",
+          "actual": "2-column layout uses col-lg-6 col-md-6 col-sm-6 col-xs-12, 4-column layout uses col-lg-3 col-md-4 col-sm-6 col-xs-12. All layouts properly wrapped with dnn-cl class (3 wrapper elements found)",
+          "screenshot": "Bootstrap Grid Integration_step04_4column_layout.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test responsive breakpoints",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Resize browser to 768px width (sm breakpoint)",
+          "expected": "Columns should remain side-by-side at sm breakpoint due to col-sm-* classes",
+          "actual": "At 768px width, the 2-column layout with TELEVISIONS and WEARABLES remained side-by-side as expected (col-sm-6 classes active)",
+          "screenshot": "Bootstrap Grid Integration_step05_sm_breakpoint_768px.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Resize browser to 480px width (xs/mobile breakpoint)",
+          "expected": "Columns should stack vertically on mobile due to col-xs-12 classes",
+          "actual": "At 480px width, columns stacked vertically with each column taking full width (col-xs-12 active). TELEVISIONS, TABLETS, and WEARABLES all displayed as full-width stacked blocks",
+          "screenshot": "Bootstrap Grid Integration_step06_mobile_480px.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test mobile responsiveness",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View Content Layout columns at mobile viewport width (480px)",
+          "expected": "All columns should stack vertically and display at full width",
+          "actual": "All columns displayed full-width and stacked vertically. Each pane with col-xs-12 class correctly rendered at 100% width",
+          "screenshot": "Bootstrap Grid Integration_step07_mobile_stacked_columns.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Resize back to desktop viewport (1280px)",
+          "expected": "Columns should return to side-by-side layout",
+          "actual": "Desktop layout restored correctly with columns displaying side-by-side using col-lg-* classes",
+          "screenshot": "Bootstrap Grid Integration_step08_desktop_restored.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify IE8 compatibility with respond.js",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Inspect page head section for respond.js conditional comment for IE8",
+          "expected": "Page should contain IE8 conditional comment with respond.js script reference",
+          "actual": "Found respond.js with IE8 conditional comment in page head: '<!--[if IE 8]><script src=\".../ContentLayout/ClientScripts/respond.min.js\"></script><![endif]-->'. The InjectRespondJsForIE8() method in View.ascx.cs correctly adds this script for IE8 compatibility",
+          "screenshot": "Bootstrap Grid Integration_step02_bootstrap_css_verified.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Bootstrap v3.2.0 is used, customized with .dnn-cl wrapper class to scope styles and prevent conflicts with other Bootstrap instances on the page",
+    "The ColumnSizesHelper.cs provides predefined CSS class mappings for common column layouts (25/75, 50/50, 33/33/33, 25/25/25/25)",
+    "All Bootstrap column classes use col-xs-12 as fallback for mobile, ensuring columns always stack on small screens",
+    "The respond.js polyfill is conditionally loaded only for IE8 to enable media query support in that legacy browser"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

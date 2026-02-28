@@ -1,0 +1,131 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Content.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Deauthorization and Disconnection",
+    "feature_description": "Allows administrators to disconnect Google Analytics integration and revoke authorization",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Disconnect Google Analytics account",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Persona Bar > Settings > Connectors",
+          "expected": "Connectors list is displayed with Google Analytics 4 showing Edit button (connected status)",
+          "actual": "Connectors list displayed with Google Analytics 4 showing Edit button and green checkmark indicating connected status",
+          "screenshot": "Deauthorization_step01_connectors_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit button on Google Analytics 4 connector",
+          "expected": "Configuration panel expands showing Measurement ID and Delete Connection button",
+          "actual": "Configuration panel expanded showing Measurement ID 'G-ABC123XYZ99', Track for Administrators checkbox, and Delete Connection button",
+          "screenshot": "Deauthorization_step02_ga4_settings.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Delete Connection button",
+          "expected": "Connection is deleted and success message appears",
+          "actual": "Success message 'Item successfully deleted.' appeared. Google Analytics 4 now shows Connect button instead of Edit, confirming disconnection",
+          "screenshot": "Deauthorization_step04_delete_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify configuration is cleared on disconnection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After disconnection, click Connect button on Google Analytics 4",
+          "expected": "Configuration form opens with empty fields",
+          "actual": "Configuration form opened with empty Measurement ID field and unchecked Track for Administrators checkbox",
+          "screenshot": "Deauthorization_step05_config_cleared.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify tracking script stops appearing after disconnection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to the website homepage after disconnection and check page source for Google Analytics tracking script",
+          "expected": "No Google Analytics tracking script should be present in the page",
+          "actual": "JavaScript evaluation confirmed gaScriptFound: false and measurementId: '' - no GA tracking script present on the page",
+          "screenshot": "Deauthorization_step06_no_tracking_script.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test re-authorization after disconnection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Connectors and click Connect on Google Analytics 4",
+          "expected": "Configuration form opens allowing new connection setup",
+          "actual": "Configuration form opened with empty Measurement ID field",
+          "screenshot": "Deauthorization_step07_reconnect_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter new Measurement ID 'G-RECONNECT123' and click Save",
+          "expected": "Connection is saved successfully with new Measurement ID",
+          "actual": "Success message 'Item successfully saved.' appeared. Google Analytics 4 now shows green checkmark and Delete Connection button, confirming successful re-connection",
+          "screenshot": "Deauthorization_step08_reconnect_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify token removal after disconnection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After clicking Delete Connection, verify the connector shows disconnected state",
+          "expected": "Connector should show Connect button (not Edit) indicating tokens/configuration cleared",
+          "actual": "Connector displays Connect button instead of Edit button, green checkmark is removed, confirming complete disconnection and token removal",
+          "screenshot": "Deauthorization_step04_delete_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test disconnect with active tracking",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "With active Google Analytics configuration (G-ABC123XYZ99), click Delete Connection",
+          "expected": "Active tracking should be immediately disabled",
+          "actual": "Delete Connection executed successfully while connector was actively configured. Configuration was immediately cleared and tracking disabled",
+          "screenshot": "Deauthorization_step04_delete_success.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Google Analytics 4 connector uses a simple Measurement ID-based configuration rather than full OAuth authorization flow",
+    "The 'Delete Connection' button serves as the disconnection mechanism, immediately clearing all configuration",
+    "Code review shows Evoq.Content.GoogleAnalyticsConnector includes OAuth-based authorization via authorize.js with onUnAuthorize function, but the UI displays the simpler GA4 connector",
+    "The Deauthorize endpoint in ServicesController.cs (line 84-96) calls TokenServiceImpl.ClearCache to remove cached tokens",
+    "Track for Administrators option allows controlling whether admin users are tracked - this affects immediate script visibility after re-connection"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

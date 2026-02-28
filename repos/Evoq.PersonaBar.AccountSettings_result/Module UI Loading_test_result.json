@@ -1,0 +1,158 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.AccountSettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Module UI Loading",
+    "feature_description": "Tests that the AccountSettings UI loads and displays correctly",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:29:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify HTML template loads without errors",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged in as SuperUser and navigated to PersonaBar",
+          "expected": "PersonaBar should be visible with Accounts menu item",
+          "actual": "PersonaBar is visible. Accounts menu item exists with ID 'Evoq.Accounts' but shows raw localization key 'nav_Accounts' instead of 'Accounts'",
+          "screenshot": "Module UI Loading_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked on Accounts menu item in PersonaBar",
+          "expected": "AccountSettings HTML template should load and display in the panel area",
+          "actual": "No panel content loaded. JavaScript inspection revealed data-path attribute is EMPTY, meaning no HTML template path is configured for the module",
+          "screenshot": "Module UI Loading_step03_accounts_no_panel.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Inspected DOM for AccountSettings elements",
+          "expected": "AccountSettings HTML content should be present in DOM",
+          "actual": "accountSettingsFound: false - No AccountSettings content exists in the DOM. The menu item exists (id='Evoq.Accounts', class='btn_panel useravatar') but data-path='' and data-folder-name='' are empty",
+          "screenshot": "Module UI Loading_step04_module_not_loading.png"
+        }
+      ],
+      "issues": [
+        "HTML template path (data-path) is empty - module cannot load content",
+        "Folder name (data-folder-name) is empty - module files location not specified",
+        "Module registration appears incomplete - menu item exists but content path missing"
+      ]
+    },
+    {
+      "scenario_name": "Check 'Hello World, This is Site Settings.' text displays",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to view AccountSettings panel content",
+          "expected": "Panel should display 'Hello World, This is Site Settings.' text as per the HTML template",
+          "actual": "Panel content never loaded - cannot verify text display because the HTML template fails to load",
+          "screenshot": "Module UI Loading_step04_module_not_loading.png"
+        }
+      ],
+      "issues": [
+        "Cannot test text display - HTML template does not load due to missing path configuration"
+      ]
+    },
+    {
+      "scenario_name": "Verify Save button renders correctly",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to locate Save button in AccountSettings panel",
+          "expected": "Save button with 'primarybtn' CSS class should be visible",
+          "actual": "Save button cannot be verified - panel content does not load",
+          "screenshot": "Module UI Loading_step04_module_not_loading.png"
+        }
+      ],
+      "issues": [
+        "Cannot test Save button - HTML template does not load"
+      ]
+    },
+    {
+      "scenario_name": "Test JavaScript module initialization",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Checked for AccountSettings.js module initialization",
+          "expected": "JavaScript module should initialize and execute load function",
+          "actual": "JavaScript module cannot initialize because the HTML template (which would trigger script loading) never loads. RequireJS/AMD module loading cannot be verified.",
+          "screenshot": "Module UI Loading_step04_module_not_loading.png"
+        }
+      ],
+      "issues": [
+        "JavaScript module initialization cannot occur - HTML template required for script loading never loads"
+      ]
+    },
+    {
+      "scenario_name": "Check extensions div container is present",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched DOM for 'tabs-extensions' div with 'personabar-extensions' CSS class",
+          "expected": "Extensions container div should be present in the loaded panel",
+          "actual": "Extensions container cannot be verified - panel content does not load. DOM inspection confirmed accountSettingsFound: false",
+          "screenshot": "Module UI Loading_step04_module_not_loading.png"
+        }
+      ],
+      "issues": [
+        "Cannot verify extensions container - HTML template does not load"
+      ]
+    },
+    {
+      "scenario_name": "Verify RequireJS/AMD module loading works",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to verify RequireJS module loading for AccountSettings",
+          "expected": "RequireJS should load AccountSettings.js module successfully",
+          "actual": "Cannot verify RequireJS loading - the HTML template that would trigger module loading never loads due to empty data-path configuration",
+          "screenshot": "Module UI Loading_step04_module_not_loading.png"
+        }
+      ],
+      "issues": [
+        "RequireJS module loading cannot be verified - prerequisite HTML template loading fails"
+      ]
+    },
+    {
+      "scenario_name": "Menu item localization",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observed menu item text in PersonaBar",
+          "expected": "Menu item should display localized text 'Accounts'",
+          "actual": "Menu item displays raw localization key 'nav_Accounts' instead of the localized value 'Accounts'. The data-name attribute shows 'nav_Accounts'",
+          "screenshot": "Module UI Loading_step02_accounts_menu_visible.png"
+        }
+      ],
+      "issues": [
+        "Localization resource file not loading correctly - displays key instead of value",
+        "App_LocalResources/AccountSettings.resx may not be deployed or accessible"
+      ]
+    }
+  ],
+  "observations": [
+    "The Evoq.Accounts menu item IS registered in PersonaBar and visible in the menu",
+    "The menu item has correct CSS class 'useravatar' for icon styling, but actual icon may not render due to localization issues",
+    "DOM inspection reveals: data-path='', data-folder-name='', data-module-name='Accounts'",
+    "The empty data-path attribute is the root cause - PersonaBar framework cannot load HTML template without a valid path",
+    "This appears to be a module deployment/configuration issue rather than a code defect",
+    "The module files (AccountSettings.html, AccountSettings.js, AccountSettings.css) may not be deployed to the expected location",
+    "Localization resources are not loading - 'nav_Accounts' key displayed instead of 'Accounts' value",
+    "Source code repository (Dnn.AdminExperience.Evoq.Basic) appears to be empty - cannot verify file contents"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 0,
+    "failed": 7,
+    "pass_rate": "0%"
+  }
+}

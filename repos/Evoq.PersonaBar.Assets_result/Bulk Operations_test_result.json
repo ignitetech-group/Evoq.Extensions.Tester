@@ -1,0 +1,145 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Assets",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Bulk Operations",
+    "feature_description": "Performs operations on multiple files or folders simultaneously with progress tracking",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:57:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Select multiple files",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Assets panel and opened Images folder",
+          "expected": "Should see checkboxes or multi-select controls to select multiple files",
+          "actual": "No checkboxes or multi-select UI controls visible. Only single-item selection is supported.",
+          "screenshot": "Bulk Operations_step03_images_folder.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempted Ctrl+Click on files to enable multi-select",
+          "expected": "Should select multiple files when Ctrl+clicking",
+          "actual": "Ctrl+Click triggered file download instead of selection. Multi-select not supported.",
+          "screenshot": "Bulk Operations_step04_no_multiselect.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Attempted Shift+Click on files for range selection",
+          "expected": "Should select a range of files with Shift+Click",
+          "actual": "Shift+Click triggered file download instead of range selection. Range selection not supported.",
+          "screenshot": "Bulk Operations_step05_file_hover_icons.png"
+        }
+      ],
+      "issues": ["Multi-select functionality is not available in the PersonaBar Assets UI. No checkboxes, Ctrl+Click, or Shift+Click selection is supported."]
+    },
+    {
+      "scenario_name": "Bulk delete files",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to select multiple files for bulk deletion",
+          "expected": "Should be able to select multiple files and delete them in one operation",
+          "actual": "Multi-select not available. Only single-item delete is supported via hover menu.",
+          "screenshot": "Bulk Operations_step04_no_multiselect.png"
+        }
+      ],
+      "issues": ["Bulk delete is not available because multi-select is not implemented in the UI. Only individual file/folder deletion is supported."]
+    },
+    {
+      "scenario_name": "Bulk move files",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to select multiple files for bulk move operation",
+          "expected": "Should be able to select multiple files and move them to a destination folder",
+          "actual": "Multi-select not available. Only single-item move is supported.",
+          "screenshot": "Bulk Operations_step06_move_dialog.png"
+        }
+      ],
+      "issues": ["Bulk move is not available because multi-select is not implemented. Single-item move dialog works correctly."]
+    },
+    {
+      "scenario_name": "Bulk copy files",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to select multiple files for bulk copy operation",
+          "expected": "Should be able to select multiple files and copy them to a destination folder",
+          "actual": "Multi-select not available. Only single-item copy is supported.",
+          "screenshot": "Bulk Operations_step07_copy_dialog.png"
+        }
+      ],
+      "issues": ["Bulk copy is not available because multi-select is not implemented. Single-item copy dialog works correctly."]
+    },
+    {
+      "scenario_name": "Single file move operation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hovered over CTA-1.jpg file and clicked Move icon",
+          "expected": "Should display move dialog with folder picker",
+          "actual": "Move dialog appeared with 'MOVE FOLDER TO (SELECT A DESTINATION)' title, folder tree, search box, and Move/Cancel buttons",
+          "screenshot": "Bulk Operations_step06_move_dialog.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Single file copy operation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hovered over CTA-2.jpg file and clicked Copy icon",
+          "expected": "Should display copy dialog with folder picker",
+          "actual": "Copy dialog appeared with 'COPY FILE TO (SELECT A DESTINATION)' title, folder tree showing all available destinations, and Copy/Cancel buttons",
+          "screenshot": "Bulk Operations_step07_copy_dialog.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Single folder delete operation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hovered over FolderToMove folder and clicked Delete icon",
+          "expected": "Should display delete confirmation dialog",
+          "actual": "Confirmation dialog appeared with warning icon asking 'Are you sure you want to delete the folder FolderToMove?' with Cancel and Delete buttons",
+          "screenshot": "Bulk Operations_step08_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Cancel to dismiss dialog",
+          "expected": "Dialog should close without deleting folder",
+          "actual": "Dialog closed and folder remained in the list",
+          "screenshot": "Bulk Operations_step09_final_state.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The PersonaBar Assets UI does not have multi-select functionality. There are no checkboxes on items, Ctrl+Click does not enable multi-select, and Shift+Click does not enable range selection.",
+    "Code analysis reveals that bulk operations API exists in the legacy DigitalAssetsPro module (DeleteItems endpoint accepting arrays of items) but this is not exposed in the PersonaBar Assets UI.",
+    "Individual file/folder operations (Edit, Move, Copy, Download, Delete) are available via hover menu icons and work correctly.",
+    "Folder deletion effectively acts as a bulk operation since it deletes all contents, but this is implicit rather than explicit multi-select.",
+    "The feature description mentions 'progress tracking' but no progress indicators were observed since bulk operations are not available."
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 3,
+    "failed": 4,
+    "pass_rate": "43%"
+  }
+}

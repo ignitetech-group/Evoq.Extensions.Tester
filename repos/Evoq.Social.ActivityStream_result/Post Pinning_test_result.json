@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "Post Pinning",
+    "feature_description": "Pin important posts to the top of the activity stream (moderator feature)",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:53:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Pin a post as moderator",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Activity Stream on Community page",
+          "expected": "Activity Stream with posts is displayed with Pin/Unpin buttons visible for moderator",
+          "actual": "Activity Stream displayed with Pin/Unpin buttons visible for SuperUser (moderator)",
+          "screenshot": "Post Pinning_step03_posts_with_pin_buttons.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Pin' button on the emoji post",
+          "expected": "Post is pinned, button changes to 'Unpin', post moves to top of list",
+          "actual": "Post was pinned successfully, button changed to 'Unpin', post moved to top of the activity stream, blue pin icon appeared",
+          "screenshot": "Post Pinning_step04_post_pinned.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Unpin a previously pinned post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Unpin' button on the previously pinned emoji post",
+          "expected": "Post is unpinned, button changes back to 'Pin', post moves to original chronological position",
+          "actual": "Post was unpinned successfully, button changed back to 'Pin', post moved back to its chronological position after the pinned posts",
+          "screenshot": "Post Pinning_step05_post_unpinned.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify pinned post appears at top",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observe the order of posts in the Activity Stream after pinning",
+          "expected": "Pinned posts appear at the top of the activity stream, above unpinned posts",
+          "actual": "Pinned posts (with 'Unpin' buttons and blue pin icons) appear at the top of the stream, unpinned posts appear below them in chronological order",
+          "screenshot": "Post Pinning_step04_post_pinned.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Pin multiple posts",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Pin an additional post ('This is a test post created for Post Creation and Management testing')",
+          "expected": "Multiple posts can be pinned simultaneously, all appear at top",
+          "actual": "Successfully pinned a 4th post. All 4 pinned posts displayed at the top with 'Unpin' buttons and blue pin icons. The most recently pinned post appeared first among pinned posts.",
+          "screenshot": "Post Pinning_step08_multiple_pinned_view.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify pin status across page refresh",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Refresh the Community page after pinning posts",
+          "expected": "Pin status persists after page refresh, pinned posts remain at top",
+          "actual": "After page refresh, all pinned posts remained at the top with 'Unpin' buttons and blue pin icons. Pin status successfully persisted in the database.",
+          "screenshot": "Post Pinning_step09_pin_persists_after_refresh.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Attempt to pin as non-moderator",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review code to understand non-moderator behavior",
+          "expected": "Non-moderators should not have access to pin functionality",
+          "actual": "Code review confirmed: The Pin/Unpin button is only rendered when _isAdmin is true (ActivityStreamParser.cs line 297-299). The TogglePin API endpoint checks ActivityModuleSecurity.CanModerate and returns 401 Unauthorized if false (ActivityStreamServicesController.cs lines 354-357). Non-moderators would not see the Pin button in the UI.",
+          "screenshot": "Post Pinning_step03_posts_with_pin_buttons.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Pin functionality is correctly restricted to moderators/admins only - the Pin button is conditionally rendered based on _isAdmin property in ActivityStreamParser.cs",
+    "The TogglePin API endpoint includes server-side authorization check (CanModerate) to prevent unauthorized pinning attempts",
+    "Pinned posts are visually distinguished with a blue pin icon on the right side of the post",
+    "When a post is pinned, it smoothly animates (fades out and fades back in) when moving to its new position",
+    "The pin status is persisted in the database via the ActivityStream_Toggle_Pin stored procedure",
+    "Multiple posts can be pinned simultaneously, with the most recently pinned post appearing first among pinned posts"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

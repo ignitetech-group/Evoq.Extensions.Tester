@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.CommunitySettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Content Page Size Settings",
+    "feature_description": "Configure pagination size for content lists across social modules with options from 5 to 100 items per page.",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T10:15:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify dropdown shows all available options",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Community in PersonaBar",
+          "expected": "Community Settings page loads with Miscellaneous Community Settings section",
+          "actual": "Community Settings page loaded successfully with Page Size dropdown visible",
+          "screenshot": "Content Page Size Settings_step01_community_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Page Size dropdown to expand options",
+          "expected": "Dropdown shows options: 5, 10, 15, 25, 50, 100 items",
+          "actual": "Dropdown expanded showing all 6 options: 5 items, 10 items, 15 items, 25 items, 50 items, 100 items",
+          "screenshot": "Content Page Size Settings_step02_page_size_dropdown.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify default value (5) for installations",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check initial value of Page Size dropdown",
+          "expected": "Default value should be 5 items",
+          "actual": "Page Size dropdown shows '5 items' as the default selected value",
+          "screenshot": "Content Page Size Settings_step02_page_size_dropdown.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Set page size to 10 items",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select '10 items' from Page Size dropdown",
+          "expected": "10 items should be selected in the dropdown",
+          "actual": "10 items was successfully selected in the dropdown",
+          "screenshot": "Content Page Size Settings_step03_10_items_selected.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Settings should be saved with success message",
+          "actual": "Success message 'Item successfully saved' appeared",
+          "screenshot": "Content Page Size Settings_step04_save_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save page size and verify persistence",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Set Page Size to 10 items and save",
+          "expected": "Setting saved successfully",
+          "actual": "Save completed with success message",
+          "screenshot": "Content Page Size Settings_step04_save_success.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate away from Community Settings and return",
+          "expected": "Page Size should still show 10 items (the saved value)",
+          "actual": "Page Size reverted to default '5 items' - setting did NOT persist",
+          "screenshot": "Content Page Size Settings_step06_persistence_failed.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Set Page Size to 25 items and save (second attempt)",
+          "expected": "Setting saved successfully",
+          "actual": "Save completed with success message",
+          "screenshot": "Content Page Size Settings_step07_25_items_saved.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Navigate away and return to Community Settings",
+          "expected": "Page Size should show 25 items (the saved value)",
+          "actual": "Page Size reverted to default '5 items' again - persistence issue confirmed",
+          "screenshot": "Content Page Size Settings_step09_final_persistence_issue.png"
+        }
+      ],
+      "issues": [
+        "CRITICAL: Page Size setting does not persist after save. Despite showing 'Item successfully saved' message, the value reverts to default '5 items' when navigating away and returning to the settings page.",
+        "Tested with multiple values (10 items, 25 items) - both failed to persist."
+      ]
+    }
+  ],
+  "observations": [
+    "The Page Size dropdown UI is correctly implemented with all 6 expected options (5, 10, 15, 25, 50, 100 items).",
+    "The Comments Page Size dropdown is also present with the same options.",
+    "The Save button triggers correctly and displays a success notification.",
+    "Source code files specified in the feature documentation were not available in the repository for code review.",
+    "The persistence failure suggests either the backend API is not properly saving the value, or the UI is not properly binding the saved value on page load."
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 3,
+    "failed": 1,
+    "pass_rate": "75%"
+  }
+}

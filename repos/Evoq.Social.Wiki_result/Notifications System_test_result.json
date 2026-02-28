@@ -1,0 +1,153 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Notifications System",
+    "feature_description": "Send and manage notifications for article updates, approvals, and comments",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Notification Center",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to SuperUser Account dropdown",
+          "expected": "User dropdown menu should appear with notification link",
+          "actual": "Dropdown appeared showing 'Notifications' link along with other options like My Profile, Messages, Edit Account",
+          "screenshot": "Notifications System_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Notifications link",
+          "expected": "Notification Center page should open",
+          "actual": "Activity Feed Messages page opened with Notifications tab showing '0-0 of 0' notifications",
+          "screenshot": "Notifications System_step02_notification_center.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Wiki module subscription status",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page",
+          "expected": "Wiki module should display with subscription options",
+          "actual": "Wiki Test page loaded showing 6 articles and a 'Subscriptions' section with 'Unsubscribe from Articles' link (indicating user is already subscribed)",
+          "screenshot": "Notifications System_step01_wiki_page.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create article dialog functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Create article' button on Wiki Test page",
+          "expected": "Create article dialog should open with form fields",
+          "actual": "Create article dialog opened with fields: Title, Article Type, Display Table of Contents, Content, Approved checkbox (checked), Tags, Subscribe checkbox (checked)",
+          "screenshot": "Notifications System_step03_create_article_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Fill in all required fields for article creation",
+          "expected": "Form should accept input for all fields",
+          "actual": "Successfully filled Title ('Test Article for Notifications'), selected Article Type ('Concepts'), entered Content, added Tags ('notification', 'test')",
+          "screenshot": "Notifications System_step04_article_form_filled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Publish new article to trigger notification",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Publish button after filling article form",
+          "expected": "Article should be published and notification should be sent to subscribers",
+          "actual": "Publish button click did not submit the form. Dialog remained open with form data intact. Multiple click attempts using different methods (direct click, force click, JavaScript) failed to submit",
+          "screenshot": "Notifications System_step05_publish_attempt.png"
+        }
+      ],
+      "issues": [
+        "Publish button in Create Article dialog is non-functional - clicking does not submit the form",
+        "Form validation or JavaScript handler appears to be broken"
+      ]
+    },
+    {
+      "scenario_name": "View article detail page",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on 'Test Article Draft' link in article listing",
+          "expected": "Article detail page should open showing full article content and comment section",
+          "actual": "404 Error Page displayed with message: 'Sorry, the page you are looking for cannot be found and might have been removed, had its name changed, or is temporarily unavailable.'",
+          "screenshot": "Notifications System_step07_article_404.png"
+        }
+      ],
+      "issues": [
+        "Individual article detail pages return 404 errors",
+        "Wiki article page routing appears to be misconfigured or pages do not exist"
+      ]
+    },
+    {
+      "scenario_name": "Comment notification (blocked by 404)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to navigate to article detail page to add comment",
+          "expected": "Article page with comment section should be accessible",
+          "actual": "Unable to access article detail pages due to 404 errors - comment functionality could not be tested",
+          "screenshot": "Notifications System_step07_article_404.png"
+        }
+      ],
+      "issues": [
+        "Cannot test comment notifications because article detail pages are inaccessible (404 errors)"
+      ]
+    },
+    {
+      "scenario_name": "Notification actions from notification center",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check notification center for Wiki notifications",
+          "expected": "Should see notification actions like approve/delete article",
+          "actual": "Notification center shows 0 notifications - no Wiki notifications present to test actions",
+          "screenshot": "Notifications System_step02_notification_center.png"
+        }
+      ],
+      "issues": [
+        "No notifications available in the system to test notification actions (approve/delete)",
+        "Unable to generate notifications due to article creation and viewing failures"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review confirms notification system is implemented in NotificationServiceController.cs with endpoints: ApproveArticle, DeleteArticle, ApproveRevision, DeleteRevision, ApproveComment, DeleteComment, RejectAllReports, RejectCommentReports",
+    "Notifications.cs contains methods for: ArticlePendingApproval, ReportArticle, NewArticleSubscriptionNotifications, UpdatedArticleSubscriptionNotifications, NewCommentNotifications, SendCommentAwaitingApprovalNotifications",
+    "WikiEvents.cs defines events: CreatedArticle, ApprovedArticle, EditedArticle, DeletedArticle, PostedComment, ApprovedComment, EditedComment, DeletedComment",
+    "Notification types defined in code: PagePendingTypeName, RevisionPendingTypeName, PageFlaggedTypeName, CommentAwaitingApprovalTypeName, CommentFlaggedTypeName, NewArticleNotificationKey, UpdateArticleNotificationKey",
+    "UI shows subscription functionality is working (Unsubscribe from Articles link visible)",
+    "Wiki module listing page functions correctly and shows existing articles",
+    "The DNN Notification Center is accessible through User Profile dropdown > Notifications",
+    "Critical issue: Article detail pages return 404 errors preventing full notification workflow testing",
+    "Critical issue: Create article dialog Publish button does not function"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 3,
+    "failed": 4,
+    "pass_rate": "43%"
+  }
+}

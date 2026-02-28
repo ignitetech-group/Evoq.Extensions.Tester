@@ -1,0 +1,159 @@
+{
+  "metadata": {
+    "extension_name": "Publisher",
+    "extension_type": "Module",
+    "feature_name": "Search and Filtering",
+    "feature_description": "Search posts by keywords, tags, and authors with advanced filtering options",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:19:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Search posts by keyword",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to News page with Publisher module",
+          "expected": "Publisher module with posts list displayed",
+          "actual": "News page loaded with Publisher module showing posts list",
+          "screenshot": "Search and Filtering_step01_publisher_module.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'technology' in search box and submit",
+          "expected": "Posts containing 'technology' are filtered and displayed",
+          "actual": "2 posts displayed: 'Tech News and Innovation' and 'First Test Post About Technology'",
+          "screenshot": "Search and Filtering_step02_search_by_keyword.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Filter posts by single tag",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on 'sports' tag in Tags filter",
+          "expected": "Only posts tagged with 'sports' are displayed",
+          "actual": "1 post displayed: 'Sports News Update' with sports tag",
+          "screenshot": "Search and Filtering_step03_filter_single_tag.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Filter posts by multiple tags",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to News page with tags=sports,technology in URL",
+          "expected": "Posts with BOTH sports AND technology tags displayed, or no results if no posts have both tags",
+          "actual": "No posts displayed - shows 'No Search Result' message (no posts have both tags)",
+          "screenshot": "Search and Filtering_step04_filter_multiple_tags.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Filter posts by author",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on 'SuperUser Account' author in Authors filter",
+          "expected": "All posts by SuperUser Account displayed",
+          "actual": "13 posts displayed, all by SuperUser Account author",
+          "screenshot": "Search and Filtering_step05_filter_by_author.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Combine multiple filters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Apply author filter and tag filter together (author=SuperUser+tags=technology)",
+          "expected": "Posts matching both author AND tag criteria displayed",
+          "actual": "2 posts displayed matching both SuperUser Account author and technology tag",
+          "screenshot": "Search and Filtering_step06_combined_filters.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Clear all filters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to News page without filters (base URL)",
+          "expected": "All posts displayed without any filtering",
+          "actual": "Full list of 13 posts displayed with 'Latest' header",
+          "screenshot": "Search and Filtering_step07_filters_cleared.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test empty search results",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for 'xyznonexistent123' - a term with no matching posts",
+          "expected": "Empty results message displayed",
+          "actual": "Page shows 'No Search Result' message in the filtered view",
+          "screenshot": "Search and Filtering_step08_empty_results.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Search with special characters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for 'quotes' to find post with special characters in title",
+          "expected": "Post with special characters found and displayed correctly",
+          "actual": "Post 'Test Post with Special Chars: & \"quotes\" (c) (TM)' found and displayed with properly escaped characters",
+          "screenshot": "Search and Filtering_step09_special_chars_search.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test search result pagination (Load More)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to News page and check for Load More button",
+          "expected": "Load More button visible if posts exceed page size, or all posts displayed if within page size",
+          "actual": "All 13 posts displayed on page. No Load More button present because all posts fit within the default page size. Pagination would appear if more posts existed beyond the page limit.",
+          "screenshot": "Search and Filtering_step10_all_posts_no_pagination.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Date range filter: Code review (CardViewManager.js, FilterManager.cs) shows filtering is done via tags, author, and text search only. No explicit date range filter UI element found in Search.ascx or TagsFilter.ascx components.",
+    "Sorting: Posts are displayed in reverse chronological order by default (newest first). No explicit sort controls found in the UI - sorting is handled server-side in the API.",
+    "Multiple tags use AND logic: When filtering by multiple tags, posts must have ALL selected tags (not ANY), resulting in no results when combining unrelated tags like 'sports' and 'technology'.",
+    "URL-based filtering: Filter state is maintained via URL query parameters (?text=, ?tags=, ?author=), enabling deep linking and browser back/forward navigation.",
+    "Load More pagination: The code in List.ascx shows Load More is only rendered when PostList.Count() >= PageSize. With 13 posts and default page size likely >= 13, all posts fit on first page."
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 9,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

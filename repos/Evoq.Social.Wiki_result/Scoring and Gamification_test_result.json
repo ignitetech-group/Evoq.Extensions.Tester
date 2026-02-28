@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Scoring and Gamification",
+    "feature_description": "Award points for wiki activities like creating articles, commenting, and interactions",
+    "feature_priority": "Low",
+    "test_date": "2026-02-28T08:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Points display accessible in User Profile",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to User Profile page (Activity Feed)",
+          "expected": "User profile page loads with scoring/points information visible",
+          "actual": "User profile page loaded successfully showing Points: 37 along with Friends, Following, and Followers counts",
+          "screenshot": "Scoring and Gamification_step01_user_profile_points.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code analysis (Mechanics.cs lines 52-73) shows scoring actions are defined with point values: CreatedArticle (5 rep, 5 exp), EditedArticle (1 rep, 1 exp), CreatedMetaData (1 rep, 1 exp), EditedMetaData (1 rep, 1 exp). Penalty actions include CreatedDeletedArticle (-5 rep) and CreatedFlaggedArticle (-1 rep).",
+    "The scoring system is integrated with DNN Social Mechanics via SocialMechanicsController.Instance.LogUserActivity() calls in ContentController.cs and SocialController.cs",
+    "Points are displayed in the User Profile section alongside Friends, Following, and Followers statistics",
+    "The SuperUser Account has accumulated 37 points from various activities, confirming the scoring system is actively tracking and recording user activities",
+    "No separate Reputation display was found - points appear to be the primary metric shown in the UI. The code distinguishes between 'reputation points' and 'experience points' but only 'Points' is displayed in the profile UI",
+    "Privilege definitions exist in code (CreateArticles requires 10 points, EditContentUnmoderated requires 100 points, EditMetadata requires 50 points, CreateContentUnmoderated requires 100 points) but no UI for viewing privilege thresholds was found"
+  ],
+  "summary": {
+    "total_scenarios": 1,
+    "passed": 1,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

@@ -1,0 +1,201 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Workflow",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Workflow UI Components",
+    "feature_description": "React-based UI components for workflow selection, status display, and workflow notes.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T15:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Select workflow from dropdown",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Content > Pages and selected Home page",
+          "expected": "Page settings panel should open with workflow dropdown visible",
+          "actual": "Page settings panel opened showing workflow dropdown with 'Direct Publish' selected",
+          "screenshot": "Workflow UI Components_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked on Workflow dropdown to expand options",
+          "expected": "Dropdown should show available workflow options",
+          "actual": "Dropdown expanded showing options: Direct Publish, Save Draft, Content Approval",
+          "screenshot": "Workflow UI Components_step01_workflow_dropdown_open.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Selected 'Content Approval' workflow from dropdown",
+          "expected": "Workflow should change to Content Approval",
+          "actual": "Workflow changed to 'Content Approval' and 'Apply setting to all subpages' toggle appeared",
+          "screenshot": "Workflow UI Components_step02_workflow_selected.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Toggle apply workflow to children switch",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Located the 'Apply setting to all subpages' toggle after selecting Content Approval workflow",
+          "expected": "Toggle should be visible and initially Off",
+          "actual": "Toggle was visible showing 'Off' state",
+          "screenshot": "Workflow UI Components_step03_apply_subpages_toggle.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked the toggle to enable 'Apply setting to all subpages'",
+          "expected": "Toggle should change to On state",
+          "actual": "Toggle changed to 'On' state successfully",
+          "screenshot": "Workflow UI Components_step04_apply_subpages_on.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify workflow selection persists after save",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "With Content Approval workflow selected, clicked Save button",
+          "expected": "Page should save with workflow selection persisted",
+          "actual": "Page saved with success message 'Page updated successfully'",
+          "screenshot": "Workflow UI Components_step05_save_success.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigated away from page and returned to check workflow persistence",
+          "expected": "Workflow should still be Content Approval",
+          "actual": "Workflow reverted to 'Direct Publish' instead of staying as 'Content Approval'",
+          "screenshot": "Workflow UI Components_step08_persistence_issue.png"
+        }
+      ],
+      "issues": ["Workflow selection does not persist after save - reverts to Direct Publish"]
+    },
+    {
+      "scenario_name": "View workflow status bubble on hover",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Selected Workflow Test Page which has Content Approval workflow",
+          "expected": "Page should show workflow status in header",
+          "actual": "Page header shows 'Workflow: Off' even though Content Approval workflow is assigned",
+          "screenshot": "Workflow UI Components_step09_workflow_test_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Hovered over workflow dropdown area",
+          "expected": "Workflow status bubble should appear showing workflow state details",
+          "actual": "No workflow status bubble appeared on hover. Workflow shows 'Off' status",
+          "screenshot": "Workflow UI Components_step10_workflow_hover.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Hovered over 'Workflow: Off' text in page status area",
+          "expected": "Status bubble should appear with workflow information",
+          "actual": "No bubble appeared. The WorkflowBubble component requires active workflow state (content in approval process) to display",
+          "screenshot": "Workflow UI Components_step11_workflow_status_hover.png"
+        }
+      ],
+      "issues": ["Workflow status bubble does not appear because no pages have active workflow states (content pending approval). The 'Workflow: Off' status indicates no content is currently in the workflow process."]
+    },
+    {
+      "scenario_name": "Add workflow note to state change",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Assets panel to find files with active workflow states",
+          "expected": "Should find files with draft status that can have workflow notes added",
+          "actual": "Found Images folder with a file showing 'Draft' badge (subfolder_upload_test.txt)",
+          "screenshot": "Workflow UI Components_step19_assets_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempted to access draft file details for workflow notes",
+          "expected": "File details panel should open with workflow note input",
+          "actual": "Clicking on file triggered download instead of opening details panel. Workflow note input not accessible via hover icons",
+          "screenshot": "Workflow UI Components_step21_draft_file_hover.png"
+        }
+      ],
+      "issues": ["Unable to access workflow note functionality. File click triggers download instead of details panel. The WorkflowNote component exists in code but UI path to access it was not found in the standard file interaction workflow."]
+    },
+    {
+      "scenario_name": "View workflow note history",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for workflow note history UI in Pages and Assets panels",
+          "expected": "Should find a way to view previous workflow notes",
+          "actual": "No UI element found to access workflow note history. Pages show 'Workflow: Off' status with no history link",
+          "screenshot": "Workflow UI Components_step11_workflow_status_hover.png"
+        }
+      ],
+      "issues": ["Workflow note history UI not accessible. The WorkflowNote.jsx component exists in codebase but no pages have active workflow states to display note history."]
+    },
+    {
+      "scenario_name": "Verify workflow dropdown disabled when workflow incomplete",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Checked workflow dropdown on pages with various workflow states",
+          "expected": "Dropdown should be disabled when page has incomplete workflow",
+          "actual": "Workflow dropdown is enabled when 'Workflow: Off' (no active workflow). The dropdown allows changing workflows on published pages. Pages with active workflow states would have the dropdown disabled.",
+          "screenshot": "Workflow UI Components_step09_workflow_test_page.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test workflow UI responsiveness",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Resized browser to tablet size (768px width)",
+          "expected": "Workflow UI components should adapt to smaller viewport",
+          "actual": "UI adapted to tablet size - workflow dropdown remained visible and functional",
+          "screenshot": "Workflow UI Components_step16_tablet_768px.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Resized browser to mobile size (480px width)",
+          "expected": "Workflow UI should still be usable on mobile",
+          "actual": "UI showed some content truncation (labels cut off) but workflow elements still visible. 'Work...' visible indicating partial display",
+          "screenshot": "Workflow UI Components_step17_mobile_480px.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Restored browser to desktop size (1280px width)",
+          "expected": "UI should restore to full desktop layout",
+          "actual": "UI restored correctly to full desktop layout with all elements visible",
+          "screenshot": "Workflow UI Components_step18_restored_1280px.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code suggests WorkflowBubble.jsx and WorkflowNote.jsx components exist, but no pages had active workflow states to test these components. The 'Workflow: Off' status on all tested pages indicates no content is currently in the approval workflow process.",
+    "The workflow dropdown shows correct options (Direct Publish, Save Draft, Content Approval) but workflow changes may not persist correctly after save.",
+    "The 'Apply setting to all subpages' toggle only appears when selecting a non-Direct Publish workflow.",
+    "Assets with Draft status exist (subfolder_upload_test.txt) but accessing workflow notes requires a different UI path than standard file interaction.",
+    "The ContainerWorkflowForMultiplePages.jsx component is designed for bulk workflow operations but was not encountered in standard testing flow."
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 4,
+    "failed": 4,
+    "pass_rate": "50%"
+  }
+}

@@ -1,0 +1,175 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Layout Versioning",
+    "feature_description": "Tracks changes to layouts and maintains version history for rollback and publishing workflows.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:05:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Page History Panel",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Home page and entered Edit Mode by clicking Edit button",
+          "expected": "Page enters Edit Mode with Edit Bar visible at the bottom",
+          "actual": "Page entered Edit Mode successfully with Edit Bar showing Discard and Publish buttons",
+          "screenshot": "Layout Versioning_step01_edit_mode_enabled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked on Page History button in Edit Bar",
+          "expected": "Page History panel opens showing version history",
+          "actual": "Page History panel opened showing Version 3 (Draft) and Version 2 (Published)",
+          "screenshot": "Layout Versioning_step02_page_history_panel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View Specific Version",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked Show button for Version 2 (Published) in Page History panel",
+          "expected": "Version 2 content is displayed in preview mode",
+          "actual": "Version 2 preview displayed with 'Version 2' indicator in top right corner and Preview mode UI",
+          "screenshot": "Layout Versioning_step03_view_version.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Compare Versions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Selected checkboxes for Version 3 and Version 2 in Page History",
+          "expected": "Both versions selected and Compare button becomes enabled",
+          "actual": "Both checkboxes checked and Compare button enabled",
+          "screenshot": "Layout Versioning_step04_compare_selection.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Compare button",
+          "expected": "Side-by-side comparison view shows with insertions and deletions highlighted",
+          "actual": "Comparison view displayed with Version 3 and Version 2 side-by-side, showing 'Inserted' and 'Deleted' legend",
+          "screenshot": "Layout Versioning_step05_compare_versions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Publish Version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked Publish button in Edit Bar to publish current draft version",
+          "expected": "Current draft version is published and version state changes to Published",
+          "actual": "Error dialog appeared: 'Another user has taken action on the page and its state has been changed. Please, refresh the page to see the current state.'",
+          "screenshot": "Layout Versioning_step06_publish_conflict_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Refreshed page and attempted Publish again",
+          "expected": "Publish succeeds after refresh",
+          "actual": "Same conflict error appeared again",
+          "screenshot": "Layout Versioning_step07_version_history_after_refresh.png"
+        }
+      ],
+      "issues": ["Publish consistently failed with concurrency conflict error despite page refresh. This may indicate a bug where the page state tracking is not properly reset, or there is a legitimate concurrent modification detected."]
+    },
+    {
+      "scenario_name": "Rollback to Previous Version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Opened Page History panel and looked for Restore Version action on published versions",
+          "expected": "Restore Version action button visible in Actions column for published versions",
+          "actual": "Only Show action visible in Actions column. Restore action not available.",
+          "screenshot": "Layout Versioning_step08_version_actions.png"
+        }
+      ],
+      "issues": ["Restore Version action not available. Based on code review, Restore is only visible when: the top version is Published AND looking at an older published version. Current state has Draft on top, so condition not met."]
+    },
+    {
+      "scenario_name": "Delete Version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Opened Page History panel and looked for Delete Version action",
+          "expected": "Delete Version action button visible for deletable versions",
+          "actual": "Only Show action visible in Actions column. Delete action not available.",
+          "screenshot": "Layout Versioning_step08_version_actions.png"
+        }
+      ],
+      "issues": ["Delete Version action not visible. Based on code review, Delete is only visible under specific conditions that were not met in the current test state."]
+    },
+    {
+      "scenario_name": "Track Layout Changes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examined Page History panel for evidence of tracked changes",
+          "expected": "Version history shows multiple versions with timestamps tracking layout modifications",
+          "actual": "Version 3 (Draft, 2/9/2026 6:52:30 AM) and Version 2 (Published, 2/9/2026 6:48:47 AM) visible, confirming layout changes are being tracked with version numbers and timestamps",
+          "screenshot": "Layout Versioning_step02_page_history_panel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Get Latest Version",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verified that Page History displays latest version at top",
+          "expected": "Most recent version shown first in version history list",
+          "actual": "Version 3 (most recent, Draft) displayed at top of the list, Version 2 (older, Published) below it",
+          "screenshot": "Layout Versioning_step02_page_history_panel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Get Published Version",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verified published version is clearly identified in Page History",
+          "expected": "Published versions clearly marked with 'Published' state",
+          "actual": "Version 2 clearly shows 'Published' state in the STATE column",
+          "screenshot": "Layout Versioning_step02_page_history_panel.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Layout versioning is fully integrated with DNN's Page Versioning System, not a separate UI for ContentLayout module specifically.",
+    "The VersionController.cs implements version tracking that includes: CreateFirstVersion, TrackModuleChange, PublishVersion, RollBackVersion, DeleteVersion, GetLatestVersion, GetPublishedVersion.",
+    "Version caching is implemented using DataCache with key pattern 'ContentLayoutVersion_{moduleId}_{version}'.",
+    "The View.ascx.cs implements IVersionableControl interface to integrate with DNN's page versioning system.",
+    "Restore and Delete actions have conditional visibility based on version state - they only appear under specific conditions (e.g., Restore only visible on older published versions when top version is also published).",
+    "The publish conflict error may indicate concurrent state tracking issue or legitimate multi-user conflict detection working as designed.",
+    "Content Layout panes (F30A_Pane1-4, 9977_Pane1-4) visible in Edit Mode confirm ContentLayout module is present on the page."
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 6,
+    "failed": 3,
+    "pass_rate": "67%"
+  }
+}

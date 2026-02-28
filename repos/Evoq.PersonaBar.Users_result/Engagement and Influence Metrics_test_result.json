@@ -1,0 +1,125 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Users",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Engagement and Influence Metrics",
+    "feature_description": "Calculate and display user engagement and influence percentages (Social SKU only)",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T10:22:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Display engagement percentage with progress bar",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Users and click on User Activity icon for Test User12",
+          "expected": "User Activity panel expands showing engagement metrics",
+          "actual": "User Activity panel expanded showing ENGAGEMENT section with progress bar and value of 0",
+          "screenshot": "Engagement and Influence Metrics_step01_user_activity_panel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Display influence percentage with progress bar",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View User Activity panel for Test User12",
+          "expected": "Influence percentage displayed with progress bar (0-100%)",
+          "actual": "INFLUENCE section displayed with progress bar showing value of 2 (indicating 2% influence)",
+          "screenshot": "Engagement and Influence Metrics_step01_user_activity_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View User Activity for Test User01",
+          "expected": "Different influence value displayed",
+          "actual": "Test User01 showed INFLUENCE value of 1, demonstrating different influence levels between users",
+          "screenshot": "Engagement and Influence Metrics_step03_user01_influence.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with 0% engagement",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View User Activity for Test User11 who has no engagement",
+          "expected": "Engagement shows 0% with empty progress bar",
+          "actual": "ENGAGEMENT displayed as 0 with empty progress bar, correctly showing zero engagement",
+          "screenshot": "Engagement and Influence Metrics_step02_user11_0_engagement.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View User Activity for Test User10",
+          "expected": "Engagement shows 0% with empty progress bar",
+          "actual": "ENGAGEMENT displayed as 0 and INFLUENCE displayed as 0, both with empty progress bars",
+          "screenshot": "Engagement and Influence Metrics_step05_user10_zero_metrics.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle missing engagement data gracefully",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View User Activity for multiple users without engagement data",
+          "expected": "System should handle missing data without errors, displaying 0",
+          "actual": "All users with no engagement data correctly displayed 0 values without any errors or broken UI elements",
+          "screenshot": "Engagement and Influence Metrics_step05_user10_zero_metrics.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify metrics only show for Social SKU",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify that engagement and influence metrics are visible in the UI",
+          "expected": "Metrics should be visible because site is running Evoq Engage (Social SKU)",
+          "actual": "ENGAGEMENT and INFLUENCE sections are visible in the User Activity panel. The trial banner confirms 'Evoq Engage' SKU which includes Social features.",
+          "screenshot": "Engagement and Influence Metrics_step01_user_activity_panel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit Points dialog interaction",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Edit Points link to modify user points",
+          "expected": "Edit dialog opens allowing modification of Reputation and Experience",
+          "actual": "Edit Points dialog opened with editable fields for REPUTATION and EXPERIENCE, plus a Notes field. ENGAGEMENT and INFLUENCE values are calculated and not directly editable.",
+          "screenshot": "Engagement and Influence Metrics_step04_edit_points_dialog.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Engagement and Influence values are calculated metrics that cannot be directly edited - they are derived from user activities tracked by the analytics system",
+    "The progress bars scale from 0-100% with the numeric value displayed alongside",
+    "Test User12 had the highest influence value (2) among tested users, while most users showed 0 engagement and 0-1 influence",
+    "The SuperUser Account (host) row does not display User Activity icon - this appears to be intentional behavior for the super user",
+    "Code review confirms engagement is calculated from XML time series data via GetUserEngagement method using yearly intervals compared to OptimalEngagementScore",
+    "Influence is calculated from Analytics_UserInfluenceRollup table with daily/weekly/monthly/yearly breakdowns"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

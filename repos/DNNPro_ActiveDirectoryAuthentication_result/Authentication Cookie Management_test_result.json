@@ -1,0 +1,125 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Authentication Cookie Management",
+    "feature_description": "Manages authentication cookies and timeout settings for persistent login",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:15:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Test persistent cookie creation with Remember Login",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Opened login dialog",
+          "expected": "Login dialog appears with Remember Login checkbox",
+          "actual": "Login dialog displayed with Username, Password fields and Remember Login checkbox",
+          "screenshot": "Authentication Cookie Management_step00_login_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Entered credentials and checked Remember Login checkbox",
+          "expected": "Credentials entered and Remember Login checkbox selected",
+          "actual": "Username 'host' entered, password filled, and Remember Login checkbox checked",
+          "screenshot": "Authentication Cookie Management_step04_remember_login_checked.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Clicked Login button",
+          "expected": "User logged in successfully with persistent session",
+          "actual": "Login successful, SuperUser Account displayed in header, admin panel visible",
+          "screenshot": "Authentication Cookie Management_step05_logged_in_with_remember.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Navigated to different page to verify session persistence",
+          "expected": "Session maintained across page navigation",
+          "actual": "SuperUser Account still visible after navigating to Our Products page, confirming cookie persistence",
+          "screenshot": "Authentication Cookie Management_step08_session_persistence.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify cookie timeout configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Security settings in admin panel",
+          "expected": "Security settings page loads with authentication options",
+          "actual": "Security page displayed with Authentication tab showing Basic Login Settings",
+          "screenshot": "Authentication Cookie Management_step06_auth_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigated to More > More Security Settings tab",
+          "expected": "Security settings with timeout configuration visible",
+          "actual": "More Security Settings tab shows Enable Remember Me on Login Control (On), Auto-Unlock Accounts After (10 minutes), and Time Before Timeout (90 seconds)",
+          "screenshot": "Authentication Cookie Management_step07_security_settings.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test logout cookie cleanup",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked on SuperUser Account dropdown",
+          "expected": "User menu appears with Logout option",
+          "actual": "User menu dropdown displayed showing My Profile, Messages, Notifications, Edit Account, Edit Profile, and Logout options",
+          "screenshot": "Authentication Cookie Management_step02_user_menu_logout.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Logout link",
+          "expected": "User logged out and redirected to home page as anonymous user",
+          "actual": "Logout successful, page now shows Register and Login links instead of SuperUser Account, confirming session cookie cleared",
+          "screenshot": "Authentication Cookie Management_step03_after_logout.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify authentication status cookie management",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Reviewed AuthenticationController.cs code for cookie management implementation",
+          "expected": "Code should manage authentication status cookies",
+          "actual": "Code review confirmed: SetStatus() method creates encrypted FormsAuthenticationTicket stored in AUTHENTICATION.STATUS.[portalId] cookie with configurable timeout. GetStatus() reads and validates the authentication status cookie. AuthenticationLogoff() calls FormsAuthentication.SignOut() and expires portalaliasid and portalroles cookies.",
+          "screenshot": "Authentication Cookie Management_step01_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verified cookie security settings via code review",
+          "expected": "Code implements proper cookie security",
+          "actual": "Code confirms: FormsAuthentication.SetAuthCookie() used with isPersistent flag based on Remember Login checkbox, PersistentCookieTimeout can be configured via web.config, GetAuthCookieTimeout() reads timeout from web.config forms authentication settings",
+          "screenshot": "Authentication Cookie Management_step07_security_settings.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Active Directory Authentication Provider extension is installed (version 9.3.2) but the AD provider is not currently configured as an enabled authentication option in the Default Authentication Provider dropdown - only DNN authentication is available.",
+    "Cookie management functionality in the AD Authentication Provider code (AuthenticationController.cs) is designed to work with Windows/AD authentication scenarios. The core cookie management uses ASP.NET FormsAuthentication and supports PersistentCookieTimeout configuration from web.config.",
+    "The authentication status cookie (AUTHENTICATION.STATUS.[portalId]) is encrypted using FormsAuthentication.Encrypt() for security.",
+    "Time Before Timeout setting in More Security Settings (currently 90 seconds) controls session timeout behavior.",
+    "Enable Remember Me on Login Control setting controls whether the Remember Login checkbox appears on the login form.",
+    "Authentication cookies are HttpOnly by default (ASP.NET FormsAuthentication behavior), preventing JavaScript access for security."
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

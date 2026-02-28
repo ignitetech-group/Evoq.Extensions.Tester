@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Custom Dimensions and Variables",
+    "feature_description": "Configure custom tracking dimensions and variables based on segmentation rules for enhanced analytics.",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:34:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Segmentation Rules UI for Custom Variables",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Settings > Connectors in the admin panel",
+          "expected": "Connectors list should display with Google Analytics connector",
+          "actual": "Connectors list displayed with 'Google Analytics 4' connector showing Edit button",
+          "screenshot": "Custom_Dimensions_Variables_step01_connectors_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked Edit button on Google Analytics 4 connector to access settings",
+          "expected": "Connector settings should expand with Measurement ID field and Advanced Settings link for accessing Segmentation Rules",
+          "actual": "Connector settings expanded showing only Measurement ID and Track for Administrators fields. No Advanced Settings link or Segmentation Rules UI was present.",
+          "screenshot": "Custom_Dimensions_Variables_step02_ga4_basic_settings.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Changed Measurement ID to Universal Analytics format (UA-12345678-1) and saved to test if UA format enables Advanced Settings",
+          "expected": "Changing to UA format might enable Advanced Settings with Segmentation Rules",
+          "actual": "Configuration saved successfully but UI remained the same - still no Advanced Settings link visible. Connector label still shows 'Google Analytics 4'",
+          "screenshot": "Custom_Dimensions_Variables_step03_ua_tracking_id_saved.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Verified connector UI does not contain advancedSetting element via DOM inspection",
+          "expected": "advancedSetting link should exist somewhere in the UI",
+          "actual": "DOM inspection confirmed: hasAdvancedSetting=false, hasGaBase=false, hasGa4ID=true. The GA4 connector template does not include the Advanced Settings functionality.",
+          "screenshot": "Custom_Dimensions_Variables_step04_no_advanced_settings.png"
+        }
+      ],
+      "issues": [
+        "The Custom Dimensions and Variables (Segmentation Rules) feature exists in the codebase (connector.htm, advanced.htm, connector.js) but is NOT accessible in the current Google Analytics 4 connector UI",
+        "The connector uses a simplified GA4 template that omits the 'advancedSetting' link which would provide access to the Segmentation Rules UI",
+        "Code analysis shows the feature was designed for Universal Analytics with rules stored as 'rule-N' configurations supporting Label, Value, Page, and Role fields",
+        "Maximum 5 custom variables (MAX_CUSTOM_VARS=5) with page-level scope (CUSTVAR_OPT_SCOPE=3) as defined in GoogleAnalyticsProEngine.cs"
+      ]
+    },
+    {
+      "scenario_name": "Add custom variable for specific role",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to find UI element for adding role-based custom variable",
+          "expected": "Advanced Settings panel should have 'Add Rule' button with Role dropdown",
+          "actual": "Cannot test - Advanced Settings UI not accessible. The feature exists in advanced.htm (line 48: rolesDropDown) but no UI path to access it.",
+          "screenshot": "Custom_Dimensions_Variables_step02_ga4_basic_settings.png"
+        }
+      ],
+      "issues": ["No UI element found to access Segmentation Rules for role-based variables"]
+    },
+    {
+      "scenario_name": "Add custom variable for specific page",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to find UI element for adding page-based custom variable",
+          "expected": "Advanced Settings panel should have 'Add Rule' button with Page picker dropdown",
+          "actual": "Cannot test - Advanced Settings UI not accessible. The feature exists in advanced.htm (line 40: pagesDropDown) but no UI path to access it.",
+          "screenshot": "Custom_Dimensions_Variables_step02_ga4_basic_settings.png"
+        }
+      ],
+      "issues": ["No UI element found to access Segmentation Rules for page-based variables"]
+    },
+    {
+      "scenario_name": "Test maximum 5 custom variables limit",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to verify 5 variable limit",
+          "expected": "Should be able to add up to 5 rules, then 'Add Rule' button should hide",
+          "actual": "Cannot test - Code confirms MAX_CUSTOM_VARS=5 limit in GoogleAnalyticsProEngine.cs (line 25) and UI hides Add Rule when rules().length >= 5 (advanced.htm line 18), but no UI access to verify.",
+          "screenshot": "Custom_Dimensions_Variables_step02_ga4_basic_settings.png"
+        }
+      ],
+      "issues": ["Cannot verify 5 variable limit due to inaccessible Advanced Settings UI"]
+    }
+  ],
+  "observations": [
+    "Code review confirms the Custom Dimensions and Variables feature exists in the codebase with full implementation in GoogleAnalyticsProEngine.cs, GoogleAnalyticsConnector.cs, connector.js, and advanced.htm",
+    "The feature was designed for the original Google Analytics (Universal Analytics) connector with the 'advancedSetting' link in connector.htm",
+    "The current deployed connector displays as 'Google Analytics 4' and uses a simplified template (with txtGa4ID field) that does not include the Advanced Settings link",
+    "Key code findings: MAX_CUSTOM_VARS=5, CUSTVAR_OPT_SCOPE=3 (page level), rules support Label/Value/Page/Role combinations",
+    "The connector.js file (line 40) registers click handler for '.advancedSetting' which opens a PersonaBarDialog with advanced.htm content, but this element is not present in the GA4 template",
+    "RenderCustomScript() method in GoogleAnalyticsProEngine.cs (lines 133-169) renders custom variables based on rules matching TabId and RoleId",
+    "This appears to be a feature gap where the GA4 connector implementation does not include the Segmentation Rules UI that was available in Universal Analytics connector"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 0,
+    "failed": 4,
+    "pass_rate": "0%"
+  }
+}

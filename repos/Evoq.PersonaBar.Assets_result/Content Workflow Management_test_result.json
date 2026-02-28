@@ -1,0 +1,196 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Assets",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Content Workflow Management",
+    "feature_description": "Manages content workflows including draft, submit, approve, publish, and reject states with history tracking",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T10:07:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View folder workflow configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Content > Assets and select Images folder",
+          "expected": "Folder displays in assets panel with workflow indicator",
+          "actual": "Images folder visible with files showing Draft status badges",
+          "screenshot": "Content Workflow Management_step13_images_folder_with_drafts.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click edit button on Images folder",
+          "expected": "Folder details panel opens showing workflow settings",
+          "actual": "Details panel opened with tabs: Details, Permissions. Shows Workflow dropdown set to Content Approval",
+          "screenshot": "Content Workflow Management_step10_folder_details_panel.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click on Workflow dropdown to view options",
+          "expected": "Dropdown shows available workflows",
+          "actual": "Dropdown shows: Direct Publish, Save Draft, Content Approval (selected), Test Workflow, Test & <> \"Special\" Chars!",
+          "screenshot": "Content Workflow Management_step11_workflow_dropdown.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Change folder workflow configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Direct Publish' from workflow dropdown",
+          "expected": "Workflow option changes and shows pending items action",
+          "actual": "Workflow changed to Direct Publish. 'Pending Items' section appeared with 'Publish All' and 'Discard All' radio options",
+          "screenshot": "Content Workflow Management_step12_workflow_change_pending.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View file details with workflow tab",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hover over test_image-Copy.png file and click edit button",
+          "expected": "File details panel opens with workflow tab",
+          "actual": "File details panel opened with tabs: Details, Versioning, Workflow",
+          "screenshot": "Content Workflow Management_step15_file_details_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Workflow tab",
+          "expected": "Workflow tab shows current state, actions, and history",
+          "actual": "Workflow tab displayed with: file preview, Workflow Comment field, Submit/Discard buttons, and workflow history table showing State Initiated (Draft) and Workflow Started (Content Approval)",
+          "screenshot": "Content Workflow Management_step16_workflow_tab.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Submit file for review",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Submit button on workflow tab for Draft file",
+          "expected": "File transitions from Draft to Ready For Review state",
+          "actual": "Success notification displayed. File status changed from 'Draft' to 'Ready For Review'. Buttons changed from Submit/Discard to Publish/Reject",
+          "screenshot": "Content Workflow Management_step17_submit_success.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify workflow history is updated",
+          "expected": "History shows new state transition entries",
+          "actual": "History now shows 4 entries: State Initiated (Ready For Review), Draft Completed, State Initiated (Draft), Workflow Started",
+          "screenshot": "Content Workflow Management_step18_ready_for_review.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Reject file with state transition back to Draft",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Reject button on Ready For Review file",
+          "expected": "File transitions back to Draft state",
+          "actual": "Success notification displayed. File reverted to Draft state",
+          "screenshot": "Content Workflow Management_step19_reject_success.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify workflow history shows rejection",
+          "expected": "History includes State Discarded entry",
+          "actual": "History shows 6 entries including 'State Discarded' - The State 'Ready For Review' has been discarded. Buttons reverted to Submit/Discard",
+          "screenshot": "Content Workflow Management_step20_after_reject.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Publish file completing workflow",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Submit Draft file again and then click Publish",
+          "expected": "File transitions through workflow and gets published",
+          "actual": "File submitted successfully, then Publish button clicked. Success notification. File no longer shows workflow badge indicating it's now published",
+          "screenshot": "Content Workflow Management_step22_publish_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Discard draft changes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to test_special_!@#chars.txt Draft file and view workflow tab",
+          "expected": "File shows in Draft state with Discard option",
+          "actual": "File displayed in Draft state with Submit and Discard buttons. Workflow history shows Workflow Started and State Initiated (Draft)",
+          "screenshot": "Content Workflow Management_step23_before_discard.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Discard button",
+          "expected": "Draft file is discarded/deleted",
+          "actual": "Success notification. File removed from the assets list (file was deleted since it was never published)",
+          "screenshot": "Content Workflow Management_step24_after_discard.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View workflow history",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review workflow history table throughout testing",
+          "expected": "History shows all workflow state transitions with timestamps, users, actions, and comments",
+          "actual": "Workflow history table correctly displayed all transitions: Workflow Started, State Initiated, Draft Completed, State Discarded. Each entry shows Date, User (SuperUser Account), Action, and Comment columns",
+          "screenshot": "Content Workflow Management_step20_after_reject.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test workflow state transitions cycle",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Complete full workflow cycle: Draft -> Submit -> Ready For Review -> Reject -> Draft -> Submit -> Ready For Review -> Publish",
+          "expected": "All state transitions work correctly",
+          "actual": "Successfully transitioned through all states. File progressed from Draft to Ready For Review, was rejected back to Draft, then submitted again and finally published. Workflow badge removed after publish indicating completion",
+          "screenshot": "Content Workflow Management_step22_publish_success.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Content Approval workflow is configured at the folder level, not individual file level",
+    "When changing folder workflow from Content Approval to Direct Publish, the system offers 'Publish All' or 'Discard All' options for pending items",
+    "Versioning can be enabled/disabled alongside workflow configuration",
+    "The Discard action on a Draft file that was never published results in file deletion",
+    "Workflow history provides comprehensive audit trail with timestamps, user identification, action type, and descriptive comments",
+    "Multiple workflows are available: Direct Publish, Save Draft, Content Approval, Test Workflow, and custom workflows with special characters",
+    "File preview is available directly in the workflow tab"
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 9,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

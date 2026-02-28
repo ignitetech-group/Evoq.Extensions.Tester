@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Content Reporting",
+    "feature_description": "Report inappropriate wiki articles or comments to moderators",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:51:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Report article",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page to access wiki articles",
+          "expected": "Wiki module with list of articles should be displayed",
+          "actual": "Wiki module displayed with 6 existing articles in list view",
+          "screenshot": "Content Reporting_step01_wiki_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on an article to access article detail view where Report button is located",
+          "expected": "Article detail view should load showing Report link",
+          "actual": "Article detail page returned 404 error - page not found. The Report button only exists in article detail view (Article.ascx line 109) which is inaccessible",
+          "screenshot": "Content Reporting_step02_article_404.png"
+        }
+      ],
+      "issues": [
+        "Wiki article detail pages return 404 errors - URLs like /en-us/Wiki-Test/[Article-Name] are not found",
+        "Report button is only visible in article detail view which cannot be accessed",
+        "Feature cannot be tested due to environment routing/configuration issue"
+      ]
+    },
+    {
+      "scenario_name": "Report comment",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to article detail view to access comments section",
+          "expected": "Article detail view with comments section and report functionality",
+          "actual": "Cannot access article detail view - all article URLs return 404 errors. Comments are only displayed in article detail view which is inaccessible",
+          "screenshot": "Content Reporting_step02_article_404.png"
+        }
+      ],
+      "issues": [
+        "Comments section is only visible in article detail view (Article.ascx)",
+        "Article detail pages return 404 errors preventing access to comments",
+        "SubmitCommentReport API endpoint exists in ReportController.cs but cannot be tested via UI"
+      ]
+    },
+    {
+      "scenario_name": "Submit report with reason",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access Report dialog to verify reason selection functionality",
+          "expected": "Report dialog should open with reason selection dropdown",
+          "actual": "Cannot access Report dialog - requires article detail view which returns 404 error",
+          "screenshot": "Content Reporting_step02_article_404.png"
+        }
+      ],
+      "issues": [
+        "Report dialog (social:Report control) is rendered in Article.ascx but not accessible",
+        "Code shows ReportSubmission model accepts reason parameter but cannot be tested"
+      ]
+    },
+    {
+      "scenario_name": "Create new article to access report functionality",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Create Article button to create a new article as workaround",
+          "expected": "Create Article dialog should open",
+          "actual": "Create Article dialog opened successfully",
+          "screenshot": "Content Reporting_step04_create_article_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Fill in article title and content fields",
+          "expected": "Form should accept input and allow publishing",
+          "actual": "Form shows validation errors 'Text is required' even though fields appear filled. Article creation fails.",
+          "screenshot": "Content Reporting_step05_validation_errors.png"
+        }
+      ],
+      "issues": [
+        "Article creation form validation fails despite fields being populated",
+        "This prevented the workaround approach to access article detail view and test Report functionality"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review confirms Content Reporting feature exists: ReportController.cs contains SubmitReport and SubmitCommentReport API endpoints",
+    "Article.ascx line 109 contains Report link: <a href=\"javascript:void(0)\" data-bind=\"click: report\">",
+    "Notifications.cs contains ReportArticle method that sends notifications to moderators when articles are reported",
+    "dnn.social.DetailView.js contains report() function that calls dnn.social.reportContent()",
+    "Scoring actions are logged for FlaggedArticle and FlaggedComment when reports are submitted",
+    "Feature appears fully implemented in code but cannot be tested due to wiki article detail pages returning 404 errors",
+    "This is an environment/routing configuration issue, not a code defect in the Content Reporting feature itself"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 0,
+    "failed": 4,
+    "pass_rate": "0%"
+  }
+}

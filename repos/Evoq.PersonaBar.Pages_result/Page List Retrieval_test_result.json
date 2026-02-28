@@ -1,0 +1,139 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Pages",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Page List Retrieval",
+    "feature_description": "Retrieve list of pages with filtering by parent ID and search key",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T09:32:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Get root-level pages (empty parent)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Content > Pages",
+          "expected": "Root-level pages should be displayed in a tree view",
+          "actual": "Root-level pages displayed correctly: Home, Our Products, Activity Feed, Community, Search Results, 404 Error Page, Wiki Test, Groups, Test Page One, News, Test Normal Page, Publish Test Page, and others",
+          "screenshot": "Page List Retrieval_step01_pages_list_root.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Get pages by parent ID (expand child pages)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click [+] expand button next to 'Our Products' page",
+          "expected": "Child pages of 'Our Products' should be displayed",
+          "actual": "Child page 'Leaderboard' displayed under 'Our Products'",
+          "screenshot": "Page List Retrieval_step02_expand_child_pages.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click [+] expand button next to 'Activity Feed' page",
+          "expected": "Child pages of 'Activity Feed' should be displayed",
+          "actual": "Child pages 'My Profile', 'Friends', and 'Messages' displayed under 'Activity Feed'",
+          "screenshot": "Page List Retrieval_step08_activity_feed_expanded.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Search pages with search key",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'News' in the search field and click search",
+          "expected": "Pages matching 'News' should be displayed",
+          "actual": "2 PAGES FOUND: 'News' and 'News SubPage Test' displayed with page details (Page Type, Publish Status, Publish Date, Workflow, Tags)",
+          "screenshot": "Page List Retrieval_step03_search_results.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Search with no results",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'XYZnonexistent123' in the search field and click search",
+          "expected": "No results message should be displayed",
+          "actual": "'NO PAGE FOUND.' message displayed correctly",
+          "screenshot": "Page List Retrieval_step04_no_results.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Search with special characters (HTML tags)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter '<script>' in the search field and click search",
+          "expected": "Search should handle special characters without errors",
+          "actual": "Search handled gracefully, returned 'NO PAGE FOUND.' - no errors or crashes",
+          "screenshot": "Page List Retrieval_step05_special_chars_search.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Search for 'XSS' to find page with script tags in name",
+          "expected": "Page with HTML-encoded script tags should be found",
+          "actual": "1 PAGE FOUND: '<script>alert('XSS')</script>' page found and displayed with HTML encoding intact",
+          "screenshot": "Page List Retrieval_step06_xss_page_found.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Select child page and view details",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on 'My Profile' child page under Activity Feed",
+          "expected": "Page details should be displayed with correct parent information",
+          "actual": "My Profile page selected, details shown with Page Parent: 'Activity Feed', Status: 'Visible', Page ID: 31. Breadcrumb shows 'ACTIVITY FEED > MY PROFILE'",
+          "screenshot": "Page List Retrieval_step09_child_page_selected.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Tree view navigation (EXPAND ALL/COLLAPSE ALL)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observe tree view functionality",
+          "expected": "Tree view should show expand/collapse controls and change text accordingly",
+          "actual": "Tree view shows '[EXPAND ALL]' initially, changes to '[COLLAPSE ALL]' when pages are expanded. Tree structure correctly displays hierarchical page relationships",
+          "screenshot": "Page List Retrieval_step07_tree_view.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Pages module uses a tree-based navigation pattern rather than traditional pagination. This is appropriate for hierarchical page structures.",
+    "Search results view shows a different layout with page cards containing detailed information (Page Type, Publish Status, Publish Date, Workflow, Tags).",
+    "Pages with special characters in names (like XSS script tags) are properly HTML-encoded and displayed safely.",
+    "The BACK TO PAGE button in search results returns to the tree view.",
+    "Advanced Filters option is available in search results but was not tested in depth for this feature.",
+    "Some pages appear grayed out in the tree view (e.g., 'Activity Feed', 'Search Results', '404 Error Page') indicating they may be hidden from the menu or have special status."
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 7,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

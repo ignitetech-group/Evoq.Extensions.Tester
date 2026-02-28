@@ -1,0 +1,148 @@
+{
+  "metadata": {
+    "extension_name": "Publisher",
+    "extension_type": "Module",
+    "feature_name": "Revision Management",
+    "feature_description": "Track and manage content revisions with version history and rollback capabilities",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:15:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View revision history",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged in as SuperUser and navigated to News page with Publisher module",
+          "expected": "A Revision History panel or button should be available in the Post Editor UI",
+          "actual": "No Revision History UI element found in the Publisher module. The Post Editor only shows: Upload Image area, Title field, Content area, and bottom bar with Delete/Edit Details/Change Author buttons plus Close",
+          "screenshot": "Revision Management_step05_post_editor_no_overlay.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Reviewed code files RevisionManager.cs and IRevisionController.cs",
+          "expected": "UI integration for viewing revision history",
+          "actual": "Code review confirms Revision Management exists at backend level (RevisionManager.cs uses Evoq.Revisions library with IRevisionController) but no UI is exposed in Publisher module. Methods like GetAllChangesets(), GetLatestRevision() exist but are only used internally for workflow management (draft/published states)",
+          "screenshot": "Revision Management_step03_post_editor.png"
+        }
+      ],
+      "issues": ["No UI exists to view revision history in Publisher module. The feature is backend-only, used for internal workflow state management."]
+    },
+    {
+      "scenario_name": "Compare revision differences",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for revision comparison UI in Post Editor",
+          "expected": "A way to select and compare two revisions visually",
+          "actual": "No comparison UI found. Code review shows IRevisionController.Compare() method exists but is not exposed through Publisher UI",
+          "screenshot": "Revision Management_step05_post_editor_no_overlay.png"
+        }
+      ],
+      "issues": ["Compare revision functionality exists in backend code (IRevisionController.Compare()) but is not accessible through the Publisher module UI"]
+    },
+    {
+      "scenario_name": "Rollback to previous revision",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for rollback functionality in Post Editor",
+          "expected": "A button or option to rollback to a previous revision",
+          "actual": "No rollback UI found. Code review shows IRevisionController.Rollback() method exists but is not exposed through Publisher UI",
+          "screenshot": "Revision Management_step05_post_editor_no_overlay.png"
+        }
+      ],
+      "issues": ["Rollback functionality exists in backend code (IRevisionController.Rollback()) but is not accessible through the Publisher module UI"]
+    },
+    {
+      "scenario_name": "Create new revision on edit",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Opened existing post 'Revision Test Post' in edit mode",
+          "expected": "Editing and saving should create a new revision that can be viewed in revision history",
+          "actual": "Post editor opened successfully with content editable, but since there is no Revision History UI, it's impossible to verify if editing creates a new revision that users can see or manage. Code shows AddPendingToBePublishedRevision() is called on save, but this is invisible to users",
+          "screenshot": "Revision Management_step05_post_editor_no_overlay.png"
+        }
+      ],
+      "issues": ["While the backend likely creates revisions on edit (AddPendingToBePublishedRevision in RevisionManager.cs), there is no UI for users to verify or view these revisions"]
+    },
+    {
+      "scenario_name": "Delete old revisions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for delete revision option in Post Editor",
+          "expected": "An option to delete old/unwanted revisions",
+          "actual": "No delete revision UI found. Code review shows DeleteLastPendingToBePublishedRevision() and HardDelete() methods exist but are not exposed through Publisher UI. The delete button in the editor deletes the entire post, not individual revisions",
+          "screenshot": "Revision Management_step05_post_editor_no_overlay.png"
+        }
+      ],
+      "issues": ["Delete revision functionality exists in backend code but is not accessible through the Publisher module UI. The only delete option is for the entire post."]
+    },
+    {
+      "scenario_name": "Track revision author",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for revision author tracking in Post Editor",
+          "expected": "Each revision should display who made the changes",
+          "actual": "No revision author tracking visible. The Post Editor shows overall post author (SuperUser Account) but no per-revision author information. Code shows Revision entity has CreatedUserId and LastModifiedUserId properties, but these are not displayed anywhere",
+          "screenshot": "Revision Management_step02_post_detail.png"
+        }
+      ],
+      "issues": ["Revision author data is stored in database (CreatedUserId, LastModifiedUserId in Revision.cs) but not displayed in Publisher module UI"]
+    },
+    {
+      "scenario_name": "Test revision numbering",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for revision numbers/versions in Post Editor",
+          "expected": "Revisions should be numbered sequentially (v1, v2, etc.)",
+          "actual": "No revision numbering visible in UI. Code shows Revision entity has Sequence property but this is not displayed anywhere in Publisher module",
+          "screenshot": "Revision Management_step05_post_editor_no_overlay.png"
+        }
+      ],
+      "issues": ["Revision numbering (Sequence property in Revision.cs) exists in backend but is not shown in Publisher module UI"]
+    },
+    {
+      "scenario_name": "Verify revision timestamps",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for revision timestamps in Post Editor and post detail view",
+          "expected": "Each revision should display creation/modification timestamps",
+          "actual": "Only post-level date is shown (February 9, 2026 in post detail). No per-revision timestamps visible. Code shows Revision entity has CreatedDate and LastModifiedDate properties, but these are not displayed in a revision history UI",
+          "screenshot": "Revision Management_step02_post_detail.png"
+        }
+      ],
+      "issues": ["Revision timestamps (CreatedDate, LastModifiedDate in Revision.cs) exist in backend but are not displayed in Publisher module UI"]
+    }
+  ],
+  "observations": [
+    "Code review confirms Revision Management feature exists at the backend level through RevisionManager.cs which integrates with Evoq.Revisions library",
+    "The IRevisionController interface provides full revision functionality: GetAllChangesets(), Compare(), Rollback(), GetLatestRevision(), HardDelete(), etc.",
+    "The Revision entity (Revision.cs) stores: RevisionId, Sequence (numbering), CreatedUserId, LastModifiedUserId, CreatedDate, LastModifiedDate, State (Pending/Published/Deleted), Changeset content",
+    "In the Publisher module, RevisionManager is used internally for workflow management: tracking draft vs published content states, not for user-facing revision history",
+    "The Publisher Post Editor UI only exposes: Image upload, Title editing, Content editing, Edit Post Details panel, Change Author panel, Delete post button, and Close button",
+    "No 'Revision History', 'Version History', 'Compare Versions', or 'Rollback' UI elements exist in the Publisher module",
+    "This is a fundamental feature gap: The backend supports full revision tracking, but the Publisher module does not expose any UI for users to interact with revision history",
+    "The HTML Pro module appears to have version history UI (based on documentation references found), but Publisher module does not implement similar functionality"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 0,
+    "failed": 8,
+    "pass_rate": "0%"
+  }
+}

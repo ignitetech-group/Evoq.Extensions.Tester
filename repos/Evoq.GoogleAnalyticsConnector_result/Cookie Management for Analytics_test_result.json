@@ -1,0 +1,105 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Cookie Management for Analytics",
+    "feature_description": "Manages visitor ID and session cookies for tracking unique visitors and sessions across the site.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Google Analytics cookies are created when GA4 is configured",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors and verify Google Analytics 4 is configured",
+          "expected": "Google Analytics 4 connector should be configured with a Measurement ID",
+          "actual": "Google Analytics 4 connector is configured with Measurement ID: G-ABC123XYZ99, showing Edit button and green checkmark",
+          "screenshot": "Cookie_Management_step01_connectors.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check browser cookies via JavaScript to verify GA4 cookies exist",
+          "expected": "Google Analytics cookies (_ga, _ga_*) should be present in the browser",
+          "actual": "GA4 cookies found: _ga=GA1.1.1925221175.1772267173 and _ga_ABC123XYZ99=GS2.1.s1772267173$o1$g1$t1772267188$j45$l0$h0",
+          "screenshot": "Cookie_Management_step03_homepage_with_ga4.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify legacy analytics cookies behavior (disabled by default)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check browser cookies for legacy DNN analytics cookies (Analytics_VisitorId, Analytics)",
+          "expected": "Legacy analytics cookies should not be present when EnableLegacyAnalyticsCookies is not set in web.config",
+          "actual": "Legacy analytics cookies (Analytics_VisitorId, Analytics) are NOT present - confirmed via JavaScript cookie inspection showing hasAnalyticsVisitorId: false, hasAnalytics: false",
+          "screenshot": "Cookie_Management_step05_webconfig.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify web.config via Configuration Manager to check EnableLegacyAnalyticsCookies setting",
+          "expected": "EnableLegacyAnalyticsCookies should not be present in web.config by default",
+          "actual": "web.config does not contain EnableLegacyAnalyticsCookies setting, confirming legacy analytics cookies are disabled by design",
+          "screenshot": "Cookie_Management_step05_webconfig.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify GA4 cookies update on page navigation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Record initial GA4 cookie values on homepage",
+          "expected": "GA4 cookies should have initial timestamp and engagement values",
+          "actual": "Initial GA4 cookie: _ga_ABC123XYZ99=GS2.1.s1772267173$o1$g1$t1772267188$j45$l0$h0",
+          "screenshot": "Cookie_Management_step03_homepage_with_ga4.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to Our Products page and check cookie values",
+          "expected": "GA4 cookie timestamp and engagement values should update after navigation",
+          "actual": "GA4 cookie updated to: _ga_ABC123XYZ99=GS2.1.s1772267173$o1$g1$t1772267334$j60$l0$h0 - timestamp changed from t1772267188 to t1772267334, engagement counter increased from j45 to j60",
+          "screenshot": "Cookie_Management_step04_products_page.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify GA4 connector can be disconnected",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors and edit Google Analytics 4 connector",
+          "expected": "Delete Connection option should be available to remove the GA4 connector",
+          "actual": "Delete Connection button is visible in the GA4 connector edit panel, allowing administrators to disconnect the connector",
+          "screenshot": "Cookie_Management_step07_delete_connection.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Cookie Management for Analytics feature consists of TWO distinct cookie systems: (1) Legacy DNN Analytics cookies (Analytics_VisitorId, Analytics) managed by AnalyticsController.cs and (2) Google Analytics 4 cookies (_ga, _ga_*) managed by Google's gtag.js",
+    "Legacy DNN Analytics cookies are DISABLED by default - they require EnableLegacyAnalyticsCookies to be set to 'true' in web.config's appSettings section",
+    "There is NO direct UI to enable/disable legacy analytics cookies - it requires manual web.config modification",
+    "Session timeout for legacy analytics cookies is configurable via portal setting 'Analytics_SessionTimeOut' (default 60 minutes)",
+    "Legacy visitor ID cookie (Analytics_VisitorId) would expire after 30 days when enabled",
+    "GA4 cookies are managed entirely by Google's gtag.js script - disconnecting the connector removes the script from pages but does NOT automatically delete existing cookies from the browser",
+    "Cookie paths are set to the application path or '/' by default according to code in AnalyticsController.cs:137-138 and 145-146"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

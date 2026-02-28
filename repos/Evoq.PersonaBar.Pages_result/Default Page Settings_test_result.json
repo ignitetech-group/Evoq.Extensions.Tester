@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Pages",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Default Page Settings",
+    "feature_description": "Get default settings for new pages based on parent or system defaults",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T10:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Get default settings without parent",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Content > Pages and click Add Page button",
+          "expected": "Add Page form opens with default settings loaded",
+          "actual": "Add Page form opened successfully with default settings: Page Type 'Standard' selected, Display in Menu 'On', Workflow 'Save Draft', Template Mode 'Evoq Page Template', Template 'Cavalier - Main' marked as default",
+          "screenshot": "Default Page Settings_step01_add_page_no_parent.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify default permissions on Permissions tab (no parent selected)",
+          "expected": "Default permissions inherited from system defaults (HomeTabId)",
+          "actual": "Default permissions shown: Everyone has View and Add permissions, Registered Users have View permission. This matches system defaults.",
+          "screenshot": "Default Page Settings_step02_default_permissions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Get default settings with parent ID",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Our Products' as the parent page from the Parent Page dropdown",
+          "expected": "Form updates to reflect parent page selection",
+          "actual": "Parent page 'Our Products' selected successfully. Form shows Page Parent as 'Our Products'.",
+          "screenshot": "Default Page Settings_step03_with_parent_selected.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check Permissions tab to verify permissions inheritance from parent",
+          "expected": "Permissions should differ from no-parent scenario, inheriting from the selected parent",
+          "actual": "Permissions differ from no-parent scenario. With 'Our Products' as parent: Everyone has View only (no Add), Registered Users have View only. This confirms permissions are inherited from the parent page rather than system defaults.",
+          "screenshot": "Default Page Settings_step04_permissions_with_parent.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify default workflow assignment",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open the Workflow dropdown in the Add Page form",
+          "expected": "Workflow dropdown shows available workflows with a default selection",
+          "actual": "Workflow dropdown opened showing three options: 'Direct Publish', 'Save Draft' (selected by default), and 'Content Approval'. The default workflow is 'Save Draft'.",
+          "screenshot": "Default Page Settings_step05_workflow_options.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test default permissions inheritance",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Compare permissions between no-parent and with-parent scenarios",
+          "expected": "Permissions should change based on parent selection, demonstrating inheritance",
+          "actual": "Confirmed that permissions change based on parent selection. Without parent: uses HomeTabId permissions (Everyone: View+Add, Registered Users: View). With 'Our Products' parent: inherits parent permissions (Everyone: View only, Registered Users: View only). Code confirms this via GetDefaultSettings method using GetPermissionsData(pageId) for parent or GetPermissionsData(HomeTabId) for no parent.",
+          "screenshot": "Default Page Settings_step04_permissions_with_parent.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify default page type",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify the Page Type selection in the Add Page form",
+          "expected": "Default page type should be 'Standard'",
+          "actual": "Page Type shows four options: Standard, Existing, URL, File. The 'Standard' option is selected by default (radio button is filled/checked).",
+          "screenshot": "Default Page Settings_step06_default_page_type.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The GetDefaultSettings API endpoint accepts an optional pageId parameter (defaults to 0). When pageId is 0, permissions are inherited from the system's HomeTabId. When a valid pageId is provided, permissions are inherited from that parent page.",
+    "Default template is 'Cavalier - Main' with a checkmark indicator showing it's the default template.",
+    "Template Mode defaults to 'Evoq Page Template' with additional templates available: Test Template Page, Workflow Test Template, Test Special Characters Template, Test Settings Template.",
+    "The 'Display in Menu' toggle defaults to 'On'.",
+    "Link Tracking and Enable Scheduling default to 'Off'.",
+    "Versioning and Workflow indicators show 'Off' for new pages until explicitly enabled.",
+    "The SSL/HTTPS setting (IsSecure) is controlled by portal settings (SSLSetup, SSLEnabled, SSLEnforced) and is set automatically based on those configurations."
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

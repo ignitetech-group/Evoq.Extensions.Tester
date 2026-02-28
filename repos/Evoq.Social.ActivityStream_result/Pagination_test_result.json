@@ -1,0 +1,146 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "Pagination",
+    "feature_description": "Load activity stream content in pages with 'Get More' and 'Show All' options",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:57:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Load initial page of posts",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to the Community page with Activity Stream module",
+          "expected": "Initial page of posts should load with default page size of 20",
+          "actual": "Initial page loaded with 20 posts displayed as per default page size configuration",
+          "screenshot": "Pagination_step01_initial_page_clear.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Scroll to bottom of the Activity Stream",
+          "expected": "Get More button should be visible at the bottom",
+          "actual": "Get More button is visible at the bottom indicating more posts are available",
+          "screenshot": "Pagination_step02_scrolled_to_bottom.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Click Get More to load next page",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click the Get More button at the bottom of the Activity Stream",
+          "expected": "Additional posts should be loaded and appended to the existing list",
+          "actual": "Additional 20 posts were loaded and appended. New posts include: Privacy Test posts, mention tests, emoji tests, profanity tests, wiki articles, badge notifications, etc.",
+          "screenshot": "Pagination_step03_after_get_more.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Scroll to bottom after loading more posts",
+          "expected": "Get More button should still be visible if more posts exist",
+          "actual": "Get More button is still visible indicating more posts are available to load",
+          "screenshot": "Pagination_step04_bottom_after_get_more.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify correct number of posts per page",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Count posts loaded on initial page load",
+          "expected": "20 posts should be loaded (default page size as per View.ascx.cs:41)",
+          "actual": "20 posts were loaded on initial page. Code review confirmed PageSize = 20 in View.ascx.cs",
+          "screenshot": "Pagination_step01_initial_page_clear.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify pagination respects configured page size",
+          "expected": "Each 'Get More' click should load up to page size number of posts",
+          "actual": "Each Get More click loaded approximately 20 more posts as expected",
+          "screenshot": "Pagination_step05_get_more_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test pagination with filters applied",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Posts' filter from the Filter by activity dropdown",
+          "expected": "Only Posts type entries should be displayed",
+          "actual": "Filter applied successfully. Only text post entries are shown, excluding wiki articles, badges, privileges, etc.",
+          "screenshot": "Pagination_step06_filtered_posts.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Scroll to bottom with filter applied",
+          "expected": "Get More button should still be visible for filtered results",
+          "actual": "Get More button is visible at the bottom. Pagination works correctly with filters applied.",
+          "screenshot": "Pagination_step07_filtered_bottom.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test empty state pagination",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Questions' filter from the Filter by activity dropdown",
+          "expected": "Empty state should be displayed if no Questions exist",
+          "actual": "Empty state displayed correctly. No posts shown, only 'See New Updates' link visible.",
+          "screenshot": "Pagination_step08_empty_questions.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify pagination controls are hidden for empty results",
+          "expected": "Get More button should NOT be visible when there are no results",
+          "actual": "Get More button is correctly hidden. Only RSS feed icon visible at bottom. Empty state handled properly.",
+          "screenshot": "Pagination_step09_empty_bottom.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Show All button visibility",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check for Show All button in community activity stream view",
+          "expected": "Show All button behavior should match code logic (only visible when viewing specific journal item)",
+          "actual": "Show All button is not visible in community stream view. Code review of dnn.activityStream.ListView.js:604 confirms isShowAllButtonVisible is only set to true when settings.journalId > 0 (viewing specific post). This is expected behavior.",
+          "screenshot": "Pagination_step05_get_more_visible.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review confirms default page size is 20 (View.ascx.cs:41)",
+    "Show All button is only visible when viewing a specific journal item (journalId > 0), not in the community stream view. This is intentional per dnn.activityStream.ListView.js:604",
+    "Continuous scrolling can be enabled via settings.isContinuousScrollingEnabled which auto-loads more content on scroll",
+    "The Get More button (id='getMore') is bound to the getMoreItems() function which calls scroll('down')",
+    "Page size can be configured per module via drpDefaultPageSize dropdown in module settings (options: 5, 10, 15, 25, 50, 100)",
+    "Pagination maintains scroll position after loading more items"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

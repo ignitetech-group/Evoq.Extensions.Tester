@@ -1,0 +1,148 @@
+{
+  "metadata": {
+    "extension_name": "Publisher",
+    "extension_type": "Module",
+    "feature_name": "Featured Posts Display",
+    "feature_description": "Display featured posts in a responsive card layout with customizable appearance",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:25:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Display featured posts grid",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to News page (http://localhost:8081/en-us/News)",
+          "expected": "Featured posts section should be visible at the top of the page with featured post cards",
+          "actual": "Featured module container exists (.publisher-featured) but is empty with 0 cards. No posts are marked as Featured in the system.",
+          "screenshot": "Featured Posts Display_step01_news_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify Featured module HTML structure",
+          "expected": "Featured module should contain .publisher-top-bar and .card-container with .publishcard elements",
+          "actual": "Module exists but .card-container is empty. The module is visible but has no content because PostManager.GetFeaturedPosts() returns empty collection.",
+          "screenshot": "Featured Posts Display_step02_page_top.png"
+        }
+      ],
+      "issues": [
+        "No posts are currently marked as Featured in the test environment",
+        "Featured Posts module exists on the page but displays nothing when no featured posts are available"
+      ]
+    },
+    {
+      "scenario_name": "Verify Featured checkbox UI in post editor",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to post edit page",
+          "expected": "Edit Post Details panel should display with Featured checkbox option",
+          "actual": "Edit Post Details panel displays correctly with Featured checkbox, Title, Description, URL, and Tags fields",
+          "screenshot": "Featured Posts Display_step03_edit_post_featured_checkbox.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify Featured checkbox is present and functional",
+          "expected": "Featured checkbox should be visible and clickable",
+          "actual": "Featured checkbox is present in the edit panel and can be toggled via JavaScript/Knockout binding",
+          "screenshot": "Featured Posts Display_step07_full_edit_page.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save post as Featured",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check the Featured checkbox on a post and click Save",
+          "expected": "Post should be saved with Featured=true and appear in Featured Posts section",
+          "actual": "Featured checkbox was checked via Knockout observable (model.featured(true)) and save() method was called, but changes did not persist after page navigation",
+          "screenshot": "Featured Posts Display_step05_edit_panel_with_featured.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Return to News page and verify Featured post appears",
+          "expected": "Featured Posts section should now display the marked post",
+          "actual": "Featured Posts section remains empty. The save operation appeared to fail silently without error messages.",
+          "screenshot": "Featured Posts Display_step02_page_top.png"
+        }
+      ],
+      "issues": [
+        "Save operation for Featured checkbox does not persist changes",
+        "No error message or feedback when save fails",
+        "Multiple overlay elements (personaBar-iframe, edit-bar, file uploader) intercept click events making direct UI interaction difficult"
+      ]
+    },
+    {
+      "scenario_name": "Test responsive layout (mobile/tablet/desktop)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify desktop and mobile card layouts in Featured module",
+          "expected": "Desktop cards should show at full width, mobile cards should be hidden; at 640px breakpoint cards should switch to mobile view",
+          "actual": "Could not test responsive layout because Featured module has no content to display. CSS code confirms desktop-card shown by default and mobile-card shown at max-width 640px.",
+          "screenshot": "Featured Posts Display_step01_news_page.png"
+        }
+      ],
+      "issues": [
+        "Cannot test responsive behavior without Featured posts to display"
+      ]
+    },
+    {
+      "scenario_name": "Verify post card information",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examine Featured post card for required information",
+          "expected": "Cards should display: title, author, published date, summary, and optional comment count",
+          "actual": "Cannot verify card information because no Featured posts are available. Code review confirms cards should show: PostedOn date, AuthorDisplayName, Title, Summary, and Disqus comment count if configured.",
+          "screenshot": "Featured Posts Display_step01_news_page.png"
+        }
+      ],
+      "issues": [
+        "Cannot verify card content without Featured posts"
+      ]
+    },
+    {
+      "scenario_name": "Test card hover effects and navigation",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hover over Featured post card and click to navigate",
+          "expected": "Card should have hover effects and clicking should navigate to post detail page",
+          "actual": "Cannot test hover effects or navigation because no Featured post cards are present. Code review confirms desktop cards have onclick handler for navigation and mobile cards use touch events.",
+          "screenshot": "Featured Posts Display_step01_news_page.png"
+        }
+      ],
+      "issues": [
+        "Cannot test interaction without Featured posts"
+      ]
+    }
+  ],
+  "observations": [
+    "The Featured Posts module (Featured.ascx) is correctly placed on the Publisher/News page and initializes properly",
+    "The module uses PostManager.Instance.GetFeaturedPosts() to retrieve posts where Featured=true",
+    "Default maximum featured posts is 2 (Publisher_MaxNumberOfFeaturedPosts portal setting)",
+    "FeaturedCardManager.js handles mobile touch events and click navigation to post details",
+    "The Featured checkbox exists in the post edit UI and uses Knockout data binding (model.featured observable)",
+    "CSS confirms responsive design: desktop cards (45% width, 360px height) and mobile cards (shown at max-width 640px)",
+    "Multiple UI overlays (personaBar-iframe, edit-bar, file uploader input) intercept mouse events, making UI testing challenging",
+    "The save operation via Knockout's save() method did not persist Featured checkbox changes",
+    "Disqus integration for comment counts is conditionally shown based on DisqusManager.HasBeenConfigured"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 1,
+    "failed": 5,
+    "pass_rate": "17%"
+  }
+}

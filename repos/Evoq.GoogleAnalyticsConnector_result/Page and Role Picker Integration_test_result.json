@@ -1,0 +1,119 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Page and Role Picker Integration",
+    "feature_description": "Integration with DNN page picker and role selector for configuring tracking rules.",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:35:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Load page picker dropdown",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Settings > Connectors > Google Analytics 4",
+          "expected": "Google Analytics connector form should display with Advanced Settings link to access Page/Role picker",
+          "actual": "Google Analytics 4 connector displays simplified form with only 'Measurement ID' and 'Track for Administrators' fields. No Advanced Settings link or icon is present in the UI.",
+          "screenshot": "Page_and_Role_Picker_Integration_step02_no_advanced_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Examined connector HTML structure using browser developer tools",
+          "expected": "Connector should contain .advancedSetting element and .gaBase wrapper from connector.htm template",
+          "actual": "Connector HTML contains a simplified GA4-specific template with only txtGa4ID and chkTrackAdmins fields. No .advancedSetting link exists. No .gaBase class wrapper present.",
+          "screenshot": "Page_and_Role_Picker_Integration_step03_full_form.png"
+        }
+      ],
+      "issues": ["Advanced Settings UI element not present in Google Analytics 4 connector form. The connector.htm template with Page and Role Picker functionality is not being loaded. Instead, a simplified GA4 template is displayed."]
+    },
+    {
+      "scenario_name": "Search for specific pages",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access Page Picker dropdown through Advanced Settings",
+          "expected": "Advanced Settings dialog should open with Page picker dropdown supporting search functionality",
+          "actual": "Cannot test - Advanced Settings link/button does not exist in the current UI. The Page picker dropdown is inaccessible.",
+          "screenshot": "Page_and_Role_Picker_Integration_step02_no_advanced_settings.png"
+        }
+      ],
+      "issues": ["Feature cannot be tested - UI element to access Page Picker not available"]
+    },
+    {
+      "scenario_name": "Select 'Any Page' option",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access Page Picker to select 'Any Page' default option",
+          "expected": "Page picker should show 'Any Page' as default option (confirmed in code: dropdownOptions.SelectItemDefaultText = 'AnyPage' resource string)",
+          "actual": "Cannot test - Page picker dropdown is not accessible without Advanced Settings dialog",
+          "screenshot": "Page_and_Role_Picker_Integration_step02_no_advanced_settings.png"
+        }
+      ],
+      "issues": ["Feature cannot be tested - Advanced Settings dialog containing Page picker is inaccessible"]
+    },
+    {
+      "scenario_name": "Load all available roles",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access Role selector in Advanced Settings to verify roles load",
+          "expected": "Role dropdown should load all roles via GetRoles() API endpoint which returns roles sorted alphabetically with 'All Users' first",
+          "actual": "Cannot test - Role selector is part of Advanced Settings dialog which is not accessible from current UI",
+          "screenshot": "Page_and_Role_Picker_Integration_step02_no_advanced_settings.png"
+        }
+      ],
+      "issues": ["Feature cannot be tested - Advanced Settings dialog containing Role selector is inaccessible"]
+    },
+    {
+      "scenario_name": "Select specific role",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access Role selector to choose a specific role",
+          "expected": "Should be able to select from available portal roles",
+          "actual": "Cannot test - Role selector dropdown is inaccessible",
+          "screenshot": "Page_and_Role_Picker_Integration_step02_no_advanced_settings.png"
+        }
+      ],
+      "issues": ["Feature cannot be tested - Role selector UI not available"]
+    },
+    {
+      "scenario_name": "Select 'All Users' role",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to select 'All Users' role option from Role dropdown",
+          "expected": "'All Users' role should be first option in role dropdown (confirmed in code: Globals.glbRoleAllUsers is added first)",
+          "actual": "Cannot test - Role selector not accessible in current UI",
+          "screenshot": "Page_and_Role_Picker_Integration_step02_no_advanced_settings.png"
+        }
+      ],
+      "issues": ["Feature cannot be tested - Advanced Settings dialog not available"]
+    }
+  ],
+  "observations": [
+    "Code analysis confirms Page and Role Picker Integration feature is fully implemented in: connector.js (lines 159-213, 207-213, 186-198), ServicesController.cs (GetPagePickerOptions and GetRoles methods), advanced.htm (pagesDropDown and rolesDropDown elements), connector.htm (advancedSetting link).",
+    "The connector.htm template defines an Advanced Settings link (<a class='advancedSetting' href='#'>) that should trigger the onAdvancedClick function to open the advanced dialog.",
+    "The advanced.htm template contains Page picker dropdown (class='pagesDropDown') and Role selector dropdown (select with optionsText='RoleName', optionsValue='RoleId').",
+    "GetPagePickerOptions() API returns configuration for DnnDropDownList with services: GetPages, GetPageDescendants, SearchPages, SortPages via ItemListService.",
+    "GetRoles() API returns all portal roles sorted alphabetically with 'All Users' (-1) role prepended.",
+    "The currently deployed Google Analytics 4 connector uses a different simplified template with only Measurement ID and Track for Administrators fields. The original connector.htm template with Advanced Settings functionality is NOT being loaded.",
+    "This appears to be a deployment or configuration issue where the GA4 connector template differs from the codebase connector.htm template."
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 0,
+    "failed": 6,
+    "pass_rate": "0%"
+  }
+}

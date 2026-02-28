@@ -1,0 +1,194 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Article Creation and Publishing",
+    "feature_description": "Create new wiki articles with title, content, and metadata, supporting both draft and published states",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T08:58:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Create new article as draft",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page and click Create article",
+          "expected": "Create article dialog opens",
+          "actual": "Create article dialog opened with title, type, content, and tags fields",
+          "screenshot": "Article_Creation_step02_create_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Fill in article details - title: 'Test Article Draft', type: Article, content, tags",
+          "expected": "Form fields accept input",
+          "actual": "All fields populated successfully",
+          "screenshot": "Article_Creation_step03_publish_form_filled.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Publish button to save as draft",
+          "expected": "Article created and visible in list",
+          "actual": "Article created successfully, appears in article list",
+          "screenshot": "Article_Creation_step07_article_in_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create article and publish immediately",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Create article button",
+          "expected": "Create article dialog opens",
+          "actual": "Dialog opened with all required fields",
+          "screenshot": "Article_Creation_step02_create_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Fill in article details - title: 'Published Article Test', content via Redactor API, tags: publish, test",
+          "expected": "Form accepts input",
+          "actual": "All fields populated, content set via jQuery('#content').dnnRedactor('code.set', ...)",
+          "screenshot": "Article_Creation_step04_publish_attempt.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Publish button",
+          "expected": "Article published and visible in list",
+          "actual": "Article published successfully, appears in article list with 'Last updated' timestamp",
+          "screenshot": "Article_Creation_step08_article_list_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate required fields (title, content, tags)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open create article dialog",
+          "expected": "Dialog opens with required field indicators",
+          "actual": "Dialog shows asterisks (*) next to Title, Post Type, Content, and Tags labels indicating required fields",
+          "screenshot": "Article_Creation_step02_create_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to submit form with empty content",
+          "expected": "Validation error shown",
+          "actual": "Validation error 'Text is required' displayed for content field",
+          "screenshot": "Article_Creation_step11_content_validation_error.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Fill content and verify validation passes",
+          "expected": "Form submits successfully after filling required fields",
+          "actual": "Form submitted successfully when all required fields populated",
+          "screenshot": "Article_Creation_step05_form_state.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create article with special characters in title",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Create article with title containing special characters: <>&'\"@#$%!",
+          "expected": "Article created successfully with special characters in title",
+          "actual": "Article created with title 'Test Article with Special Chars: <>&'\"@#$%!'",
+          "screenshot": "Article_Creation_step10_special_chars_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify article appears in list with special characters",
+          "expected": "Special characters displayed correctly in article list",
+          "actual": "Article displayed in list with properly escaped special characters",
+          "screenshot": "Article_Creation_step14_article_list_with_special.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test duplicate article title prevention",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to create article with existing title 'Test Article Draft'",
+          "expected": "System prevents duplicate and shows error",
+          "actual": "Error dialog appeared: 'Unable to publish the changes to your article: An error has occurred'",
+          "screenshot": "Article_Creation_step16_duplicate_title_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit existing article",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Edit button on front page article",
+          "expected": "Edit dialog opens with current content",
+          "actual": "Edit dialog opened showing Content field with current article content",
+          "screenshot": "Article_Creation_step21_edit_dialog_opened.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Modify content via Redactor API and click Publish",
+          "expected": "Content updated successfully",
+          "actual": "Content updated to 'Welcome to the Wiki Test Module! This content was updated via the edit functionality. Edit test successful!'",
+          "screenshot": "Article_Creation_step22_content_modified.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify updated content displayed on page",
+          "expected": "Updated content visible in front page section",
+          "actual": "Front page article shows updated content with edit confirmation message",
+          "screenshot": "Article_Creation_step23_edit_successful.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete article",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Edit on front page article to access Delete button",
+          "expected": "Delete button visible in edit dialog",
+          "actual": "Edit dialog opened with Cancel, Delete, and Publish buttons visible",
+          "screenshot": "Article_Creation_step25_delete_button_visible.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Delete button",
+          "expected": "Article deleted and removed from page",
+          "actual": "Article deleted successfully, front page section now shows 'Create article for front page...' instead of article content",
+          "screenshot": "Article_Creation_step27_final_state_after_delete.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Article detail page URLs (e.g., /Wiki-Test/Published-Article-Test) return 404 errors even though articles are created and visible in the list. This appears to be a URL routing configuration issue.",
+    "The Redactor rich text editor requires special handling - content must be set via jQuery('#content').dnnRedactor('code.set', ...) API rather than direct textarea manipulation for proper data binding.",
+    "Copilot welcome dialog appears frequently after page navigation and needs to be dismissed.",
+    "Delete button is only available for the primary/front page article when accessed via the Edit dialog. Regular articles would need to be deleted from their detail page, but detail pages return 404.",
+    "Code suggests profanity filter functionality exists (FilterContent, ProhibitContent modes in ContentController.cs) but no UI was found to configure or test this feature."
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 7,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

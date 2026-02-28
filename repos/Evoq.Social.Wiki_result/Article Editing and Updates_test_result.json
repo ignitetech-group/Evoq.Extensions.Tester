@@ -1,0 +1,190 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Article Editing and Updates",
+    "feature_description": "Edit existing wiki articles with version tracking and approval workflow",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T12:00:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access existing article for editing",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page to view existing articles",
+          "expected": "Wiki page loads with list of existing articles",
+          "actual": "Wiki page loaded successfully showing 6 articles: Test Article, TestArticle, Vinson Massif, Test2, Test 3, and Denali",
+          "screenshot": "Article_Editing_and_Updates_step02_articles_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on an existing article link (Test Article) to access it for editing",
+          "expected": "Article detail page opens allowing edit access",
+          "actual": "404 error - Page not found. All article links return 404 errors",
+          "screenshot": "Article_Editing_and_Updates_step03_404_error.png"
+        }
+      ],
+      "issues": ["All article detail page links return 404 errors - articles are listed but cannot be accessed for viewing or editing"]
+    },
+    {
+      "scenario_name": "Edit primary article (front page content)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Create article for front page...' link to edit primary wiki content",
+          "expected": "Editor dialog opens for primary article editing",
+          "actual": "Editor dialog opened successfully with Content field and Publish/Cancel buttons",
+          "screenshot": "Article_Editing_and_Updates_step04_edit_primary_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter content in the rich text editor",
+          "expected": "Content is entered successfully in editor",
+          "actual": "Content 'Testing primary article editing for the Wiki module.' entered successfully",
+          "screenshot": "Article_Editing_and_Updates_step05_content_entered.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Publish button to save changes",
+          "expected": "Content is published and saved",
+          "actual": "Publish button click had no effect - no API call was made, dialog remained open with content unchanged",
+          "screenshot": "Article_Editing_and_Updates_step06_after_publish.png"
+        }
+      ],
+      "issues": ["Publish button does not trigger API call - likely due to missing json2.js JavaScript dependency (404 error in console)"]
+    },
+    {
+      "scenario_name": "Create new article with full fields",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Create article' button to open full article creation dialog",
+          "expected": "Full article creation dialog opens with all fields",
+          "actual": "Dialog opened with all expected fields: Title, Article Type dropdown, TOC checkbox, Content editor, Approved checkbox, Tags input, Subscribe checkbox",
+          "screenshot": "Article_Editing_and_Updates_step07_create_article_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Fill in all form fields: Title='Test Edit Article', Article Type='Standard', TOC=checked, Content='Test content', Approved=checked, Tags='test, wiki'",
+          "expected": "All fields accept input correctly",
+          "actual": "All fields accepted input correctly - Title field populated, Article Type dropdown has 12+ options, TOC and Approved checkboxes work, Tags display as chips, Content editor accepts text",
+          "screenshot": "Article_Editing_and_Updates_step08_fields_filled.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Publish button to create the article",
+          "expected": "Article is created and saved successfully",
+          "actual": "Publish button click had no effect - no API call triggered, form remained open with all entered data",
+          "screenshot": "Article_Editing_and_Updates_step09_after_publish_attempt.png"
+        }
+      ],
+      "issues": ["Publish button non-functional - JavaScript error prevents form submission"]
+    },
+    {
+      "scenario_name": "Article editor form field validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Test form field interactions - Title input, Article Type dropdown, checkboxes, Tags chip interface",
+          "expected": "All form controls respond correctly to user interaction",
+          "actual": "Title input accepts text, Article Type dropdown shows all options (Standard, FAQ, Glossary, How To, etc.), TOC and Approved checkboxes toggle correctly, Tags input creates chips on Enter, Subscribe checkbox works",
+          "screenshot": "Article_Editing_and_Updates_step10_validation_test.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Cancel button functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Cancel button in article editor dialog",
+          "expected": "Dialog closes without saving changes",
+          "actual": "Cancel button closed the dialog successfully, returning to the wiki page",
+          "screenshot": "Article_Editing_and_Updates_step11_final_state.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit article title",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access existing article to edit its title",
+          "expected": "Article opens in edit mode with title field editable",
+          "actual": "Cannot access existing articles - all article detail pages return 404 errors",
+          "screenshot": "Article_Editing_and_Updates_step03_404_error.png"
+        }
+      ],
+      "issues": ["Cannot test title editing because existing articles are not accessible"]
+    },
+    {
+      "scenario_name": "Edit article metadata",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access existing article to edit its metadata (type, TOC, tags)",
+          "expected": "Article opens in edit mode with metadata fields editable",
+          "actual": "Cannot access existing articles - all article detail pages return 404 errors",
+          "screenshot": "Article_Editing_and_Updates_step03_404_error.png"
+        }
+      ],
+      "issues": ["Cannot test metadata editing because existing articles are not accessible"]
+    },
+    {
+      "scenario_name": "Save as draft vs publish",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Look for Save Draft option in article editor",
+          "expected": "Save Draft button available alongside Publish button",
+          "actual": "Only Publish button visible in editor dialog - no Save Draft button found. Code review shows SaveDraft API exists but UI only exposes Publish",
+          "screenshot": "Article_Editing_and_Updates_step07_create_article_dialog.png"
+        }
+      ],
+      "issues": ["Save Draft functionality exists in API but is not exposed in the UI - only Publish button is available"]
+    },
+    {
+      "scenario_name": "Test edit permissions for different user roles",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Test as superuser (host) - access article editing",
+          "expected": "Superuser has full edit access with Approved checkbox visible",
+          "actual": "Editor dialog shows Approved checkbox confirming moderator permissions are recognized, but actual editing/saving fails due to Publish button bug",
+          "screenshot": "Article_Editing_and_Updates_step08_fields_filled.png"
+        }
+      ],
+      "issues": ["Cannot fully test permissions because core editing functionality is broken"]
+    }
+  ],
+  "observations": [
+    "Code review shows ContentController.cs has Publish() and SaveDraft() API endpoints that handle article creation/editing with proper validation",
+    "Missing JavaScript dependency: json2.js returns 404 error at http://localhost:8081/Resources/Shared/Scripts/json2.js - this likely breaks the Knockout.js data binding and API calls",
+    "Article detail pages are not properly configured - all article links (Test Article, TestArticle, Vinson Massif, etc.) return 404 errors despite articles being listed successfully",
+    "ContentEditor.ascx shows proper form structure with Knockout.js bindings for all fields including title, articleType, toc, content, approved, tags, and subscribeToActivity",
+    "The editor UI renders correctly with all expected fields, but the publish action does not execute - JavaScript console would likely show errors related to missing dependencies",
+    "ArticleController.cs shows proper revision management integration with RevisionController for version tracking",
+    "Save Draft option exists in code (UserCanSaveDraft method in ArticleController.cs) but the UI only displays Publish button",
+    "Code suggests concurrent editing detection exists (HasPendingState method) but cannot be tested due to core functionality issues"
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 2,
+    "failed": 7,
+    "pass_rate": "22%"
+  }
+}

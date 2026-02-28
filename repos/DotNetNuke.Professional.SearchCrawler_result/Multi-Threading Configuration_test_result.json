@@ -1,0 +1,80 @@
+{
+  "metadata": {
+    "extension_name": "DotNetNuke.Professional.SearchCrawler",
+    "extension_type": "Module",
+    "feature_name": "Multi-Threading Configuration",
+    "feature_description": "Configures multi-threaded crawling for improved performance.",
+    "feature_priority": "Low",
+    "test_date": "2026-02-28T09:25:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Multi-Threading Configuration UI",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Schedule (Scheduler panel)",
+          "expected": "Scheduler panel loads with list of scheduled tasks",
+          "actual": "Scheduler panel loaded successfully showing all scheduled tasks including Search: Url Crawler, Search: File Crawler, and Search: Site Crawler",
+          "screenshot": "Multi-Threading Configuration_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click SCHEDULER tab to view scheduled tasks list",
+          "expected": "List of scheduled tasks with configuration options",
+          "actual": "Scheduler tab shows list of tasks with Task Name, Frequency, Retry Time Lapse, Next Start, and Enabled columns. Global scheduler shows Max Threads: 1",
+          "screenshot": "Multi-Threading Configuration_step01_scheduler_tab.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Edit Task for Search: Url Crawler to find thread configuration",
+          "expected": "Thread count configuration setting should be visible",
+          "actual": "Edit Task panel shows settings for Friendly Name, Full Class Name, Retain Schedule History, Servers, Object Dependencies, Schedule Start Date/Time, Frequency, Retry Time Lapse, Run on Event, Catch Up Tasks, Enable Schedule. No thread count/IndexThreads setting is visible.",
+          "screenshot": "Multi-Threading Configuration_step02_url_crawler_settings.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Scroll to bottom of task settings panel",
+          "expected": "Additional settings including thread configuration",
+          "actual": "Bottom of settings panel shows all available options but no thread count setting is present",
+          "screenshot": "Multi-Threading Configuration_step03_no_thread_setting_visible.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Navigate to Site Settings > Search > Crawling tab",
+          "expected": "Thread configuration setting should be available in Search Crawling settings",
+          "actual": "Crawling tab shows Url Paths, Duplicates regex patterns, Included Directories, and Excluded Directories. No thread count configuration is available.",
+          "screenshot": "Multi-Threading Configuration_step04_crawling_settings.png"
+        },
+        {
+          "step_number": 6,
+          "action": "Scroll to view all Crawling settings",
+          "expected": "Thread count configuration setting",
+          "actual": "Full Crawling settings page shows only URL Paths (with Enable Spidering, DNN Impersonation, Windows Auth options), Duplicates patterns, Included Directories, and Excluded Directories. No thread count/IndexThreads setting is exposed in the UI.",
+          "screenshot": "Multi-Threading Configuration_step05_crawling_full.png"
+        }
+      ],
+      "issues": [
+        "The IndexThreads setting exists in code (Spider.cs line 342, SearchSpiderHelper.cs line 588) but is NOT exposed in any UI",
+        "Thread count is stored in database ScheduleItemSettings table with default value of 1, but cannot be configured through the admin interface",
+        "Feature described as 'Configure thread count' cannot be tested as there is no UI element to perform this action"
+      ]
+    }
+  ],
+  "observations": [
+    "Code analysis confirms IndexThreads setting exists in Spider.Start() method (Spider.cs:342) which accepts a 'threads' parameter",
+    "SearchSpiderHelper.cs (line 588) reads IndexThreads from scheduleHistoryItemSettings with default value of 1: IndexThreads = GetSettingValue(scheduleHistoryItemSettings, 'IndexThreads', 1)",
+    "The thread count setting is stored in the ScheduleItemSettings database table (01.00.01.SqlDataProvider line 223 shows default insert with value '1')",
+    "Global scheduler Max Threads is visible (currently set to 1) but this controls overall scheduler thread pool, not the SearchCrawler-specific thread count",
+    "Multi-threading configuration for SearchCrawler is a backend/database-only setting with no UI exposure - would require direct database manipulation or custom code to change",
+    "UI Location specified as 'Admin > Schedule > SearchCrawler Settings' does not exist as a separate menu item - SearchCrawler settings are integrated into Site Settings > Search > Crawling"
+  ],
+  "summary": {
+    "total_scenarios": 1,
+    "passed": 0,
+    "failed": 1,
+    "pass_rate": "0%"
+  }
+}

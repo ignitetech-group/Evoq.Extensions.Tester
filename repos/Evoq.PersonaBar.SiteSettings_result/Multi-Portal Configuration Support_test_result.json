@@ -1,0 +1,116 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.SiteSettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Multi-Portal Configuration Support",
+    "feature_description": "Supports configuration of settings across multiple portals in a DNN installation",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Switch between different portals",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Site Settings and locate portal selector",
+          "expected": "Portal selector dropdown should be visible in the Site Settings panel",
+          "actual": "Portal selector dropdown labeled 'EDITING SITE: MY WEBSITE' is visible at the top of Site Settings panel",
+          "screenshot": "Multi-Portal Configuration Support_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on the portal selector dropdown",
+          "expected": "Dropdown should show list of available portals",
+          "actual": "Dropdown shows two portals: 'My Website' (current) and 'Test Portal 2'",
+          "screenshot": "Multi-Portal Configuration Support_step01_portal_selector_dropdown.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Select 'Test Portal 2' from the dropdown",
+          "expected": "Settings should switch to Test Portal 2",
+          "actual": "Settings switched to Test Portal 2 with different Site Title, Description, Keywords, GUID, and Home Directory (Portals/1)",
+          "screenshot": "Multi-Portal Configuration Support_step02_switched_to_portal2.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify settings are portal-specific",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Compare settings between My Website and Test Portal 2",
+          "expected": "Each portal should have distinct settings",
+          "actual": "My Website has Site Title 'My Website', GUID '41A37CD6-717F-45A0-B108-351317B93442', Home Directory 'Portals/0'. Test Portal 2 has Site Title 'Test Portal 2', Description 'Test portal for multi-portal configuration testing', Keywords 'test, portal2, multiportal', GUID '0C778733-85F6-4626-8CAA-DD925105BB3C', Home Directory 'Portals/1'",
+          "screenshot": "Multi-Portal Configuration Support_step02_switched_to_portal2.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save settings for non-current portal",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "While viewing Test Portal 2 settings, modify the Description field",
+          "expected": "Description field should be editable",
+          "actual": "Description field modified to 'Updated description for Portal 2 - Testing multi-portal save'. Cancel and Save buttons become enabled.",
+          "screenshot": "Multi-Portal Configuration Support_step03_modified_description.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Settings should be saved with success message",
+          "actual": "Success message 'Settings have been updated.' displayed. Save and Cancel buttons return to disabled state.",
+          "screenshot": "Multi-Portal Configuration Support_step04_save_success.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify the saved description persists in Test Portal 2 settings",
+          "expected": "Description should show the updated value",
+          "actual": "Description shows 'Updated description for Portal 2 - Testing multi-portal save'",
+          "screenshot": "Multi-Portal Configuration Support_step05_portal2_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify settings isolation between portals",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Switch back to My Website portal after saving changes to Test Portal 2",
+          "expected": "My Website settings should remain unchanged",
+          "actual": "My Website settings show original values: Site Title 'My Website', empty Description, GUID '41A37CD6-717F-45A0-B108-351317B93442', Home Directory 'Portals/0'. The changes made to Test Portal 2 did not affect My Website.",
+          "screenshot": "Multi-Portal Configuration Support_step06_back_to_mywebsite.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Switch back to Test Portal 2 to verify persistence",
+          "expected": "Test Portal 2 should still have the updated description",
+          "actual": "Test Portal 2 shows updated description 'Updated description for Portal 2 - Testing multi-portal save' confirming persistence and isolation",
+          "screenshot": "Multi-Portal Configuration Support_step07_persistence_verified.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The portal selector is implemented as a dropdown at the top of the Site Settings panel labeled 'EDITING SITE:'",
+    "This DNN installation has two portals configured: 'My Website' (Portal ID 0) and 'Test Portal 2' (Portal ID 1)",
+    "Test scenarios for 'Test with default portal ID (-1)' and 'Test with invalid portal ID' were not testable via UI as the portal selector only shows valid configured portals. Code review confirms the API validates portal IDs and returns appropriate errors for invalid values.",
+    "The code shows that superusers can access settings for any portal, while non-superusers are restricted to their own portal (lines 104, 185, 231 etc. in SiteSettingsController.cs)"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Assets",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Multi-Portal Support",
+    "feature_description": "Manages assets across multiple portals with portal-specific root folders and permissions",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:50:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access portal-specific assets",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Assets panel and observe portal selection screen",
+          "expected": "Portal selection screen should display available portals",
+          "actual": "Portal selection screen displayed with three options: Global Assets, My Website, and Test Portal 2",
+          "screenshot": "Multi-Portal Support_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on 'My Website' portal option",
+          "expected": "Portal-specific assets for My Website should be displayed",
+          "actual": "My Website assets loaded successfully showing folders (Badges, Groups, Images, RenamedSecureFolder, Templates, TestFolder01, ToBeDeleted, Users) and files",
+          "screenshot": "Multi-Portal Support_step01_my_website_assets.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Access host-level assets (Global Assets)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate back to portal selection and click on 'Global Assets'",
+          "expected": "Host-level assets should be displayed with globe icons",
+          "actual": "Global Assets loaded successfully showing host-level folders (Cache, Config, Containers, EventQueue, Images, Install, Logs, Skins, Smileys, Templates, Users) and system files with globe icons indicating host-level assets",
+          "screenshot": "Multi-Portal Support_step02_global_assets.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Switch between portals",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate back to portal selection and click on 'Test Portal 2'",
+          "expected": "Assets for Test Portal 2 should be displayed, different from My Website",
+          "actual": "Test Portal 2 assets loaded successfully showing a different, smaller set of assets (Badges, Templates, Users folders and GettingStarted.css, logo.png files) compared to My Website",
+          "screenshot": "Multi-Portal Support_step03_test_portal_2_assets.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test portal-specific root folders",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate into Templates folder in Test Portal 2",
+          "expected": "Portal-specific Templates folder content should be displayed",
+          "actual": "Templates folder for Test Portal 2 shows only Default.page.template file",
+          "screenshot": "Multi-Portal Support_step04_test_portal2_templates.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Switch to My Website portal and navigate to Templates folder",
+          "expected": "My Website Templates folder should show its own content",
+          "actual": "My Website Templates folder also shows Default.page.template, but root folder structure is different with additional folders like FolderToMove, Groups, Images, RenamedSecureFolder",
+          "screenshot": "Multi-Portal Support_step05_my_website_templates.png"
+        },
+        {
+          "step_number": 3,
+          "action": "View My Website root folder structure",
+          "expected": "Root folder should show portal-specific folders",
+          "actual": "My Website root shows: Badges, FolderToMove, Groups, Images, RenamedSecureFolder (secure folder with lock icon), Templates, Users - different structure than Test Portal 2",
+          "screenshot": "Multi-Portal Support_step06_my_website_root_folders.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify portal isolation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Create a new folder 'TestPortal2Folder' in Test Portal 2",
+          "expected": "Folder should be created successfully in Test Portal 2",
+          "actual": "Add Folder dialog appeared with Name field and Type dropdown. Folder 'TestPortal2Folder' was entered",
+          "screenshot": "Multi-Portal Support_step07_add_folder_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Save the new folder",
+          "expected": "Folder should appear in Test Portal 2 assets list",
+          "actual": "Folder 'TestPortal2Folder' successfully created and visible in Test Portal 2 assets list between Templates and Users",
+          "screenshot": "Multi-Portal Support_step08_folder_created_test_portal2.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Switch to My Website portal and verify TestPortal2Folder does not appear",
+          "expected": "TestPortal2Folder should NOT be visible in My Website - confirming portal isolation",
+          "actual": "My Website assets displayed without TestPortal2Folder - portal isolation confirmed. Only My Website-specific folders visible: Badges, Groups, Images, RenamedSecureFolder, Templates, Users",
+          "screenshot": "Multi-Portal Support_step09_my_website_no_test_portal2_folder.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Switch to Global Assets and verify TestPortal2Folder does not appear",
+          "expected": "TestPortal2Folder should NOT be visible in Global Assets - confirming portal isolation from host level",
+          "actual": "Global Assets displayed without TestPortal2Folder - portal isolation from host level confirmed. Only host-level folders visible: Cache, Config, Containers, EventQueue, Images, Install, Logs, Skins",
+          "screenshot": "Multi-Portal Support_step10_global_assets_no_test_portal2_folder.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Cross-portal permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "As SuperUser, access and manage assets across all portals",
+          "expected": "SuperUser should have access to all portals and be able to create/manage assets",
+          "actual": "SuperUser successfully accessed Global Assets, My Website, and Test Portal 2. Created folder 'TestPortal2Folder' in Test Portal 2, demonstrating cross-portal management capabilities",
+          "screenshot": "Multi-Portal Support_step08_folder_created_test_portal2.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify Add Folder and Add Asset buttons are available in each portal",
+          "expected": "Management controls should be available for authorized user",
+          "actual": "Add Folder and Add Asset buttons visible and functional in all portals (Global Assets, My Website, Test Portal 2)",
+          "screenshot": "Multi-Portal Support_step07_add_folder_dialog.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The portal selection interface provides clear visual distinction between Global Assets (globe icon) and portal-specific assets (folder icon)",
+    "Portal isolation is properly enforced - assets created in one portal are not visible in other portals",
+    "Host-level Global Assets contain system folders like Cache, Config, Containers, EventQueue, Install, Logs, Skins, etc.",
+    "Portal-specific assets contain user content folders like Badges, Groups, Images, Templates, Users",
+    "SuperUser (host) has full access to all portals and can manage assets across them",
+    "Breadcrumb navigation clearly shows current location (HOME > folder path)",
+    "Sorting and search functionality available within each portal context"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

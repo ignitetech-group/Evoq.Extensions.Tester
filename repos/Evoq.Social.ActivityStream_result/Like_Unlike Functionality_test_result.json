@@ -1,0 +1,139 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "Like/Unlike Functionality",
+    "feature_description": "Like and unlike posts and comments in the activity stream",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:55:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Like a post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Community page Activity Stream",
+          "expected": "Activity Stream with posts is displayed",
+          "actual": "Activity Stream displayed with multiple posts showing Like buttons",
+          "screenshot": "Like_Unlike Functionality_step01_activity_stream.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Like button on 'This is a test post created for Post Creation and Management testing' post",
+          "expected": "Like button changes to Unlike and 'You like this' indicator appears",
+          "actual": "Like button changed to Unlike, 'You like this' indicator appeared below the post",
+          "screenshot": "Like_Unlike Functionality_step03_after_like.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Unlike a previously liked post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Unlike button on the previously liked post",
+          "expected": "Unlike button changes back to Like and 'You like this' indicator disappears",
+          "actual": "Unlike button changed back to Like, 'You like this' indicator disappeared",
+          "screenshot": "Like_Unlike Functionality_step04_after_unlike.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify like count updates",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observe like indicator when liking/unliking posts",
+          "expected": "Like count/indicator updates correctly when toggling like status",
+          "actual": "'You like this' text appears when liked and disappears when unliked. The buildLikes() JavaScript function correctly updates the UI.",
+          "screenshot": "Like_Unlike Functionality_step05_like_count.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Like own post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Like a post created by the current user (Anonymous/host)",
+          "expected": "User should be able to like their own post",
+          "actual": "Successfully liked own post 'Test post to verify like own post' - button shows Unlike and 'You like this' appears",
+          "screenshot": "Like_Unlike Functionality_step03_after_like.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Like comment",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Scroll to find a comment with Like button",
+          "expected": "Comments should have Like buttons",
+          "actual": "Found comment 'Comment with emoji: sparkles' with Like button",
+          "screenshot": "Like_Unlike Functionality_step06_before_like_comment.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Like button on comment",
+          "expected": "Comment Like button changes to Unlike and 'You like this' appears",
+          "actual": "Comment Like button changed to Unlike, 'You like this' indicator appeared below the comment",
+          "screenshot": "Like_Unlike Functionality_step07_comment_liked.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Multiple users liking same post",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to verify multiple users can like the same post",
+          "expected": "Multiple users should be able to like the same post and the like count should reflect this",
+          "actual": "Cannot test with multiple users in a single session. Code review confirms ToggleLike supports multiple users via JournalController.Instance.LikeJournalItem() which stores likes by userId.",
+          "screenshot": "Like_Unlike Functionality_step10_final_activity_stream.png"
+        }
+      ],
+      "issues": ["Test requires multiple user sessions which is outside the scope of single-session UI testing. The underlying code supports multiple users liking the same post."]
+    },
+    {
+      "scenario_name": "Verify like notification",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check notifications after liking a post",
+          "expected": "Post owner should receive a notification when someone likes their post",
+          "actual": "Notifications page shows Badge and Wiki privilege notifications but no like-specific notifications. Code review of ToggleLike in JournalIntegrationController.cs confirms it only awards points and subscribes users, but does not send notifications.",
+          "screenshot": "Like_Unlike Functionality_step09_notifications_list.png"
+        }
+      ],
+      "issues": ["Like notifications are not implemented in the current codebase. The ToggleLike function in JournalIntegrationController.cs awards points via AwardLikeUnlikePoints() and subscribes users via JournalSubscriptionController.Instance.SubscribeToJournalItem(), but does not call any notification service."]
+    }
+  ],
+  "observations": [
+    "Code review shows ToggleLike endpoint at ActivityStreamServicesController.cs:509 handles both post likes and comment likes",
+    "The buildLikes() and buildCommentLikes() JavaScript functions in dnn.activityStream.ListView.js handle UI updates for like status",
+    "Like notifications are NOT implemented - the ToggleLike function only awards/removes points and manages subscriptions",
+    "Multiple users liking the same post is supported by the backend (JournalController.Instance.LikeJournalItem tracks likes by userId) but cannot be tested in a single-user session",
+    "The Like button toggles text between 'Like' and 'Unlike' using jQuery fadeOut/fadeIn animations",
+    "When a user likes content, the 'You like this' indicator appears dynamically via JavaScript DOM manipulation"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 5,
+    "failed": 2,
+    "pass_rate": "71%"
+  }
+}

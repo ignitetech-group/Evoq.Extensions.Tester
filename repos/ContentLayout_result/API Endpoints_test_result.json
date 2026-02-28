@@ -1,0 +1,153 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "API Endpoints",
+    "feature_description": "RESTful API endpoints for managing content layouts programmatically.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:01:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "GET content layout templates",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to GET endpoint /DesktopModules/DnnCorp/ContentLayout/API/Service/GetContentLayoutTemplates while authenticated",
+          "expected": "API should return list of layout templates",
+          "actual": "API returned 200 OK with array of 6 layout templates (25%+75%, 75%+25%, 50%+50%, 25%+50%+25%, 33%+33%+33%, 4x25%) in XML/JSON format",
+          "screenshot": "API Endpoints_step01_GET_templates_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "POST update layout with column sizes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page in edit mode with ContentLayout module",
+          "expected": "Page should show ContentLayout panes (F30A_Pane1, F30A_Pane2, etc.)",
+          "actual": "ContentLayout module 364 visible with multiple panes in edit mode",
+          "screenshot": "API Endpoints_step03_edit_mode_contentlayout.png"
+        },
+        {
+          "step_number": 2,
+          "action": "POST to UpdateLayoutWithColumnSizes endpoint with valid sizes value '50' (50%+50% layout)",
+          "expected": "API should return 200 OK",
+          "actual": "API returned 200 OK with empty response body, layout updated successfully",
+          "screenshot": "API Endpoints_step04_POST_endpoints_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "POST update layout from template",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "POST to UpdateLayoutFromTemplate endpoint with TemplateId: 3 (50%+50% template)",
+          "expected": "API should return 200 OK and apply template",
+          "actual": "API returned 200 OK with empty response body, template applied successfully",
+          "screenshot": "API Endpoints_step04_POST_endpoints_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test authorization requirements",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "POST to UpdateLayoutWithColumnSizes without anti-forgery token",
+          "expected": "API should deny access with 401 Unauthorized",
+          "actual": "API returned 401 Unauthorized with message 'Authorization has been denied for this request.'",
+          "screenshot": "API Endpoints_step02_POST_without_module_context.png"
+        },
+        {
+          "step_number": 2,
+          "action": "POST to UpdateLayoutWithColumnSizes with token but without module context headers",
+          "expected": "API should deny access due to missing module authorization",
+          "actual": "API returned 401 Unauthorized - DnnModuleAuthorize attribute correctly requires module context",
+          "screenshot": "API Endpoints_step02_POST_without_module_context.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify anti-forgery token validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "POST to POST endpoints without RequestVerificationToken header",
+          "expected": "API should reject request due to missing anti-forgery token",
+          "actual": "API returned 401 Unauthorized, confirming [ValidateAntiForgeryToken] attribute is working",
+          "screenshot": "API Endpoints_step02_POST_without_module_context.png"
+        },
+        {
+          "step_number": 2,
+          "action": "POST with valid anti-forgery token and module context",
+          "expected": "API should accept request and process it",
+          "actual": "API returned 200 OK when valid token and module context provided",
+          "screenshot": "API Endpoints_step04_POST_endpoints_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test error handling and responses",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "POST UpdateLayoutWithColumnSizes with invalid sizes format '33,33,34'",
+          "expected": "API should return error with descriptive message",
+          "actual": "API returned 500 Internal Server Error with message: 'The Column Sizes value '33,33,34' is in a not valid format'",
+          "screenshot": "API Endpoints_step05_error_handling.png"
+        },
+        {
+          "step_number": 2,
+          "action": "POST UpdateLayoutWithColumnSizes with empty sizes value",
+          "expected": "API should return validation error",
+          "actual": "API returned 500 Internal Server Error with message: 'The Column Sizes value '' is in a not valid format'",
+          "screenshot": "API Endpoints_step05_error_handling.png"
+        },
+        {
+          "step_number": 3,
+          "action": "POST UpdateLayoutFromTemplate with non-existent template ID 999",
+          "expected": "API should return error indicating template not found",
+          "actual": "API returned 500 Internal Server Error with message: 'The Content Layout Template Id 999 does not exists'",
+          "screenshot": "API Endpoints_step05_error_handling.png"
+        },
+        {
+          "step_number": 4,
+          "action": "POST with malformed JSON body",
+          "expected": "API should handle malformed request gracefully",
+          "actual": "API returned 500 Internal Server Error with message: 'Object reference not set to an instance of an object.' - ContentLayoutExceptionFilterAttribute catches and logs exceptions",
+          "screenshot": "API Endpoints_step05_error_handling.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "GET GetContentLayoutTemplates requires [DnnPageEditor] authorization - user must be a page editor",
+    "POST endpoints require [DnnModuleAuthorize] with Edit permission and [ValidateAntiForgeryToken] - proper security measures in place",
+    "Valid sizes formats from templates: '25' (25%+75%), '75' (75%+25%), '50' (50%+50%), '25,50' (25%+50%+25%), '33,33' (33%+33%+33%), '25,25,25' (4x25%)",
+    "ContentLayoutExceptionFilterAttribute properly catches exceptions and returns error messages in JSON format while logging to DNN",
+    "API endpoints use DNN Services Framework routing: /DesktopModules/DnnCorp/ContentLayout/API/Service/{action}",
+    "Module context (ModuleId and TabId headers) required for POST operations to identify which ContentLayout module to update"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

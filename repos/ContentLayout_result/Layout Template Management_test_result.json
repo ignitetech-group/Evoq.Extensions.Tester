@@ -1,0 +1,151 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Layout Template Management",
+    "feature_description": "Manages predefined layout templates that users can apply to quickly configure column layouts.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:05:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Load available layout templates",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page in Edit mode and open Add Module dialog",
+          "expected": "Add Module dialog opens with module categories",
+          "actual": "Add Module dialog opened successfully with module categories visible",
+          "screenshot": "Layout_Template_Management_step03_add_module_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Content Layout in the module list",
+          "expected": "Content Layout panel expands showing layout templates",
+          "actual": "Content Layout panel expanded but template list was empty/blank",
+          "screenshot": "Layout_Template_Management_step05_content_layout_empty.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Investigate UI issue via browser console - check if dnnModuleLayout plugin is initialized",
+          "expected": "Plugin should be auto-initialized on pageChanged event",
+          "actual": "Plugin was NOT initialized - $layoutPage.data('dnnModuleLayout') returned false",
+          "screenshot": "Layout_Template_Management_step07_content_layout_panel.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Manually initialize dnnModuleLayout plugin via JavaScript console",
+          "expected": "Templates should appear after manual initialization",
+          "actual": "After manual initialization, all 6 templates appeared correctly",
+          "screenshot": "Layout_Template_Management_step08_templates_loaded.png"
+        }
+      ],
+      "issues": [
+        "BUG: Template selector UI does not automatically load templates - the dnnModuleLayout jQuery plugin is not being initialized automatically when the Content Layout category is clicked",
+        "Root cause: The pageChanged event that should trigger plugin initialization is not firing properly"
+      ]
+    },
+    {
+      "scenario_name": "Apply template to existing layout",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After manually loading templates, click on 50% + 50% template to apply it",
+          "expected": "Content Layout module should be added to the page with the selected column layout",
+          "actual": "JavaScript error occurred: 'TypeError: Cannot read properties of undefined (reading \"top\")' in ModuleDialog.js:1050",
+          "screenshot": "Layout_Template_Management_step09_template_apply_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Wait for any delayed processing after template click",
+          "expected": "Module should appear on page",
+          "actual": "Template showed selection state (blue + icon) but module was not added to page due to JavaScript error",
+          "screenshot": "Layout_Template_Management_step10_after_apply_wait.png"
+        }
+      ],
+      "issues": [
+        "BUG: Clicking a template to apply it causes JavaScript error: TypeError: Cannot read properties of undefined (reading 'top') at dnn.dnnModuleDialog._syncCompleteFunc (ModuleDialog.js:1050:57)",
+        "Template selection visual state changes but the actual module is not added to the page"
+      ]
+    },
+    {
+      "scenario_name": "Verify all default templates are available",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Call GetContentLayoutTemplates API endpoint directly via browser console",
+          "expected": "API should return all 6 default templates defined in data.xml",
+          "actual": "API returned array of 6 templates: 25%+75%, 75%+25%, 50%+50%, 25%+50%+25%, 33%+33%+33%, 4x25%",
+          "screenshot": "Layout_Template_Management_step08_templates_loaded.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify templates match data.xml definitions",
+          "expected": "Templates should have correct IDs (1-6), names, sizes, and icons",
+          "actual": "All 6 templates verified: Id 1-6 with correct Name, Sizes and Icon paths matching data.xml",
+          "screenshot": "Layout_Template_Management_step08_templates_loaded.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test template XML deserialization",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review code for XML deserialization and verify API returns correct data",
+          "expected": "LayoutTemplateController should deserialize data.xml correctly",
+          "actual": "API call confirmed templates are correctly deserialized with all properties (id, name, sizes, icon)",
+          "screenshot": "Layout_Template_Management_step08_templates_loaded.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify icon paths are correctly resolved",
+          "expected": "Icon property should resolve to full path using Globals.ResolveUrl",
+          "actual": "Icons returned with resolved paths like '/DesktopModules/ContentLayout/Templates/Images/content-layout-50_50.png'",
+          "screenshot": "Layout_Template_Management_step08_templates_loaded.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify template caching works correctly",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review LayoutTemplateController.cs caching implementation",
+          "expected": "Templates should be cached with appropriate timeout and priority",
+          "actual": "Code confirmed: CacheTimeout of 20 minutes, CacheItemPriority.Normal, cache key 'ContentLayout_LayoutTemplates'",
+          "screenshot": "Layout_Template_Management_step08_templates_loaded.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Call API multiple times and verify consistent response",
+          "expected": "Multiple API calls should return same data (cached)",
+          "actual": "Multiple API calls returned identical template data confirming cache is functioning",
+          "screenshot": "Layout_Template_Management_step08_templates_loaded.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The API endpoint GetContentLayoutTemplates works correctly and returns all 6 templates from data.xml",
+    "Template caching is implemented with 20-minute timeout using CBO.GetCachedObject",
+    "Two critical UI bugs prevent normal template usage: (1) Templates don't load automatically due to plugin initialization issue, (2) Applying templates fails with JavaScript error",
+    "Code analysis confirms the dnnModuleLayout plugin in ModuleEditor.js should initialize on pageChanged event but this event is not being triggered when navigating to the Content Layout category",
+    "The UpdateLayoutFromTemplate API endpoint exists but cannot be tested via normal UI flow due to the JavaScript errors blocking template application"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 3,
+    "failed": 2,
+    "pass_rate": "60%"
+  }
+}

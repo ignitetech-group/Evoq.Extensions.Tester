@@ -1,0 +1,197 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "File and Image Attachments",
+    "feature_description": "Upload and manage file and image attachments in posts and comments",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T00:55:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Upload single image",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Community page and click on post area",
+          "expected": "Post creation area should expand with toolbar visible",
+          "actual": "Post area expanded showing Share button and attachment toolbar with camera and paperclip icons",
+          "screenshot": "File and Image Attachments_step02_post_area.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on camera icon (photo attachment button)",
+          "expected": "Photo attachment panel should appear",
+          "actual": "Photo attachment panel appeared with Browse and Upload options",
+          "screenshot": "File and Image Attachments_step03_photo_panel.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Browse from site button",
+          "expected": "File browser dialog should open",
+          "actual": "File browser dialog opened showing available images in My Files folder",
+          "screenshot": "File and Image Attachments_step05_browse_dialog.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Select journal_32X32.png and click Attach",
+          "expected": "Image should be attached to the post",
+          "actual": "Image was attached showing as thumbnail with X button to remove",
+          "screenshot": "File and Image Attachments_step06_image_attached.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Click Share button to post",
+          "expected": "Post with image should appear in activity stream",
+          "actual": "Post was created successfully and image appeared in the activity feed",
+          "screenshot": "File and Image Attachments_step07_image_posted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Upload multiple images",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click photo button and browse to attach first image",
+          "expected": "First image should be attached",
+          "actual": "First image (journal_32X32.png) was attached successfully",
+          "screenshot": "File and Image Attachments_step06_image_attached.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Browse button to add second image",
+          "expected": "File browser should open to select additional image",
+          "actual": "File browser opened, selected messaging_32X32.png",
+          "screenshot": "File and Image Attachments_step08_second_image_attached.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify both images are attached and share post",
+          "expected": "Post with multiple images should appear in feed",
+          "actual": "Post with two images (Social_Groups and messaging icons) appeared in activity stream",
+          "screenshot": "File and Image Attachments_step10_multiple_images_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View attachment in post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View activity feed with posted images",
+          "expected": "Images should be visible as thumbnails in posts",
+          "actual": "Single image post shows journal_32X32.png as clickable image link. Multiple image post shows Social_Groups_32X32.png and messaging_32X32.png as clickable image links",
+          "screenshot": "File and Image Attachments_step11_single_image_in_feed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Upload document file",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to locate file attachment (paperclip) button in post toolbar",
+          "expected": "File attachment button should allow uploading document files",
+          "actual": "File attachment button is visible in toolbar but module settings require AllowFiles to be enabled. No document files were available in user folder to test upload. The browse dialog only shows image files (png) in My Files folder.",
+          "screenshot": "File and Image Attachments_step12_feed_with_images.png"
+        }
+      ],
+      "issues": ["No document files available in user folder to test document upload functionality", "Could not verify if AllowFiles module setting is enabled"]
+    },
+    {
+      "scenario_name": "Delete attachment before posting",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attach image and verify X button appears on thumbnail",
+          "expected": "Attached image should have X button for removal",
+          "actual": "Each attached image shows an X button overlay for deletion before posting",
+          "screenshot": "File and Image Attachments_step08_second_image_attached.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Download attachment from post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify image links in posted content",
+          "expected": "Images should be clickable links that can be downloaded",
+          "actual": "Images in posts are rendered as clickable links with URLs like /Portals/_default/Users/001/01/1/journal_32X32.png that can be accessed to download the file",
+          "screenshot": "File and Image Attachments_step11_single_image_in_feed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Upload file exceeding size limit",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to test file size validation",
+          "expected": "System should reject files exceeding configured size limit",
+          "actual": "Could not test - no large files available to upload. Code review shows FileUploadController.cs handles file uploads but size limit is controlled by Host.AllowedExtensionWhitelist and IIS/server settings.",
+          "screenshot": "File and Image Attachments_step12_feed_with_images.png"
+        }
+      ],
+      "issues": ["No large files available to test size limit validation", "Size limit is enforced at server/IIS level rather than explicit validation in code"]
+    },
+    {
+      "scenario_name": "Upload unsupported file type",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to test file type validation",
+          "expected": "System should reject files with unsupported extensions",
+          "actual": "Could not test directly. Code review confirms IsAllowedExtension() method in FileUploadController.cs validates against Host.AllowedExtensionWhitelist and returns 'File type not allowed' error for unsupported types.",
+          "screenshot": "File and Image Attachments_step12_feed_with_images.png"
+        }
+      ],
+      "issues": ["Could not upload unsupported file type for testing - Browse from site only shows allowed files", "Code confirms validation exists: returns 'File type not allowed' message for invalid extensions"]
+    },
+    {
+      "scenario_name": "Upload attachment in comment",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Reviewed comment input areas in activity stream",
+          "expected": "Comments should allow file/image attachments",
+          "actual": "Comment input areas show only text input with Reply/Cancel buttons. No attachment buttons visible in comment UI.",
+          "screenshot": "File and Image Attachments_step10_multiple_images_visible.png"
+        }
+      ],
+      "issues": ["Comment UI does not show attachment buttons - file/image attachments appear to be supported only in main posts, not comments"]
+    }
+  ],
+  "observations": [
+    "Code review of FileUploadController.cs confirms: MaxFilesPerJournal setting (default 5) limits number of files per post",
+    "File extension validation uses Host.AllowedExtensionWhitelist for allowed file types",
+    "Photo-only mode (ActivityStreamPhotoExtensions) can be enabled via module settings AllowPhotos/AllowFiles",
+    "File uploads are stored in user folder under /Portals/_default/Users/{userId}/",
+    "Duplicate filename handling adds timestamp to avoid conflicts",
+    "Security check prevents users from deleting files they did not create",
+    "The Browse from site option shows only files already in user's folder - Upload option would allow new file uploads",
+    "Comment attachments may require different module/feature - current UI only shows text input for comments"
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 5,
+    "failed": 4,
+    "pass_rate": "56%"
+  }
+}

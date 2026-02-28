@@ -1,0 +1,152 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Users",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Remove Deleted Users",
+    "feature_description": "Permanently remove users marked as deleted from the system",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T10:20:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Display confirmation dialog before removal",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Manage > Users",
+          "expected": "Users management panel opens",
+          "actual": "Users management panel opened with list of users and Remove Deleted Users button visible",
+          "screenshot": "Remove Deleted Users_step01_users_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Remove Deleted Users' button",
+          "expected": "Confirmation dialog appears with warning message",
+          "actual": "Confirmation dialog appeared with message 'Do you wish to permanently remove deleted users? You cannot undo this operation.' and Yes/No buttons",
+          "screenshot": "Remove Deleted Users_step03_confirmation_dialog.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with no deleted users present",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Filter users by 'Deleted' status",
+          "expected": "Show list of deleted users or empty message",
+          "actual": "Message 'No users found.' displayed indicating no deleted users exist",
+          "screenshot": "Remove Deleted Users_step02_no_deleted_users.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Remove Deleted Users' and confirm with Yes",
+          "expected": "System handles empty deleted users gracefully",
+          "actual": "Success notification 'All deleted users have been removed' displayed - system handles gracefully",
+          "screenshot": "Remove Deleted Users_step04_no_deleted_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Successfully remove all deleted users",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Soft-delete a user (Test User12) using Delete User option from user menu",
+          "expected": "User is marked as deleted and removed from Authorized list",
+          "actual": "User was soft-deleted successfully with notification 'User deleted successfully'",
+          "screenshot": "Remove Deleted Users_step05_user_soft_deleted.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Filter by 'Deleted' to verify user appears in deleted list",
+          "expected": "Deleted user appears in the Deleted filter view",
+          "actual": "Test User12 appeared in the Deleted users list with strikethrough styling on date",
+          "screenshot": "Remove Deleted Users_step06_deleted_user_visible.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click 'Remove Deleted Users' button",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog appeared asking to permanently remove deleted users",
+          "screenshot": "Remove Deleted Users_step07_confirm_with_user.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click Yes to confirm permanent removal",
+          "expected": "Deleted users are permanently removed from the system",
+          "actual": "User was permanently removed - Deleted filter now shows 'No users found'",
+          "screenshot": "Remove Deleted Users_step08_success_notification.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify user list refreshes after removal",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After removing deleted users, observe the user list",
+          "expected": "User list should refresh and no longer show the removed user",
+          "actual": "User list immediately refreshed showing 'No users found' in Deleted filter view",
+          "screenshot": "Remove Deleted Users_step08_success_notification.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Switch to Authorized filter to verify user is permanently gone",
+          "expected": "Test User12 should not appear in any user list",
+          "actual": "Test User12 is no longer in the Authorized users list - permanently removed from system",
+          "screenshot": "Remove Deleted Users_step09_final_authorized_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Display success notification after completion",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "After confirming removal of deleted users",
+          "expected": "Success notification appears indicating operation completed",
+          "actual": "Success notification 'All deleted users have been removed' appeared with green checkmark icon",
+          "screenshot": "Remove Deleted Users_step08_success_notification.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify admin-only button visibility",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login as SuperUser and navigate to Users panel",
+          "expected": "Remove Deleted Users button should be visible for admin users",
+          "actual": "Remove Deleted Users button is visible in the Users panel header for SuperUser account",
+          "screenshot": "Remove Deleted Users_step01_users_page.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The 'Remove Deleted Users' button is only visible to admin users (controlled by appSettings.applicationSettings.settings.isAdmin in code)",
+    "The confirmation dialog includes a clear warning that the operation cannot be undone",
+    "Success notification auto-dismisses after approximately 5 seconds",
+    "The system gracefully handles the case when there are no deleted users to remove, showing the same success message",
+    "Deleted users are displayed with a strikethrough style on their joined date in the Deleted filter view"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

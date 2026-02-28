@@ -1,0 +1,140 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Advanced Analytics Settings",
+    "feature_description": "Advanced configuration options including domain name settings and admin tracking preferences with toggle functionality.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Configure custom domain name",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors > Google Analytics 4",
+          "expected": "Advanced Settings link/button with domain name configuration should be visible",
+          "actual": "The Google Analytics 4 connector uses a simplified UI template that does not include the Advanced Settings link. The domain name configuration field is not accessible in the current UI.",
+          "screenshot": "Advanced_Analytics_Settings_step02_ga4_expanded.png"
+        }
+      ],
+      "issues": ["The 'Advanced Settings' feature (with domain name configuration) exists in the codebase (connector.htm, advanced.htm, connector.js) but the current 'Google Analytics 4' connector UI uses a simplified inline template that only includes Measurement ID and Track for Administrators fields. The legacy connector template with Advanced Settings link is not rendered."]
+    },
+    {
+      "scenario_name": "Enable/disable tracking for administrators",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observe the Track for Administrators checkbox in the Google Analytics connector settings",
+          "expected": "Track for Administrators checkbox should be visible and functional",
+          "actual": "Track for Administrators checkbox is visible and checked by default",
+          "screenshot": "Advanced_Analytics_Settings_step05_admin_tracking_enabled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Uncheck the Track for Administrators checkbox",
+          "expected": "Checkbox should be unchecked",
+          "actual": "Checkbox was successfully unchecked",
+          "screenshot": "Advanced_Analytics_Settings_step06_admin_tracking_disabled.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save button to save the disabled state",
+          "expected": "Settings should be saved with success message",
+          "actual": "Success message 'Item successfully saved' appeared",
+          "screenshot": "Advanced_Analytics_Settings_step07_saved_success.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Re-enable the Track for Administrators checkbox and save",
+          "expected": "Checkbox should be re-checked and saved",
+          "actual": "Checkbox was re-checked and saved successfully",
+          "screenshot": "Advanced_Analytics_Settings_step08_admin_tracking_reenabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Toggle admin tracking switch on/off",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Toggle the Track for Administrators checkbox multiple times",
+          "expected": "Checkbox should toggle between checked and unchecked states",
+          "actual": "Checkbox toggled correctly between enabled (checked) and disabled (unchecked) states",
+          "screenshot": "Advanced_Analytics_Settings_step06_admin_tracking_disabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save advanced settings",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Modify settings and click Save button",
+          "expected": "Settings should be saved with success message",
+          "actual": "Settings were saved successfully. 'Item successfully saved' message displayed.",
+          "screenshot": "Advanced_Analytics_Settings_step07_saved_success.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify settings persist after saving",
+          "expected": "Modified settings should remain after save",
+          "actual": "Settings persisted correctly - both Measurement ID and Track for Administrators values were retained",
+          "screenshot": "Advanced_Analytics_Settings_step09_final_state.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify domain name validation",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access domain name field for validation testing",
+          "expected": "Domain name input field should be accessible for validation testing",
+          "actual": "Domain name configuration is not accessible in the current Google Analytics 4 connector UI. The field only exists in the legacy Advanced Settings dialog (advanced.htm) which is not rendered in the current interface.",
+          "screenshot": "Advanced_Analytics_Settings_step03_ga4_settings.png"
+        }
+      ],
+      "issues": ["Domain name validation cannot be tested because the domain name field is not present in the current GA4 connector UI. The Advanced Settings dialog containing this field (defined in advanced.htm and connector.js) is not accessible."]
+    },
+    {
+      "scenario_name": "Test empty domain configuration (uses 'none')",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to test empty domain configuration behavior",
+          "expected": "Should be able to leave domain name empty and verify 'none' default is used",
+          "actual": "Domain name configuration is not accessible in the current Google Analytics 4 connector UI. Cannot test empty domain behavior.",
+          "screenshot": "Advanced_Analytics_Settings_step03_ga4_settings.png"
+        }
+      ],
+      "issues": ["Empty domain configuration cannot be tested because the domain name field is not present in the current GA4 connector UI."]
+    }
+  ],
+  "observations": [
+    "The 'Advanced Analytics Settings' feature described in the test requirements (domain name configuration, admin tracking toggle with switch UI, segmentation rules) exists fully in the codebase files: connector.htm, advanced.htm, and connector.js (Scripts folder).",
+    "However, the current 'Google Analytics 4' connector displayed in the UI uses a completely different, simplified inline template that only provides two fields: 'Measurement ID' and 'Track for Administrators' (as a simple checkbox, not the toggle switch described in advanced.htm).",
+    "The legacy connector.htm template includes an 'Advanced Settings' link (class='advancedSetting') that opens a dialog with domain name configuration, admin tracking toggle, and segmentation rules. This template is NOT being rendered by the current connector framework.",
+    "The code in GoogleAnalyticsConnector.cs (line 57-59) defines PluginFolder pointing to the connector location, but the connector UI framework appears to be using a different component template for the GA4 interface.",
+    "The Track for Administrators functionality IS available in the current GA4 UI but as a simple checkbox rather than the toggle switch defined in advanced.htm.",
+    "Testing confirmed that changing between GA4 (G-xxxx) and Universal Analytics (UA-xxxx) tracking IDs does not change the UI template - both use the same simplified interface without the Advanced Settings link.",
+    "This appears to be an intentional simplification for GA4 support, as Universal Analytics (UA-) was sunset in July 2023, but the legacy features (domain name, segmentation rules) may no longer be relevant or fully implemented for GA4."
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 3,
+    "failed": 3,
+    "pass_rate": "50%"
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Social - Comments",
+    "feature_description": "Add, edit, delete and moderate comments on wiki articles",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:02:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Post new comment",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki article in group context",
+          "expected": "Wiki article page loads with comments section",
+          "actual": "Article page loaded at /en-us/Community/Groups/Wiki/groupid/10/Group-Integration-Test-Article with Add a Comment button visible",
+          "screenshot": "Social_Comments_step18_comment_text_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Add a Comment and enter comment text",
+          "expected": "Comment form appears with text input area",
+          "actual": "Comment form opened with contenteditable div, entered text: 'This is a test comment for the Wiki article.'",
+          "screenshot": "Social_Comments_step20_comment_entered.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Reply button to submit comment",
+          "expected": "Comment is posted and appears in comments section",
+          "actual": "Comment successfully posted, Comments section appeared with the new comment showing 'moments ago' timestamp and Reply/Like/Report options",
+          "screenshot": "Social_Comments_step21_comment_posted_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit own comment",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on comment action menu (pencil icon)",
+          "expected": "Dropdown menu appears with Edit and Remove options",
+          "actual": "Dropdown menu appeared with Edit and Remove options",
+          "screenshot": "Social_Comments_step22_edit_menu.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit option",
+          "expected": "Edit dialog opens with current comment text",
+          "actual": "Update Comment dialog opened with existing comment text pre-filled",
+          "screenshot": "Social_Comments_step23_edit_dialog.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Modify comment text and click Update",
+          "expected": "Comment is updated with new text",
+          "actual": "Comment updated successfully to: 'This is an EDITED test comment for the Wiki article. [Updated]'",
+          "screenshot": "Social_Comments_step25_edit_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Reply to comment",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Reply link on existing comment",
+          "expected": "Reply form appears with mention of original commenter",
+          "actual": "Reply form opened with '@SuperUser Account' pre-filled",
+          "screenshot": "Social_Comments_step26_reply_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter reply text and click Reply button",
+          "expected": "Reply is posted as nested comment",
+          "actual": "Reply posted successfully with text '@SuperUser Account This is a reply to the comment - testing threaded comments!' Newest/Oldest sorting options appeared",
+          "screenshot": "Social_Comments_step28_reply_posted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete own comment",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on comment action menu for reply comment",
+          "expected": "Dropdown menu appears with Edit and Remove options",
+          "actual": "Dropdown menu appeared with Edit and Remove options",
+          "screenshot": "Social_Comments_step29_delete_menu.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Remove option",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirm dialog appeared asking 'Are you sure you would like to permanently delete this comment?' with Yes/No buttons",
+          "screenshot": "Social_Comments_step30_delete_confirm.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Yes to confirm deletion",
+          "expected": "Comment is removed from the comments section",
+          "actual": "Comment successfully deleted, only original comment remains",
+          "screenshot": "Social_Comments_step31_delete_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Empty comment validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add a Comment and immediately click Reply without entering text",
+          "expected": "Validation error appears preventing empty comment submission",
+          "actual": "Dialog appeared with error message: 'You must enter a comment in order to reply'",
+          "screenshot": "Social_Comments_step19_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Moderate comments (approve/reject)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to test comment moderation workflow",
+          "expected": "Ability to approve or reject pending comments",
+          "actual": "Unable to test - as superuser, all posted comments are auto-approved. Comment moderation requires a non-moderator user to post comments that would go into pending state. Code review confirms ApproveComment and DeleteComment endpoints exist in SocialController.cs with CanModerateComments() permission checks.",
+          "screenshot": "Social_Comments_step32_final_state.png"
+        }
+      ],
+      "issues": ["Comment moderation could not be tested via UI because superuser comments are auto-approved. Testing requires a secondary non-moderator user account to create pending comments."]
+    }
+  ],
+  "observations": [
+    "Comments are displayed showing 'Anonymous' as the author even when logged in as SuperUser - this appears to be a display issue or configuration setting",
+    "The comment input uses a contenteditable div rather than a standard textarea, which is a Knockout.js binding pattern",
+    "Code review of SocialController.cs confirms comment moderation (ApproveComment, DeleteComment) requires CanModerateComments() permission which checks ModuleSecurity.CanEdit or CanModerate",
+    "Code in Notifications.cs shows comment approval triggers NewCommentNotifications and removes CommentAwaitingApprovalNotifications",
+    "Wiki module settings include 'Enable Comments on Articles' checkbox (chkEnableComments) which must be enabled for comments to appear",
+    "Comments posted by superusers are auto-approved, preventing UI testing of the moderation workflow without additional user accounts",
+    "Profanity filter testing would require site-level configuration of profanity words which was not in scope for this test",
+    "User mentions work correctly - @SuperUser Account was properly linked in the reply comment"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 5,
+    "failed": 1,
+    "pass_rate": "83%"
+  }
+}

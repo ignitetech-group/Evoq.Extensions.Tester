@@ -1,0 +1,54 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Content.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Azure Compatibility",
+    "feature_description": "Ensures Google Analytics connector works correctly in Azure cloud environment",
+    "feature_priority": "Low",
+    "test_date": "2026-02-28T08:28:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify connector installation and Azure compatibility declaration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors page",
+          "expected": "Connectors page loads showing list of available connectors",
+          "actual": "Connectors page loaded successfully showing Google Analytics 4 connector with green checkmark indicating connected status",
+          "screenshot": "Azure_Compatibility_step01_connectors_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit on Google Analytics 4 connector to verify UI loads",
+          "expected": "Connector configuration panel opens and displays settings",
+          "actual": "Configuration panel opened showing Measurement ID field (G-ABC123XYZ99) and Track for Administrators checkbox. UI rendered correctly without errors.",
+          "screenshot": "Azure_Compatibility_step02_connector_config.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Navigate to Settings > Extensions and filter by Connectors",
+          "expected": "Extension list shows Evoq Content Google Analytics Connector as installed",
+          "actual": "Extension list displayed Evoq Content Google Analytics Connector version 10.1.1 as installed connector",
+          "screenshot": "Azure_Compatibility_step03_extension_installed.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review confirmed the connector manifest (DNNXE_GoogleAnalyticsConnector.dnn) includes <azureCompatible>true</azureCompatible> flag on line 20, declaring Azure compatibility.",
+    "The connector uses TokenCachedService from Evoq.Microservices.Framework for token storage, which is designed to work with distributed cache systems compatible with Azure environments.",
+    "No Azure-specific conditional code paths were found - the connector code is environment-agnostic, relying on the framework's Azure-compatible services.",
+    "Azure-specific test scenarios (Azure deployment, Azure token storage, Azure API calls, Azure performance/scalability) cannot be executed in the localhost test environment. These would require actual Azure Web Apps deployment to verify.",
+    "The connector's Azure compatibility is primarily ensured through: (1) the azureCompatible manifest flag, (2) use of framework-provided Azure-compatible token caching services, and (3) avoidance of file-system-based session state."
+  ],
+  "summary": {
+    "total_scenarios": 1,
+    "passed": 1,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Content.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Google Analytics OAuth Authorization",
+    "feature_description": "Enables OAuth-based authorization flow to connect Google Analytics account to the Evoq site",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T08:30:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Navigate to Google Analytics Connector Settings",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Persona Bar > Settings > Connectors",
+          "expected": "Connectors page should display with list of available connectors",
+          "actual": "Connectors page displayed with list including Google Analytics 4",
+          "screenshot": "GA_OAuth_step01_connectors_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit on Google Analytics 4 connector",
+          "expected": "Google Analytics connector edit form should open",
+          "actual": "Edit form opened showing Measurement ID field and Track for Administrators checkbox",
+          "screenshot": "GA_OAuth_step02_ga4_edit_form.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify OAuth Authorization UI Elements Present",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open Google Analytics 4 connector edit form and look for OAuth authorization UI",
+          "expected": "OAuth authorization UI should be present with: 'Connect to GA' button, Account dropdown, WebProperty dropdown, DataStream dropdown, and Disconnect button (as described in authorize.js and authroize.htm)",
+          "actual": "OAuth authorization UI elements are NOT present. Only a simple form with Measurement ID textbox and Track for Administrators checkbox is displayed. The 'Connect to GA' button, Account/Property/DataStream dropdowns described in the code are missing.",
+          "screenshot": "GA_OAuth_step03_ga4_form_simple.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Delete existing connection and click Connect to verify OAuth UI loads for new connection",
+          "expected": "OAuth authorization panel should appear with 'Connect to GA' button",
+          "actual": "Delete Connection was successful, but clicking Connect only shows the same simple form with empty Measurement ID field - no OAuth authorization UI",
+          "screenshot": "GA_OAuth_step05_connect_form.png"
+        }
+      ],
+      "issues": [
+        "OAuth Authorization UI (with 'Connect to GA' button, Account/Property/DataStream dropdowns) described in code files (authorize.js, authroize.htm) is NOT loading in the Google Analytics 4 connector UI",
+        "The code references element ID '#connector-GoogleAnalytics' but the UI appears to use a different connector implementation",
+        "The OAuth authorization flow with popup window, account selection, and profile configuration is not accessible through the UI"
+      ]
+    },
+    {
+      "scenario_name": "Initiate OAuth authorization with valid Google account",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Look for 'Connect to GA' button to initiate OAuth flow",
+          "expected": "'Connect to GA' button should be visible to start OAuth authorization",
+          "actual": "No 'Connect to GA' button is present in the UI. Only manual Measurement ID entry is available.",
+          "screenshot": "GA_OAuth_step05_connect_form.png"
+        }
+      ],
+      "issues": [
+        "Cannot test OAuth authorization flow - the UI elements for OAuth are not present"
+      ]
+    },
+    {
+      "scenario_name": "Test authorization cancellation by user",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Initiate OAuth flow and cancel",
+          "expected": "User should be able to cancel OAuth popup and return to connector settings",
+          "actual": "Cannot test - OAuth popup functionality is not accessible because the 'Connect to GA' button is missing",
+          "screenshot": "GA_OAuth_step05_connect_form.png"
+        }
+      ],
+      "issues": [
+        "OAuth popup window behavior cannot be tested because the authorization UI is not present"
+      ]
+    },
+    {
+      "scenario_name": "Test empty Measurement ID validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Leave Measurement ID field empty and click Save",
+          "expected": "Validation error should appear for empty field",
+          "actual": "Error message 'Tracking Code Cannot Be Empty' displayed correctly",
+          "screenshot": "GA_OAuth_step06_empty_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test invalid Measurement ID format acceptance",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter invalid measurement ID format 'invalid-id' and click Save",
+          "expected": "Either validation error for invalid format, or successful save",
+          "actual": "Invalid measurement ID 'invalid-id' was saved successfully without format validation",
+          "screenshot": "GA_OAuth_step08_invalid_saved.png"
+        }
+      ],
+      "issues": [
+        "No format validation for Measurement ID - system accepts any string value including clearly invalid formats"
+      ]
+    },
+    {
+      "scenario_name": "Test valid GA4 Measurement ID configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter valid GA4 format Measurement ID 'G-TESTID12345'",
+          "expected": "Valid measurement ID should be accepted",
+          "actual": "Measurement ID 'G-TESTID12345' entered successfully",
+          "screenshot": "GA_OAuth_step09_valid_id_with_checkbox.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check 'Track for Administrators' checkbox",
+          "expected": "Checkbox should be toggleable",
+          "actual": "Checkbox toggled to checked state",
+          "screenshot": "GA_OAuth_step09_valid_id_with_checkbox.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save",
+          "expected": "Configuration should save successfully",
+          "actual": "Configuration saved with success message 'Item successfully saved'",
+          "screenshot": "GA_OAuth_step10_valid_config_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Delete Connection functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Delete Connection' link",
+          "expected": "Connection should be deleted and connector should show 'Connect' button",
+          "actual": "Connection deleted successfully with message 'Item successfully deleted'. Connector now shows 'Connect' button instead of 'Edit'",
+          "screenshot": "GA_OAuth_step04_connection_deleted.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "CRITICAL: The OAuth Authorization feature described in the code files (ServicesController.cs, GoogleAnalyticsRemoteManager.cs, authorize.js, authroize.htm) is NOT accessible through the UI. The code describes an OAuth flow with popup window, Account/Property/DataStream selection, but only a simple manual Measurement ID entry form is displayed.",
+    "The code references '#connector-GoogleAnalytics' element ID for OAuth UI injection, but the Google Analytics 4 connector appears to use a different implementation that doesn't include OAuth functionality.",
+    "The Evoq.Content.GoogleAnalyticsConnector package has a dependency on Evoq.GoogleAnalyticsConnector (version 09.00.00), suggesting the OAuth features may belong to a different or upgraded connector version.",
+    "There is no format validation for the Measurement ID field - any string value is accepted including invalid formats like 'invalid-id'.",
+    "The simple connector configuration (Measurement ID + Track for Administrators) works correctly for basic functionality."
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 5,
+    "failed": 3,
+    "pass_rate": "62.5%"
+  }
+}

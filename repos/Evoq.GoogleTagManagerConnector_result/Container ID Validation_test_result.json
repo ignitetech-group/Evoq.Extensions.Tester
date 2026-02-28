@@ -1,0 +1,89 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleTagManagerConnector",
+    "extension_type": "Connector",
+    "feature_name": "Container ID Validation",
+    "feature_description": "Validates GTM container IDs by checking if they exist and are published on Google's servers",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T10:09:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Validate non-existent container shows error",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors > Google Tag Manager",
+          "expected": "GTM connector configuration panel should be accessible",
+          "actual": "GTM connector configuration panel opened successfully with Container ID field and Save button",
+          "screenshot": "Container ID Validation_step02_gtm_config_panel.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter non-existent container ID 'GTM-INVALID123' and click Save",
+          "expected": "Validation should fail with error message",
+          "actual": "Error message displayed: 'The Container Id is invalid or container hasn't been published yet.'",
+          "screenshot": "Container ID Validation_step04_nonexistent_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate malformed container ID shows error",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter malformed container ID 'invalid-format' (not following GTM-XXXXXX format) and click Save",
+          "expected": "Validation should fail with error message",
+          "actual": "Error message displayed: 'The Container Id is invalid or container hasn't been published yet.'",
+          "screenshot": "Container ID Validation_step06_malformed_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate empty container ID is accepted (clears configuration)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the Container ID field and click Save",
+          "expected": "Empty value should be accepted to clear/disable GTM configuration",
+          "actual": "Success message displayed: 'Item successfully saved.' Configuration was cleared.",
+          "screenshot": "Container ID Validation_step08_empty_save_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate published GTM container returns success",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter valid published container ID 'GTM-5CVQBG' and click Save",
+          "expected": "Validation should pass and configuration should be saved",
+          "actual": "Success message displayed: 'Item successfully saved.' GTM connector now shows green checkmark indicating active configuration.",
+          "screenshot": "Container ID Validation_step10_valid_id_saved.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The validation works by making a GET request to https://www.googletagmanager.com/gtm.js?id={containerId} and checking for HTTP 200 OK response.",
+    "Empty container ID bypasses validation (intentional design to allow clearing configuration).",
+    "Error message 'The Container Id is invalid or container hasn't been published yet.' covers multiple failure cases: non-existent, malformed, and unpublished containers.",
+    "Network timeout and Google servers unreachable scenarios could not be tested via UI - these would require network manipulation which is outside the scope of UI testing. Based on code review, network errors are caught and treated as validation failure.",
+    "The checkbox 'This GTM container has already been configured to add the Google Analytics Script' is available to indicate GTM is handling GA tracking, avoiding duplicate tracking."
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Social - Bookmarks",
+    "feature_description": "Bookmark and unbookmark articles for later reference",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:48:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Bookmark an article",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page",
+          "expected": "Wiki page loads with article list",
+          "actual": "Wiki page loaded showing 6 articles in the 'All Articles' list",
+          "screenshot": "Social - Bookmarks_step01_wiki_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on article link to view article details",
+          "expected": "Article detail page opens with bookmark button visible",
+          "actual": "Article URLs return 404 error - page not found. All article links (Test Article Draft, Test Article for Bookmarks, etc.) lead to 404 error page",
+          "screenshot": "Social - Bookmarks_step02_article_404.png"
+        }
+      ],
+      "issues": [
+        "All Wiki article URLs return 404 error - cannot access article detail view where bookmark button is located",
+        "Article pages are not accessible despite articles appearing in the listing"
+      ]
+    },
+    {
+      "scenario_name": "Remove bookmark",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access article detail page to find unbookmark button",
+          "expected": "Article detail page with unbookmark button available",
+          "actual": "Cannot access article detail page due to 404 errors - unbookmark button is inaccessible",
+          "screenshot": "Social - Bookmarks_step02_article_404.png"
+        }
+      ],
+      "issues": [
+        "Cannot test unbookmark functionality because article detail pages are inaccessible (404 errors)"
+      ]
+    },
+    {
+      "scenario_name": "View bookmarked articles list",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Look for bookmarked articles view or filter",
+          "expected": "UI element to view bookmarked articles",
+          "actual": "The Wiki module list view shows 'All Articles' and 'My Articles' tabs, but no dedicated 'Bookmarked Articles' view was found in the UI",
+          "screenshot": "Social - Bookmarks_step01_wiki_list.png"
+        }
+      ],
+      "issues": [
+        "No dedicated 'Bookmarked Articles' filter or view found in the Wiki module UI",
+        "Based on code review (Article.ascx), bookmark functionality exists but requires accessing individual article pages which return 404 errors"
+      ]
+    },
+    {
+      "scenario_name": "Bookmark persistence",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to verify bookmark persistence",
+          "expected": "Bookmarked article remains bookmarked across sessions",
+          "actual": "Cannot test - article detail pages are inaccessible due to 404 errors",
+          "screenshot": "Social - Bookmarks_step02_article_404.png"
+        }
+      ],
+      "issues": [
+        "Cannot verify bookmark persistence because article detail pages return 404 errors"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review confirms bookmark functionality exists in the codebase: dnn.wiki.Article.js has bookmark() and unbookmark() methods, Article.ascx has UI elements with dnnSocialBookmark class, and SocialController.cs has Bookmark/Unbookmark endpoints",
+    "The bookmark button appears in the article detail view based on Article.ascx (lines 39-44) which shows bookmark icon with conditional rendering based on model.bookmarked state",
+    "All existing Wiki article URLs return 404 errors - this appears to be a routing or configuration issue preventing access to article detail pages",
+    "Article creation dialog appears to have issues - Publish button clicks are not submitting the form",
+    "The Wiki module listing page works correctly showing articles, but individual article pages are not accessible",
+    "Based on Mechanics.cs (line 56), bookmark actions are defined with 0 reputation/experience points: AddScoringAction(Constants.ScoringActions.BookmarkedArticle, 0, 0, ActionTypes.FormedRelationship)"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 0,
+    "failed": 4,
+    "pass_rate": "0%"
+  }
+}

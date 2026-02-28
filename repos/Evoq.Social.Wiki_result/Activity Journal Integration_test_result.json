@@ -1,0 +1,83 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Activity Journal Integration",
+    "feature_description": "Post wiki activities to user and group activity journals",
+    "feature_priority": "Low",
+    "test_date": "2026-02-28T08:47:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify wiki article journal entry appears in Activity Feed",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login as SuperUser and navigate to the Activity Feed page",
+          "expected": "Activity Feed page loads showing user's activity stream",
+          "actual": "Activity Feed page loaded successfully showing SuperUser Account profile and activity stream with various posts",
+          "screenshot": "Activity Journal Integration_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to Wiki Test page to confirm wiki articles exist",
+          "expected": "Wiki module displays existing articles",
+          "actual": "Wiki Test page displays 6 articles including Test Article Draft, Test Article for Tagging, Test Article for Search, Test Article for Bookmarks, Test Article for Revision Management",
+          "screenshot": "Activity Journal Integration_step01_wiki_page.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Navigate to Activity Feed and scroll to find wiki journal entries",
+          "expected": "Wiki article creation activities should appear in the Activity Feed",
+          "actual": "Found wiki journal entry: 'Anonymous authored wiki article Test Article Draft' with article summary 'This is a test article to verify the article creation functionality in the Wiki module. It contains sample content for testing purposes.'",
+          "screenshot": "Activity Journal Integration_step07_wiki_article_entry.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Verify wiki journal entry has proper actions (Like, Read More, Comment)",
+          "expected": "Journal entry should have interaction options",
+          "actual": "Journal entry displays Like, Read More (linking to article), Comment, and Remove options",
+          "screenshot": "Activity Journal Integration_step07_wiki_article_entry.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Activity Feed filter for wiki entries",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Use the Activity Feed filter dropdown to select 'Added to Wiki'",
+          "expected": "Feed should filter to show only wiki article creation entries",
+          "actual": "Filter applied successfully, showing 6 wiki article journal entries (Test Article Draft, Test Article for Tagging, Test Article for Search, Test Article for Bookmarks, Test Article for Revision Management, Test Article for Metadata)",
+          "screenshot": "Activity Journal Integration_step04_wiki_filter_applied.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify filter dropdown includes wiki-related options",
+          "expected": "Dropdown should have 'Added to Wiki' and 'Updated Wiki' options",
+          "actual": "Filter dropdown includes both 'Added to Wiki' and 'Updated Wiki' options among other activity types",
+          "screenshot": "Activity Journal Integration_step02_activity_feed_with_wiki_entry.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code analysis confirms Journal.cs handles wiki journal integration with AddWikiToJournal and RemoveWikiFromJournal methods",
+    "Journal entries are created when articles are published (not for drafts) via ArticleController.cs line 257",
+    "Journal entries are removed when articles are deleted via ArticleController.cs line 303",
+    "The journal type name is 'Wiki_AddArticle' as defined in Constants.JournalWikiAddName",
+    "Journal entries include article title, summary, and a link to the article details page",
+    "Group journal entries are supported - when an article has a GroupId > 0, the SocialGroupId is set on the journal item"
+  ],
+  "summary": {
+    "total_scenarios": 2,
+    "passed": 2,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

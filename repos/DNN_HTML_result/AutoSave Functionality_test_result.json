@@ -1,0 +1,155 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "AutoSave Functionality",
+    "feature_description": "Automatically save content drafts while editing to prevent data loss",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:34:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Test autosave in inline editor",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enabled Edit mode via Persona Bar",
+          "expected": "Page enters edit mode showing module panes and actions",
+          "actual": "Edit mode enabled successfully, module panes visible with action menus",
+          "screenshot": "AutoSave_Functionality_step01_edit_mode_enabled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clicked on an empty HTML module to open inline editor",
+          "expected": "Inline editor (Redactor) should open with formatting toolbar",
+          "actual": "Inline editor opened with toolbar showing Bold, Italic, Underline, Lists, Link, HTML, Image, and Advanced Editor buttons",
+          "screenshot": "AutoSave_Functionality_step02_inline_editor_opened.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Typed test content into the inline editor",
+          "expected": "Content should be entered into the editor",
+          "actual": "Content 'AutoSave Test Content - Testing autosave functionality' was entered successfully",
+          "screenshot": "AutoSave_Functionality_step03_content_entered.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test autosave in Advanced Editor (popup modal)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked Advanced Editor button to open popup modal",
+          "expected": "CKEditor popup modal should open with content",
+          "actual": "Edit Content popup opened with CKEditor, showing the content from inline editor, with full formatting toolbar",
+          "screenshot": "AutoSave_Functionality_step04_advanced_editor_opened.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Modified content in CKEditor by adding additional text",
+          "expected": "Content should be modified in editor",
+          "actual": "Additional text ' - Additional content added for autosave test' was added. Word count increased from 7 to 14",
+          "screenshot": "AutoSave_Functionality_step05_content_modified.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Waited for autosave interval (5 seconds) and monitored network requests",
+          "expected": "Autosave should trigger POST request to HtmlTextPro/Save endpoint",
+          "actual": "Network traffic showed POST request to http://localhost:8081/en-us/API/HtmlPro/HtmlTextPro/Save with 200 OK response, confirming autosave worked",
+          "screenshot": "AutoSave_Functionality_step06_autosave_triggered.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Enable/disable autosave setting",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigated to Module Settings > HTML Module Settings tab",
+          "expected": "Should find 'Enable AutoSave' checkbox and 'Time to AutoSave (Seconds)' textbox as described in documentation",
+          "actual": "HTML Module Settings tab only contains 'Replace Tokens' checkbox and 'Max length of Description in search' textbox. No AutoSave configuration options exist",
+          "screenshot": "AutoSave_Functionality_step07_module_settings_no_autosave_option.png"
+        }
+      ],
+      "issues": [
+        "Documentation describes 'Enable AutoSave' checkbox and 'Time to AutoSave (Seconds)' settings (10-120 seconds range) that do not exist in the current UI implementation",
+        "AutoSave is always enabled with a hardcoded 5-second interval (TIME_TO_AUTOSAVE = 5000ms in code)",
+        "Users cannot configure or disable the autosave feature through the UI"
+      ]
+    },
+    {
+      "scenario_name": "Set autosave interval",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to locate autosave interval setting in Module Settings",
+          "expected": "Should find 'Time to AutoSave (Seconds)' input field with configurable range (10-120 seconds)",
+          "actual": "No autosave interval setting exists in the UI. The interval is hardcoded to 5000ms (5 seconds) in EditHtml.ascx",
+          "screenshot": "AutoSave_Functionality_step07_module_settings_no_autosave_option.png"
+        }
+      ],
+      "issues": [
+        "Autosave interval is hardcoded to 5 seconds in the code (TIME_TO_AUTOSAVE = 5000)",
+        "No UI option to configure the autosave interval",
+        "Documentation claims interval is configurable between 10-120 seconds, but this feature does not exist"
+      ]
+    },
+    {
+      "scenario_name": "Recover autosaved content",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched for autosave recovery UI elements described in documentation",
+          "expected": "Should find 'Retrieve unsaved Changes' and 'Load Saved Content' buttons when returning to edit content after unexpected closure",
+          "actual": "No recovery UI elements found. Code analysis shows autosave directly calls HtmlTextPro/Save endpoint which saves content to the database, not to a temporary location. No recovery mechanism exists",
+          "screenshot": "AutoSave_Functionality_step07_module_settings_no_autosave_option.png"
+        }
+      ],
+      "issues": [
+        "Documentation describes recovery buttons ('Retrieve unsaved Changes', 'Load Saved Content') that do not exist",
+        "AutoSave saves directly to the server via HtmlTextPro/Save API, not to a temporary location",
+        "No mechanism exists to recover autosaved content separately from manually saved content"
+      ]
+    },
+    {
+      "scenario_name": "Verify autosave indicator",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Looked for visual indicator of autosave status during editing",
+          "expected": "Should see some visual feedback indicating when content is being autosaved or has been autosaved",
+          "actual": "No autosave indicator found in the UI. Autosave happens silently without any visual feedback to the user",
+          "screenshot": "AutoSave_Functionality_step05_content_modified.png"
+        }
+      ],
+      "issues": [
+        "No visual indicator exists to show autosave status",
+        "Users have no way to know when content has been autosaved"
+      ]
+    }
+  ],
+  "observations": [
+    "AutoSave functionality DOES work - content is automatically saved via POST to /API/HtmlPro/HtmlTextPro/Save every 5 seconds when content changes",
+    "AutoSave is ALWAYS enabled with a hardcoded 5-second interval - cannot be disabled or configured via UI",
+    "Documentation (Enabling-Disabling AutoSave.htm, Managing AutoSaved Content.htm) describes features that do not exist in the current implementation: Enable/Disable toggle, configurable interval (10-120s), recovery buttons",
+    "The Settings.ascx file only contains 'Replace Tokens' and 'Search Description Length' settings - no AutoSave settings",
+    "InlineEditing.js has autoSaveEnabled as an option parameter for inline editing mode, but this is set programmatically, not via UI",
+    "The code in EditHtml.ascx shows autosave interval is hardcoded: TIME_TO_AUTOSAVE = 5000 (5 seconds)",
+    "Content is saved directly to the database via HtmlTextPro/Save API call, not to a temporary location as documentation suggests"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 2,
+    "failed": 4,
+    "pass_rate": "33%"
+  }
+}

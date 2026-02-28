@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Users",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "View User Assets",
+    "feature_description": "Access and view files in a user's personal folder",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T10:23:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify View Assets menu item visibility",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Users via Manage menu",
+          "expected": "Users list is displayed",
+          "actual": "Users list displayed showing all authorized users with pagination (15 total users)",
+          "screenshot": "View User Assets_step01_users_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on the More menu (three dots) for a user",
+          "expected": "Dropdown menu appears with View Assets option",
+          "actual": "Dropdown menu appeared showing: View Profile, View Assets, Change Password, Force Password Change, Send Password Reset Link, Un-Authorize User, Delete User, Make Super User, Login As User",
+          "screenshot": "View User Assets_step02_more_menu_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Open assets panel for user with files",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for SuperUser Account (host) in the Users list",
+          "expected": "SuperUser Account is found and displayed",
+          "actual": "SuperUser Account found and displayed in search results",
+          "screenshot": "View User Assets_step05_superuser_found.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click More menu for SuperUser Account",
+          "expected": "Dropdown menu appears with View Assets option",
+          "actual": "Dropdown menu appeared with View Assets option visible",
+          "screenshot": "View User Assets_step06_superuser_more_menu.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click View Assets option",
+          "expected": "Assets panel opens showing user's personal folder and files",
+          "actual": "Assets panel opened successfully showing breadcrumb 'USERS > 001 > 01 > 1' with 4 files: journal_32X32.png, License.txt, messaging_32X32.png, Social_Groups_32X32.png. Panel includes Add Folder, Add Asset buttons, search and sort functionality",
+          "screenshot": "View User Assets_step07_assets_panel_opened.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify error notification for user without assets",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for Test User01 in the Users list",
+          "expected": "Test User01 is found and displayed",
+          "actual": "Test User01 found and displayed in search results",
+          "screenshot": "View User Assets_step08_testuser01_menu.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click More menu and select View Assets for Test User01",
+          "expected": "Error notification appears indicating user has no assets",
+          "actual": "Error notification displayed: 'Test User01 does not own any assets.' (captured in snapshot, notification auto-dismissed quickly)",
+          "screenshot": "View User Assets_step09_no_assets_error_notification.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test admin access to View Assets",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "As SuperUser (admin), access View Assets for multiple users",
+          "expected": "Admin can access View Assets for any user without explicit permission",
+          "actual": "SuperUser was able to access View Assets functionality for both SuperUser Account (which has files) and Test User01 (which has no files). The feature worked correctly for both scenarios",
+          "screenshot": "View User Assets_step07_assets_panel_opened.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The error notification for users without assets is a transient toast message that auto-dismisses after a few seconds, making it difficult to capture in screenshots but it was confirmed in the DOM snapshot",
+    "The Assets panel properly displays the user's folder path in breadcrumb format (Users > 001 > 01 > 1) corresponding to the user ID structure",
+    "The Assets panel provides full file management capabilities including Add Folder, Add Asset, Search, Sort (by Last Modified, Date Uploaded, Alphabetical), and Sync functionality",
+    "Code suggests VIEW_ASSETS permission exists based on feature documentation, but testing as SuperUser (which has all permissions) did not allow isolation of permission-specific behavior"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

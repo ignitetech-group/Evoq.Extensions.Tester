@@ -1,0 +1,125 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleTagManagerConnector",
+    "extension_type": "Connector",
+    "feature_name": "Configuration Caching",
+    "feature_description": "Caches GTM script template from configuration file to improve performance",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T10:15:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify GTM Configuration UI Accessibility",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Connectors page in PersonaBar",
+          "expected": "Connectors list should be visible with Google Tag Manager listed",
+          "actual": "Connectors page displayed with Google Tag Manager connector showing 'Connect' button",
+          "screenshot": "Configuration Caching_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Connect button on Google Tag Manager",
+          "expected": "GTM configuration panel should expand",
+          "actual": "Configuration panel expanded showing Container ID field and GA integration checkbox",
+          "screenshot": "Configuration Caching_step01_gtm_config_panel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Container ID Validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter invalid container ID 'GTM-TEST123' and click Save",
+          "expected": "Validation should reject invalid container ID",
+          "actual": "Error message displayed: 'The Container Id is invalid or container hasn't been published yet.'",
+          "screenshot": "Configuration Caching_step02_container_id_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Observe error handling",
+          "expected": "System should prevent saving invalid configuration",
+          "actual": "Configuration was not saved; container validation works by checking against Google's GTM API",
+          "screenshot": "Configuration Caching_step03_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Script Template Cache on First Access",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to verify cache initialization via UI",
+          "expected": "Observable indication of script template caching",
+          "actual": "No UI elements available to observe caching behavior - this is a system-level automatic feature",
+          "screenshot": "Configuration Caching_step04_gtm_connector_list.png"
+        }
+      ],
+      "issues": [
+        "Configuration Caching is a system-level feature with no UI components to test",
+        "Caching occurs in TagManagerModule.cs HttpModule during page rendering",
+        "No cache status indicators, logs, or diagnostics exposed in the admin interface",
+        "Testing would require server-side instrumentation or code debugging"
+      ]
+    },
+    {
+      "scenario_name": "Test Cache Invalidation on Config File Change",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to test cache invalidation via UI",
+          "expected": "Ability to observe cache being invalidated when config file changes",
+          "actual": "No UI mechanism available to test cache invalidation - requires server file system access",
+          "screenshot": "Configuration Caching_step04_gtm_connector_list.png"
+        }
+      ],
+      "issues": [
+        "Cache invalidation depends on DNNCacheDependency on GoogleTagManager.config file",
+        "Modifying config file requires server file system access, not available via UI",
+        "No UI indicator to show cache state or invalidation events"
+      ]
+    },
+    {
+      "scenario_name": "Verify Cache Dependency on GoogleTagManager.config",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to verify cache dependency via UI",
+          "expected": "Observable dependency relationship between cache and config file",
+          "actual": "Cache dependency is set in code (line 76 TagManagerModule.cs) but not observable via UI",
+          "screenshot": "Configuration Caching_step04_gtm_connector_list.png"
+        }
+      ],
+      "issues": [
+        "Code review confirms DNNCacheDependency is used with GoogleTagManager.config file path",
+        "No UI exposes cache dependency information",
+        "POTENTIAL BUG FOUND: Line 76 in TagManagerModule.cs has inverted logic - cache is only set when scriptContent IS empty, not when it has valid content"
+      ]
+    }
+  ],
+  "observations": [
+    "Configuration Caching is a system-level automatic feature operating in TagManagerModule.cs HttpModule with no UI components for direct testing",
+    "The feature uses DNN DataCache with key 'GoogleTagManagerScript' and DNNCacheDependency on the config file",
+    "POTENTIAL BUG: In TagManagerModule.cs line 76, the condition 'if (string.IsNullOrEmpty(scriptContent))' appears inverted - it only caches when content IS empty, meaning valid content is never cached. This should likely be 'if (!string.IsNullOrEmpty(scriptContent))'",
+    "Container ID validation correctly verifies against Google's GTM API (https://www.googletagmanager.com/gtm.js?id={containerId})",
+    "The GoogleTagManager.config file contains the script template with placeholders [CONTAINERID], [USETAGMANAGERFORGA], and [DATALAYER_INIT]",
+    "Testing the suggested scenarios (cache performance, multi-request caching, cache invalidation) requires server-side instrumentation, profiling tools, or debugger access - none of which are available through UI testing",
+    "UI Location listed as 'System level (automatic)' accurately describes this feature's non-testable nature via browser"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 2,
+    "failed": 3,
+    "pass_rate": "40%"
+  }
+}

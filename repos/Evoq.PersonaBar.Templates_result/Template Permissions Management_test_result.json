@@ -1,0 +1,156 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Templates",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Template Permissions Management",
+    "feature_description": "Configure role-based and user-specific permissions for templates including view and edit rights",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:47:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Set role-based permissions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Manage > Templates",
+          "expected": "Templates list should be displayed",
+          "actual": "Templates list displayed successfully with all templates visible",
+          "screenshot": "Template Permissions Management_step01_templates_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Add Template button to open template creation dialog",
+          "expected": "Template creation form with Permissions tab should appear",
+          "actual": "Add Template dialog appeared but only contains Name, Description, and Page Template fields - NO Permissions tab available",
+          "screenshot": "Template Permissions Management_step02_add_template_form.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Search for Permissions tab or settings in the Add Template form",
+          "expected": "Permissions tab should be accessible during template creation",
+          "actual": "No Permissions tab exists in the Add Template form. The form only has basic fields: Name, Description, and Page Template dropdown",
+          "screenshot": "Template Permissions Management_step04_add_template_form_full.png"
+        }
+      ],
+      "issues": [
+        "The Permissions tab documented in the feature specification ('Admin > Manage > Templates > Create Template > Permissions') does not exist in the UI",
+        "The Add Template form only contains Name, Description, and Page Template selection fields",
+        "No way to configure role-based permissions through the Templates interface"
+      ]
+    },
+    {
+      "scenario_name": "Set user-specific permissions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access user-specific permissions from Templates interface",
+          "expected": "User permissions configuration should be accessible",
+          "actual": "No user permissions interface found in the Templates module - only Edit and Delete options available for templates",
+          "screenshot": "Template Permissions Management_step08_template_options.png"
+        }
+      ],
+      "issues": [
+        "No user-specific permissions interface available in the Templates UI",
+        "Template item actions only show Edit and Delete buttons"
+      ]
+    },
+    {
+      "scenario_name": "Verify administrator role has default permissions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Create a new template named 'Permissions Test Template'",
+          "expected": "Template should be created with default Administrator permissions",
+          "actual": "Template was created successfully",
+          "screenshot": "Template Permissions Management_step05_template_created.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to view the template's permissions through the UI",
+          "expected": "Should be able to see Administrator role has default EDIT permission (as per code review of PageTemplateController.cs)",
+          "actual": "No UI access to view or verify template permissions. Template pages are hidden system pages not accessible via the Pages panel",
+          "screenshot": "Template Permissions Management_step09_pages_tree_no_templates.png"
+        }
+      ],
+      "issues": [
+        "Cannot verify Administrator default permissions through UI - no permissions viewer available for templates",
+        "Code confirms Administrator role gets EDIT permission by default (PageTemplateController.cs lines 264-277), but this cannot be verified or modified via UI"
+      ]
+    },
+    {
+      "scenario_name": "Copy permissions to descendant pages",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for template page in Pages panel to access page settings",
+          "expected": "Template page should be accessible to configure permission copying",
+          "actual": "Template pages are hidden system pages stored under 'ContentPageTemplates' folder and do not appear in the Pages tree or search results",
+          "screenshot": "Template Permissions Management_step06_template_search_no_result.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify Pages panel does not show template pages",
+          "expected": "Template pages should be accessible somehow",
+          "actual": "The Pages panel tree shows only regular site pages - template pages under ContentPageTemplates are hidden",
+          "screenshot": "Template Permissions Management_step07_pages_panel_no_template_access.png"
+        }
+      ],
+      "issues": [
+        "Template pages are hidden system pages not accessible via the standard Pages UI",
+        "No way to copy permissions to descendant pages through the Templates interface"
+      ]
+    },
+    {
+      "scenario_name": "Remove all permissions and verify admin still has access",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to access permission management for templates",
+          "expected": "Should be able to remove permissions and test admin access",
+          "actual": "No permissions management UI available for templates - cannot test this scenario",
+          "screenshot": "Template Permissions Management_step08_template_options.png"
+        }
+      ],
+      "issues": [
+        "Cannot test permission removal - no permissions UI available for templates"
+      ]
+    },
+    {
+      "scenario_name": "Test permission inheritance",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to configure permission inheritance for templates",
+          "expected": "Should be able to test permission inheritance settings",
+          "actual": "No permission inheritance configuration UI available for templates",
+          "screenshot": "Template Permissions Management_step09_pages_tree_no_templates.png"
+        }
+      ],
+      "issues": [
+        "Permission inheritance cannot be tested - no permissions UI available for templates"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review of PageTemplateController.cs (lines 264-277) confirms that when templates are created, the Administrator role automatically receives EDIT permission. This is done programmatically, not through the UI.",
+    "The feature documentation states UI location as 'Admin > Manage > Templates > Create Template > Permissions', but the Permissions tab does not exist in the Add Template form.",
+    "Template pages are stored as hidden system pages under 'ContentPageTemplates' folder (IsSystem = true, IsVisible = false) and are intentionally excluded from the standard Pages tree view.",
+    "The Permissions tab exists in the Pages panel for regular pages (verified by clicking on Home page), but template pages cannot be accessed this way since they are hidden.",
+    "The Templates interface only provides two actions for each template: Edit (opens the template page in edit mode) and Delete (with confirmation dialog).",
+    "While the code suggests permission management capability exists at the API/backend level through TabPermissions.cs and related services, there is no corresponding UI element in the Templates module to manage these permissions."
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 0,
+    "failed": 6,
+    "pass_rate": "0%"
+  }
+}

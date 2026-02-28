@@ -1,0 +1,116 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Markdown Support",
+    "feature_description": "Process and render Markdown content in wiki articles",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:41:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Open article creation dialog",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page",
+          "expected": "Wiki page loads with article list",
+          "actual": "Wiki page loaded successfully showing 6 existing articles with All Articles/My Articles tabs",
+          "screenshot": "Markdown Support_step02_wiki_articles_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Create article button",
+          "expected": "Article creation dialog opens with content editor",
+          "actual": "Create an article dialog opened with Title, Article Type, Content textarea, Tags fields, and Publish/Cancel buttons",
+          "screenshot": "Markdown Support_step03_create_article_dialog.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test content editor type (Rich Text vs Markdown)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Examine content editor in create article dialog",
+          "expected": "Content editor should have Markdown mode or formatting toolbar",
+          "actual": "Content area displays a plain textarea without any Markdown-specific toolbar or mode toggle. Code analysis confirms dnnRedactor (rich text HTML editor) is used, not a Markdown editor",
+          "screenshot": "Markdown Support_step03_create_article_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Fill form with markdown content and attempt to publish",
+          "expected": "Article should be created with markdown content",
+          "actual": "Form validation failed with 'Text is required' errors on Title and Article Type fields despite having valid values. dnnRedactor editor did not initialize properly",
+          "screenshot": "Markdown Support_step05_validation_error.png"
+        }
+      ],
+      "issues": [
+        "Content editor uses dnnRedactor (HTML rich text editor), not a dedicated Markdown editor",
+        "Form validation fails with 'Text is required' error even when fields have valid content",
+        "dnnRedactor editor does not initialize properly, showing only plain textarea"
+      ]
+    },
+    {
+      "scenario_name": "Test Wiki-style internal links [[Subject]]",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter content with wiki-style link syntax [[Test Article Draft]]",
+          "expected": "Wiki-style link should be processed and converted to clickable link",
+          "actual": "Unable to publish article to verify link rendering due to form validation failure",
+          "screenshot": "Markdown Support_step04_article_filled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Attempt to view existing article to verify link processing",
+          "expected": "Article content should display with wiki links converted to HTML anchor tags",
+          "actual": "Clicking on existing article link returned 404 error page - articles not accessible via direct URL",
+          "screenshot": "Markdown Support_step06_article_404_error.png"
+        }
+      ],
+      "issues": [
+        "Cannot create new article to test wiki link processing due to editor initialization issues",
+        "Existing articles return 404 error when accessed via direct URL links"
+      ]
+    },
+    {
+      "scenario_name": "Test standard Markdown syntax (headers, lists, bold, italic)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review MarkdownProcessor.cs code to understand Markdown support",
+          "expected": "Code should process standard Markdown syntax (headers, lists, bold, etc.)",
+          "actual": "Code analysis revealed MarkdownProcessor only handles wiki-style internal links [[Subject]] and [[Title|Subject]]. It does NOT process standard Markdown syntax (# headers, ** bold, * italic, - lists, ``` code blocks, tables)",
+          "screenshot": "Markdown Support_step03_create_article_dialog.png"
+        }
+      ],
+      "issues": [
+        "Standard Markdown syntax (headers, lists, bold, italic, code blocks, tables) is NOT supported",
+        "The 'MarkdownProcessor' class only processes wiki-style internal link syntax [[...]], not actual Markdown"
+      ]
+    }
+  ],
+  "observations": [
+    "The 'Markdown Support' feature name is misleading - the MarkdownProcessor class only handles wiki-style internal links ([[Subject]] and [[Title|Subject]]) rather than standard Markdown syntax",
+    "Code analysis of MarkdownProcessor.cs (line 40-69) shows it uses regex to convert [[Subject]] to HTML anchor tags linking to other wiki articles",
+    "The content editor uses dnnRedactor, a rich text HTML editor, not a Markdown editor with preview",
+    "No UI toggle exists to switch between HTML and Markdown editing modes",
+    "Standard Markdown elements (headers #, bold **, italic *, lists -, code blocks ```, tables) are NOT processed by any component",
+    "The dnnRedactor editor failed to initialize properly during testing, showing only a plain textarea",
+    "Form validation incorrectly reports 'Text is required' even when fields have content - this appears to be related to the editor initialization issue",
+    "Direct article URLs return 404 errors, suggesting articles may require specific query parameters (contentItemId) for access"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 1,
+    "failed": 3,
+    "pass_rate": "25%"
+  }
+}

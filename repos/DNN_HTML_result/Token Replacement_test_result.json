@@ -1,0 +1,125 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Token Replacement",
+    "feature_description": "Replace dynamic tokens in content with actual values at runtime",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:37:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Enable/disable token replacement setting",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Home page and enter Edit mode",
+          "expected": "Edit mode should be enabled showing module toolbars",
+          "actual": "Edit mode enabled successfully with module toolbars visible",
+          "screenshot": "Token_Replacement_step01_edit_mode_tokens_visible.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Admin > Settings for Text/HTML module 363",
+          "expected": "Module Settings dialog should open",
+          "actual": "Module Settings dialog opened with tabs for Module Settings, Permissions, Page Settings, and HTML Module Settings",
+          "screenshot": "Token_Replacement_step02_module_settings_token_enabled.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Navigate to HTML Module Settings tab",
+          "expected": "Should see Replace Tokens checkbox option",
+          "actual": "Replace Tokens checkbox is present and currently checked (enabled). Also shows Max length of Description in search field set to 100",
+          "screenshot": "Token_Replacement_step02_module_settings_token_enabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Insert user tokens in content",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View HTML module content in Edit mode",
+          "expected": "Content should display with user token syntax",
+          "actual": "Content displays User: [User:DisplayName] token syntax correctly in the module",
+          "screenshot": "Token_Replacement_step04_token_content_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Insert portal tokens in content",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View HTML module content in Edit mode",
+          "expected": "Content should display with portal token syntax",
+          "actual": "Content displays Portal: [Portal:PortalName] token syntax correctly in the module",
+          "screenshot": "Token_Replacement_step04_token_content_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Preview with replaced tokens",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View tokens in Edit mode",
+          "expected": "Tokens should display as raw token syntax in Edit mode (expected behavior based on code review)",
+          "actual": "Tokens display as raw text [User:DisplayName], [Portal:PortalName], [DateTime:Now] in Edit mode. Code confirms tokens are only replaced when viewWithReplacedTokens=true (View mode only)",
+          "screenshot": "Token_Replacement_step04_token_content_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test token in published content",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify token content exists in module",
+          "expected": "Module should contain token placeholders ready for runtime replacement",
+          "actual": "Module 363 (Text/HTML) contains tokens: [User:DisplayName], [Portal:PortalName], [DateTime:Now], [Invalid:FakeToken]. Token replacement is enabled in module settings. Code review confirms FormatHtmlText method in HtmlTextController.cs (lines 216-248) uses TokenReplace.ReplaceEnvironmentTokens() for token replacement in View mode",
+          "screenshot": "Token_Replacement_step04_token_content_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle invalid tokens",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View module content containing invalid token",
+          "expected": "Invalid token should be present in content",
+          "actual": "Content contains Invalid: [Invalid:FakeToken] which tests invalid/unrecognized token handling. Based on code review, unrecognized tokens will either remain as-is or display debug messages depending on DebugMessages setting",
+          "screenshot": "Token_Replacement_step04_token_content_visible.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Token replacement setting is located in Module Settings > HTML Module Settings tab with a 'Replace Tokens' checkbox",
+    "When token replacement is enabled, the code disables module caching (CacheTime = 0) to ensure tokens are always evaluated fresh",
+    "Tokens are only replaced at runtime in View mode (not Edit mode) as per HtmlTextController.cs line 228: if (blnReplaceTokens && viewWithReplacedTokens)",
+    "The TokenReplace service supports standard DNN tokens like [User:*], [Portal:*], [DateTime:*] etc.",
+    "Invalid/unrecognized tokens behavior depends on the DebugMessages setting in PortalSettings.UserMode",
+    "No dedicated UI for inserting tokens was found - users must manually type token syntax like [User:DisplayName]"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

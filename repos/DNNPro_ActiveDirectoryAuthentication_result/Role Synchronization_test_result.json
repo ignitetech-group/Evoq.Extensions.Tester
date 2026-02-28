@@ -1,0 +1,96 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Role Synchronization",
+    "feature_description": "Synchronizes user roles in DNN with Active Directory security groups",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:10:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Enable role synchronization",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Extensions > Authentication Systems > DNNPro_ActiveDirectoryAuthentication > Site Settings",
+          "expected": "Active Directory settings page should load with Synchronize Role? checkbox visible",
+          "actual": "Settings page loaded successfully with Synchronize Role? checkbox visible and unchecked",
+          "screenshot": "Role Synchronization_step01_ad_settings_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on the Synchronize Role? checkbox to enable it",
+          "expected": "Checkbox should become checked",
+          "actual": "Checkbox was successfully checked (enabled)",
+          "screenshot": "Role Synchronization_step02_sync_role_enabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test admin role mapping functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'Domain Admins' in the Administrators Role Mapping field",
+          "expected": "Text should be accepted in the field",
+          "actual": "Text 'Domain Admins' was successfully entered in the field",
+          "screenshot": "Role Synchronization_step03_admin_role_mapping.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Update Authentication Settings button to save",
+          "expected": "Settings should be saved and persisted",
+          "actual": "Settings were saved successfully - page refreshed with both Synchronize Role checked and Administrators Role Mapping containing 'Domain Admins'",
+          "screenshot": "Role Synchronization_step04_settings_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Disable role synchronization",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on the Synchronize Role? checkbox to disable it",
+          "expected": "Checkbox should become unchecked",
+          "actual": "Checkbox was successfully unchecked (disabled)",
+          "screenshot": "Role Synchronization_step05_sync_role_disabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Clear admin role mapping (empty input)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the Administrators Role Mapping field and save settings",
+          "expected": "Empty value should be accepted and saved",
+          "actual": "Empty Administrators Role Mapping was saved successfully without validation errors",
+          "screenshot": "Role Synchronization_step06_empty_admin_mapping_saved.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The role synchronization feature requires a connection to Active Directory infrastructure to fully test the actual synchronization behavior. The UI settings (checkbox toggle and field input) work correctly.",
+    "Based on code review (UserController.cs:95-192), the AddUserRoles method synchronizes AD groups to DNN roles during user login. It excludes auto-assigned roles from synchronization (line 107-114).",
+    "The admin role mapping feature (Configuration.cs:655, UserController.cs:182-186) maps a specific AD group to the DNN Administrators role when synchronization is enabled.",
+    "Code confirms that role synchronization skips the Administrator role for regular AD groups (line 161-168) but allows it through the explicit AdminRoleMapping setting (line 182-186).",
+    "Testing actual AD group to DNN role mapping on login, adding/removing users from AD groups, and verifying role assignment/removal requires an Active Directory environment which is not available in this test setup."
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

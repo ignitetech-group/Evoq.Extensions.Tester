@@ -1,0 +1,209 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Manual AD Login",
+    "feature_description": "Allows users to manually login using their Active Directory credentials through a login form",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T09:15:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify AD Authentication Provider is Installed",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Security > Authentication",
+          "expected": "AD authentication provider should be available in the Default Authentication Provider dropdown",
+          "actual": "DNNPro_ActiveDirectory is available in the authentication provider dropdown alongside DNN",
+          "screenshot": "Manual AD Login_step02_auth_providers_dropdown.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify AD Authentication Extension is Present",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Extensions > Authentication Systems",
+          "expected": "DNNPro_ActiveDirectoryAuthentication extension should be listed",
+          "actual": "DNNPro_ActiveDirectoryAuthentication extension is listed with version 10.1.1",
+          "screenshot": "Manual AD Login_step03_authentication_systems.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify AD Site Settings Configuration UI",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open AD Authentication extension Site Settings tab",
+          "expected": "All AD configuration fields should be visible including Enabled, Hide Login Controls, Synchronize Role, Provider, Authentication Type, Root Domain, User Name, Password, Email Domain, Default Domain, Admin Role Mapping, Auto-login IP Address, and Allowed Search Bots",
+          "actual": "All configuration fields are present and accessible. Enabled checkbox is checked, Provider is DNNPro_ADSIAuthenticationProvider, Authentication Type is Delegation, Email Domain shows @ignitech.com, Allowed Search Bots shows gsa-crawler;MS Search 5.0 Robot",
+          "screenshot": "Manual AD Login_step04_ad_settings_configuration.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "AD Login Form Visibility on Login Page",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Log out and navigate to login page",
+          "expected": "AD login form should appear alongside the standard DNN login form when AD authentication is enabled",
+          "actual": "Only the standard DNN login form is displayed. The AD login tab/form is NOT visible despite the AD authentication being enabled in Site Settings",
+          "screenshot": "Manual AD Login_step06_login_page_full.png"
+        }
+      ],
+      "issues": [
+        "AD login form not appearing on login page despite being enabled in configuration. Code analysis (Login.ascx.cs:186-197) shows the Enabled property requires AspNetHostingPermission (Full Trust) and checks WindowsAuthentication setting. The form visibility may require: 1) Application running in Full Trust mode, 2) IIS Windows Authentication enabled at server level, 3) An actual Active Directory domain configured in Root Domain field"
+      ]
+    },
+    {
+      "scenario_name": "Login with Empty Fields (Standard DNN Form)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Login button with empty username and password fields",
+          "expected": "Error message should be displayed",
+          "actual": "Login Failed. Please remember that passwords are case sensitive. - Error message displayed correctly",
+          "screenshot": "Manual AD Login_step07_empty_login_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Password Field Security (Masked Input)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter text in password field",
+          "expected": "Password should be masked (shown as dots/asterisks)",
+          "actual": "Password is correctly masked - characters appear as dots in the password field",
+          "screenshot": "Manual AD Login_step08_password_masked.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Login with Invalid Credentials (Standard DNN Form)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter username 'testuser' and password 'wrongpassword', then click Login",
+          "expected": "Error message should be displayed for invalid credentials",
+          "actual": "Login Failed. Please remember that passwords are case sensitive. - Error message displayed correctly",
+          "screenshot": "Manual AD Login_step09_invalid_credentials.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Login with Valid AD Credentials",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to login with AD credentials using domain\\username format",
+          "expected": "User should be authenticated against Active Directory",
+          "actual": "Cannot test - AD login form is not visible on the login page. The test environment does not have a configured Active Directory domain (Root Domain field is empty in settings)",
+          "screenshot": "Manual AD Login_step06_login_page_full.png"
+        }
+      ],
+      "issues": [
+        "Test blocked: AD login form not rendered on login page. No Active Directory domain configured in test environment (Root Domain is empty)"
+      ]
+    },
+    {
+      "scenario_name": "Login with username@domain Format",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to login using username@domain.com format",
+          "expected": "System should parse username@domain format and authenticate against AD",
+          "actual": "Cannot test - AD login form is not visible. Code analysis (Login.ascx.cs:121-133) shows the system supports parsing username@domain format when Default Domain is configured",
+          "screenshot": "Manual AD Login_step06_login_page_full.png"
+        }
+      ],
+      "issues": [
+        "Test blocked: AD login form not visible. No Active Directory environment available for testing"
+      ]
+    },
+    {
+      "scenario_name": "Default Domain Prefix Functionality",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Configure Default Domain and test login without specifying domain",
+          "expected": "System should automatically prepend default domain to username",
+          "actual": "Cannot test - AD login form is not visible. Code analysis (Login.ascx.cs:139-141) confirms default domain prefix is prepended when username doesn't contain backslash and DefaultDomain is configured",
+          "screenshot": "Manual AD Login_step04_ad_settings_configuration.png"
+        }
+      ],
+      "issues": [
+        "Test blocked: AD login form not visible. Default Domain field is empty in current configuration"
+      ]
+    },
+    {
+      "scenario_name": "CAPTCHA Integration When Enabled",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enable CAPTCHA for login and verify AD login form shows CAPTCHA",
+          "expected": "CAPTCHA should appear on AD login form when Security_CaptchaLogin is enabled",
+          "actual": "Cannot test - AD login form is not visible. Code analysis (Login.ascx.cs:259-266) confirms CAPTCHA controls are toggled by UseCaptcha property",
+          "screenshot": "Manual AD Login_step06_login_page_full.png"
+        }
+      ],
+      "issues": [
+        "Test blocked: AD login form not visible"
+      ]
+    },
+    {
+      "scenario_name": "Login Failure Event Logging",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt failed AD login and verify event log entry",
+          "expected": "Failed login attempts should be logged to DNN Event Log with IP address",
+          "actual": "Cannot test - AD login form is not visible. Code analysis (Login.ascx.cs:57-73) confirms AddEventLog function records login failures with portal ID, username, IP address, and login status",
+          "screenshot": "Manual AD Login_step06_login_page_full.png"
+        }
+      ],
+      "issues": [
+        "Test blocked: AD login form not visible"
+      ]
+    }
+  ],
+  "observations": [
+    "AD authentication extension is properly installed (version 10.1.1) and enabled in Site Settings",
+    "Code analysis reveals the AD login form visibility depends on: 1) AspNetHostingPermission Full Trust (Login.ascx.cs:187-188), 2) WindowsAuthentication configuration enabled (Login.ascx.cs:191)",
+    "The Enabled property catches exceptions and returns false, meaning if Full Trust is not available the AD form silently doesn't render",
+    "Root Domain field is empty in current configuration - AD authentication requires a domain controller to authenticate against",
+    "The code supports multiple username formats: domain\\username, username@domain, and username with default domain prefix",
+    "CAPTCHA integration is available via Security_CaptchaLogin portal setting",
+    "Event logging for failed AD logins is implemented with IP address tracking",
+    "Standard DNN login form validation and password masking work correctly"
+  ],
+  "summary": {
+    "total_scenarios": 12,
+    "passed": 5,
+    "failed": 7,
+    "pass_rate": "42%"
+  }
+}

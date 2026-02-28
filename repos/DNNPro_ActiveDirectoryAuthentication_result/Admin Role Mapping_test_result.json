@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "extension_name": "DNNPro_ActiveDirectoryAuthentication",
+    "extension_type": "Authentication Provider",
+    "feature_name": "Admin Role Mapping",
+    "feature_description": "Map Active Directory groups to DNN administrator role",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:15:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Configure AD group for admin mapping",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Extensions > Authentication Systems > DNNPro_ActiveDirectoryAuthentication > Site Settings",
+          "expected": "The Site Settings tab should display the Administrators Role Mapping field",
+          "actual": "The Site Settings tab displayed all authentication settings including the Administrators Role Mapping field",
+          "screenshot": "Admin Role Mapping_step02_field_visible.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'Domain Admins' in the Administrators Role Mapping field",
+          "expected": "The field should accept the AD group name",
+          "actual": "The field accepted 'Domain Admins' as input without validation errors",
+          "screenshot": "Admin Role Mapping_step03_group_entered.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click 'Update Authentication Settings' to save",
+          "expected": "Settings should be saved successfully and field should retain the value",
+          "actual": "Settings saved successfully. The field retained 'Domain Admins' after page refresh",
+          "screenshot": "Admin Role Mapping_step04_save_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test with special characters in group name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'Test-Group_With.Special@Chars' in the Administrators Role Mapping field",
+          "expected": "The field should accept special characters commonly used in AD group names",
+          "actual": "The field accepted the value with hyphens, underscores, periods, and @ symbol",
+          "screenshot": "Admin Role Mapping_step05_special_chars_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Update Authentication Settings' to save",
+          "expected": "Settings should be saved with special characters preserved",
+          "actual": "Settings saved successfully with special characters intact after page refresh",
+          "screenshot": "Admin Role Mapping_step06_special_chars_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Clear Admin Role Mapping configuration",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear the Administrators Role Mapping field (empty input)",
+          "expected": "The field should allow empty/blank value to disable admin mapping",
+          "actual": "The field was cleared successfully",
+          "screenshot": "Admin Role Mapping_step07_field_cleared.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Update Authentication Settings' to save empty value",
+          "expected": "Settings should save with empty value without validation errors",
+          "actual": "Settings saved successfully with empty Admin Role Mapping field",
+          "screenshot": "Admin Role Mapping_step08_cleared_saved.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Admin Role Mapping field is an optional text input that accepts any string value including special characters",
+    "No client-side or server-side validation exists for the AD group name format - the field accepts any text",
+    "The code in UserController.cs shows that admin role assignment only occurs when the configured group name exactly matches an AD group the user belongs to (case-sensitive comparison)",
+    "Full end-to-end testing of actual AD user login and role assignment requires a configured Active Directory environment which was not available",
+    "The ManageAdminRoleMapping method (UserController.cs:212-230) handles adding users to the Administrator role when they belong to the mapped AD group, and removes them from the role when they don't",
+    "The setting is stored as 'AD_AdminRoleMapping' in portal settings (Configuration.cs:133, 284)"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

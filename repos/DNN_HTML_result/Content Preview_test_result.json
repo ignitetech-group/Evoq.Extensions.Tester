@@ -1,0 +1,153 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Content Preview",
+    "feature_description": "Preview content before publishing with token replacement and formatting applied",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:42:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Preview current draft",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Edit Content page for HTML module",
+          "expected": "Edit Content page with CKEditor should load",
+          "actual": "Edit Content page loaded with CKEditor showing module content",
+          "screenshot": "Content_Preview_step02_edit_content_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View content in CKEditor",
+          "expected": "Content should be visible in the editor",
+          "actual": "Content with tokens displayed in editor: Token Test, User, Portal, Date, Invalid token lines",
+          "screenshot": "Content_Preview_step03_editor_full.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Preview button in CKEditor toolbar",
+          "expected": "Preview window should open showing the content",
+          "actual": "Preview window opened in new tab showing the content with formatting preserved",
+          "screenshot": "Content_Preview_step04_preview_window.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Preview with tokens replaced",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Module Settings to enable Replace Tokens option",
+          "expected": "Module Settings page should load with HTML Module Settings tab",
+          "actual": "Module Settings page loaded with Replace Tokens checkbox visible",
+          "screenshot": "Content_Preview_step06_module_settings_replace_tokens.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check Replace Tokens checkbox and save settings",
+          "expected": "Settings should save successfully",
+          "actual": "Critical error occurred: Object reference not set to an instance of an object",
+          "screenshot": "Content_Preview_step07_critical_error.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify error on page",
+          "expected": "Settings should be saved and page should return to normal view",
+          "actual": "Page showed error message: A critical error has occurred. Please check the Admin Logs for further details.",
+          "screenshot": "Content_Preview_step08_error_on_page.png"
+        }
+      ],
+      "issues": ["Bug: Saving module settings with Replace Tokens enabled causes 'Object reference not set to an instance of an object' error"]
+    },
+    {
+      "scenario_name": "Preview different versions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Check Admin menu for version history options",
+          "expected": "Version History or Preview Versions option should be available",
+          "actual": "Admin menu shows: Settings, Export Content, Import Content, Help, Develop, Delete, Refresh - no version history option",
+          "screenshot": "Content_Preview_step10_admin_menu.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check Edit Content page for version preview functionality",
+          "expected": "Version history tab or preview versions button should exist",
+          "actual": "Edit Content page only shows Current Content tab with editor and Save and Close button - no version history UI",
+          "screenshot": "Content_Preview_step12_no_version_preview_ui.png"
+        }
+      ],
+      "issues": ["Version preview functionality is not available in the HTML module UI. Version management is handled at the page level through Evoq Content workflow system, not at the module level."]
+    },
+    {
+      "scenario_name": "Preview mobile view",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Preview button in CKEditor to open preview",
+          "expected": "Preview should open in new tab",
+          "actual": "Preview opened in new tab showing content",
+          "screenshot": "Content_Preview_step04_preview_window.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Resize browser to mobile viewport (375x667)",
+          "expected": "Content should adapt to mobile viewport",
+          "actual": "Content displayed correctly in mobile viewport with proper text wrapping",
+          "screenshot": "Content_Preview_step13_mobile_preview.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Compare preview with live",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Add draft change to content in editor",
+          "expected": "New content line should be added to editor",
+          "actual": "Added '[PREVIEW TEST - This line is a draft change]' to the content",
+          "screenshot": "Content_Preview_step14_draft_with_change.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Preview to see draft content",
+          "expected": "Preview should show the draft change",
+          "actual": "Preview showed all content including the new draft line '[PREVIEW TEST - This line is a draft change]'",
+          "screenshot": "Content_Preview_step15_preview_with_draft_change.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Navigate to live page to compare",
+          "expected": "Live page should show published content without draft change",
+          "actual": "Live page showed only published content: Token Test, User, Portal, Date, Invalid - without the draft change line",
+          "screenshot": "Content_Preview_step18_live_token_module.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "CKEditor's built-in Preview button provides basic draft preview functionality that opens in a new browser tab",
+    "Token replacement requires enabling 'Replace Tokens' in module settings, but saving these settings causes a critical error (bug)",
+    "Version history preview is not available at the HTML module level - version management is handled through Evoq's page-level workflow system (Direct Publish, Save Draft, Content Approval workflows)",
+    "The EditHtml.ascx code references 'VersionPreview' class but no corresponding UI element was found for previewing different content versions",
+    "Mobile view preview works by resizing the preview window - there is no dedicated mobile preview mode in the editor",
+    "Draft changes are visible in preview but not on the live page until published, confirming proper separation of draft vs published content"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 3,
+    "failed": 2,
+    "pass_rate": "60%"
+  }
+}

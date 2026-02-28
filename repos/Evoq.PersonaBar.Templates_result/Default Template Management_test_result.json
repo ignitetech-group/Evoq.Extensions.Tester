@@ -1,0 +1,96 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Templates",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Default Template Management",
+    "feature_description": "Manage which template is set as the default template for new pages",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:46:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Identify default template by visual indicator",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Manage > Templates",
+          "expected": "Templates list should display with the default template visually highlighted",
+          "actual": "Templates list displayed with 'Cavalier - Main' template highlighted with a blue/cyan border, indicating it is the default template",
+          "screenshot": "Default Template Management_step01_templates_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Hover over the default template (Cavalier - Main)",
+          "expected": "Template should show action buttons and visual feedback",
+          "actual": "Hovering shows template preview with blue border highlight. Only 'Edit' button appears (no Delete button)",
+          "screenshot": "Default Template Management_step03_default_template_hover.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Default template auto-selected when creating new template",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Add Template' button",
+          "expected": "Add Template dialog should open with default template pre-selected",
+          "actual": "Add Template dialog opened with 'Cavalier - Main' automatically selected (shown with green checkmark)",
+          "screenshot": "Default Template Management_step02_add_template_dialog.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Prevent deletion of default template",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Hover over the default template (Cavalier - Main)",
+          "expected": "Delete button should not be available for the default template",
+          "actual": "Only 'Edit' button appears when hovering over 'Cavalier - Main' - no Delete button is visible",
+          "screenshot": "Default Template Management_step05_default_only_edit.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Hover over a non-default template (Test Template Page)",
+          "expected": "Both Edit and Delete buttons should be available",
+          "actual": "Both 'Edit' and 'Delete' buttons appear when hovering over 'Test Template Page', confirming non-default templates can be deleted",
+          "screenshot": "Default Template Management_step06_non_default_with_delete.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Change default template",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for 'Set as Default' or similar option in the Templates UI",
+          "expected": "There should be a UI option to change the default template",
+          "actual": "No 'Set as Default' option found in the Templates panel. Code review confirms the default template is determined by the 'DefaultPortalSkin' portal setting which is managed in Site Settings > Themes, not in the Templates module",
+          "screenshot": "Default Template Management_step07_final_template_list.png"
+        }
+      ],
+      "issues": ["No UI option exists in the Templates panel to change the default template. The default template is controlled via Site Settings > Themes (DefaultPortalSkin setting), which is outside the scope of this module."]
+    }
+  ],
+  "observations": [
+    "The default template is visually identified by a blue/cyan border around the template card in the list view",
+    "The default template ('Cavalier - Main') is automatically pre-selected with a green checkmark when creating a new template",
+    "The system prevents deletion of the default template by simply not showing the Delete button - this is an implicit protection rather than an explicit error message",
+    "Code review confirms: The default template is determined by the 'DefaultPortalSkin' portal setting (managed in Site Settings > Themes), not directly within the Templates module. The GetDefaultTemplateId method in TemplateController.cs looks for a template with Id='Default'",
+    "The 'Change default template' functionality is not available in the Templates UI - it requires navigating to a different module (Themes/Site Settings)"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 3,
+    "failed": 1,
+    "pass_rate": "75%"
+  }
+}

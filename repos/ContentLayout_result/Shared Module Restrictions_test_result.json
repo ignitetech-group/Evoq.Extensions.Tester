@@ -1,0 +1,111 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Shared Module Restrictions",
+    "feature_description": "Enforces restrictions on shared module instances to prevent layout conflicts across pages.",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:15:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify shared module restriction code exists",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review ContentLayoutController.cs for shared module checks",
+          "expected": "Code should check for shared modules before allowing layout changes",
+          "actual": "Found IsSharedModule() check at lines 116-119 that throws InvalidOperationException with message 'This module does not belong to the page. Please, move to its master page to change the module'",
+          "screenshot": "N/A - Code review"
+        },
+        {
+          "step_number": 2,
+          "action": "Review View.ascx.cs for UI restrictions on shared modules",
+          "expected": "Editor script should not load for shared modules",
+          "actual": "Found condition at line 256: 'if (InEditMode && !IsSpecialPageMode && CanEdit && !_moduleController.IsSharedModule(ModuleConfiguration))' - EditorScript.Visible is only set to true when module is NOT shared",
+          "screenshot": "N/A - Code review"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify existing ContentLayout modules are not shared",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Home page in edit mode",
+          "expected": "ContentLayout modules visible with panes",
+          "actual": "Home page displays multiple ContentLayout modules with panes (F30A_Pane1/2, 9977_Pane1/2/3/4, 8F80_Pane1/2)",
+          "screenshot": "Shared Module Restrictions_step01_edit_mode_with_contentlayout.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Access ContentLayout module settings via Persona Bar > Pages > Advanced > Modules",
+          "expected": "Module settings should show 'Added to Pages' section",
+          "actual": "Module Settings dialog opened showing 'Added to Pages' section with message 'This module has not been added to any other pages'",
+          "screenshot": "Shared Module Restrictions_step05_module_settings_not_shared.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Attempt to create shared ContentLayout module",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Test Normal Page in edit mode",
+          "expected": "Page should be in edit mode with 'Add Existing Module' links visible",
+          "actual": "Test Normal Page displayed in edit mode with 'Add Existing Module' links visible in each pane",
+          "screenshot": "Shared Module Restrictions_step06_test_page_edit_mode.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on 'Click to add a module' in ContentPane",
+          "expected": "Dialog to add existing module from another page",
+          "actual": "Add Module dialog appeared showing new modules (Grids, Form, Visualizer, HTML Pro, etc.) but no option to add existing modules from other pages",
+          "screenshot": "Shared Module Restrictions_step07_add_module_dialog.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Attempted to find Add Existing Module functionality",
+          "expected": "Ability to share/reference an existing ContentLayout module from Home page",
+          "actual": "The 'Add Existing Module' link exists but the UI does not provide a straightforward way to share a ContentLayout module from another page. The Add Module dialog only shows new module types.",
+          "screenshot": "Shared Module Restrictions_step07_add_module_dialog.png"
+        }
+      ],
+      "issues": ["Unable to create a shared ContentLayout module scenario through the available UI. The 'Add Existing Module' functionality does not appear to support sharing ContentLayout modules between pages in the standard edit mode interface."]
+    },
+    {
+      "scenario_name": "Verify read-only behavior on non-master pages",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to access a shared ContentLayout module on a non-master page",
+          "expected": "Shared module should display without layout editing controls",
+          "actual": "Unable to test - no shared ContentLayout modules exist in the environment, and creating one through the UI was not possible",
+          "screenshot": "Shared Module Restrictions_step06_test_page_edit_mode.png"
+        }
+      ],
+      "issues": ["Test blocked due to absence of shared ContentLayout modules in the test environment"]
+    }
+  ],
+  "observations": [
+    "Code confirms Shared Module Restrictions feature exists: ContentLayoutController.cs (lines 116-119) throws InvalidOperationException when attempting to modify layout on shared modules with message 'This module does not belong to the page. Please, move to its master page to change the module'",
+    "View.ascx.cs (line 256) prevents the layout editor script from loading when IsSharedModule() returns true, providing UI-level restriction",
+    "None of the existing ContentLayout modules in the test environment are currently shared - verified via Module Settings > Added to Pages section",
+    "The 'Add Existing Module' UI functionality appears limited for ContentLayout modules - standard edit mode UI shows 'Add Module' dialog with new module types only",
+    "To fully test this feature, a shared ContentLayout module would need to be created through DNN's module sharing administration, which may require different administrative access or configuration",
+    "The feature implementation appears complete based on code review, but UI testing of the restriction behavior requires pre-existing shared ContentLayout modules"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 2,
+    "failed": 2,
+    "pass_rate": "50%"
+  }
+}

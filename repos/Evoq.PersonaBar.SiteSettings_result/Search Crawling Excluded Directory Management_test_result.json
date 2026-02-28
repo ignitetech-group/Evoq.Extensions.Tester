@@ -1,0 +1,160 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.SiteSettings",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Search Crawling Excluded Directory Management",
+    "feature_description": "Manages directories that should be excluded from search crawling operations",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T12:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "View list of all excluded directories",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Settings > Site Settings > Search > Crawling tab",
+          "expected": "Crawling tab should be visible with Excluded Directories section",
+          "actual": "Crawling tab displayed successfully with Excluded Directories section visible",
+          "screenshot": "Search Crawling Excluded Directory Management_step01_crawling_tab.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View Excluded Directories section",
+          "expected": "List of excluded directories should be displayed with directory paths",
+          "actual": "Excluded Directories section showed 'Templates/' directory with delete icon",
+          "screenshot": "Search Crawling Excluded Directory Management_step02_excluded_directories_section.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add directory to excluded list using folder picker",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Add Directory' button in Excluded Directories section",
+          "expected": "Folder picker dialog should open",
+          "actual": "Folder picker dialog opened showing folder tree structure",
+          "screenshot": "Search Crawling Excluded Directory Management_step03_add_directory_folder_picker.png"
+        },
+        {
+          "step_number": 2,
+          "action": "View expanded folder tree",
+          "expected": "Folder tree should show Site Root and subfolders",
+          "actual": "Folder tree displayed Site Root with subfolders: Badges, Groups, Images, RenamedSecureFolder, Templates, Users",
+          "screenshot": "Search Crawling Excluded Directory Management_step04_folder_picker_expanded.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Select 'Badges' folder from the folder picker",
+          "expected": "Badges folder should be selected",
+          "actual": "Badges folder was selected and displayed in the selection field",
+          "screenshot": "Search Crawling Excluded Directory Management_step05_badges_selected.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click Save button to add the directory",
+          "expected": "Badges directory should be added to excluded list",
+          "actual": "Badges directory was successfully added to the excluded directories list alongside Templates/",
+          "screenshot": "Search Crawling Excluded Directory Management_step06_badges_added.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test folder picker functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open folder picker via Add Directory button",
+          "expected": "Folder picker should display with tree navigation",
+          "actual": "Folder picker displayed with expandable folder tree showing Site Root and all subfolders",
+          "screenshot": "Search Crawling Excluded Directory Management_step04_folder_picker_expanded.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify folder tree shows all available directories",
+          "expected": "All portal directories should be visible in the tree",
+          "actual": "Folder tree showed: Site Root, Badges, Groups, Images, RenamedSecureFolder, Templates, Users",
+          "screenshot": "Search Crawling Excluded Directory Management_step04_folder_picker_expanded.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Remove directory from excluded list",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click delete icon next to Badges directory",
+          "expected": "Confirmation dialog should appear",
+          "actual": "Confirmation dialog appeared with message 'Are you sure you want to delete Badges?'",
+          "screenshot": "Search Crawling Excluded Directory Management_step07_delete_confirmation.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click 'Yes' to confirm deletion",
+          "expected": "Badges directory should be removed from the list",
+          "actual": "Badges directory was successfully removed, only Templates/ remains in the list",
+          "screenshot": "Search Crawling Excluded Directory Management_step08_badges_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test deletion confirmation dialog",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click delete icon on a directory entry",
+          "expected": "Confirmation dialog with Yes/No options should appear",
+          "actual": "Confirmation dialog appeared with 'Are you sure you want to delete [directory name]?' message and Yes/No buttons",
+          "screenshot": "Search Crawling Excluded Directory Management_step07_delete_confirmation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add already excluded directory and verify duplicate error",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Add Directory and select 'Templates' folder (which is already excluded)",
+          "expected": "System should prevent adding duplicate and show error message",
+          "actual": "Templates folder was selected in the folder picker while Templates/ was already in the excluded list",
+          "screenshot": "Search Crawling Excluded Directory Management_step09_templates_selected_duplicate.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save to attempt adding duplicate directory",
+          "expected": "Duplicate error message should be displayed, directory should not be added",
+          "actual": "System ALLOWED adding the duplicate - now shows both 'Templates/' and 'Templates' in the list. No error message was displayed.",
+          "screenshot": "Search Crawling Excluded Directory Management_step10_duplicate_added_result.png"
+        }
+      ],
+      "issues": [
+        "BUG: System allows adding duplicate directories to the excluded list. When selecting 'Templates' folder which was already in the list as 'Templates/', the system saved both entries without showing any duplicate validation error. Expected behavior: System should detect duplicate directories and display an error message preventing the duplicate entry."
+      ]
+    }
+  ],
+  "observations": [
+    "The directory path display shows a trailing slash (e.g., 'Templates/') for directories added previously, but the newly added duplicate entry was shown without trailing slash ('Templates'). This inconsistency in path formatting may be related to the duplicate detection bug.",
+    "The folder picker UI works correctly and shows the complete folder hierarchy",
+    "Delete confirmation dialog functions properly with Yes/No options",
+    "Directory additions and deletions are persisted correctly when not duplicates"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 5,
+    "failed": 1,
+    "pass_rate": "83%"
+  }
+}

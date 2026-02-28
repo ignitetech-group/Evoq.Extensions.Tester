@@ -1,0 +1,132 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Search Integration",
+    "feature_description": "Index HTML content for site search with configurable summary length",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:34:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Set search summary length",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Module Settings for HTML module (Module 363)",
+          "expected": "Module Settings dialog opens",
+          "actual": "Module Settings dialog opened successfully",
+          "screenshot": "Search_Integration_step02_module_settings.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to HTML Module Settings tab",
+          "expected": "Tab shows search description length field with default value 100",
+          "actual": "HTML Module Settings tab displayed with 'Max length of Description in search' field showing value 100",
+          "screenshot": "Search_Integration_step02_module_settings.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Change search description length from 100 to 50",
+          "expected": "Value updated in the field",
+          "actual": "Value changed to 50 successfully",
+          "screenshot": "Search_Integration_step03_change_length.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click Update to save changes",
+          "expected": "Settings saved and dialog closes",
+          "actual": "Settings saved successfully, dialog closed and page refreshed",
+          "screenshot": "Search_Integration_step03_change_length.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Search for module content",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter 'Cavalier' in the search box and submit",
+          "expected": "Search results page displays with matching content",
+          "actual": "Search Results page displayed with 'About 10 Results' for search term 'Cavalier'",
+          "screenshot": "Search_Integration_step04_search_results_full.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify HTML module content appears in search results",
+          "expected": "Content from HTML modules is indexed and displayed in search results",
+          "actual": "Multiple results shown including 'Home > Home Banner' with content from HTML module: 'The World's Finest AV Products Since 1953, when it began producing televisions, the Cavalier Corporation...'",
+          "screenshot": "Search_Integration_step04_search_results_full.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify search results show truncated descriptions",
+          "expected": "Search descriptions are truncated according to configured length",
+          "actual": "Search result descriptions are truncated with '...' indicating the content is shortened per the search summary length setting",
+          "screenshot": "Search_Integration_step04_search_results_full.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Validate search length field input",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open Module Settings and navigate to HTML Module Settings tab",
+          "expected": "HTML Module Settings tab displayed",
+          "actual": "HTML Module Settings tab opened with Max length of Description in search field",
+          "screenshot": "Search_Integration_step05_invalid_input.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter invalid value 'abc' (non-numeric) in the search description length field",
+          "expected": "Field accepts the input for editing",
+          "actual": "Field accepted 'abc' as input",
+          "screenshot": "Search_Integration_step05_invalid_input.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Update to trigger validation",
+          "expected": "Validation error displayed preventing save",
+          "actual": "Validation error displayed: 'You need input a number of max description length.' Settings were not saved due to invalid input.",
+          "screenshot": "Search_Integration_step06_validation_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test HTML stripping in search",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for content that contains HTML formatting in the source",
+          "expected": "Search results show clean text without HTML tags",
+          "actual": "Search results for 'Cavalier' displayed clean text content. The Home Banner module content shown as plain text without any HTML tags visible. Code review confirms HtmlUtils.Clean() is used in GetModifiedSearchDocuments() method (HtmlTextController.cs:482) to strip HTML before indexing.",
+          "screenshot": "Search_Integration_step04_search_results_full.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The search integration feature is implemented via ModuleSearchBase in HtmlTextController.cs (line 64)",
+    "HTML content is cleaned using HtmlUtils.Clean() before indexing (line 482)",
+    "Search description length is configurable per-module via HtmlText_SearchDescLength setting with default value of 100 characters (MAX_DESCRIPTION_LENGTH constant at line 66)",
+    "The Settings.ascx includes a RegularExpressionValidator for the search description length field that only accepts digits (ValidationExpression='\\d+')",
+    "Code suggests no UI option to exclude specific content from search - this would be controlled at the DNN platform level",
+    "Module tags/terms are included in search documents if configured (lines 503-506)"
+  ],
+  "summary": {
+    "total_scenarios": 4,
+    "passed": 4,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

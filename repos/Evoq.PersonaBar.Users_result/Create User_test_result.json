@@ -1,0 +1,158 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Users",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Create User",
+    "feature_description": "Add new users to the system",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T10:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Create User Button Visibility",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Users section",
+          "expected": "Users panel opens with Add User button visible for admin users",
+          "actual": "Users panel opened with 'Add User' button visible in the top right area",
+          "screenshot": "Create User_step01_button_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Open Create User Form",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click the 'Add User' button",
+          "expected": "Create User form opens with all required fields",
+          "actual": "Create User form opened displaying First Name, Last Name, User Name, Email Address, Authorized toggle, Random Password toggle, Password, Confirm Password fields, and Cancel/Save buttons",
+          "screenshot": "Create User_step02_form_opened.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Empty Input Validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Save button with all fields empty",
+          "expected": "Validation errors shown for all required fields",
+          "actual": "Red error indicators displayed on First Name, Last Name, User Name, Email Address, Password, and Confirm Password fields",
+          "screenshot": "Create User_step03_empty_validation.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Invalid Email Validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Fill all fields with valid data except email (use 'invalidemail' without @ symbol)",
+          "expected": "Email field shows validation error",
+          "actual": "Email field displayed red border with error icon indicating invalid email format",
+          "screenshot": "Create User_step04_invalid_email_filled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Form does not submit, email error persists",
+          "actual": "Form did not submit, email validation error remained visible",
+          "screenshot": "Create User_step05_invalid_email_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Password Mismatch Validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter different values in Password and Confirm Password fields",
+          "expected": "Confirm Password field shows mismatch error",
+          "actual": "Confirm Password field displayed red error indicator indicating password mismatch",
+          "screenshot": "Create User_step06_password_mismatch_filled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "Form does not submit, mismatch error persists",
+          "actual": "Form did not submit, password mismatch validation error remained visible",
+          "screenshot": "Create User_step07_password_mismatch_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Successful User Creation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Fill form with valid data: TestFirst TestLast, testnewuser123, testnewuser123@test.com, Pass123456",
+          "expected": "All fields filled without validation errors",
+          "actual": "All fields filled correctly with password showing 'strong' indicator, no validation errors",
+          "screenshot": "Create User_step08_valid_data_filled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save button",
+          "expected": "User created successfully, notification shown, user appears in list",
+          "actual": "User 'TestFirst TestLast' created successfully with success notification, appeared at top of user list with join date 02/28/2026",
+          "screenshot": "Create User_step09_user_created_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Random Password Toggle Display",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open Create User form and verify Random Password toggle",
+          "expected": "Random Password toggle is visible and defaults to Off, with password fields visible",
+          "actual": "Random Password toggle displayed with 'Off' state, Password and Confirm Password fields visible below",
+          "screenshot": "Create User_step10_random_password_off.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Cancel Button Functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Cancel button on Create User form",
+          "expected": "Form closes without creating user",
+          "actual": "Form closed successfully, returned to user list without any changes",
+          "screenshot": "Create User_step11_cancel_success.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Create User button visibility is controlled by the canAddUser() function which checks for isAdmin OR ADD_USER permission as per code analysis in Body/index.jsx:98-101",
+    "Password strength indicator shows 'strong' label when a secure password is entered",
+    "The form uses live validation - errors appear as the user types, not just on submit",
+    "Random Password toggle is visible in the UI but testing the toggle interaction was limited by the switch component's accessibility - the toggle state and password field visibility behavior was verified via code review"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 8,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

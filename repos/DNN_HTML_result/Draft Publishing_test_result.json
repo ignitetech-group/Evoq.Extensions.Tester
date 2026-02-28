@@ -1,0 +1,148 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Draft Publishing",
+    "feature_description": "Publish draft content to make it live and visible to users",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Draft Publishing UI Location",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Login to DNN as SuperUser and enable Edit mode",
+          "expected": "Edit mode should be enabled with publishing controls visible",
+          "actual": "Edit mode enabled successfully. Footer bar shows Discard/Save buttons (or Discard/Reject/Save for workflow-enabled pages)",
+          "screenshot": "Draft_Publishing_step00_login_confirmed.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Navigate to a page with Save Draft workflow (Publish Test Page)",
+          "expected": "Page should show workflow-related buttons",
+          "actual": "Page shows Discard, Reject, and Save buttons indicating workflow integration",
+          "screenshot": "Draft_Publishing_step02_page_edit_mode.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Create and Save Draft Content",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on HTML module to open inline editor",
+          "expected": "Inline editor should open with formatting toolbar",
+          "actual": "Inline editor opened successfully with full formatting toolbar (Bold, Italic, Lists, Links, Images, etc.)",
+          "screenshot": "Draft_Publishing_step01_draft_content_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter test content: 'Test Content for Draft Publishing - This will be saved as a draft first'",
+          "expected": "Content should be entered in the editor",
+          "actual": "Content entered successfully and displayed in the editor",
+          "screenshot": "Draft_Publishing_step03_content_entered.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save button to save draft",
+          "expected": "Content should be saved as draft",
+          "actual": "Content saved successfully. Page exited edit mode indicating save was successful",
+          "screenshot": "Draft_Publishing_step04_workflows_panel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Workflow Integration for Publishing",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify workflow system controls draft publishing",
+          "expected": "Draft publishing should be controlled by workflow states (Draft -> Published)",
+          "actual": "Workflows panel shows Save Draft workflow with states: 1. Draft, 2. Published. Content goes through workflow states for publishing",
+          "screenshot": "Draft_Publishing_step04_workflows_panel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Schedule Publishing",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for schedule publishing functionality in UI",
+          "expected": "Schedule publishing option should be available for HTML content",
+          "actual": "No schedule publishing UI found for HTML module content. Code review shows ContentPublishSchedule was removed in version 8.00.00",
+          "screenshot": "Draft_Publishing_step04_workflows_panel.png"
+        }
+      ],
+      "issues": ["Schedule publishing for HTML module content was removed in version 8.00.00. The feature exists in database schema (PublishDate column) but the scheduler job was deleted during platform migration"]
+    },
+    {
+      "scenario_name": "Publish Specific Version",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for version-specific publishing in HTML module UI",
+          "expected": "Ability to publish a specific version from version history",
+          "actual": "No UI found to publish specific versions directly. Version publishing is tied to page versioning, not individual module version selection. Code shows PublishVersion method exists but is called automatically by page versioning system",
+          "screenshot": "Draft_Publishing_step02_page_edit_mode.png"
+        }
+      ],
+      "issues": ["Publishing specific versions is not available through the HTML module UI. The PublishVersion functionality is internal and tied to page versioning system"]
+    },
+    {
+      "scenario_name": "Unpublish Content",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for unpublish functionality in HTML module",
+          "expected": "Ability to unpublish currently published content",
+          "actual": "No unpublish functionality found. Code review confirms there is no dedicated unpublish method. Content state is controlled through workflow states only (Draft/Published)",
+          "screenshot": "Draft_Publishing_step04_workflows_panel.png"
+        }
+      ],
+      "issues": ["Unpublish functionality does not exist for HTML module content. Published content remains published until replaced with new content through the workflow"]
+    },
+    {
+      "scenario_name": "View Published vs Draft Content",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enable Edit mode on page with draft content",
+          "expected": "Draft content should be visible in edit mode",
+          "actual": "In Edit mode, draft content is visible for editing. Published content is what anonymous users see. The system correctly differentiates between draft (IsPublished=false) and published (IsPublished=true) content",
+          "screenshot": "Draft_Publishing_step03_content_entered.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Draft Publishing for HTML module is tightly integrated with the Workflow system rather than being a standalone module feature",
+    "The 'Save Draft' workflow provides Draft -> Published states for content approval flow",
+    "The 'Direct Publish' workflow skips the draft state and publishes content immediately",
+    "Schedule publishing (ContentPublishSchedule) was removed in version 8.00.00 according to SQL migration scripts",
+    "PublishVersion, GetPublishedVersion, and RollBackVersion methods exist in VersionController.cs but are called by page versioning system, not module UI",
+    "The HtmlModule.ascx triggers 'changeOnPageContent' event when new version is created, which updates page versioning UI buttons",
+    "No explicit 'Unpublish' action exists - publishing is controlled entirely through workflow state transitions",
+    "The IsPublished flag on HtmlTextInfo determines if content is visible to anonymous users"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 4,
+    "failed": 3,
+    "pass_rate": "57%"
+  }
+}

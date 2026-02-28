@@ -1,0 +1,146 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Pages",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Page Validation",
+    "feature_description": "Validate page data before saving including name, URL, and settings",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T09:40:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Validate empty page name (required field)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Pages section and click Add Page",
+          "expected": "Add Page form opens",
+          "actual": "Add Page form opened with empty name field",
+          "screenshot": "Page Validation_step01_add_page_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Leave page name empty and click Add Page button",
+          "expected": "User-friendly validation error message indicating name is required",
+          "actual": "Server-side TabExistsException error was thrown with full stack trace instead of user-friendly validation message",
+          "screenshot": "Page Validation_step02_empty_name_error.png"
+        }
+      ],
+      "issues": ["Empty page name validation throws server-side TabExistsException instead of displaying user-friendly validation error message. The validation exists in code (ValidatePageSettingsData method) but the error is not properly caught and displayed to users."]
+    },
+    {
+      "scenario_name": "Test duplicate page name detection",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Pages section and click Add Page",
+          "expected": "Add Page form opens",
+          "actual": "Add Page form opened",
+          "screenshot": "Page Validation_step01_add_page_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'Home' as page name (existing page name) and click Add Page",
+          "expected": "Validation error indicating page name already exists",
+          "actual": "Server-side TabExistsException error was thrown with full stack trace instead of user-friendly duplicate name error",
+          "screenshot": "Page Validation_step04_duplicate_name_error.png"
+        }
+      ],
+      "issues": ["Duplicate page name validation throws server-side TabExistsException instead of displaying user-friendly validation error message. The error is caught server-side but not properly translated to a user-friendly message."]
+    },
+    {
+      "scenario_name": "Test special characters in page name",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Pages section and click Add Page",
+          "expected": "Add Page form opens",
+          "actual": "Add Page form opened",
+          "screenshot": "Page Validation_step01_add_page_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'Test Page @#$%^&*()' as page name and click Add Page",
+          "expected": "Page is created successfully with special characters properly handled",
+          "actual": "Page was created successfully. Special characters were preserved in the page name and the URL was sanitized to 'Test-Page--'",
+          "screenshot": "Page Validation_step06_special_chars_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test URL path validation (duplicate URL detection)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to S.E.O. tab in Advanced settings and click Add URL",
+          "expected": "Add URL form appears",
+          "actual": "Add URL form appeared with Site Alias, URL Path, and URL Type fields",
+          "screenshot": "Page Validation_step08_add_url_form.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter '/Home' as URL path (duplicate of existing Home page URL) and click Save",
+          "expected": "Validation error indicating URL already exists",
+          "actual": "Error message displayed: 'The submitted URL is not available. If you wish to accept the suggested alternative, please click Save.' URL was automatically changed to '/Home1'",
+          "screenshot": "Page Validation_step10_duplicate_url_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test field length limits",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Pages section and click Add Page",
+          "expected": "Add Page form opens",
+          "actual": "Add Page form opened",
+          "screenshot": "Page Validation_step11_long_name_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter extremely long page name (200+ characters) and click Add Page",
+          "expected": "Either page is created or validation error for exceeding max length",
+          "actual": "Page was created successfully with the full long name. System accepted very long page names without validation errors or truncation at the form level",
+          "screenshot": "Page Validation_step12_long_name_created.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test date validation (start date after end date)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page Details tab and attempt to enable scheduling",
+          "expected": "Enable Scheduling toggle should turn on and reveal date fields",
+          "actual": "Enable Scheduling toggle did not respond to clicks. Unable to enable scheduling through UI interaction",
+          "screenshot": "Page Validation_step14_scheduling_toggle_off.png"
+        }
+      ],
+      "issues": ["Enable Scheduling toggle is not responding to UI interactions. Unable to test date validation (start date after end date) because the scheduling date fields cannot be accessed. Code review confirms date validation exists in ValidatePageSettingsData method (checks if EndDate < StartDate), but cannot be tested via UI."]
+    }
+  ],
+  "observations": [
+    "Code review of PagesControllerImpl.cs confirms date validation exists in ValidatePageSettingsData method (lines 1035-1040) that checks if EndDate is before StartDate and throws PageValidationException",
+    "The empty page name and duplicate page name validation errors are being thrown as server-side exceptions (TabExistsException) rather than being caught and converted to user-friendly validation messages",
+    "Special characters in page names are properly handled - they are preserved in the display name but sanitized in the URL",
+    "URL path validation works correctly - it detects duplicate URLs and suggests alternatives",
+    "No field length limit validation was observed - system accepts very long page names (200+ characters)",
+    "Enable Scheduling toggle appears to have a UI interaction issue preventing access to date scheduling fields"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 3,
+    "failed": 3,
+    "pass_rate": "50%"
+  }
+}

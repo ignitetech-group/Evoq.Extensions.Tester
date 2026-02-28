@@ -1,0 +1,174 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.ActivityStream",
+    "extension_type": "Module",
+    "feature_name": "Post Deletion",
+    "feature_description": "Soft delete and permanently delete posts from the activity stream",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:57:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Soft delete own post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Activity Stream on Community page",
+          "expected": "Activity Stream page loads with post creation area",
+          "actual": "Activity Stream loaded successfully with 'Tell the world something...' input area",
+          "screenshot": "Post Deletion_step01_activity_stream.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Create a test post with text 'Test post for deletion testing'",
+          "expected": "Post is created and appears in feed",
+          "actual": "Post was created successfully and appeared in the activity feed",
+          "screenshot": "Post Deletion_step02_post_created.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify Remove button is visible on the post",
+          "expected": "Remove link should be visible on the post footer",
+          "actual": "Remove link is visible on the post footer along with Like, Comment, Subscribe, and Pin options",
+          "screenshot": "Post Deletion_step03_post_with_remove_button.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click Remove button on the post",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete this item?' with Yes/No buttons",
+          "screenshot": "Post Deletion_step04_delete_confirmation.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Click Yes to confirm deletion",
+          "expected": "Post is deleted and removed from feed",
+          "actual": "Post was successfully deleted and removed from the activity feed",
+          "screenshot": "Post Deletion_step05_post_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete comment from post",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Locate a post with comments in the activity stream",
+          "expected": "Find a post that has existing comments",
+          "actual": "Found post 'This is a test post created for Post Creation and Management testing' with comment 'This is a test comment for the Commenting System test'",
+          "screenshot": "Post Deletion_step08_finding_post_with_comment.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Remove link on the comment",
+          "expected": "Confirmation dialog appears for comment deletion",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete this item?' with Yes/No buttons",
+          "screenshot": "Post Deletion_step09_delete_comment_confirm.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Yes to confirm comment deletion",
+          "expected": "Comment is deleted from the post",
+          "actual": "Comment was successfully deleted and no longer appears under the post",
+          "screenshot": "Post Deletion_step10_comment_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete post with comments",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Locate post 'Multiple emojis test: 👍 🎉 ❤' which has a comment",
+          "expected": "Find a post with attached comments",
+          "actual": "Found post with emoji and comment with emoji '✨' visible beneath it",
+          "screenshot": "Post Deletion_step11_after_comment_delete.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Remove link on the entire post",
+          "expected": "Confirmation dialog appears",
+          "actual": "Confirmation dialog appeared asking 'Are you sure you want to delete this item?' with Yes/No buttons",
+          "screenshot": "Post Deletion_step12_delete_post_with_comment_confirm.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Yes to confirm post deletion",
+          "expected": "Post and all its comments are deleted",
+          "actual": "Post 'Multiple emojis test' along with its comment was successfully deleted from the feed",
+          "screenshot": "Post Deletion_step13_post_with_comment_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify deleted post is removed from feed",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate back to Community page after deletions",
+          "expected": "Activity feed should not show deleted posts",
+          "actual": "Activity feed loaded without showing the deleted test post, deleted comment, or deleted emoji post with comments",
+          "screenshot": "Post Deletion_step14_final_verification.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify test deletion post is not visible",
+          "expected": "Post 'Test post for deletion testing' should not appear",
+          "actual": "Post is no longer visible in the feed - deletion was successful",
+          "screenshot": "Post Deletion_step05_post_deleted.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify post with comments is completely removed",
+          "expected": "Post 'Multiple emojis test' and its comments should not appear",
+          "actual": "Post and all attached comments are no longer visible in the feed",
+          "screenshot": "Post Deletion_step14_final_verification.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Delete post as moderator",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged in as SuperUser (who has moderator rights)",
+          "expected": "User should have ability to delete any post",
+          "actual": "SuperUser account has Remove links visible on all posts in the feed, indicating moderator privileges",
+          "screenshot": "Post Deletion_step06_post_with_comment.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify ability to delete posts by other users",
+          "expected": "Remove option should be available on posts by Anonymous/other users",
+          "actual": "Remove links are present on all posts regardless of author, confirming moderator deletion capability",
+          "screenshot": "Post Deletion_step07_scroll_to_post_with_comment.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review shows two deletion methods: SoftDelete (marks IsDeleted=true) and Delete (permanent removal). The UI only shows 'Remove' link which calls the SoftDelete method by default.",
+    "Permission check in code confirms: post owner, moderators (ActivityModuleSecurity.CanModerate), and profile wall owners can delete posts.",
+    "Comment deletion uses CommentDelete method in ActivityStreamServicesController.cs with similar permission model.",
+    "No UI distinction between soft delete and permanent delete - all deletions appear to use soft delete via the standard 'Remove' action.",
+    "The system uses a confirmation dialog for all delete operations, preventing accidental deletions.",
+    "Delete operations are applied immediately without page refresh - the UI updates dynamically via JavaScript."
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

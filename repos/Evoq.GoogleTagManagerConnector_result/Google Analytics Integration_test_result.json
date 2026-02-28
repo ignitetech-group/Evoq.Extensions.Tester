@@ -1,0 +1,222 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleTagManagerConnector",
+    "extension_type": "Connector",
+    "feature_name": "Google Analytics Integration",
+    "feature_description": "Option to use Google Tag Manager for Google Analytics tracking instead of native GA implementation",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T10:15:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Enable GA through GTM checkbox",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Admin > Settings > Connectors",
+          "expected": "Connectors list is displayed with Google Tag Manager option",
+          "actual": "Connectors list displayed with Google Tag Manager showing 'Connect' button",
+          "screenshot": "Google Analytics Integration_step01_connectors_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Connect on Google Tag Manager",
+          "expected": "GTM configuration panel opens",
+          "actual": "GTM configuration panel opened with Container ID field and GA checkbox",
+          "screenshot": "Google Analytics Integration_step03_gtm_config_panel.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Enter valid Container ID (GTM-5CVQBG) and enable GA checkbox",
+          "expected": "Checkbox toggles to 'On' state",
+          "actual": "Checkbox successfully toggled to 'On' state",
+          "screenshot": "Google Analytics Integration_step09_checkbox_enabled_saved.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Click Save",
+          "expected": "Configuration saved successfully",
+          "actual": "Success message 'Item successfully saved' displayed",
+          "screenshot": "Google Analytics Integration_step07_save_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Disable GA through GTM checkbox",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open GTM configuration with checkbox enabled",
+          "expected": "Checkbox shows 'On' state",
+          "actual": "Checkbox displayed in 'On' state",
+          "screenshot": "Google Analytics Integration_step11_checkbox_persisted.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click checkbox toggle to disable",
+          "expected": "Checkbox toggles to 'Off' state",
+          "actual": "Checkbox successfully toggled to 'Off' state",
+          "screenshot": "Google Analytics Integration_step12_checkbox_disabled.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save",
+          "expected": "Configuration saved with checkbox disabled",
+          "actual": "Configuration saved successfully",
+          "screenshot": "Google Analytics Integration_step12_checkbox_disabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify eaSendGaEvents flag in dataLayer when enabled",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Configure GTM with Container ID and checkbox enabled, then navigate to homepage",
+          "expected": "GTM script is injected with eaSendGaEvents set to true",
+          "actual": "Console shows dataLayer with eaSendGaEvents: true",
+          "screenshot": "Google Analytics Integration_step10_eaSendGaEvents_true.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify dataLayer object in browser console",
+          "expected": "dataLayer array contains object with eaSendGaEvents: true",
+          "actual": "dataLayer[0] shows {eaSendGaEvents: true, pageVariant: 'Default'}",
+          "screenshot": "Google Analytics Integration_step10_eaSendGaEvents_true.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify eaSendGaEvents flag is false when disabled",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Configure GTM with Container ID but checkbox disabled, then navigate to homepage",
+          "expected": "GTM script is injected with eaSendGaEvents set to false",
+          "actual": "Console shows dataLayer with eaSendGaEvents: false",
+          "screenshot": "Google Analytics Integration_step13_eaSendGaEvents_false.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify dataLayer object in browser console",
+          "expected": "dataLayer array contains object with eaSendGaEvents: false",
+          "actual": "dataLayer[0] shows {eaSendGaEvents: false, pageVariant: 'Default'}",
+          "screenshot": "Google Analytics Integration_step13_eaSendGaEvents_false.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test automatic disable when container ID is cleared",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Open GTM configuration and enable checkbox with Container ID present",
+          "expected": "Checkbox is in 'On' state with Container ID filled",
+          "actual": "Configuration shows Container ID: GTM-5CVQBG and checkbox 'On'",
+          "screenshot": "Google Analytics Integration_step14_container_cleared_checkbox_on.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Clear the Container ID field while keeping checkbox enabled",
+          "expected": "Container ID field is empty",
+          "actual": "Container ID field cleared",
+          "screenshot": "Google Analytics Integration_step14_container_cleared_checkbox_on.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save to save configuration without Container ID",
+          "expected": "Configuration saved and checkbox automatically disabled",
+          "actual": "Save successful, server-side logic set UseTagManagerForGA to False",
+          "screenshot": "Google Analytics Integration_step15_container_cleared_saved.png"
+        },
+        {
+          "step_number": 4,
+          "action": "Verify GTM script not injected on homepage (no Container ID)",
+          "expected": "No dataLayer object present on page",
+          "actual": "dataLayer is undefined - GTM script not injected",
+          "screenshot": "Google Analytics Integration_step16_gtm_cleared_state.png"
+        },
+        {
+          "step_number": 5,
+          "action": "Reopen GTM configuration to verify checkbox state",
+          "expected": "Checkbox should be automatically set to 'Off'",
+          "actual": "Checkbox displays 'Off' state, confirming auto-disable worked",
+          "screenshot": "Google Analytics Integration_step18_checkbox_off_after_clear.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify checkbox state persists after save",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter Container ID and enable GA checkbox",
+          "expected": "Checkbox shows 'On' state",
+          "actual": "Checkbox enabled and Container ID GTM-5CVQBG entered",
+          "screenshot": "Google Analytics Integration_step19_save_for_persistence.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save to persist configuration",
+          "expected": "Configuration saved successfully",
+          "actual": "Success message displayed, configuration saved",
+          "screenshot": "Google Analytics Integration_step19_save_for_persistence.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Close configuration panel and reopen it",
+          "expected": "Container ID and checkbox state should be preserved",
+          "actual": "Container ID shows GTM-5CVQBG and checkbox shows 'On' state - persistence confirmed",
+          "screenshot": "Google Analytics Integration_step20_persistence_verified.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Container ID validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter invalid Container ID (GTM-TEST123)",
+          "expected": "Validation error should be displayed",
+          "actual": "Error message displayed: 'The Container Id is invalid or container hasn't been published yet'",
+          "screenshot": "Google Analytics Integration_step06_invalid_container_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter valid Container ID (GTM-5CVQBG)",
+          "expected": "Validation passes and save succeeds",
+          "actual": "Configuration saved successfully with valid Container ID",
+          "screenshot": "Google Analytics Integration_step07_save_success.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The GTM connector validates Container IDs by making a REST call to https://www.googletagmanager.com/gtm.js?id={containerId}",
+    "When Container ID field is left empty but checkbox is enabled, the server-side SaveConfig method automatically sets UseTagManagerForGA to 'False' (see GoogleTagManagerConnector.cs lines 87-90)",
+    "The dataLayer initialization includes a 'pageVariant' property that defaults to 'Default' for content personalization tracking",
+    "The GTM script template is stored in GoogleTagManager.config and uses placeholders [CONTAINERID], [USETAGMANAGERFORGA], and [DATALAYER_INIT]",
+    "Container ID field does not pre-populate when opening the configuration panel - this appears to be a UI display behavior where the textbox doesn't show the saved value until focused"
+  ],
+  "summary": {
+    "total_scenarios": 7,
+    "passed": 7,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

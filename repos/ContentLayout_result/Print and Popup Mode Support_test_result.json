@@ -1,0 +1,54 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Print and Popup Mode Support",
+    "feature_description": "Handles special rendering modes for print view and popup windows.",
+    "feature_priority": "Low",
+    "test_date": "2026-02-28T09:03:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Print Mode Rendering",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page with dnnprintmode=true query parameter",
+          "expected": "Page renders in print mode with layout preserved and edit controls hidden",
+          "actual": "Page rendered with layout content intact (TELEVISIONS, WEARABLES, TABLETS, LAPTOPS, HOME THEATERS, etc.). Admin sidebar (persona bar) not visible. ContentLayout edit scripts (LayoutEditor.js, LayoutEditor.css) not loaded. No pane labels or 'Add Existing Module' buttons visible.",
+          "screenshot": "Print and Popup Mode Support_step01_print_mode.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Popup Mode Rendering",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to page with popUp=true query parameter",
+          "expected": "Page renders in popup mode with simplified layout and edit controls hidden",
+          "actual": "Page rendered in simplified popup view without header navigation or footer. Layout content preserved and displayed correctly (LAPTOPS, content text, product images). ContentLayout-specific edit controls not loaded. Module action menus visible on the side (DNN core behavior, not ContentLayout-specific).",
+          "screenshot": "Print and Popup Mode Support_step02_popup_mode.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The IsSpecialPageMode property in View.ascx.cs checks for both 'dnnprintmode=true' and 'popUp=true' query string parameters.",
+    "In special page modes, ContentLayout-specific edit scripts (LayoutEditor.js, LayoutEditor.css) are not registered, which hides the column resizing and pane editing functionality.",
+    "The EditorScript (for inline editing) is also disabled in special page modes.",
+    "Module-level 'Actions' links visible in popup mode are from DNN core module rendering, not ContentLayout-specific functionality.",
+    "Layout versioning behavior in special modes: Published layout is loaded instead of draft versions, ensuring print/popup views show the current public state."
+  ],
+  "summary": {
+    "total_scenarios": 2,
+    "passed": 2,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

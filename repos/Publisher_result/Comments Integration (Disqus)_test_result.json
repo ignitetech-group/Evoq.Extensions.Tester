@@ -1,0 +1,82 @@
+{
+  "metadata": {
+    "extension_name": "Publisher",
+    "extension_type": "Module",
+    "feature_name": "Comments Integration (Disqus)",
+    "feature_description": "Integrate Disqus commenting system for post discussions",
+    "feature_priority": "Low",
+    "test_date": "2026-02-28T09:16:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Disqus connector accessibility",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors in Persona Bar",
+          "expected": "Connectors page should load with list of available connectors",
+          "actual": "Connectors page loaded successfully showing all available connectors including Disqus",
+          "screenshot": "Comments Integration (Disqus)_step03_connectors_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Locate Disqus connector in the list",
+          "expected": "Disqus connector should be visible in the connectors list",
+          "actual": "Disqus connector is visible with Connect button indicating it is not yet configured",
+          "screenshot": "Comments Integration (Disqus)_step03_connectors_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Disqus configuration dialog",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Connect button for Disqus connector",
+          "expected": "Configuration dialog should open with required fields",
+          "actual": "Configuration dialog opened showing Disqus shortname and API Key fields with Cancel and Save buttons",
+          "screenshot": "Comments Integration (Disqus)_step04_disqus_config.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify post detail page without Disqus configured",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to a published post detail page",
+          "expected": "Post detail page should load with post content",
+          "actual": "Post detail page loaded successfully showing title, date, tags, content, author info, and social share buttons",
+          "screenshot": "Comments Integration (Disqus)_step02_post_detail.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Check for Disqus comments section",
+          "expected": "Comments section should not be visible when Disqus is not configured",
+          "actual": "No Disqus comments section is displayed, which is correct behavior when Disqus connector is not configured",
+          "screenshot": "Comments Integration (Disqus)_step02_post_detail.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Disqus connector requires external Disqus account credentials (shortname and API key) to be configured before comments can be displayed",
+    "Code in Detail.ascx.cs shows comments section visibility is controlled by: !IsEditMode && Post.AllowedComments && Post.Published && _disqusManager.HasBeenConfigured",
+    "The Disqus integration code exists in Components/Integration/DisqusManager.cs which wraps the Disqus Connector module",
+    "Post detail view (Detail.ascx) includes Disqus embed script that only renders when ShowComments is true",
+    "Testing actual Disqus commenting functionality requires valid Disqus API credentials which are not available in this test environment"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 3,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

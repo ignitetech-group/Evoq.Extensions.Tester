@@ -1,0 +1,132 @@
+{
+  "metadata": {
+    "extension_name": "DNN_HTML",
+    "extension_type": "Module",
+    "feature_name": "Workflow State Permissions",
+    "feature_description": "Configure granular permissions for each workflow state",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T08:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Access Workflow State Permissions UI",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Workflow in PersonaBar",
+          "expected": "Workflows management page should display with list of workflows",
+          "actual": "Workflows management page displayed showing all workflows (Direct Publish, Save Draft, Content Approval, Test Workflow, etc.)",
+          "screenshot": "Workflow_State_Permissions_step04_workflows_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on Content Approval workflow to expand it",
+          "expected": "Workflow should expand showing states (Draft, Ready For Review, Published)",
+          "actual": "Content Approval workflow expanded displaying states with Edit (E) button next to Ready For Review state",
+          "screenshot": "Workflow_State_Permissions_step04_workflows_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Set review permissions per state",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Edit button on Ready For Review state",
+          "expected": "Workflow State Edit dialog should open showing Reviewers section with roles and permissions",
+          "actual": "Workflow State Edit dialog opened showing State Name field, Reviewers section with Filter By Group dropdown, Select Role dropdown, and roles table with Review checkboxes",
+          "screenshot": "Workflow_State_Permissions_step05_state_permissions_dialog.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify current permissions are displayed",
+          "expected": "Current roles with their Review permission status should be visible",
+          "actual": "Roles displayed: Administrators (locked), All Users, Content Editors, Registered Users, Content Managers (checked). Users section also visible with SuperUser Account.",
+          "screenshot": "Workflow_State_Permissions_step05_state_permissions_dialog.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add role-based permissions",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select Community Manager from Select Role dropdown and click ADD",
+          "expected": "Community Manager role should be added to the reviewers list with Review permission",
+          "actual": "Community Manager role was added to the roles table with Review checkbox automatically checked and Delete action available",
+          "screenshot": "Workflow_State_Permissions_step06_role_added.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Accept to save state permissions",
+          "expected": "Dialog should close and return to workflow view",
+          "actual": "Dialog closed and returned to workflow states view",
+          "screenshot": "Workflow_State_Permissions_step07_permissions_saved.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Click Save button on workflow",
+          "expected": "Workflow changes should be saved",
+          "actual": "Workflow changes saved successfully, workflow list collapsed showing all workflows",
+          "screenshot": "Workflow_State_Permissions_step08_workflow_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Edit permissions on different workflow state",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on Test Workflow to expand and click Edit on Manager Review state",
+          "expected": "Workflow State Edit dialog should open for Manager Review state",
+          "actual": "Workflow State Edit dialog opened for Manager Review state showing same structure - State Name, Reviewers section with roles table",
+          "screenshot": "Workflow_State_Permissions_step09_manager_review_edit.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify roles with Review permissions are displayed",
+          "expected": "Roles should be shown with Review checkboxes",
+          "actual": "Roles displayed: Administrators (locked), All Users, Content Editors, Registered Users, Content Managers (checked with delete option). Add User section visible at bottom.",
+          "screenshot": "Workflow_State_Permissions_step09_manager_review_edit.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add user-specific permissions",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Type 'host' in the Add User textbox and click Add",
+          "expected": "User should be found and added to the Users reviewers list",
+          "actual": "JavaScript error occurred: 'TypeError: Cannot read properties of undefined'. The Add User functionality failed with a client-side error.",
+          "screenshot": "Workflow_State_Permissions_step10_add_user_attempted.png"
+        }
+      ],
+      "issues": ["Add User functionality throws JavaScript error when attempting to add a user to the reviewers list. Error: 'TypeError: Cannot read properties of undefined'"]
+    }
+  ],
+  "observations": [
+    "The Workflow State Permissions feature is accessed through Settings > Workflow in the PersonaBar, not through Module Settings > HTML Module Settings > Manage Workflows as indicated in the legacy documentation",
+    "The HTML Module Settings tab only shows 'Replace Tokens' and 'Max length of Description in search' options - no Manage Workflows link is present",
+    "Administrators role permissions are locked (cannot be modified) as they always have grant permission - this is by design per the code review",
+    "The permissions grid shows 'REVIEW' permission type for workflow state reviewers",
+    "Draft and Published states cannot be edited as indicated by the absence of Edit buttons",
+    "The Add User functionality has a JavaScript error that prevents adding user-specific permissions to workflow states"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 4,
+    "failed": 1,
+    "pass_rate": "80%"
+  }
+}

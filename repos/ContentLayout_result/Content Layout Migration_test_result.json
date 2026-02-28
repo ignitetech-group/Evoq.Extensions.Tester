@@ -1,0 +1,124 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Content Layout Migration",
+    "feature_description": "Migrates legacy Content Layout instances from Evoq 8.x to the new module-based architecture.",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T09:05:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Migration Tool UI Exists",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged in as SuperUser Account and navigated to Settings > Site Settings",
+          "expected": "Migration Tool option should be available in Site Settings as per feature description",
+          "actual": "Site Settings page shows tabs: Site Info, Site Behavior, Languages, Search. No Migration Tool option exists.",
+          "screenshot": "Content Layout Migration_step01_site_settings_no_migration.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Checked Import/Export page for migration functionality",
+          "expected": "Migration Tool for Content Layout should be accessible",
+          "actual": "Import/Export page only contains Site Import/Export functionality. No Content Layout Migration Tool.",
+          "screenshot": "Content Layout Migration_step02_import_export_page.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Checked Extensions page for Content Layout module details",
+          "expected": "Content Layout module may have migration options in its settings",
+          "actual": "Content Layout module v10.1.1 is installed and in use, but no migration UI is exposed.",
+          "screenshot": "Content Layout Migration_step04_content_layout_module.png"
+        }
+      ],
+      "issues": [
+        "The feature description states 'UI Location: Admin > Site Settings > Migration Tool' but no such UI exists in the application",
+        "Content Layout Migration is a backend upgrade process (triggered via UpgradeModule) rather than a user-accessible UI feature"
+      ]
+    },
+    {
+      "scenario_name": "Detect Legacy Content Layouts",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Searched entire Admin interface for legacy content layout detection UI",
+          "expected": "UI should show list of legacy content layouts that need migration",
+          "actual": "No UI exists to detect or display legacy content layouts. Code review shows detection is done via DoesContentLayoutsTableExist() method which checks for legacy database table.",
+          "screenshot": "Content Layout Migration_step01_site_settings_no_migration.png"
+        }
+      ],
+      "issues": [
+        "No UI element exists to test legacy content layout detection - this is backend-only functionality"
+      ]
+    },
+    {
+      "scenario_name": "Migrate Single Content Layout",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to find UI to trigger migration of a single content layout",
+          "expected": "UI should allow selecting and migrating individual content layouts",
+          "actual": "No migration UI exists. Code shows migration is automatic during version upgrade to 08.02.00 via UpgradeModule() method.",
+          "screenshot": "Content Layout Migration_step01_site_settings_no_migration.png"
+        }
+      ],
+      "issues": [
+        "Migration is an automatic backend process, not a user-initiated action",
+        "Cannot test manual migration of single content layout without UI"
+      ]
+    },
+    {
+      "scenario_name": "Migrate Multiple Layouts on Same Page",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to find UI to trigger migration of multiple layouts",
+          "expected": "UI should support batch migration of multiple content layouts",
+          "actual": "No migration UI exists. Code shows batch migration happens automatically during upgrade per portal and per tab.",
+          "screenshot": "Content Layout Migration_step02_import_export_page.png"
+        }
+      ],
+      "issues": [
+        "Cannot test multiple layout migration without accessible UI"
+      ]
+    },
+    {
+      "scenario_name": "Handle Migration Errors Gracefully",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempted to trigger migration error scenario",
+          "expected": "UI should display meaningful error messages during migration failures",
+          "actual": "No UI exists to trigger or observe migration errors. Code shows errors are logged via LogErrorConvertingContentLayoutToModule() and LogErrorProcessingTab() methods.",
+          "screenshot": "Content Layout Migration_step01_site_settings_no_migration.png"
+        }
+      ],
+      "issues": [
+        "Error handling exists in code but cannot be tested without UI access to migration process"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review confirms Content Layout Migration is a BACKEND UPGRADE PROCESS, not a user-accessible UI feature",
+    "Migration is triggered automatically via UpgradeModule() method when upgrading to version 08.02.00",
+    "The migration process: 1) Checks if legacy ContentLayouts table exists via DoesContentLayoutsTableExist(), 2) Iterates through all portals, 3) Groups layouts by tab, 4) Disables tab versioning/workflow, 5) Creates new Content Layout modules from legacy data, 6) Re-enables versioning/workflow",
+    "The feature description 'UI Location: Admin > Site Settings > Migration Tool' is INCORRECT - no such UI exists in the current application",
+    "Current Content Layout module version is 10.1.1, which is past the 08.02.00 migration trigger version, suggesting any legacy migrations would have already occurred",
+    "All suggested test scenarios (detect layouts, migrate single/multiple, handle errors, preserve permissions, update pane names, verify versioning) are backend operations with no UI exposure",
+    "The ContentLayoutMigrationController.cs and ContentLayoutMigrationRepository.cs implement the migration logic but are not exposed through any web service or UI component"
+  ],
+  "summary": {
+    "total_scenarios": 5,
+    "passed": 0,
+    "failed": 5,
+    "pass_rate": "0%"
+  }
+}

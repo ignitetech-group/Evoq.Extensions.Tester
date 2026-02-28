@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Content.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Retry Mechanism for Failed Operations",
+    "feature_description": "Implements automatic retry logic for failed Google Analytics API operations with exponential backoff",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:26:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [],
+  "observations": [
+    "Feature is documented as 'Backend service (no direct UI)' - confirmed through code review and UI exploration",
+    "Code review of GoogleAnalyticsRemoteRetryManager.cs confirms retry mechanism is implemented using Polly library",
+    "Retry configuration: 3 retries (simple retry, NOT exponential backoff as described in feature description - code shows .Retry(3, ...) not .WaitAndRetry())",
+    "Retryable HTTP status codes configured in RetryPolicyHelper.cs: RequestTimeout (408), InternalServerError (500), BadGateway (502), ServiceUnavailable (503), GatewayTimeout (504), Unauthorized (401)",
+    "Special handling for HTTP 401 Unauthorized: Token cache is cleared via TokenServiceImpl.ClearCache() before retry attempt to allow fresh token acquisition",
+    "Retry activity is logged via Logger.Info and Logger.Warn - only observable through server logs, not UI",
+    "Google Analytics 4 connector is configured in the system (Measurement ID: G-ABC123XYZ99) but there is no UI mechanism to trigger API failures or observe retry behavior",
+    "The GoogleAnalyticsRemoteRetryManager wraps GoogleAnalyticsRemoteManager as a decorator pattern - retry logic is transparent to calling code",
+    "Unit tests exist in RetryPolicyHelperTest.cs but these are code-level tests, not UI tests",
+    "NO UI TEST SCENARIOS CREATED: This feature operates entirely at the backend service layer with no UI-observable effects. All suggested test scenarios (HTTP 401/503 retry, max attempts, backoff timing, token cache clearing, successful retry) require either mocking HTTP responses or monitoring server logs - neither of which is possible through UI testing"
+  ],
+  "summary": {
+    "total_scenarios": 0,
+    "passed": 0,
+    "failed": 0,
+    "pass_rate": "N/A - No UI-testable scenarios exist for this backend service feature"
+  }
+}

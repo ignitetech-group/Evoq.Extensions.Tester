@@ -1,0 +1,195 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Google Analytics Script Injection",
+    "feature_description": "Injects appropriate Google Analytics tracking scripts into page headers based on configuration.",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T08:32:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Inject tracking script when enabled",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Connectors settings and verify Google Analytics 4 is configured with Measurement ID G-ABC123XYZ99",
+          "expected": "Google Analytics connector should show Edit button indicating active configuration",
+          "actual": "Google Analytics 4 connector shows green checkmark and Edit button, indicating active configuration",
+          "screenshot": "GA_Script_Injection_step01_connectors_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit to view current GA4 configuration",
+          "expected": "Configuration form should display with Measurement ID and Track for Administrators options",
+          "actual": "Configuration form displayed with Measurement ID: G-ABC123XYZ99 and Track for Administrators checkbox checked",
+          "screenshot": "GA_Script_Injection_step02_ga_config.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verify page source contains GA4 tracking script using browser evaluation",
+          "expected": "Page head should contain Google Analytics gtag.js script with correct tracking ID",
+          "actual": "Page head contains <!-- Google tag (gtag.js) --> comment, gtag('config') call, and the GA4 tracking script loading from googletagmanager.com",
+          "screenshot": "GA_Script_Injection_step02_ga_config.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Skip injection when disabled (connection deleted)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Delete Connection button on Google Analytics 4 connector",
+          "expected": "Connection should be deleted and status should change to Connect",
+          "actual": "Connection deleted successfully with 'Item successfully deleted' message. Button changed from Edit to Connect",
+          "screenshot": "GA_Script_Injection_step05_connection_deleted.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Reload page and verify GA script is NOT in page source",
+          "expected": "Page head should NOT contain Google Analytics tracking script",
+          "actual": "Browser evaluation confirms hasGAComment: false, hasGtagConfig: false, hasTrackingId: false - no GA script injected",
+          "screenshot": "GA_Script_Injection_step05_connection_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Skip injection for super users when Track for Administrators is disabled",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Configure GA4 with Measurement ID and uncheck 'Track for Administrators' option",
+          "expected": "Track for Administrators checkbox should be unchecked and configuration saved",
+          "actual": "Track for Administrators checkbox successfully unchecked, configuration saved with success message",
+          "screenshot": "GA_Script_Injection_step06_track_admin_disabled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Reload page as SuperUser and verify GA script is NOT injected",
+          "expected": "GA script should NOT be present since current user is SuperUser and Track for Administrators is disabled",
+          "actual": "Browser evaluation confirms hasGAComment: false, hasGtagConfig: false - script is correctly skipped for SuperUser",
+          "screenshot": "GA_Script_Injection_step07_no_script_for_superuser.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Skip injection for administrators when configured",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verify that the same 'Track for Administrators' setting controls both SuperUser and Administrator tracking",
+          "expected": "Code review confirms both SuperUser and Administrator roles are handled by the same trackForAdmin setting",
+          "actual": "Code at GoogleAnalyticsProEngine.cs lines 84-91 confirms that when trackForAdmin is false, both IsSuperUser and IsInRole(AdministratorRoleName) checks prevent script injection",
+          "screenshot": "GA_Script_Injection_step06_track_admin_disabled.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Handle Google Tag Manager override",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Google Tag Manager connector and configure Container ID with GTM override enabled",
+          "expected": "GTM connector should accept Container ID and 'This GTM container has already been configured to add the Google Analytics Script' toggle",
+          "actual": "Configuration form displayed correctly with Container ID field and GTM-GA override toggle. Entered Container ID: GTM-TEST123 and enabled override",
+          "screenshot": "GA_Script_Injection_step08_gtm_override_enabled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Save GTM configuration with invalid container ID",
+          "expected": "Configuration should save and GA script injection should be skipped",
+          "actual": "Save failed with validation error: 'The Container Id is invalid or container hasn't been published yet.' Cannot test GTM override without valid GTM container",
+          "screenshot": "GA_Script_Injection_step09_gtm_invalid_container.png"
+        }
+      ],
+      "issues": ["GTM override feature requires a valid, published Google Tag Manager container to test. The system validates the Container ID against Google's API before allowing save. Code review at GoogleAnalyticsProEngine.cs lines 94-106 confirms the override logic is implemented correctly."]
+    },
+    {
+      "scenario_name": "Inject custom dimensions for Universal Analytics",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for UI elements to configure custom dimensions/rules",
+          "expected": "UI should provide options to configure custom dimensions for Universal Analytics",
+          "actual": "The current connector UI only exposes 'Measurement ID' and 'Track for Administrators' fields. Code review shows custom dimensions are handled via rules in AnalyticsConfiguration, but no UI was found to configure these rules in the current connector interface",
+          "screenshot": "GA_Script_Injection_step02_ga_config.png"
+        }
+      ],
+      "issues": ["Custom dimensions configuration UI not found in current connector interface. Code at GoogleAnalyticsProEngine.cs lines 171-183 (RenderCustomDimensions) and lines 133-168 (RenderCustomScript) show the implementation exists, but the rules configuration UI appears to be missing or part of a different module."]
+    },
+    {
+      "scenario_name": "Inject custom variables for classic GA",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for UI elements to configure custom variables for classic GA",
+          "expected": "UI should provide options to configure custom variables with labels, values, pages, and roles",
+          "actual": "No UI found to configure custom variables. The GoogleAnalyticsConnector.cs code shows GetRulesAsConfig and ParseRuleSettings methods handle rules, but no corresponding UI elements were found in the connector interface",
+          "screenshot": "GA_Script_Injection_step02_ga_config.png"
+        }
+      ],
+      "issues": ["Custom variables configuration UI not found. Code shows rules are stored as 'rule-N' keys with format 'label$$$value$$$pageId,pageName$$$roleId,roleName' but the UI to configure these is not visible in the current connector interface."]
+    },
+    {
+      "scenario_name": "Page personalization tracking",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for page personalization tracking configuration",
+          "expected": "Should find UI or evidence of personalization tracking setup",
+          "actual": "Code review shows RenderPagePersonalization method at GoogleAnalyticsProEngine.cs lines 185-195 injects personalization dimension based on localStorage value 'Analytics.Page.PageVariantDimension'. This requires the content personalization feature to be configured separately.",
+          "screenshot": "GA_Script_Injection_step10_final_verification.png"
+        }
+      ],
+      "issues": ["Page personalization tracking requires the Evoq Content personalization feature to be configured. The tracking code reads from localStorage('Analytics.Page.PageVariantDimension') which is set by the personalization system. Cannot test without personalization rules configured."]
+    },
+    {
+      "scenario_name": "Verify domain configuration in script",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Review GA4 script template to understand domain configuration handling",
+          "expected": "GA4 template should use 'auto' or configured domain",
+          "actual": "SiteAnalytics.GA4.config template uses gtag('config', '[TRACKING_ID]') with automatic domain detection. The GA4 template at line 19 does not include explicit domain configuration as GA4 handles this automatically with 'auto' mode",
+          "screenshot": "GA_Script_Injection_step10_final_verification.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify Universal Analytics template handles domain configuration",
+          "expected": "UA template should include domain configuration placeholder",
+          "actual": "SiteAnalytics.config (Universal Analytics) template includes 'legacyCookieDomain': '[DOMAIN_NAME]' at line 19. Code at GoogleAnalyticsProEngine.cs lines 113-122 shows domain configuration: if empty, sets 'none' with allowHash=true; if specified, uses provided domain with allowHash=false",
+          "screenshot": "GA_Script_Injection_step10_final_verification.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "Code review reveals the 'Track for Administrators' setting is stored as 'TrackForAdmin' in AnalyticsConfiguration and controls tracking for both SuperUsers and Administrators (lines 84-91 of GoogleAnalyticsProEngine.cs)",
+    "The connector supports three analytics versions: Universal Analytics (UA-), GA4 (G-), and Other (Constants.cs lines 15-20). Different SiteAnalytics.config templates are used based on tracking ID prefix",
+    "Custom dimensions and custom variables configuration UI appears to be missing from the current connector interface, though the backend code fully supports them (GetRulesAsConfig, ParseRuleSettings methods)",
+    "Google Tag Manager override validation requires a valid, published GTM container - cannot be tested with mock container IDs",
+    "Page personalization tracking depends on external configuration via the Evoq content personalization feature which sets localStorage values",
+    "The GA4 template uses gtag.js while Universal Analytics uses analytics.js - templates are automatically selected based on tracking ID format"
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 5,
+    "failed": 4,
+    "pass_rate": "56%"
+  }
+}

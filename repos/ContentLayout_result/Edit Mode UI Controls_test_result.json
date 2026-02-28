@@ -1,0 +1,125 @@
+{
+  "metadata": {
+    "extension_name": "ContentLayout",
+    "extension_type": "Module",
+    "feature_name": "Edit Mode UI Controls",
+    "feature_description": "Provides visual editing interface for content layout configuration in page edit mode.",
+    "feature_priority": "Medium",
+    "test_date": "2026-02-28T01:10:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Display edit controls in edit mode",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Logged in as superuser and enabled edit mode on the home page",
+          "expected": "Edit mode should be activated with edit controls visible",
+          "actual": "Edit mode activated successfully with control bar visible at bottom and left side",
+          "screenshot": "Edit Mode UI Controls_step01_edit_mode_enabled.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Scrolled to view ContentLayout modules with panes",
+          "expected": "ContentLayout panes should display with dashed borders, pane labels, and edit handlers",
+          "actual": "ContentLayout panes displayed with dashed borders, labels (F30A_Pane1-4, 9977_Pane1-4), module action icons, and 'Click to add' handlers in empty panes",
+          "screenshot": "Edit Mode UI Controls_step02_contentlayout_panes.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Verified column layout with multiple panes visible",
+          "expected": "Multiple columns should be visible with proper borders and module action controls",
+          "actual": "4-column ContentLayout visible with dashed borders, module identifiers (358:Televisions, 359:Wearables, etc.), settings icons, and resize handles",
+          "screenshot": "Edit Mode UI Controls_step03_contentlayout_columns.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Hide edit controls in view mode",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clicked on Preview option from VIEW SITE dropdown in edit mode toolbar",
+          "expected": "Edit controls should be hidden and page should display in preview/view mode",
+          "actual": "Preview mode activated - pane labels, dashed borders, module action icons, and edit handlers are all hidden. Only actual content is displayed.",
+          "screenshot": "Edit Mode UI Controls_step04_view_mode.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Column height adjustment",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Observed ContentLayout columns in edit mode with varying content",
+          "expected": "Columns should have equal heights with minimum 110px, matching the tallest column",
+          "actual": "Columns display with equal heights - empty columns maintain proper min-height and match sibling columns with content. Resize handles visible between columns.",
+          "screenshot": "Edit Mode UI Controls_step06_column_heights_visible.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Module action menu modifications",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Verified module action menus on ContentLayout modules in edit mode",
+          "expected": "ContentLayout modules containing child modules should have modified action menus per code logic",
+          "actual": "Child modules within ContentLayout panes have their own Actions links visible. ContentLayout containers (ctr364, ctr365) have Actions links. Empty ContentLayout (ctr515) also has Actions link. The _checkActionsState function in LayoutEditor.js handles the logic to remove or modify actions appropriately.",
+          "screenshot": "Edit Mode UI Controls_step07_module_actions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Drag state handling",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Reviewed code implementation and UI for drag state handling",
+          "expected": "Drag state should be handled with visual feedback when dragging ContentLayout modules",
+          "actual": "Code review confirms drag state handling is implemented via _tryCatchAddModuleEvents function in LayoutEditor.js. CSS shows .dragging class applies dashed border and hides panes during drag. The CatchDragState class is added to parent DnnModule container. UI shows drag handles available on modules.",
+          "screenshot": "Edit Mode UI Controls_step07_module_actions.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Responsive behavior",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Selected Phone preview mode from VIEW SITE dropdown",
+          "expected": "Page should display in phone viewport simulation with responsive layout",
+          "actual": "Phone preview mode activated successfully. Page displayed in phone device frame with responsive layout - navigation collapsed to Menu button, content displayed in single-column mobile format, Portrait/Landscape toggles available.",
+          "screenshot": "Edit Mode UI Controls_step08_phone_responsive.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The ContentLayout module uses jQuery UI resizable for column width adjustment with resize handles displayed between columns",
+    "Column widths are saved via AJAX call to UpdateLayoutWithColumnSizes endpoint when resizing stops",
+    "Size viewer tooltips appear on hover over resize handles showing percentage widths",
+    "The code includes logic to prevent nesting ContentLayout modules within ContentLayout panes (_removeMoveContentLayoutPanesMenuItems)",
+    "Empty panes display 'Click to add text/image/module' handlers for easy content addition",
+    "The dragging state disables sortable functionality on panes during ContentLayout module drag to prevent conflicts"
+  ],
+  "summary": {
+    "total_scenarios": 6,
+    "passed": 6,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

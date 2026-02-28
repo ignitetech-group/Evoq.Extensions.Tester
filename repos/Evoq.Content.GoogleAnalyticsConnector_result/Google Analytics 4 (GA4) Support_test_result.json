@@ -1,0 +1,168 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Content.GoogleAnalyticsConnector",
+    "extension_type": "Connector",
+    "feature_name": "Google Analytics 4 (GA4) Support",
+    "feature_description": "Provides support for Google Analytics 4 with updated tracking code and configuration",
+    "feature_priority": "Top",
+    "test_date": "2026-02-28T08:30:00.000Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Configure GA4 Measurement ID",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Settings > Connectors in Persona Bar",
+          "expected": "Connectors page displays with list of available connectors",
+          "actual": "Connectors page displayed showing Google Analytics 4 with Edit button (already configured)",
+          "screenshot": "GA4_Support_step01_connectors_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit button for Google Analytics 4 connector",
+          "expected": "GA4 configuration panel expands showing Measurement ID field",
+          "actual": "Configuration panel expanded showing Measurement ID field with existing value G-ABC123XYZ99 and Track for Administrators checkbox",
+          "screenshot": "GA4_Support_step02_ga4_config_expanded.png"
+        },
+        {
+          "step_number": 3,
+          "action": "Modify Measurement ID to G-TEST12345 and click Save",
+          "expected": "Configuration saves successfully with success message",
+          "actual": "Success message 'Item successfully saved.' displayed, configuration persisted",
+          "screenshot": "GA4_Support_step04_save_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify GA4 Tracking Code Format",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter valid GA4 Measurement ID format (G-VALIDID123) and check Track for Administrators",
+          "expected": "Field accepts valid GA4 format starting with G-",
+          "actual": "Field accepted G-VALIDID123 format",
+          "screenshot": "GA4_Support_step07_valid_ga4_id_entered.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save to persist configuration",
+          "expected": "Configuration saves successfully",
+          "actual": "Success message displayed, configuration saved with green checkmark indicator",
+          "screenshot": "GA4_Support_step08_ga4_saved_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Empty Input Validation",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Clear Measurement ID field and click Save",
+          "expected": "Error message displayed preventing save",
+          "actual": "Error message 'Tracking Code Cannot Be Empty' displayed",
+          "screenshot": "GA4_Support_step09_empty_id_error.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Input Validation for Special Characters (XSS)",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Enter XSS script tag <script>alert('XSS')</script> as Measurement ID",
+          "expected": "System should reject invalid input or sanitize it",
+          "actual": "System accepted the script tag as a valid Measurement ID",
+          "screenshot": "GA4_Support_step10_xss_attempt.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Save",
+          "expected": "System should reject the invalid format or show validation error",
+          "actual": "System saved the configuration with script tag content and showed success message",
+          "screenshot": "GA4_Support_step11_xss_saved.png"
+        }
+      ],
+      "issues": [
+        "No format validation for GA4 Measurement ID - system accepts arbitrary text including script tags",
+        "Potential security concern: XSS content can be saved to Measurement ID field without sanitization"
+      ]
+    },
+    {
+      "scenario_name": "Test Track for Administrators Toggle",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Toggle Track for Administrators checkbox on and save",
+          "expected": "Checkbox state persists after save",
+          "actual": "Checkbox remained checked after save",
+          "screenshot": "GA4_Support_step08_ga4_saved_success.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test Delete Connection Functionality",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Delete Connection link",
+          "expected": "Connection is deleted and connector shows Connect button",
+          "actual": "Success message 'Item successfully deleted.' displayed, connector now shows Connect button instead of Edit",
+          "screenshot": "GA4_Support_step12_deleted.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify GA4 gtag.js Script Injection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to frontend page and inspect page source for gtag.js",
+          "expected": "GA4 gtag.js script should be injected with configured Measurement ID",
+          "actual": "Found gtag.js script: https://www.googletagmanager.com/gtag/js?id=G-ABC123XYZ99 and inline gtag configuration with gtag('config', 'G-ABC123XYZ99')",
+          "screenshot": "GA4_Support_step05_frontend_page.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "New GA4 Connection Setup",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Connect button to start fresh GA4 configuration",
+          "expected": "Empty configuration form displays",
+          "actual": "Empty Measurement ID field and unchecked Track for Administrators checkbox displayed",
+          "screenshot": "GA4_Support_step06_empty_config.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The GA4 connector uses a simple Measurement ID field rather than the full Data Stream/Account/Web Property selection seen in the code - this suggests OAuth-based configuration may be handled elsewhere or simplified for basic setup",
+    "The connector appears to use DNN's remote analytics service (qa.dnnapi.com) for script injection rather than directly embedding gtag.js",
+    "No client-side validation for GA4 Measurement ID format (should be G-XXXXXXXXXX) - system accepts any text",
+    "Configuration can be lost between page refreshes in some cases - observed connector resetting from 'Edit' to 'Connect' state"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 7,
+    "failed": 1,
+    "pass_rate": "87.5%"
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "Article Search and Listing",
+    "feature_description": "Search wiki articles and display filtered lists with pagination",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T08:49:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Search by keyword",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page",
+          "expected": "Wiki module list view is displayed",
+          "actual": "Wiki module list view displayed with 6 articles",
+          "screenshot": "Article_Search_and_Listing_step02_wiki_articles_list.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Enter 'technology' in the global search box and submit",
+          "expected": "Search results page shows matching articles",
+          "actual": "Search Results page displayed with 'Test Article for Search' containing technology keyword",
+          "screenshot": "Article_Search_and_Listing_step03_search_by_keyword.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Filter by tags",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on 'wiki' tag link on an article",
+          "expected": "Article list filters to show only articles with 'wiki' tag",
+          "actual": "URL changed to include tags=wiki parameter, list filtered to 1 article with wiki tag",
+          "screenshot": "Article_Search_and_Listing_step04_filter_by_tags.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View My Articles",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on 'My Articles' tab",
+          "expected": "Article list filters to show only articles created by current user",
+          "actual": "URL changed to category=myarticles, list shows 7 articles created by SuperUser Account",
+          "screenshot": "Article_Search_and_Listing_step05_my_articles_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View Draft articles (moderator)",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki page with category=draftonly parameter",
+          "expected": "Only draft articles are displayed",
+          "actual": "List shows 1 draft article ('New Test Article')",
+          "screenshot": "Article_Search_and_Listing_step06_draft_articles_list.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test pagination",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View All Articles list (6 articles total)",
+          "expected": "Pagination shows Page 1 of 2 with page navigation",
+          "actual": "Pagination displays 'Page 1 of 2' with links to page 1 and 2",
+          "screenshot": "Article_Search_and_Listing_step07_page1_bottom.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click on page 2 link",
+          "expected": "Second page of articles is displayed",
+          "actual": "Page 2 shows 'Test Article for Metadata' as the remaining article, pagination shows 'Page 2 of 2'",
+          "screenshot": "Article_Search_and_Listing_step07_pagination_page2.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Sort by title",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select 'Sort by title' from the sort dropdown",
+          "expected": "Articles are sorted alphabetically by title",
+          "actual": "URL changed to sort=title, articles displayed in alphabetical order: Test Article Draft, Test Article for Bookmarks, etc.",
+          "screenshot": "Article_Search_and_Listing_step08_sort_by_title.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Search with special characters",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Filter by tag containing special characters (test@tag#1)",
+          "expected": "Articles with the special character tag are displayed",
+          "actual": "Tag 'test@tag#1' with @ and # characters is properly URL-encoded, filter shows 'Test Article for Tagging'",
+          "screenshot": "Article_Search_and_Listing_step09_special_chars.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test empty search results",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Filter by a non-existent tag 'nonexistenttag12345'",
+          "expected": "No articles found message is displayed",
+          "actual": "System displays '0 Articles' and 'No articles were found' message",
+          "screenshot": "Article_Search_and_Listing_step10_empty_results.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The 'DraftOnly' filter option is only available in mobile view via dropdown selector, not visible as a tab in desktop view",
+    "Desktop view has 'All Articles' and 'My Articles' tabs only; DraftOnly requires URL parameter or mobile view",
+    "Tag filtering uses URL parameter 'tags=' which properly URL-encodes special characters",
+    "The Wiki list has two rendering modes: static HTML (shows 0 Articles) and knockout.js dynamic view (shows actual articles)",
+    "Sort options available: Sort by last active, Sort by created, Sort by title, Sort by views"
+  ],
+  "summary": {
+    "total_scenarios": 8,
+    "passed": 8,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

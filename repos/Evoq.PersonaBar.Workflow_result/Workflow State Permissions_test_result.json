@@ -1,0 +1,165 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.PersonaBar.Workflow",
+    "extension_type": "PersonaBar Module",
+    "feature_name": "Workflow State Permissions",
+    "feature_description": "Configure role-based and user-specific permissions for workflow state transitions and reviews.",
+    "feature_priority": "High",
+    "test_date": "2026-02-28T10:45:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Verify Content Editor role appears by default",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Workflows panel and expand Test Workflow",
+          "expected": "Test Workflow should expand showing workflow states",
+          "actual": "Test Workflow expanded showing Draft, Approval Review, Manager Review, and Published states",
+          "screenshot": "Workflow State Permissions_step01_test_workflow_expanded.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Click Edit (E) on Approval Review state to view permissions",
+          "expected": "Permissions panel should open showing default roles including Content Editors",
+          "actual": "Permissions panel opened showing roles table with Content Editors role visible",
+          "screenshot": "Workflow State Permissions_step02_state_edit_panel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Verify Content Manager role appears by default",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "View the permissions table in state edit panel",
+          "expected": "Content Managers role should be visible in the roles list",
+          "actual": "Content Managers role is visible in the roles table with checkbox option for Review permission",
+          "screenshot": "Workflow State Permissions_step02_state_edit_panel.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Assign review permission to Content Editors role",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click the Review checkbox for Content Editors role",
+          "expected": "The Review checkbox should become checked for Content Editors",
+          "actual": "Review checkbox was successfully checked for Content Editors role",
+          "screenshot": "Workflow State Permissions_step03_trying_checkbox.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Assign review permission to specific user",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Search for a user in the Add User field and add them",
+          "expected": "User should be found and added to the permissions table",
+          "actual": "Successfully searched for and added 'Test User' to the permissions table with Review permission",
+          "screenshot": "Workflow State Permissions_step06_user_added.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Add role via dropdown selection",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Select Community Manager from the role dropdown and click Add",
+          "expected": "Community Manager role should be added to the permissions table",
+          "actual": "Community Manager role was successfully added to the roles table",
+          "screenshot": "Workflow State Permissions_step05_role_added.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Remove permission from role",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click the delete (X) button for Community Manager role",
+          "expected": "Community Manager role should be removed from the permissions table",
+          "actual": "Community Manager role was successfully removed from the table",
+          "screenshot": "Workflow State Permissions_step07_role_removed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Remove permission from user",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click the delete (X) button for Test User",
+          "expected": "Test User should be removed from the permissions table",
+          "actual": "Test User was successfully removed from the users permissions table",
+          "screenshot": "Workflow State Permissions_step08_user_removed.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Save permission changes",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click Accept button to save permission changes",
+          "expected": "Changes should be saved and state edit panel should close",
+          "actual": "Changes were saved successfully and state edit panel closed",
+          "screenshot": "Workflow State Permissions_step09_changes_saved.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "Test permission inheritance for new states",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click 'Add a State' button on Test Workflow",
+          "expected": "New state dialog should open with default role permissions",
+          "actual": "New state dialog opened showing default roles: Administrators (locked), All Users, Content Editors, Content Managers (with Review checked), and Registered Users",
+          "screenshot": "Workflow State Permissions_step10_new_state_defaults.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Verify Content Managers has Review permission checked by default",
+          "expected": "Content Managers role should have Review permission pre-selected for new states",
+          "actual": "Content Managers role had Review checkbox checked by default, confirming permission inheritance behavior",
+          "screenshot": "Workflow State Permissions_step10_new_state_defaults.png"
+        }
+      ],
+      "issues": []
+    }
+  ],
+  "observations": [
+    "The Administrators role appears in the permissions table with a locked icon, indicating it cannot be removed from workflow state permissions.",
+    "Code in WorkflowStatesControllerTests.cs confirms Content Managers should appear by default with permissions, which matches observed behavior.",
+    "The Add User field requires searching by partial username - common usernames like 'admin' and 'host' returned no results, but 'user' found test users.",
+    "Default permission inheritance works as expected - new states inherit Content Managers with Review permission enabled."
+  ],
+  "summary": {
+    "total_scenarios": 9,
+    "passed": 9,
+    "failed": 0,
+    "pass_rate": "100%"
+  }
+}

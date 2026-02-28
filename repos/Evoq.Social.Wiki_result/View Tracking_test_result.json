@@ -1,0 +1,90 @@
+{
+  "metadata": {
+    "extension_name": "Evoq.Social.Wiki",
+    "extension_type": "Module",
+    "feature_name": "View Tracking",
+    "feature_description": "Track and display article view counts",
+    "feature_priority": "Low",
+    "test_date": "2026-02-28T08:59:00Z",
+    "tester": "Claude"
+  },
+  "test_scenarios": [
+    {
+      "scenario_name": "Sort by view count",
+      "status": "PASS",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Navigate to Wiki Test page and view article list",
+          "expected": "Wiki page loads with list of articles",
+          "actual": "Wiki page loaded successfully showing 8 articles with sort dropdown options",
+          "screenshot": "View Tracking_step01_wiki_list_page.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Select 'Sort by views' from the dropdown",
+          "expected": "Articles are sorted by view count",
+          "actual": "Sort by views option selected successfully, URL updated to include sort=views parameter, articles list refreshed",
+          "screenshot": "View Tracking_step05_sort_by_views.png"
+        }
+      ],
+      "issues": []
+    },
+    {
+      "scenario_name": "View count display on article view",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Click on article 'Published Article Test' to view article detail page",
+          "expected": "Article detail page loads with view count displayed",
+          "actual": "404 Error Page displayed - 'Sorry, the page you are looking for cannot be found'",
+          "screenshot": "View Tracking_step02_article_404_error.png"
+        },
+        {
+          "step_number": 2,
+          "action": "Try clicking on 'Test Article with Special Chars' article",
+          "expected": "Article detail page loads with view count visible",
+          "actual": "404 Error Page displayed - all article links result in 404 errors",
+          "screenshot": "View Tracking_step03_articles_404.png"
+        }
+      ],
+      "issues": [
+        "All wiki article links result in 404 errors when clicked, preventing verification of view count display on article detail page",
+        "Code in Article.ascx shows view count display at lines 71-73: ArticleInfo.ViewCount with 'View'/'Views' label, but cannot be tested due to 404 errors"
+      ]
+    },
+    {
+      "scenario_name": "Increment view count on article view",
+      "status": "FAIL",
+      "steps": [
+        {
+          "step_number": 1,
+          "action": "Attempt to view an article to trigger view count increment",
+          "expected": "Article page loads and view count is incremented",
+          "actual": "Cannot test - all article detail pages return 404 errors",
+          "screenshot": "View Tracking_step03_articles_404.png"
+        }
+      ],
+      "issues": [
+        "Cannot test view count increment because article detail pages are not accessible (404 errors)",
+        "Code in ArticleContent.ascx.cs line 185 shows: ArticleController.Instance.IncreaseViewCount() is called when article is viewed, but cannot verify this functionality due to broken article URLs"
+      ]
+    }
+  ],
+  "observations": [
+    "Code review confirms view tracking functionality exists: ArticleController.cs:186-189 has IncreaseViewCount method",
+    "Article.ascx displays ViewCount at lines 71-73 in normal view and lines 161-162 in mobile view",
+    "ArticleContent.ascx.cs line 185 calls IncreaseViewCount when article is loaded",
+    "Sort by views functionality works at the list level (confirmed via UI)",
+    "Database stored procedure Wiki_Article_UpdateViewCount increments ViewCount field",
+    "All article detail URLs return 404 errors, which may be a URL routing or configuration issue separate from view tracking",
+    "The view tracking feature appears to be implemented correctly in code, but testing is blocked by article page 404 errors"
+  ],
+  "summary": {
+    "total_scenarios": 3,
+    "passed": 1,
+    "failed": 2,
+    "pass_rate": "33%"
+  }
+}
