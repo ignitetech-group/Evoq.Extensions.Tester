@@ -1,4 +1,4 @@
-// Discard status - saved 2026-01-18T02:16:16.457Z
+// Discard status - saved 2026-02-10T15:08:31.001Z
 // Replace the existing discard_status.js file with this one to persist your changes
 window.DISCARD_STATUS = {
   "DNN_HTML::AutoSave_Functionality": {
@@ -216,5 +216,33 @@ window.DISCARD_STATUS = {
     "featureName": "My Work Tasks",
     "scenarioName": "Access My Work Feature via Module Actions",
     "timestamp": 1768697469969
+  },
+  "Evoq_PersonaBar_AccountSettings::Extension_Placeholder_Infrastructure::Verify_personabar_extensions_CSS_class_is_applied": {
+    "status": "discarded",
+    "extName": "Evoq.PersonaBar.AccountSettings",
+    "featureName": "Extension Placeholder Infrastructure",
+    "scenarioName": "Verify personabar-extensions CSS class is applied",
+    "timestamp": 1770735454461
+  },
+  "Evoq_PersonaBar_AccountSettings::Extension_Placeholder_Infrastructure::Verify_tabs_extensions_div_container_exists_in_UI": {
+    "status": "discarded",
+    "extName": "Evoq.PersonaBar.AccountSettings",
+    "featureName": "Extension Placeholder Infrastructure",
+    "scenarioName": "Verify tabs-extensions div container exists in UI",
+    "timestamp": 1770735456823
+  },
+  "Evoq_PersonaBar_AccountSettings::Module_UI_Loading::Verify_HTML_template_loads_without_errors": {
+    "status": "discarded",
+    "extName": "Evoq.PersonaBar.AccountSettings",
+    "featureName": "Module UI Loading",
+    "scenarioName": "Verify HTML template loads without errors",
+    "timestamp": 1770735774344
+  },
+  "DNNPro_ActiveDirectoryAuthentication::Password_Synchronization::Verify_Password_Synchronization_UI_Setting_Accessibility": {
+    "status": "discarded",
+    "extName": "DNNPro_ActiveDirectoryAuthentication",
+    "featureName": "Password Synchronization",
+    "scenarioName": "Verify Password Synchronization UI Setting Accessibility",
+    "timestamp": 1770735817253
   }
 };
